@@ -1,4 +1,4 @@
-var myApiUrl = '/eBudgeting';
+var myApiUrl = '/orrafpm';
 function appUrl(url) {
 	return myApiUrl  + url; 
 }
