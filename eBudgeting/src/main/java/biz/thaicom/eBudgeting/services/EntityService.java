@@ -3,17 +3,15 @@ package biz.thaicom.eBudgeting.services;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.BudgetCommonType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
+import biz.thaicom.eBudgeting.models.bgt.BudgetSignOff;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.bgt.FiscalBudgetType;
 import biz.thaicom.eBudgeting.models.bgt.FormulaColumn;
@@ -23,6 +21,7 @@ import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
 import biz.thaicom.eBudgeting.models.bgt.RequestColumn;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
+import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveRelations;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveTarget;
@@ -32,6 +31,11 @@ import biz.thaicom.eBudgeting.models.pln.TargetValue;
 import biz.thaicom.eBudgeting.models.pln.TargetValueAllocationRecord;
 import biz.thaicom.eBudgeting.models.webui.Breadcrumb;
 import biz.thaicom.eBudgeting.repositories.ObjectiveRelationsRepository;
+import biz.thaicom.security.models.ThaicomUserDetail;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public interface EntityService {
 	
@@ -42,6 +46,7 @@ public interface EntityService {
 	public List<Integer> findObjectiveTypeRootFiscalYear();
 	public List<ObjectiveType> findObjectiveTypeByFiscalYearEager(Integer fiscalYear, Long parentId);
 	public String findObjectiveTypeChildrenNameOf(Long id);
+	public ObjectiveType findDeepObjectiveTypeById(Long id);
 	
 	public String findObjectiveChildrenTypeName(Long id);
 
@@ -53,7 +58,7 @@ public interface EntityService {
 	public Objective findOjectiveById(Long id);
 	public List<Objective> findObjectiveChildrenByObjectiveId(Long id);
 	public List<Objective> findAvailableObjectiveChildrenByObjectiveId(Long id);
-	
+	public List<Objective> findAllObjectiveChildren(Integer fiscalYear, Long id);
 	
 	
 	public List<Objective> findRootObjectiveByFiscalyear(Integer fiscalYear, Boolean eagerLoad);
@@ -66,12 +71,18 @@ public interface EntityService {
 	public Objective updateObjective(Objective objective);
 	
 	public List<Objective> findChildrenObjectivewithBudgetProposal(Integer fiscalYear, Long ownerId, Long objectiveId, Boolean isChildrenTraversal);
+	public List<Objective> findChildrenObjectivewithObjectiveBudgetProposal(
+			Integer fiscalYear, Long ownerId, Long objectiveId, Boolean isChildrenTraversal);
+	
+	
 	public List<Objective> findFlatChildrenObjectivewithBudgetProposal(
 			Integer fiscalYear, Long ownerId, Long objectiveId);
 
+	List<Objective> findFlatChildrenObjectivewithObjectiveBudgetProposal(
+			Integer fiscalYear, Long ownerId, Long objectiveId);
 	
 	public List<Objective> findFlatChildrenObjectivewithBudgetProposalAndAllocation(
-			Integer fiscalYear, Long objectiveId);
+			Integer fiscalYear, Long objectiveId, Boolean isFindObjectiveBudget);
 
 	public Objective addBudgetTypeToObjective(Long id, Long budgetTypeId);
 	public Objective removeBudgetTypeToObjective(Long id, Long budgetTypeId);
@@ -97,6 +108,8 @@ public interface EntityService {
 	public ObjectiveTarget addUnitToObjective(Long objectiveId, Long unitId, Integer isSumable);
 	public String removeUnitFromObjective(Long objectiveId, Long targetId);
 	public Objective objectiveAddChildObjectiveName(Long parentId, Long nameId);
+	public List<List<Objective>> findObjectivesByFiscalyearAndTypeIdAndInitBudgetProposal(
+			Integer fiscalYear, long l, Organization organization);
 	
 		
 	//BudgetType
@@ -107,6 +120,13 @@ public interface EntityService {
 	public List<Breadcrumb> createBreadCrumbBudgetType(String prefix,
 			Integer fiscalYear, BudgetType budgetType);
 	public List<BudgetType> findAllMainBudgetTypeByFiscalYear(Integer fiscalYear);
+	public Page<BudgetType> findBudgetTypeByLevelAndMainType(Integer fiscalYear, Integer level,
+			Long typeId, String query, Pageable pageable);
+	public List<BudgetType> findBudgetTypeByLevel(Integer fiscalYear, Integer level);
+	public BudgetType saveBudgetType(JsonNode node);
+	public BudgetType updateBudgetType(JsonNode node);
+	public void deleteBudgetType(Long id);
+	
 	
 	//FiscalBudgetType
 	public void initFiscalBudgetType(Integer fiscalYear);
@@ -132,12 +152,11 @@ public interface EntityService {
 	
 	//BudgetProposal
 	public BudgetProposal findBudgetProposalById(Long budgetProposalId);
-	public BudgetProposal saveBudgetProposal(BudgetProposal proposal);
+	public BudgetProposal saveBudgetProposal(JsonNode proposal, ThaicomUserDetail currentUser);
 	public List<BudgetProposal> findBudgetProposalByObjectiveIdAndBudgetTypeId(Long objectiveId, Long budgetTypeId);
 
 	
 	//ProposalStrategy
-	public ProposalStrategy saveProposalStrategy(ProposalStrategy strategy, Long budgetProposalId, Long formulaStrategyId);
 	public List<ProposalStrategy> findProposalStrategyByBudgetProposal(
 			Long budgetProposalId);
 	public List<ProposalStrategy> findProposalStrategyByFiscalyearAndObjective(
@@ -171,6 +190,12 @@ public interface EntityService {
 	public ObjectiveName deleteObjectiveName(Long id);
 	
 	public List<ObjectiveName> findAvailableObjectiveNameChildrenByObejective(Long id, String searchQuery);
+	public ObjectiveTarget addUnitToObjectiveName(Long id, Long unitId,
+			Integer isSumable);
+	public String removeUnitFromObjectiveName(Long id, Long targetId);
+	
+	
+	
 	
 	//ObjectiveTarget
 	public List<ObjectiveTarget> findAllObjectiveTargets();
@@ -223,14 +248,46 @@ public interface EntityService {
 			Long objectiveId, Long id);
 	public ObjectiveBudgetProposal saveObjectiveBudgetProposal(
 			Organization workAt, JsonNode node);
-	public ObjectiveBudgetProposal updateObjectiveBudgetProposal(JsonNode node);
 	public ObjectiveBudgetProposal deleteObjectiveBudgetProposal(Long id);
+
+	public List<List<Objective>> findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(
+			Integer fiscalYear, long typeid, Organization workAt);
+
+	
 	
 	
 	//FiscalBudgetType
 	public List<FiscalBudgetType> findAllFiscalBudgetTypeByFiscalYear(
 			Integer fiscalYear);
 	public String updateFiscalBudgetTypeIsMainBudget(Integer fiscalYear, List<Long> idList);
+	public List<FiscalBudgetType> findAllFiscalBudgetTypeByFiscalYearUpToLevel(
+			Integer fiscalYear, Integer level);
+	
+	
+	//BudgetSignOff
+	public BudgetSignOff findBudgetSignOffByFiscalYearAndOrganization(
+			Integer fiscalYear, Organization workAt);
+	public Long findSumTotalBudgetProposalOfOwner(Integer fiscalYear,
+			Organization workAt);
+	public Long findSumTotalObjectiveBudgetProposalOfOwner(Integer fiscalYear,
+			Organization workAt);
+	public BudgetSignOff updateBudgetSignOff(Integer fiscalYear, ThaicomUserDetail currentUser,
+			String command);
+	
+	
+	//ObjectiveDetail
+	public ObjectiveDetail findOneObjectiveDetail(Long id);
+	public ObjectiveDetail updateObjectiveDetail(JsonNode node, Organization owner);
+	public ObjectiveDetail saveObjectiveDetail(JsonNode node, Organization owner);
+	public ObjectiveDetail deleteObjectiveDetail(Long id);
+	public ObjectiveDetail findOneObjectiveDetailByObjectiveIdAndOwner(Long objectiveId,
+			ThaicomUserDetail currentUser);
+
+
+
+
+
+
 
 
 	

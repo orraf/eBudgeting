@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import biz.thaicom.eBudgeting.models.bgt.BudgetSignOff;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveTypeId;
@@ -529,13 +531,20 @@ public class GenericViewController {
 	}
 	
 	
-	private void setFiscalYearFromSession(Model model, HttpSession session) {
+	private Integer setFiscalYearFromSession(Model model, HttpSession session) {
 		if(session.getAttribute("currentRootFY") != null) {
 			Objective rootFy = (Objective) session.getAttribute("currentRootFY");
 			model.addAttribute("fiscalYear", rootFy.getFiscalYear());
+			return rootFy.getFiscalYear();
 		}
+		return null;
 	}
 
+
+	private Integer getCurrentFiscalYearFromSession(HttpSession session) {
+		Objective rootFy = (Objective) session.getAttribute("currentRootFY");
+		return rootFy.getFiscalYear();
+	}
 
 
 
@@ -1093,88 +1102,103 @@ public class GenericViewController {
 	}
 	
 	// --------------------------------------------------------------m61f03: การบันทึกงบประมาณ ระดับกิจกรรมหลัก
-	@RequestMapping("/page/m61f03/")
-	public String render_m63f03(
-			Model model, HttpServletRequest request) {
-		List<Objective> fiscalYears = entityService.findRootFiscalYear();		
-		model.addAttribute("rootPage", true);
-		model.addAttribute("fiscalYears", fiscalYears);
-		return "m61f03";
-	}
-	
-	@RequestMapping("/page/m61f03/{fiscalYear}/{objectiveId}")
-	public String render_m63f03OfYear(
-			@PathVariable Integer fiscalYear,
-			@PathVariable Long objectiveId,
-			Model model, HttpServletRequest request,
+	@RequestMapping("/page/m61f03_1/")
+	public String render_m61f03(
+			Model model,
+			HttpServletRequest request, HttpSession session,
 			@Activeuser ThaicomUserDetail currentUser) {
+		List<Objective> fiscalYears = entityService.findRootFiscalYear();
+		Integer fy = setFiscalYearFromSession(model, session);
+		model.addAttribute("rootPage", false);
+		model.addAttribute("fiscalYears", fiscalYears);
 		
-		logger.debug("fiscalYear = {}, objectiveId = {}", fiscalYear, objectiveId);
+		//check the budgetSignOff
+		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
+				fy, currentUser.getWorkAt());
 		
-		// now find the one we're looking for
-		Objective objective = entityService.findOjectiveById(objectiveId);
-		if(objective != null ) {
-			logger.debug("Objective found!");
-			
-			model.addAttribute("objective", objective);
-			// now construct breadcrumb?
-			
-			List<Breadcrumb> breadcrumb = entityService.createBreadCrumbObjective("/page/m61f03", fiscalYear, objective); 
-			
-			model.addAttribute("breadcrumb", breadcrumb.listIterator());
-			model.addAttribute("rootPage", false);
-			model.addAttribute("objective", objective);
-			
-		} else {
-			logger.debug("Objective NOT found! redirect to fiscal year selection");
-			// go to the root one!
-			return "redirect:/page/m61f03/";
+		if(bso.getLock1Person() != null) {
+			// should not be able to edit!
+			model.addAttribute("readOnly", true);
 		}
 		
-		return "m61f03";
+		return "m61f03_1";
 	}
+	
 	
 	// --------------------------------------------------------------m61f04: การบันทึกงบประมาณ ระดับรายการ
-	@RequestMapping("/page/m61f04/")
-	public String render_m63f04(
-			Model model, HttpServletRequest request) {
-		List<Objective> fiscalYears = entityService.findRootFiscalYear();		
-		model.addAttribute("rootPage", true);
-		model.addAttribute("fiscalYears", fiscalYears);
-		return "m61f04";
+//	@RequestMapping("/page/m61f04/")
+//	public String render_m61f04(
+//			Model model, HttpServletRequest request, HttpSession session,
+//			@Activeuser ThaicomUserDetail currentUser) {
+//			
+//		model.addAttribute("rootPage", false);
+//		
+//		setFiscalYearFromSession(model, session);
+//		
+//		Integer fy = getCurrentFiscalYearFromSession(session);
+//		Objective rootObjective = entityService.findOneRootObjectiveByFiscalyear(fy);
+//		
+//		model.addAttribute("objectiveId", rootObjective.getId());
+//
+//		//check the budgetSignOff
+//		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
+//				fy, currentUser.getWorkAt());
+//		
+//		if(bso.getLock1Person() != null) {
+//			// should not be able to edit!
+//			model.addAttribute("readOnly", true);
+//		}
+//		
+//		return "m61f04";
+//	}
+
+	// --------------------------------------------------------------m61f05: การบันทึก SignOff/Release
+	@RequestMapping("/page/m61f05/")
+	public String render_m61f05(
+			Model model, HttpServletRequest request, HttpSession session) {
+			
+		model.addAttribute("rootPage", false);
+		
+		setFiscalYearFromSession(model, session);
+		
+		Integer fy = getCurrentFiscalYearFromSession(session);
+		Objective rootObjective = entityService.findOneRootObjectiveByFiscalyear(fy);
+		
+		model.addAttribute("objectiveId", rootObjective.getId());
+		
+		
+		return "m61f05";
 	}
 	
-	@RequestMapping("/page/m61f04/{fiscalYear}/{objectiveId}")
-	public String render_m63f04OfYear(
-			@PathVariable Integer fiscalYear,
-			@PathVariable Long objectiveId,
-			Model model, HttpServletRequest request,
+	
+	// --------------------------------------------------------------m61f04: การบันทึกงบประมาณ ระดับรายการ
+	@RequestMapping("/page/m61f04_1/")
+	public String render_m61f04_1(
+			Model model, HttpServletRequest request, HttpSession session,
 			@Activeuser ThaicomUserDetail currentUser) {
+			
+		model.addAttribute("rootPage", false);
 		
-		logger.debug("fiscalYear = {}, objectiveId = {}", fiscalYear, objectiveId);
+		setFiscalYearFromSession(model, session);
 		
-		// now find the one we're looking for
-		Objective objective = entityService.findOjectiveById(objectiveId);
-		if(objective != null ) {
-			logger.debug("Objective found!");
-			
-			model.addAttribute("objective", objective);
-			// now construct breadcrumb?
-			
-			List<Breadcrumb> breadcrumb = entityService.createBreadCrumbObjective("/page/m61f04", fiscalYear, objective); 
-			
-			model.addAttribute("breadcrumb", breadcrumb.listIterator());
-			model.addAttribute("rootPage", false);
-			model.addAttribute("objective", objective);
-			
-		} else {
-			logger.debug("Objective NOT found! redirect to fiscal year selection");
-			// go to the root one!
-			return "redirect:/page/m61f04/";
+		Integer fy = getCurrentFiscalYearFromSession(session);
+		Objective rootObjective = entityService.findOneRootObjectiveByFiscalyear(fy);
+		
+		model.addAttribute("objectiveId", rootObjective.getId());
+		
+		//check the budgetSignOff
+		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
+				fy, currentUser.getWorkAt());
+		
+		if(bso.getLock1Person() != null) {
+			// should not be able to edit!
+			model.addAttribute("readOnly", true);
 		}
+
 		
-		return "m61f04";
+		return "m61f04_1";
 	}
+
 	
 	// --------------------------------------------------------------m62f01: การประมวลผลการกระทบยอดเงินงบประมาณจากระดับรายการมาที่ระดับกิจกรรม 
 	@RequestMapping("/page/m62f01/")

@@ -51,7 +51,7 @@ public class FormulaStrategy  implements Serializable{
 	private BudgetType type;
 	
 	@Basic
-	private Integer numberColumns;
+	private Integer standardPrice;
 	
 	@Basic
 	private Boolean isStandardItem;
@@ -105,11 +105,11 @@ public class FormulaStrategy  implements Serializable{
 	}
 
 	public Integer getNumberColumns() {
-		return numberColumns;
+		return standardPrice;
 	}
 
 	public void setNumberColumns(Integer numberColumns) {
-		this.numberColumns = numberColumns;
+		this.standardPrice = numberColumns;
 	}
 
 	public List<FormulaColumn> getFormulaColumns() {
@@ -158,6 +158,14 @@ public class FormulaStrategy  implements Serializable{
 
 	public void setUnit(TargetUnit unit) {
 		this.unit = unit;
+	}
+
+	public Integer getStandardPrice() {
+		return standardPrice;
+	}
+
+	public void setStandardPrice(Integer standardPrice) {
+		this.standardPrice = standardPrice;
 	}
 	
 	

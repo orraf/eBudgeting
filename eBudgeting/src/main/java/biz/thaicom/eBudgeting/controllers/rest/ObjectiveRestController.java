@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 
+import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.pln.Objective;
+import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveRelations;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveTarget;
@@ -74,6 +78,18 @@ public class ObjectiveRestController {
 	public @ResponseBody Objective getObjectiveById(@PathVariable Long id) {
 		logger.debug("id: " + id);
 		return entityService.findOjectiveById(id); 
+	}
+	
+	@RequestMapping(value="/Objective/loadObjectiveBudgetProposal/{id}", method=RequestMethod.GET)
+	public @ResponseBody Objective getObjectiveLoadObjectiveBudgetProposalById(
+			@PathVariable Long id, 
+			@Activeuser ThaicomUserDetail currentUser) {
+		Objective o = entityService.findOjectiveById(id);
+		if(o!=null) {
+			List<ObjectiveBudgetProposal> obpList = entityService.findObjectiveBudgetproposalByObjectiveIdAndOwnerId(id, currentUser.getWorkAt().getId());
+			o.setFilterObjectiveBudgetProposals(obpList);
+		}
+		return o;  
 	}
 	
 	@RequestMapping(value="/Objective/{id}/children", method=RequestMethod.GET)
@@ -136,7 +152,10 @@ public class ObjectiveRestController {
 	@RequestMapping(value="/Objective/{id}/removeUnit", method=RequestMethod.POST) 
 	public @ResponseBody String removeUnit(@PathVariable Long id,
 			@RequestParam Long targetId) {
-		return entityService.removeUnitFromObjective(id, targetId);
+		String s =  entityService.removeUnitFromObjective(id, targetId);
+		logger.debug("returning: " + s );
+		
+		return s;
 	}
 	
 	
@@ -276,17 +295,49 @@ public class ObjectiveRestController {
 		
 	}
 	
+	@RequestMapping(value="/ObjectiveWithObjectiveBudgetProposal/{fiscalYear}/{objectiveId}/flatDescendants", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> getFlatDescendantsObjectiveWithObjectiveBudgetPorposalByOwnerId(
+			@PathVariable Integer fiscalYear,
+			@PathVariable Long objectiveId,
+			@Activeuser ThaicomUserDetail currentUser
+			) {
+		
+		logger.debug("current user workAt.id = {} ",currentUser.getWorkAt().getId());
+		
+		List<Objective> objectives = entityService.findFlatChildrenObjectivewithObjectiveBudgetProposal(fiscalYear, currentUser.getWorkAt().getId(), objectiveId);
+		
+		return objectives;
+		
+	}
+	
 	@RequestMapping(value="/ObjectiveWithBudgetProposalAndAllocation/{fiscalYear}/{objectiveId}/flatDescendants", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> getFlatDescendantsObjectiveWithBudgetPorposalAndAllocation(
 			@PathVariable Integer fiscalYear,
 			@PathVariable Long objectiveId,
 			@Activeuser ThaicomUserDetail currentUser
 			) {
-		List<Objective> objectives = entityService.findFlatChildrenObjectivewithBudgetProposalAndAllocation(fiscalYear, objectiveId);
+		boolean isFindObjectiveBudget = false;
+		List<Objective> objectives = entityService.findFlatChildrenObjectivewithBudgetProposalAndAllocation(fiscalYear, objectiveId, isFindObjectiveBudget);
 		
 		return objectives;
 		
 	}
+	
+	@RequestMapping(value="/ObjectiveWithObjectiveBudgetProposalAndAllocation/{fiscalYear}/{objectiveId}/flatDescendants", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> getFlatDescendantsObjectiveWithObjectiveBudgetPorposalAndAllocation(
+			@PathVariable Integer fiscalYear,
+			@PathVariable Long objectiveId,
+			@Activeuser ThaicomUserDetail currentUser
+			) {
+		
+		boolean isFindObjectiveBudget = true;
+		List<Objective> objectives = entityService.findFlatChildrenObjectivewithBudgetProposalAndAllocation(fiscalYear, objectiveId, isFindObjectiveBudget);
+		
+		return objectives;
+		
+	}
+	
+	
 	
 	
 	@RequestMapping(value="/ObjectiveWithBudgetProposal/{fiscalYear}/{ownerId}/{objectiveId}/descendants", method=RequestMethod.GET)
@@ -360,6 +411,7 @@ public class ObjectiveRestController {
 	@RequestMapping(value="/Objective/initFiscalYear", method=RequestMethod.POST)
 	public @ResponseBody String initFiscalYear(
 			@RequestParam Integer fiscalYear){
+		logger.debug("initFiscalYear " + fiscalYear);
 		return entityService.initFiscalYear(fiscalYear);
 		
 	}
@@ -418,12 +470,76 @@ public class ObjectiveRestController {
 		return entityService.findAvailableObjectiveNameChildrenByObejective(id, searchQuery );
 	}
 	
+	@RequestMapping(value="/ObjectiveName/{id}/addUnit", method=RequestMethod.POST) 
+	public @ResponseBody ObjectiveTarget addObjectiveNameUnit(@PathVariable Long id,
+			@RequestParam Long unitId, @RequestParam Integer isSumable) {
+
+		return entityService.addUnitToObjectiveName(id, unitId, isSumable);
+	}
+	
+	@RequestMapping(value="/ObjectiveName/{id}/removeUnit", method=RequestMethod.POST) 
+	public @ResponseBody String removeObjectiveNameUnit(@PathVariable Long id,
+			@RequestParam Long targetId) {
+		return entityService.removeUnitFromObjectiveName(id, targetId);
+	}
+	
+	
+	
+	@RequestMapping(value="/ObjectiveDetail/byObjective/{id}/ofCurrentUser", method=RequestMethod.GET)
+	public @ResponseBody ObjectiveDetail findOneObjectiveDetailByObjectiveAndOwner(
+			@PathVariable Long id,
+			@Activeuser ThaicomUserDetail currentUser) {
+		ObjectiveDetail detail = entityService.findOneObjectiveDetailByObjectiveIdAndOwner(id, currentUser);
+		
+		//we intentionally put forObjective to be null and let the caller save its own
+		if(detail != null) 	detail.setForObjective(null);
+		
+		return detail;
+	}
+	
+	@RequestMapping(value="/ObjectiveDetail/{id}", method=RequestMethod.GET)
+	public @ResponseBody ObjectiveDetail findOneObjectiveDetail(
+			@PathVariable Long id) {
+		return entityService.findOneObjectiveDetail(id);
+	}
+	
+	@RequestMapping(value="/ObjectiveDetail/{id}", method=RequestMethod.PUT)
+	public @ResponseBody ObjectiveDetail updateObjectiveDetail(
+			@PathVariable Long id,
+			@RequestBody JsonNode node,
+			@Activeuser ThaicomUserDetail currentUser) {
+		ObjectiveDetail detail = entityService.updateObjectiveDetail(node, currentUser.getWorkAt());
+		
+		//we intentionally put forObjective to be null and let the caller save its own
+		detail.setForObjective(null);		
+		return detail;
+	}
+	
+	@RequestMapping(value="/ObjectiveDetail/", method=RequestMethod.POST)
+	public @ResponseBody ObjectiveDetail saveObjectiveDetail(
+			@RequestBody JsonNode node, @Activeuser ThaicomUserDetail currentUser) {
+		ObjectiveDetail detail =  entityService.saveObjectiveDetail(node, currentUser.getWorkAt());
+		
+		//we intentionally put forObjective to be null and let the caller save its own
+		detail.setForObjective(null);		
+		return detail;
+	}
+	
+	@RequestMapping(value="/ObjectiveDetail/{id}", method=RequestMethod.DELETE)
+	public @ResponseBody ObjectiveDetail deleteObjectiveDetail(
+			@PathVariable Long id) {
+		return entityService.deleteObjectiveDetail(id);
+	}
+
+	
+	
 	
 	@ExceptionHandler(value=Exception.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public @ResponseBody String handleException(final Exception e, final HttpServletRequest request) {
 		logger.error(e.toString());
 		e.printStackTrace();
-		return "failed";
+		return "failed: " + e.toString();
 		
 	}
 

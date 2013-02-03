@@ -75,7 +75,7 @@
 
 	{{#if pageParams}}
 	{{#with pageParams}}
-    <div class="pagination">
+    <div class="pagination pagination-small">
         <span style="border: 1px;">พบทั้งสิ้น {{totalElements}} รายการ </span> <b>หน้า : </b> <ul>
 		{{#each page}}
 	    <li {{#if isActive}}class="active"{{/if}}><a href="#" class="pageLink" data-id="{{pageNumber}}">
@@ -150,7 +150,7 @@
 	<ul id="targetsLst">
 		{{#each targets}} 
 			<li data-id="{{id}}">
-				<span class="label label-important"><a href="#" class="removeUnit"><i class="icon icon-trash icon-white"></i></a></span>
+				<a href="#" class="removeUnit" style="color:#BD362F;"><i class="icon icon-trash"></i></a>
 				{{unit.name}} ({{#if isSumable}}นับ{{else}}ไม่นับ{{/if}})</li>
 		{{/each}}
 	</ul>
@@ -277,7 +277,12 @@ $(document).ready(function() {
 		
 		render: function() {
 			
-			this.$el.find('.modal-header span').html(objectiveType.get('name') + "<br/> [" + this.currentObjective.get('code') + "]"+ this.currentObjective.get('name'));
+			this.$el.find('.modal-header span').html(
+					objectiveType.get('name') +
+					"<br/> <span style='font-weight: normal;'>[" +
+					this.currentObjective.get('code') + "]"+ 
+					this.currentObjective.get('name') + "</span>");
+
 			
 			var json=this.currentObjective.toJSON();
 			
@@ -303,7 +308,7 @@ $(document).ready(function() {
 			if(confirm("คุณต้องการลบหน่วยนับ " + target.get('unit').get('name'))) {
 				$.ajax({
 					type : 'POST',
-					url : appUrl('/Objective/' + this.currentObjective.get('id') + '/removeUnit'),
+					url : appUrl('/ObjectiveName/' + this.currentObjective.get('id') + '/removeUnit'),
 					data : {
 						targetId : target.get('id')
 					},
@@ -330,7 +335,7 @@ $(document).ready(function() {
 				console.log(isSumable);
 				$.ajax({
 					type : 'POST',
-					url : appUrl('/Objective/' + this.currentObjective.get('id') + '/addUnit'),
+					url : appUrl('/ObjectiveName/' + this.currentObjective.get('id') + '/addUnit'),
 					data : {
 						unitId : unitId,
 						isSumable : isSumable
@@ -428,13 +433,15 @@ $(document).ready(function() {
 		render: function() {
 			if(this.currentObjective.get('name') == null) {
 			
-				this.$el.find('.modal-header span').html("เพิ่มรายการทะเบียน" + objectiveType.get('name') + "ใหม่");
+				this.$el.find('.modal-header span').html("เพิ่มทะเบียน" + objectiveType.get('name'));
 			} else {
 				this.$el.find('.modal-header span').html(objectiveType.get('name') + 
 						"<br/> <span style='font-weight: normal;'> [" + this.currentObjective.get('code') + "]"+ this.currentObjective.get('name') + "</span>");
 			}
 			
 			var json = this.currentObjective.toJSON();
+			
+		 	e1=this.currentObjective;
 			
 			if( hasUnit.length > 0 ) {
 				json.hasUnit = true;
@@ -650,28 +657,27 @@ $(document).ready(function() {
 			if( (! $(e.currentTarget).hasClass('disabled')) && $('input[name=rowRdo]:checked').length == 1 ) {
 				
 				var modelToDelete = this.collection.get(objectiveId);
+				if(confirm("คุณต้องการลบรายการ " + modelToDelete.get('name'))) {
 				
-				if(modelToDelete.get('isLeaf') == true) {
-					if(confirm("คุณต้องการลบรายการ " + modelToDelete.get('name'))) {
-					
-						modelToDelete.destroy({
-							success: _.bind(function() {					
-								this.collection.remove(modelToDelete);
+					modelToDelete.destroy({wait:true,
+						success: _.bind(function() {					
+							this.collection.remove(modelToDelete);
+						
+							// now we have to run through and reindex
+							this.collection.each(function(model, index) {
+								model.set('index', index);
+							});
 							
-								// now we have to run through and reindex
-								this.collection.each(function(model, index) {
-									model.set('index', index);
-								});
-								
-								this.collection.trigger('reset');
-							},this)
-						});
-					}
-					
-					this.collection.trigger('reset');
-				} else{
-					alert('คุณต้องเข้าไปลบรายการจากรายการย่อยสุดเท่านั้น');
+							this.collection.trigger('reset');
+						},this),
+						error: _.bind(function(model, xhr, options) {
+							alert("ไม่สามารถลบรายการได้ \n Error: " + xhr.responseText);
+						},this)
+					});
 				}
+				
+				this.collection.trigger('reset');
+			
 			} else {
 				alert('กรุณาเลือกรายการที่ต้องการลบ');
 			}

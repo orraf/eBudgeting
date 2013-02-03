@@ -2,12 +2,14 @@ package biz.thaicom.eBudgeting.models.bgt;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,6 +22,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import biz.thaicom.eBudgeting.models.pln.TargetUnit;
+import biz.thaicom.eBudgeting.services.EntityServiceJPA;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -39,6 +48,8 @@ public class BudgetType implements Serializable {
 	 */
 	private static final long serialVersionUID = -5984004367106256395L;
 	
+	private static final Logger logger = LoggerFactory.getLogger(BudgetType.class);
+	
 	// Field
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="BGT_BUDGETTYPE_SEQ")
@@ -48,7 +59,7 @@ public class BudgetType implements Serializable {
 	private String name;
 	
 	@Basic
-	private String code;
+	private Integer code;
 	
 	@Basic
 	private String parentPath;
@@ -70,12 +81,30 @@ public class BudgetType implements Serializable {
 	@Basic
 	private Integer fiscalYear;
 	
+	@Transient
+	private Integer currentFiscalYear;
+	
 	@Basic
 	@Column(name="IDX")
 	private Integer index;
 	
-	@OneToMany(mappedBy="type", fetch=FetchType.LAZY)
+	@Transient
 	private List<FormulaStrategy> strategies;
+	
+	@Transient
+	private FormulaStrategy standardStrategy;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="BGT_BUDGETLEVEL_ID")
+	private BudgetLevel level;
+
+	@ManyToOne
+	@JoinColumn(name="COMMONTYPE_BGT_ID")
+	private BudgetCommonType commonType;
+	
+	@ManyToOne
+	@JoinColumn(name="PLN_UNIT_ID")
+	private TargetUnit unit;
 
 	public BudgetType() {
 		
@@ -102,11 +131,11 @@ public class BudgetType implements Serializable {
 		this.name = name;
 	}
 
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 
@@ -133,6 +162,15 @@ public class BudgetType implements Serializable {
 	public void setFiscalYear(Integer fiscalYear) {
 		this.fiscalYear = fiscalYear;
 	}
+	
+	@Transient
+	public Integer getCurrentFiscalYear() {
+		return currentFiscalYear;
+	}
+
+	public void setCurrentFiscalYear(Integer currentFiscalYear) {
+		this.currentFiscalYear = currentFiscalYear;
+	}
 
 	public Integer getIndex() {
 		return index;
@@ -149,12 +187,22 @@ public class BudgetType implements Serializable {
 		this.parentPath = parentPath;
 	}
 
+	@Transient
 	public List<FormulaStrategy> getStrategies() {
 		return strategies;
 	}
 
 	public void setStrategies(List<FormulaStrategy> strategies) {
 		this.strategies = strategies;
+	}
+	
+	@Transient
+	public FormulaStrategy getStandardStrategy() {
+		return standardStrategy;
+	}
+
+	public void setStandardStrategy(FormulaStrategy standardStrategy) {
+		this.standardStrategy = standardStrategy;
 	}
 
 	public Integer getParentLevel() {
@@ -172,6 +220,30 @@ public class BudgetType implements Serializable {
 	public void setLineNumber(Integer lineNumber) {
 		this.lineNumber = lineNumber;
 	}
+	
+	public BudgetLevel getLevel() {
+		return level;
+	}
+
+	public void setLevel(BudgetLevel level) {
+		this.level = level;
+	}
+
+	public BudgetCommonType getCommonType() {
+		return commonType;
+	}
+
+	public void setCommonType(BudgetCommonType commonType) {
+		this.commonType = commonType;
+	}
+	
+	public TargetUnit getUnit() {
+		return unit;
+	}
+
+	public void setUnit(TargetUnit unit) {
+		this.unit = unit;
+	}
 
 	public void doBasicLazyLoad() {
 		//now we get one parent and its type
@@ -179,14 +251,22 @@ public class BudgetType implements Serializable {
 			this.getParent().getId();
 		} 
 		
+		logger.debug("id, name: " +this.getId() + ", " + this.getName());
+		
 		if(this.getChildren() != null) {
 			// we have to go deeper one level
 			for(BudgetType child : this.getChildren()){
-				if(child.getChildren() != null) {
-					child.getChildren().size();
+				child.getLevel().getId();
+				if(child.getUnit() != null) {
+					child.getUnit().getId();
 				}
+				
 			}
 			
+		}
+		
+		if(this.getUnit() != null) {
+			this.getUnit().getId();
 		}
 	}
 	
@@ -228,6 +308,8 @@ public class BudgetType implements Serializable {
 			
 			parentIds.add(parentId);
 		}
+		Collections.reverse(parentIds);
+		
 		return parentIds;
 	}
 	
@@ -236,20 +318,20 @@ public class BudgetType implements Serializable {
 		if(this.parentPath == null) {
 			return "";
 		}
-		Pattern p = Pattern.compile(".*([0-9]+)\\.0\\.");
+		Pattern p = Pattern.compile(".*\\.([0-9]+)\\.0\\.");
 		Matcher m = p.matcher(this.parentPath);
 		if (m.find()) {
 			String topParentId = m.group(1);
 			switch (Integer.parseInt(topParentId)) {
 			case 1:
 				return "งบบุคลากร";
-			case 2:
+			case 47:
 				return "งบดำเนินงาน";
-			case 3:
+			case 118:
 				return "งบลงทุน";
-			case 4:
+			case 779:
 				return "งบอุดหนุน";
-			case 5:
+			case 785:
 				return "งบรายจ่ายอื่น";
 			default:
 				return "unknown";

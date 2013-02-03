@@ -4,8 +4,52 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<!-- <bean id="bgtHwNoPcmList.xls" class="th.go.dss.topbudget.view.BgtHwNoPcmListExcelView"/> 
-		<bean id="bgtOtherNoPcm.xls" class="th.go.dss.topbudget.view.BgtOtherNoPcmListExcelView"/> 
-		<bean id="bgtHasPcm.xls" class="th.go.dss.topbudget.view.BgtHasPcmListExcelView"/> 
-		<bean id="bgtAll.xls" class="th.go.dss.topbudget.view.BgtAllExcelView"/> -->
+<!--  
+	<bean id="sample.xls" class="biz.thaicom.eBudgeting.view.SampleXLSView"/>
+
+	<bean id="report2.xls" class="biz.thaicom.eBudgeting.view.Report2XLSView"/>
+	<bean id="report11.xls" class="biz.thaicom.eBudgeting.view.Report11XLSView"/>
+	<bean id="report1.xls" class="biz.thaicom.eBudgeting.view.Report1XLSView"/>
+	<bean id="track1.xls" class="biz.thaicom.eBudgeting.view.Track1XLSView"/>
+ -->
+ 
+ 	<bean id="m51r01.xls" class="biz.thaicom.eBudgeting.view.M51R01XLSView"/>
+ 	<bean id="m51r02.xls" class="biz.thaicom.eBudgeting.view.M51R02XLSView"/>
+ 	<bean id="m51r03.xls" class="biz.thaicom.eBudgeting.view.M51R03XLSView"/>
+ 	<bean id="m51r04.xls" class="biz.thaicom.eBudgeting.view.M51R04XLSView"/>
+ 	<bean id="m51r05.xls" class="biz.thaicom.eBudgeting.view.M51R05XLSView"/>
+ 	<bean id="m51r06.xls" class="biz.thaicom.eBudgeting.view.M51R06XLSView"/>
+ 	<bean id="m51r07.xls" class="biz.thaicom.eBudgeting.view.M51R07XLSView"/>
+ 	<bean id="m51r08.xls" class="biz.thaicom.eBudgeting.view.M51R08XLSView"/>
+ 	<bean id="m51r09.xls" class="biz.thaicom.eBudgeting.view.M51R09XLSView"/>
+ 	<bean id="m51r10.xls" class="biz.thaicom.eBudgeting.view.M51R10XLSView"/>
+ 	<bean id="m51r11.xls" class="biz.thaicom.eBudgeting.view.M51R11XLSView"/>
+ 	<bean id="m51r12.xls" class="biz.thaicom.eBudgeting.view.M51R12XLSView"/>
+ 	<bean id="m51r13.xls" class="biz.thaicom.eBudgeting.view.M51R13XLSView"/>
+ 	<bean id="m51r14.xls" class="biz.thaicom.eBudgeting.view.M51R14XLSView"/>
+ 	<bean id="m51r15.xls" class="biz.thaicom.eBudgeting.view.M51R15XLSView"/>
+ 	<bean id="m51r16.xls" class="biz.thaicom.eBudgeting.view.M51R16XLSView"/>
+ 	<bean id="m51r17.xls" class="biz.thaicom.eBudgeting.view.M51R17XLSView"/>
+ 	<bean id="m51r18.xls" class="biz.thaicom.eBudgeting.view.M51R18XLSView"/>
+ 	<bean id="m51r19.xls" class="biz.thaicom.eBudgeting.view.M51R19XLSView"/>
+ 	<bean id="m51r20.xls" class="biz.thaicom.eBudgeting.view.M51R20XLSView"/>
+ 	<bean id="m51r21.xls" class="biz.thaicom.eBudgeting.view.M51R21XLSView"/>
+ 	<bean id="m51r22.xls" class="biz.thaicom.eBudgeting.view.M51R22XLSView"/>
+ 	<bean id="m51r23.xls" class="biz.thaicom.eBudgeting.view.M51R23XLSView"/>
+
+ 	<bean id="m52r01.xls" class="biz.thaicom.eBudgeting.view.M52R01XLSView"/>
+ 	<bean id="m52r01_1.xls" class="biz.thaicom.eBudgeting.view.M52R01_1XLSView"/>
+ 	<bean id="m52r02_1.xls" class="biz.thaicom.eBudgeting.view.M52R02_1XLSView"/>
+ 	<bean id="m52r28.xls" class="biz.thaicom.eBudgeting.view.M52R28XLSView"/>
+	
+ 	<bean id="m53r01.xls" class="biz.thaicom.eBudgeting.view.M53R01XLSView"/>
+ 	<bean id="m53r02.xls" class="biz.thaicom.eBudgeting.view.M53R02XLSView"/>
+ 	<bean id="m53r03.xls" class="biz.thaicom.eBudgeting.view.M53R03XLSView"/>
+
+ 	<bean id="m54r01.xls" class="biz.thaicom.eBudgeting.view.M54R01XLSView"/>
+
+ 	<bean id="m55r01.xls" class="biz.thaicom.eBudgeting.view.M55R01XLSView"/>
+ 	
+ 	<bean id="m61f04.docx" class="biz.thaicom.eBudgeting.view.word.M61f04DOCXView"/>
+ 
 </beans>

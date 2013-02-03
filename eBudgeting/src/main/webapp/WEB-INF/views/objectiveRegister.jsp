@@ -76,7 +76,7 @@
 
 	{{#if pageParams}}
 	{{#with pageParams}}
-    <div class="pagination">
+    <div class="pagination pagination-small">
         <span style="border: 1px;">พบทั้งสิ้น {{totalElements}} รายการ </span> <b>หน้า : </b> <ul>
 		{{#each page}}
 	    <li {{#if isActive}}class="active"{{/if}}><a href="#" class="pageLink" data-id="{{pageNumber}}">
@@ -152,7 +152,7 @@
 	<ul id="targetsLst">
 		{{#each targets}} 
 			<li data-id="{{id}}">
-				<span class="label label-important"><a href="#" class="removeUnit"><i class="icon icon-trash icon-white"></i></a></span>
+				<a href="#" class="removeUnit" style="color:#BD362F;"><i class="icon icon-trash"></i></a>
 				{{unit.name}} ({{#if isSumable}}นับ{{else}}ไม่นับ{{/if}})</li>
 		{{/each}}
 	</ul>
@@ -666,12 +666,12 @@ $(document).ready(function() {
 				
 				var modelToDelete = this.collection.get(objectiveId);
 				
-				if(modelToDelete.get('isLeaf') == true) {
+				
 					if(confirm("คุณต้องการลบรายการ " + modelToDelete.get('name'))) {
 						
 						var objectiveNameToDelete = modelToDelete.get('objectiveName');
 					
-						modelToDelete.destroy({
+						modelToDelete.destroy({wait: true,
 							success: _.bind(function() {					
 								this.collection.remove(modelToDelete);
 							
@@ -686,16 +686,17 @@ $(document).ready(function() {
 										this.collection.trigger('reset');
 									},this)
 								});
+							
 								
-								
+							},this),
+							error: _.bind(function(model, xhr, options) {
+								alert("ไม่สามารถลบรายการได้ \n Error: " + xhr.responseText);
 							},this)
 						});
 					}
 					
-					this.collection.trigger('reset');
-				} else{
-					alert('คุณต้องเข้าไปลบรายการจากรายการย่อยสุดเท่านั้น');
-				}
+
+				
 			} else {
 				alert('กรุณาเลือกรายการที่ต้องการลบ');
 			}

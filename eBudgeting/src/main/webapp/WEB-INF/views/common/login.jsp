@@ -5,7 +5,7 @@
 
 <div class="hero-unit" style="margin-top: 60px;">
 	<div class="page-header">
-		<img src="<c:url value="/resources/graphics/header1.gif"/>"/> 
+		<img src="<c:url value="/resources/graphics/header2.gif"/>"/> 
 		<h3>Login</h3>
 	</div>
 
@@ -37,9 +37,9 @@
 			</div>
 		</fieldset>
 		<div class="form-actions">
-			<button type="reset" class="btn" name="_eventId_cancel">Cancel</button>
-			<button type="submit" class="btn btn-primary" name="_eventId_next">OK
-				&gt;</button>
+			<button type="submit" class="btn btn-primary" name="_eventId_next">ตกลง</button>
+			<button type="reset" class="btn" name="_eventId_cancel">ยกเลิก</button>
+			
 		</div>
 	</form>
 </div>

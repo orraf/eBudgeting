@@ -3,6 +3,7 @@ package biz.thaicom.eBudgeting.models.pln;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.persistence.Basic;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
+import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
 import biz.thaicom.eBudgeting.models.bgt.ReservedBudget;
 
@@ -93,14 +95,18 @@ public class Objective implements Serializable {
 	@JoinColumn(name="PARENT_PLN_OBJECTIVE_ID")
 	private Objective parent;
 	
-
+	@OneToMany(mappedBy="forObjective", fetch=FetchType.LAZY)
+	private Set<ObjectiveDetail> detail;
 	
 	@OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
-	@OrderBy
+	@OrderBy("id")
 	private List<Objective> children;
 	
 	@OneToMany(mappedBy="forObjective", fetch=FetchType.LAZY)
 	private List<BudgetProposal> proposals;
+	
+	@OneToMany(mappedBy="forObjective", fetch=FetchType.LAZY)
+	private List<ObjectiveBudgetProposal> objectiveProposals;
 	
 	@OneToMany(mappedBy="forObjective", fetch=FetchType.LAZY)
 	private List<AllocationRecord> allocationRecords;
@@ -128,6 +134,9 @@ public class Objective implements Serializable {
 	
 	@Transient
 	private List<BudgetProposal> filterProposals;	
+	
+	@Transient
+	private List<ObjectiveBudgetProposal> filterObjectiveBudgetProposals;
 	
 	@Transient
 	private List<TargetValue> filterTargetValues;
@@ -267,6 +276,10 @@ public class Objective implements Serializable {
 			if(this.getType().getChildren() != null) {
 				this.getType().getChildren().size();
 			}
+		}
+		
+		if(this.getTargets() != null) {
+			this.getTargets().size();
 		}
 		
 		if(this.getChildren() != null) {
@@ -473,6 +486,21 @@ public class Objective implements Serializable {
 	}
 	public void setFilterTargetValues(List<TargetValue> filterTargetValues) {
 		this.filterTargetValues = filterTargetValues;
+	}
+	
+	public List<ObjectiveBudgetProposal> getObjectiveProposals() {
+		return objectiveProposals;
+	}
+	public void setObjectiveProposals(
+			List<ObjectiveBudgetProposal> objectiveProposals) {
+		this.objectiveProposals = objectiveProposals;
+	}
+	public List<ObjectiveBudgetProposal> getFilterObjectiveBudgetProposals() {
+		return filterObjectiveBudgetProposals;
+	}
+	public void setFilterObjectiveBudgetProposals(
+			List<ObjectiveBudgetProposal> filterObjectiveBudgetProposals) {
+		this.filterObjectiveBudgetProposals = filterObjectiveBudgetProposals;
 	}
 	public List<TargetValueAllocationRecord> getTargetValueAllocationRecords() {
 		return targetValueAllocationRecords;

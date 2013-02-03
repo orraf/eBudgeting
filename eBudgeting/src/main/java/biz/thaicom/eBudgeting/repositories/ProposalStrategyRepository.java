@@ -17,10 +17,9 @@ public interface ProposalStrategyRepository extends
 	@Query("" +
 			"select distinct proposalStrategy " +
 			"from ProposalStrategy proposalStrategy " +
-			"	INNER JOIN FETCH proposalStrategy.formulaStrategy formulaStrategy " +
-			"	INNER JOIN FETCH formulaStrategy.formulaColumns formulaColumns " +
-			"	INNER JOIN FETCH proposalStrategy.requestColumns requestColumns " +
+			"	LEFT OUTER JOIN FETCH proposalStrategy.formulaStrategy formulaStrategy " +
 			"	INNER JOIN FETCH proposalStrategy.proposal proposal " +
+			"	INNER JOIN FETCH proposal.budgetType type " +
 			"where proposal.owner.id=?2 and proposal.forObjective.fiscalYear=?1 " +
 			"	and proposal.forObjective.id=?3 ")
 	public List<ProposalStrategy> findByObjectiveIdAndfiscalYearAndOwnerId(Integer fiscalYear, Long ownerId, Long objectiveId);

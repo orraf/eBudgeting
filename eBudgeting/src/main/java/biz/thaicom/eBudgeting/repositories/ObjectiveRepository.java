@@ -10,13 +10,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
+import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveType;
 
 public interface ObjectiveRepository extends PagingAndSortingRepository<Objective, Long>, JpaSpecificationExecutor<Objective>{
 	public List<Objective> findByTypeId(Long id);
 
-	public List<Objective> findByParentIdAndFiscalYear(Long id, Integer fiscalYear);
+	public List<Objective> findByParentIdAndFiscalYearAndParent_Name(Long id, Integer fiscalYear, String parentName);
 
 	@Query("" +
 			"SELECT objective " +
@@ -47,10 +49,9 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"FROM Objective objective " +
 			"	LEFT OUTER JOIN objective.proposals proposal with proposal.owner.id = ?2 " +
 			"WHERE objective.parent.id = ?3 and objective.fiscalYear = ?1 " +
-			"ORDER BY objective.index asc ")
+			"ORDER BY objective.id asc ")
 	public List<Objective> findByObjectiveBudgetProposal(Integer fiscalYear, Long onwerId, Long objectiveId);
 
-	
 	
 	
 	@Query("" +  
@@ -61,9 +62,23 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"	LEFT OUTER JOIN FETCH objective.budgetTypes budgetTypes " +
 			"	LEFT OUTER JOIN objective.proposals proposal with proposal.owner.id = ?2 " +
 			"WHERE objective.fiscalYear = ?1 AND (objective.parentPath like ?3 OR objective.parentPath is null) " +
-			"ORDER BY objective.index asc ")
+			"ORDER BY objective.id asc ")
 	public List<Objective> findFlatByObjectiveBudgetProposal(
 			Integer fiscalYear, Long ownerId, String parentPathLikeString);
+	
+	
+	@Query("" +  
+			"SELECT distinct objective " +
+			"FROM Objective objective" +
+			"	INNER JOIN FETCH objective.parent parent " +
+			"	INNER JOIN FETCH objective.type type " +
+			"	LEFT OUTER JOIN FETCH objective.budgetTypes budgetTypes " +
+			"	LEFT OUTER JOIN objective.objectiveProposals proposal with proposal.owner.id = ?2 " +
+			"WHERE objective.fiscalYear = ?1 AND (objective.parentPath like ?3 OR objective.parentPath is null) " +
+			"ORDER BY objective.id asc ")	
+	public List<Objective> findFlatByObjectiveObjectiveBudgetProposal(
+			Integer fiscalYear, Long ownerId, String parentPathLikeString);
+	
 	
 	@Query("" +  
 			"SELECT distinct objective " +
@@ -73,10 +88,11 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"	LEFT OUTER JOIN FETCH objective.budgetTypes budgetTypes " +
 			"	LEFT OUTER JOIN objective.proposals proposal " +
 			"WHERE objective.fiscalYear = ?1 AND (objective.parentPath like ?2 OR objective.parentPath is null) " +
-			"ORDER BY objective.index asc ")
+			"ORDER BY objective.id asc ")
 	public List<Objective> findFlatByObjectiveBudgetProposal(
 			Integer fiscalYear, String parentPathLikeString);
 	
+
 	@Query("" +
 			"SELECT objective " +
 			"FROM Objective objective " +
@@ -115,7 +131,7 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"	LEFT OUTER JOIN FETCH objective.units unit " +
 			"WHERE objective.fiscalYear=?1 " +
 			"	AND objective.type.id=?2 " +
-			"ORDER BY objective.index asc, objective.id asc ")
+			"ORDER BY objective.id asc ")
 	public List<Objective> findAllByFiscalYearAndType_id(Integer fiscalYear,
 			Long typeId);
 	
@@ -168,6 +184,24 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"WHERE objective.type in (?1) and objective.parent is null ")
 		public List<Objective> findAvailableChildrenOfObjectiveType(
 			Set<ObjectiveType> childrenSet);
+
+	public Objective findOneByFiscalYearAndName(Integer fiscalYear,
+			String string);
+
+	public List<Objective> findAllByObjectiveName(ObjectiveName on);
+
+	
+	@Query("" +
+			"SELECT objective " +
+			"FROM Objective objective" +
+			"	INNER JOIN FETCH objective.proposals proposal " +
+			"	INNER JOIN FETCH proposal.owner owner " +
+			"	INNER JOIN FETCH proposal.budgetType budgetType " +
+			"WHERE objective.fiscalYear = ?1 AND objective.type.id = ?2 ")
+	public List<Objective> findAllByTypeIdAndFiscalYearInitBudgetProposal(
+			Integer fiscalYear, long typeId);
+
+
 
 
 

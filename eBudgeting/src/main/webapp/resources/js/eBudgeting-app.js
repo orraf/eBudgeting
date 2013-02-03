@@ -38,6 +38,11 @@ Objective = Backbone.RelationalModel.extend({
 	    	collectionType: 'BudgetProposalCollection'
 	    },{
 	    	type: Backbone.HasMany,
+	    	key: 'filterObjectiveBudgetProposals',
+	    	relatedModel: 'ObjectiveBudgetProposal',
+	    	collectionType: 'ObjectiveBudgetProposalCollection'
+	    },{
+	    	type: Backbone.HasMany,
 	    	key: 'sumBudgetTypeProposals',
 	    	relatedModel: 'BudgetProposal',
 	    	collectionType: 'BudgetProposalCollection'
@@ -115,7 +120,13 @@ Objective = Backbone.RelationalModel.extend({
 	    	type: Backbone.HasOne,
 	    	key: 'objectiveName', 
 	    	relatedModel: 'ObjectiveName'
+	    }, {
+	    	type: Backbone.HasMany,
+	    	key: 'detail',
+	    	relatedModel: 'ObjectiveDetail',
+	    	collectionType: 'ObjectiveDetailCollection'
 	    }
+	    
 	    
 	],
 	urlRoot: appUrl('/Objective'),
@@ -143,12 +154,27 @@ ObjectiveName = Backbone.RelationalModel.extend({
 		relatedModel: 'ObjectiveType'
 	}, {
 		type: Backbone.HasMany,
-		key: 'units',
-		relatedModel: 'TargetUnit',
-		collectionType: 'TargetUnitCollection'
+		key: 'targets',
+		relatedModel: 'ObjectiveTarget',
+    	collectionType: 'ObjectiveTargetCollection'
 	}],
 	urlRoot: appUrl('/ObjectiveName/')
 	    
+});
+
+
+ObjectiveDetail = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'forObjective',
+		relatedModel: 'Objective'
+	},{
+		type:Backbone.HasOne,
+		key: 'owner',
+		relatedModel: 'Organization'
+	}],
+	urlRoot: appUrl('/ObjectiveDetail/')
 });
 
 ObjectiveRelations = Backbone.RelationalModel.extend({
@@ -208,10 +234,22 @@ BudgetType = Backbone.RelationalModel.extend({
 	    		key: 'parent'
 	    	}
 	    },{
+	    	type: Backbone.HasOne,
+	    	key: 'standardStrategy',
+	    	relatedModel: 'FormulaStrategy'
+	    },{
 	    	type: Backbone.HasMany,
 	    	key: 'strategies',
 	    	relatedModel: 'FormulaStrategy',
 	    	collectionType: 'FormulaStrategyCollection'
+	    },{
+	    	type: Backbone.HasOne,
+	    	key: 'commonType',
+	    	relatedModel : 'BudgetCommonType'
+	    },{
+	    	type: Backbone.HasOne,
+	    	key: 'unit',
+	    	relatedModel : 'TargetUnit'
 	    }
 	],
 	setIdUrl: function(id) {
@@ -275,8 +313,7 @@ FormulaStrategy = Backbone.RelationalModel.extend({
 	    },{
 	    	type: Backbone.HasOne,
 	    	key: 'type',
-	    	relatedModel: 'BudgetType',
-	    	collectionType: 'BudgetTypeCollection'
+	    	relatedModel: 'BudgetType'
 	    },{
 	    	type: Backbone.HasOne,
 	    	key: 'commonType',
@@ -291,24 +328,7 @@ FormulaStrategy = Backbone.RelationalModel.extend({
 
 });
 
-ProposalStrategy = Backbone.RelationalModel.extend({
-	idAttribute: 'id',
-	relations: [{
-		type:Backbone.HasOne,
-		key: 'formulaStrategy',
-		relatedModel: 'FormulaStrategy'
-			
-	},{
-    	type:Backbone.HasMany,
-    	key: 'requestColumns',
-    	relatedModel: 'RequestColumn',
-    	reversRelation: {
-    		type: Backbone.HasMany,
-    		key: 'proposalStrategy'
-    	}
-	}],
-	urlRoot: appUrl('/ProposalStrategy')
-});
+
 
 RequestColumn = Backbone.RelationalModel.extend({
 	idAtrribute: 'id',
@@ -365,8 +385,27 @@ ObjectiveBudgetProposal = Backbone.RelationalModel.extend({
 		type:Backbone.HasOne,
 		key: 'budgetType',
 		relatedModel: 'BudgetType'
+	},{
+		type: Backbone.HasMany,
+		key: 'targets',
+		relatedModel: 'ObjectiveBudgetProposalTarget',
+		collectionType: 'ObjectiveBudgetProposalTargetCollection'
+			
 	}],
 	urlRoot: appUrl('/ObjectiveBudgetProposal/')
+});
+
+ObjectiveBudgetProposalTarget = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'unit',
+		relatedModel: 'TargetUnit'
+	}, {
+		type: Backbone.HasOne,
+		key: 'objectiveBudgetProposal',
+		relatedModel: 'ObjectiveBudgetProposal'
+	}]
 });
 
 ReservedBudget = Backbone.RelationalModel.extend({
@@ -397,6 +436,10 @@ ProposalStrategy = Backbone.RelationalModel.extend({
 		type:Backbone.HasOne,
 		key: 'proposal',
 		relatedModel: 'BudgetProposal' 
+	},{
+		type:Backbone.HasOne,
+		key: 'targetUnit',
+		relatedModel: 'TargetUnit' 
 	}],
 	urlRoot: appUrl('/ProposalStrategy')
 });
@@ -472,6 +515,35 @@ TargetValueAllocationRecord = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('/TargetValueAllocationRecord')
 });
 
+Person = Backbone.RelationalModel.extend({
+	idAttribute: 'id'
+});
+
+BudgetSignOff = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'lock1Person',
+		relatedModel: 'Person'
+	},{
+		type: Backbone.HasOne,
+		key: 'lock2Person',
+		relatedModel: 'Person'
+	},{
+		type: Backbone.HasOne,
+		key: 'unLock1Person',
+		relatedModel: 'Person'
+	},{
+		type: Backbone.HasOne,
+		key: 'unLock2Person',
+		relatedModel: 'Person'
+	}, {
+		type: Backbone.HasOne,
+		key: 'owner',
+		relatedModel: 'Organization'
+	}]
+});
+
 
 // PagableCollection
 PagableCollection = Backbone.Collection.extend({
@@ -539,6 +611,9 @@ PagableCollection = Backbone.Collection.extend({
 		}
 		
 		return json;
+	},
+	setTargetPage: function(targetPage) {
+		this.targetPage = targetPage;
 	}
 });
 
@@ -596,6 +671,36 @@ ObjectivePagableCollection = PagableCollection.extend({
 		this.fiscalYear = fiscalYear;
 	    this.objectiveTypeId = objectiveTypeId;
 	    this.targetPage = targetPage;
+	}
+	
+});
+
+BudgetTypePagableCollection = PagableCollection.extend({
+	initialize: function(models, options) {
+		if(options!=null) {
+			this.level = options.level;
+			this.mainTypeId = options.mainTypeId;
+			this.targetPage = options.targetPage;
+			this.currentFiscalYear = options.currentFiscalYear;
+		}
+	  },
+	
+	model: BudgetType,
+	
+	url: function() {
+	    return appUrl('/BudgetType/'+ this.currentFiscalYear +'/listLevel/'+ this.level +'/mainType/'+this.mainTypeId+'/page/'+this.targetPage);
+	},
+	getIds: function() {
+		return this.pluck("id");
+	},
+	setMainTypeId: function(mainTypeId) {
+		this.mainTypeId = mainTypeId;
+	},
+	setLevel : function(level) {
+		this.level = level;
+	},
+	setCurrentFiscalYear: function(fiscalYear) {
+		this.currentFiscalYear = fiscalYear;
 	}
 	
 });
@@ -660,6 +765,13 @@ FiscalBudgetTypeCollection = Backbone.Collection.extend({
 ObjectiveBudgetProposalCollection = Backbone.Collection.extend({
 	model: ObjectiveBudgetProposal
 }); 
+ObjectiveBudgetProposalTargetCollection = Backbone.Collection.extend({
+	model: ObjectiveBudgetProposalTarget
+});  
+
+ObjectiveDetailCollection = Backbone.Collection.extend({
+	model: ObjectiveDetail
+});
 
 //Handlebars Utils
 

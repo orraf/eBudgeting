@@ -56,12 +56,12 @@
 <div class="row">
 	<div id="mainSelection" class="span11"></div>
 
-	<div id="mainTree" class="span7">
+	<div id="mainTree" class="span6">
 		<div class="content">
 			
 		</div>
 	</div>
-	<div id="childrenSlt" class="span4" style="border: 1px;">
+	<div id="childrenSlt" class="span5" style="border: 1px;">
 		
 	</div>
 </div>
@@ -69,7 +69,7 @@
 
 <script id="treeRootTemplate" type="text/x-handler-template">
 	<table class="table table-bordered">
-		<tr data-id={{id}}>
+		<tr data-id={{id}} data-level="{{parentLevel}}">
 			<td><span class="label label-info mini">{{type.name}}</span><br/>
 				<a href="#" class="nextChildrenLnk"><i class="icon icon-chevron-right nextChildrenLnk"></i>{{name}}</a></td>
 			<td style="width:40px;"> </td>
@@ -81,8 +81,8 @@
 	<span class="loading"> Loading <img src="/eBudgeting/resources/graphics/loading-small.gif"/></span>
 </script>
 <script id="treeTRTemplate" type="text/x-handler-template">
-	<tr data-id={{id}}>
-			<td  style="padding-left: {{paddingLevel parentLevel}}px;"><span class="label label-info mini">{{type.name}}</span><br/>
+	<tr data-id={{id}} data-level="{{parentLevel}}">
+			<td style="padding-left: {{paddingLevel parentLevel}}px;"><span class="label label-info mini">{{type.name}}</span><br/>
 				<a href="#" class="nextChildrenLnk"><i class="icon icon-chevron-right nextChildrenLnk"></i> [{{code}}] {{name}}</a> 
 			</td>
 				<td>
@@ -98,10 +98,11 @@
 <div style="padding: 12px;margin-top: {{topPadding}}px; background-color: #FFFFCC; border: 1px solid #DDDDDD;">
 	<div class="control">
 		<form class="form-search">
-			<div class="input-append">
-				<input type="text" id="availableChildrenSearch" class="span2 search-query">
-				<button type="submit" id="search" class="btn">Search</button>
-			</div>
+				<div class="input-append pull-left">
+					<input type="text" id="availableChildrenSearch" class="span2 search-query">
+					<button type="submit" id="search" class="btn">Search</button>
+				</div> &nbsp;
+				<button type="submit" id="searchDisplayAll" class="btn">แสดงผลทั้งหมด</button>
 		</form>
 	</div>
 	<div class="content">
@@ -131,7 +132,7 @@
 
 <script id="mainSelectionTemplate" type="text/x-handler-template">
 <form class="form-horizontal">
-<div class="control-group">
+<div class="control-group"  style="margin-bottom:5px;">
 	<label class="control-label">แผนงาน :</label> 
 	<div class="controls">
 		<select id="type101Slt" class="span5">
@@ -140,13 +141,32 @@
 		</select>
 	</div>
 </div>
-	<div id="type102Div"></div>
-	<div id="type103Div"></div>
+	<div id="type102Div">
+		<div class="control-group"  style="margin-bottom:5px;">
+			<label class="control-label">ผลผลิต/โครงการ :</label>
+			<div class="controls">
+				<select class="span5" disabled="disabled">
+					<option>กรุณาเลือก...</option>
+				</select>
+			</div> 
+		</div>	
+	</div>
+	<div id="type103Div">
+		<div class="control-group"  style="margin-bottom:5px;">
+			<label class="control-label">กิจกรรมหลัก :</label>
+			<div class="controls">
+				<select class="span5" disabled="disabled">
+					<option>กรุณาเลือก...</option>
+				</select>
+			</div> 
+		</div>
+
+	</div>
 </form>
 </script>
 
 <script id="selectionTemplate" type="text/x-handler-template">
-<div class="control-group">
+<div class="control-group"  style="margin-bottom:5px;">
 	<label class="control-label">{{type.name}} :</label>
 	<div class="controls">
 		<select id="type{{type.id}}Slt" class="span5">
@@ -157,10 +177,35 @@
 </div>
 </script>
 
+<script id="type102DisabledSelection" type="text/x-handler-template">
+		<div class="control-group">
+			<label class="control-label">ผลผลิต/โครงการ :</label>
+			<div class="controls">
+				<select class="span5" disabled="disabled">
+					<option>กรุณาเลือก...</option>
+				</select>
+			</div> 
+		</div>
+</script>
+
+
+<script id="type103DisabledSelection" type="text/x-handler-template">
+		<div class="control-group">
+			<label class="control-label">กิจกรรมหลัก :</label>
+			<div class="controls">
+				<select class="span5" disabled="disabled">
+					<option>กรุณาเลือก...</option>
+				</select>
+			</div> 
+		</div>
+</script>
+
+
 <script type="text/javascript">
 
 var fiscalYear = "${fiscalYear}";
 var e1;
+var e2;
 
 Handlebars.registerHelper("paddingLevel", function(level) {
 	var step = level-4;
@@ -196,6 +241,21 @@ $(document).ready(function() {
 			renderNewRow : function(parentObjective, newObjective) {
 				// find tr of this parentObjective
 				var parentTrEl = this.$el.find('tr[data-id='+ parentObjective.get('id') +']');
+				var dataLevel = $(parentTrEl).attr("data-level");
+				
+				var prev = $(parentTrEl);
+				var next = $(parentTrEl).next('tr');
+				console.log('next: ' + $(next[0]).attr('data-id'));
+				
+				while(next.length>0 && $(next[0]).attr("data-level") > dataLevel ) {
+					
+					console.log('next: ' + $(next[0]).attr('data-id'));
+					prev = $(next[0]);
+					next = $(next[0]).next('tr');
+					 
+				}
+				
+				
 				var json = newObjective.toJSON();
 				
 				if(json.type.id > 103 && json.type.id < 109) {
@@ -204,24 +264,25 @@ $(document).ready(function() {
 					json.type.unlinkable = false;
 				}
 				
-				e1=json;
 				var html = this.treeTRTemplate(json);
-				$(parentTrEl).after(html);
-				
-				
+				$(prev).after(html);
 			},
 			
 			unlinkBtnClick : function(e) {
 				var clickunLinkObjectiveId = $(e.target).parents("tr").attr("data-id");
+				console.log(clickunLinkObjectiveId);
 				var clickunLinkObjective = Objective.findOrCreate(clickunLinkObjectiveId);
 				
 				if(clickunLinkObjective != null) {
 					clickunLinkObjective.url = appUrl('/Objective/'+ clickunLinkObjectiveId);
 					
-					clickunLinkObjective.destroy({
+					clickunLinkObjective.destroy({wait:true,
 						success: function() {
 							$(e.target).parents("tr").remove();
-						}	
+						},
+						error: function(model, xhr, options) {
+							alert("ไม่สามารถลบรายการได้ \n Error: " + xhr.responseText);
+						}
 					});
 
 				}
@@ -342,18 +403,30 @@ $(document).ready(function() {
 			
 			events: {
 				"click .link" : "linkBtnClick",
-				"click button#search" : "searchBtnClick"
+				"click button#search" : "searchBtnClick",
+				"click button#searchDisplayAll" : "searchDisplayAllBtnClick"
 			},
 			clear: function(e) {
 				this.$el.empty();
 			},
+			searchDisplayAllBtnClick: function(e) {
+				this.availableChildren = new ObjectiveNameCollection();
+				this.availableChildren.fetch({
+					url: appUrl('/ObjectiveName/findChildrenNameOfObjective/' + this.objective.get('id') ),
+					success: _.bind(function() {
+						this.renderAvailableChildren();
+					}, this)
+				});
+				return false;
+			},
+			
 			searchBtnClick: function(e) {
 				searchTxt = this.$el.find('#availableChildrenSearch').val();
 				this.availableChildren = new ObjectiveNameCollection();
 				this.availableChildren.fetch({
 					url: appUrl('/ObjectiveName/findChildrenNameOfObjective/' + this.objective.get('id') ),
 					data: {
-						searchQuery: encodeURI(searchTxt)
+						searchQuery: searchTxt
 					},
 					success: _.bind(function() {
 						this.renderAvailableChildren();
@@ -410,6 +483,9 @@ $(document).ready(function() {
 		var MainSelectionView = Backbone.View.extend({
 			mainSelectionTemplate : Handlebars.compile($("#mainSelectionTemplate").html()),
 			selectionTemplate : Handlebars.compile($("#selectionTemplate").html()),
+			type102DisabledSelectionTemplate : Handlebars.compile($("#type102DisabledSelection").html()),
+			type103DisabledSelectionTemplate : Handlebars.compile($("#type103DisabledSelection").html()),
+			
 			initialize: function() {
 				
 				this.type102Collection = new ObjectiveCollection();
@@ -437,9 +513,6 @@ $(document).ready(function() {
 					});
 				}
 				
-				this.$el.find('#type102Div').empty();
-				this.$el.find('#type103Div').empty();
-				
 				mainCtrView.emptyTreeView();
 				
 			},
@@ -455,6 +528,8 @@ $(document).ready(function() {
 				}
 				
 				this.$el.find('#type103Div').empty();
+				this.$el.find('#type103Div').html(this.type103DisabledSelectionTemplate());
+				
 				mainCtrView.emptyTreeView();
 			},
 			
@@ -463,6 +538,8 @@ $(document).ready(function() {
 				if(type103Id != 0) {
 					mainCtrView.mainTreeView.rootObjective = Objective.findOrCreate(type103Id);
 					mainCtrView.mainTreeView.render();
+					mainCtrView.childrenSltView.$el.empty();
+					
 				} else {
 					mainCtrView.emptyTreeView();
 				}
@@ -481,6 +558,9 @@ $(document).ready(function() {
 				this.$el.find('#type102Div').html(html);
 				
 				this.$el.find('#type103Div').empty();
+				this.$el.find('#type103Div').html(this.type103DisabledSelectionTemplate());
+				
+				
 			},
 			
 			renderType103: function(e) {
@@ -493,6 +573,8 @@ $(document).ready(function() {
 				// now render 
 				this.$el.find('#type103Div').empty();
 				this.$el.find('#type103Div').html(html);
+				
+				
 			},
 			
 			render: function() {

@@ -9,9 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +32,8 @@ import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.bgt.FiscalBudgetType;
 import biz.thaicom.eBudgeting.models.bgt.FormulaColumn;
 import biz.thaicom.eBudgeting.models.bgt.FormulaStrategy;
+import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
+import biz.thaicom.eBudgeting.models.webui.PageUI;
 
 import biz.thaicom.eBudgeting.services.EntityService;
 
@@ -63,6 +69,80 @@ public class BudgetTypeRestController {
 	public @ResponseBody List<BudgetType> getRootBudgetType() {
 		return entityService.findRootBudgetType();
 	
+	}
+	
+	@RequestMapping(value="/BudgetType", method=RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody BudgetType createBudgetType(
+			@RequestBody JsonNode node) {
+		return entityService.saveBudgetType(node);
+		
+	}
+	
+	@RequestMapping(value="/BudgetType/{id}", method=RequestMethod.PUT)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody BudgetType updateBudgetType(
+			@PathVariable Long id,
+			@RequestBody JsonNode node) {
+		return entityService.saveBudgetType(node);
+		
+	}
+	
+	
+	@RequestMapping(value="/BudgetType/{id}", method=RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody String deleteBudgetType(
+			@PathVariable Long id) {
+		entityService.deleteBudgetType(id);
+		return "OK";
+	}
+	
+	/**
+	 * @RequestMapping(value="/ObjectiveName/fiscalYear/{fiscalYear}/type/{typeId}/page/{pageNumber}", method=RequestMethod.GET)
+	public @ResponseBody Page<ObjectiveName> findAllObjectiveNameByFiscalYearAndTypeId(
+			@PathVariable Integer fiscalYear, 
+			@PathVariable Long typeId,
+			@PathVariable Integer pageNumber) {
+		
+		
+		
+	}
+	 */
+	
+	
+	
+	@RequestMapping(value="/BudgetType/{fiscalYear}/listLevel/{level}/mainType/{typeId}/page/{pageNumber}", method=RequestMethod.GET)
+	public @ResponseBody Page<BudgetType> findAllByMainType(
+			@PathVariable Integer fiscalYear,
+			@PathVariable Long typeId,
+			@PathVariable Integer level,
+			@PathVariable Integer pageNumber,
+			@RequestParam (required=false) String query) {
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber - 1, PageUI.PAGE_SIZE, Sort.Direction.ASC, "lineNumber");
+		if(query == null || query.length() == 0) {
+			query = "%";
+		} else {
+			query = "%" + query + "%";
+		}
+		return entityService.findBudgetTypeByLevelAndMainType(fiscalYear, level, typeId, query, pageRequest);
+	}
+	
+	@RequestMapping(value="/BudgetType/{fiscalYear}/listLevel/{level}/mainType/{typeId}/page/{pageNumber}", method=RequestMethod.POST)
+	public @ResponseBody Page<BudgetType> findAllByMainTypeQuery(
+			@PathVariable Integer fiscalYear,
+			@PathVariable Long typeId,
+			@PathVariable Integer level,
+			@PathVariable Integer pageNumber,
+			@RequestParam (required=false) String query) {
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber - 1, PageUI.PAGE_SIZE, Sort.Direction.ASC, "code");
+		if(query == null || query.length() == 0) {
+			query = "%";
+		} else {
+			query = "%" + query + "%";
+		}
+		return entityService.findBudgetTypeByLevelAndMainType(fiscalYear, level, typeId, query, pageRequest);
 	}
 	
 	
@@ -109,6 +189,13 @@ public class BudgetTypeRestController {
 	public @ResponseBody List<FiscalBudgetType> findAllFiscalBudgetTypeByFiscalYear(
 			@PathVariable Integer fiscalYear) {
 		return entityService.findAllFiscalBudgetTypeByFiscalYear(fiscalYear);
+	}
+	
+	@RequestMapping(value="/FiscalBudgetType/fiscalYear/{fiscalYear}/upToLevel/{level}", method=RequestMethod.GET)
+	public @ResponseBody List<FiscalBudgetType> findAllFiscalBudgetTypeByFiscalYearUpToLevel(
+			@PathVariable Integer fiscalYear,
+			@PathVariable Integer level) {
+		return entityService.findAllFiscalBudgetTypeByFiscalYearUpToLevel(fiscalYear,level);
 	}
 	
 	@RequestMapping(value="/FiscalBudgetType/setMainBudget/{fiscalYear}", method=RequestMethod.POST)
