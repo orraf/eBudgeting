@@ -320,7 +320,6 @@
 	    	<filter>src/main/resources/config/${env}.properties</filter>
 	    </filters>
         <plugins>
-        
         	<plugin>
 			   <artifactId>maven-war-plugin</artifactId>
 			   <version>2.2</version>
@@ -365,10 +364,8 @@
         </plugins>
     </build>
     <profiles>
-		
 		<profile>
 			<id>prod-environment</id>
-				
 				 <properties>
 					<env>production</env>
 				</properties>
