@@ -32,11 +32,11 @@ import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.bgt.FiscalBudgetType;
 import biz.thaicom.eBudgeting.models.bgt.FormulaColumn;
 import biz.thaicom.eBudgeting.models.bgt.FormulaStrategy;
-import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
 import biz.thaicom.eBudgeting.models.webui.PageUI;
 
 import biz.thaicom.eBudgeting.services.EntityService;
 
+@SuppressWarnings("unused")
 @Controller
 public class BudgetTypeRestController {
 	private static final Logger logger = LoggerFactory.getLogger(BudgetTypeRestController.class);
