@@ -548,14 +548,14 @@ public class GenericViewController {
 
 
 
-	// --------------------------------------------------------------m51f01: ทะเบียนยุทธศาสตร์การจัดสรร
+	// --------------------------------------------------------------m51f01: ทะเบียนยุทธศาสตร์
 	@RequestMapping("/page/m51f01/")
 	public String render_m51f01(
 			Model model, HttpServletRequest request, HttpSession session) {
 		model.addAttribute("rootPage", false);
 		setFiscalYearFromSession(model, session);
 		
-		model.addAttribute("typeId", 109);
+		model.addAttribute("typeId", 101);
 		
 		String relatedTypeString = "";
 		model.addAttribute("relatedTypeString", relatedTypeString);
@@ -565,13 +565,13 @@ public class GenericViewController {
 		
 		model.addAttribute("hasParent", "");
 
-		model.addAttribute("hasUnit", true);
+		model.addAttribute("hasUnit", false);
 		
 		
 		return "objectiveRegister";
 	}
 	
-	// --------------------------------------------------------------m51f02: ทะเบียนประเด็นยุทธศาสตร์
+	// --------------------------------------------------------------m51f02: ทะเบียผลผลิต/โครงการ
 	
 	@RequestMapping("/page/m51f02/")
 	public String render_m51f02(
@@ -584,25 +584,25 @@ public class GenericViewController {
 		setFiscalYearFromSession(model, session);
 		
 		
-		model.addAttribute("typeId", 121);
+		model.addAttribute("typeId", 102);
 		
-		String relatedTypeString = "" + ObjectiveTypeId.ยุทธศาสตร์การจัดสรรงบประมาณ.getValue() + "";
+		String relatedTypeString = "";
 		model.addAttribute("relatedTypeString", relatedTypeString);
 		
-		String relatedTypeNameString = "" +  ObjectiveTypeId.ยุทธศาสตร์การจัดสรรงบประมาณ.getName() + "" ;
+		String relatedTypeNameString = "";
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
-		model.addAttribute("hasUnit", true);
+		model.addAttribute("hasUnit", false);
 		
-		model.addAttribute("hasParent", "");
-		model.addAttribute("parentTypeName", "");
-		model.addAttribute("parentTypeId", "");
+		model.addAttribute("hasParent", true);
+		model.addAttribute("parentTypeName", ObjectiveTypeId.ยุทธศาสตร์.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.ยุทธศาสตร์.getValue());
 		
 		
 		return "objectiveRegister";
 	}
 	
-	// --------------------------------------------------------------m51f03: ทะเบียนเป้าหมายเชิงยุทธศาสตร์
+	// --------------------------------------------------------------m51f03: ทะเบียนเป้าหมายกิจกรรมหลัก
 	@RequestMapping("/page/m51f03/")
 	public String render_m51f03(
 			Model model,
@@ -611,22 +611,22 @@ public class GenericViewController {
 				
 		model.addAttribute("rootPage", false);
 		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 110);
+		model.addAttribute("typeId", 103);
 		
-		model.addAttribute("hasUnit", true);
+		model.addAttribute("hasUnit", false);
 		
 		String relatedTypeNameString = "";
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.แนวทางการจัดสรรงบประมาณ.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.แนวทางการจัดสรรงบประมาณ.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.ผลผลิตโครงการ.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.ผลผลิตโครงการ.getValue());
 		
 		return "objectiveRegister";
 	}
 	
 	
-	// --------------------------------------------------------------m51f04: ทะเบียนเป้าหมายบริการกระทรวง
+	// --------------------------------------------------------------m51f04: ทะเบียนยแผนปฏิบัติการ
 	@RequestMapping("/page/m51f04/")
 	public String render_m51f04(
 			Model model,
@@ -635,50 +635,45 @@ public class GenericViewController {
 				
 		model.addAttribute("rootPage", false);
 		setFiscalYearFromSession(model, session);
+		model.addAttribute("typeId", 104);
 		
-		model.addAttribute("typeId", 111);
+		model.addAttribute("hasUnit", false);
 		
-		model.addAttribute("hasUnit", true);
-		
-		model.addAttribute("hasParent", "");
-		model.addAttribute("parentTypeName", "");
-		model.addAttribute("parentTypeId", "");
-		
-		String relatedTypeString = "" + ObjectiveTypeId.เป้าประสงค์เชิงนโยบาย.getValue();
-				
-		model.addAttribute("relatedTypeString", relatedTypeString);
-		
-		String relatedTypeNameString ="" +	ObjectiveTypeId.เป้าประสงค์เชิงนโยบาย.getName();
+		String relatedTypeNameString = "";
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
+		
+		model.addAttribute("hasParent", true);
+		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมหลัก.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมหลัก.getValue());
 		
 		return "objectiveRegister";
 	}
 	
-	// --------------------------------------------------------------m51f05: ทะเบียนเป้าหมายบริการหน่วยงาน
+	// --------------------------------------------------------------m51f05: ทะเบียนกิจกรรมรอง
 	@RequestMapping("/page/m51f05/")
 	public String render_m51f05(
 			Model model,
 			HttpServletRequest request, HttpSession session) {
 
 				
+		
 		model.addAttribute("rootPage", false);
 		setFiscalYearFromSession(model, session);
+		model.addAttribute("typeId", 105);
 		
-		model.addAttribute("typeId", 112);
-		
-		model.addAttribute("hasUnit", true);
+		model.addAttribute("hasUnit", false);
 		
 		String relatedTypeNameString = "";
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.เป้าหมายบริการกระทรวง.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.เป้าหมายบริการกระทรวง.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.แผนปฏิบัติการ.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.แผนปฏิบัติการ.getValue());
 		
 		return "objectiveRegister";
 	}
 
-	// --------------------------------------------------------------m51f06: ทะเบียนแผนงาน
+	// --------------------------------------------------------------m51f06: ทะเบียนกิจกรรมย่อย
 	@RequestMapping("/page/m51f06/")
 	public String render_m51f06(
 			Model model,
@@ -687,23 +682,22 @@ public class GenericViewController {
 				
 		model.addAttribute("rootPage", false);
 		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 101);
+		model.addAttribute("typeId", 106);
 		
-		String relatedTypeString = "" + ObjectiveTypeId.ประเด็นยุทธศาสตร์.getValue() + "";
-		model.addAttribute("relatedTypeString", relatedTypeString);
+		model.addAttribute("hasUnit", false);
 		
-		String relatedTypeNameString = "" + ObjectiveTypeId.ประเด็นยุทธศาสตร์.getName() + "";
+		String relatedTypeNameString = "";
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
-		model.addAttribute("hasParent", "");
-
-		model.addAttribute("hasUnit", true);
+		model.addAttribute("hasParent", true);
+		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมรอง.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมรอง.getValue());
 		
 		return "objectiveRegister";
 	}
 	
 	
-	// --------------------------------------------------------------m51f07: ทะเบียนผลผลิต/โครงการ
+	// --------------------------------------------------------------m51f07: ทะเบียนกิจกรรมเสริม
 	@RequestMapping("/page/m51f07/")
 	public String render_m51f07(
 			Model model,
@@ -712,161 +706,45 @@ public class GenericViewController {
 				
 		model.addAttribute("rootPage", false);
 		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 102);
+		model.addAttribute("typeId", 107);
 		
-		model.addAttribute("hasUnit", true);
+		model.addAttribute("hasUnit", false);
 		
-		String relatedTypeString = "" + ObjectiveTypeId.เป้าหมายบริการหน่วยงาน.getValue() + "";
-		model.addAttribute("relatedTypeString", relatedTypeString);
-		
-		String relatedTypeNameString = "" + ObjectiveTypeId.เป้าหมายบริการหน่วยงาน.getName() + "";
-		
+		String relatedTypeNameString = "";
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.แผนงาน.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.แผนงาน.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมย่อย.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมย่อย.getValue());
+		
 		
 		return "objectiveRegister";
 	}
 
-	// --------------------------------------------------------------m51f08: ทะเบียนกิจกรรมหลัก
+	// --------------------------------------------------------------m51f08: ทะเบียนกิจกรรมสนับสนุน
 	@RequestMapping("/page/m51f08/")
 	public String render_m51f08(
 			Model model,
 			HttpServletRequest request, HttpSession session) {
 
-		
-		model.addAttribute("rootPage", false);
 		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 103);
+		model.addAttribute("typeId", 108);
 		
-		String relatedTypeString = "" + ObjectiveTypeId.กลยุทธ์หน่วยงาน.getValue() + " " +
-				ObjectiveTypeId.กลยุทธ์วิธีการหน่วยงาน.getValue() + " " +
-				ObjectiveTypeId.แนวทางการจัดสรรงบประมาณ.getValue() + "";
-		model.addAttribute("relatedTypeString", relatedTypeString);
+		model.addAttribute("hasUnit", false);
 		
-		String relatedTypeNameString = "" + ObjectiveTypeId.กลยุทธ์หน่วยงาน.getName() + " " +
-				ObjectiveTypeId.กลยุทธ์วิธีการหน่วยงาน.getName() + " " +
-				ObjectiveTypeId.แนวทางการจัดสรรงบประมาณ.getName() + "";
+		String relatedTypeNameString = "";
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.ผลผลิตโครงการ.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.ผลผลิตโครงการ.getValue());
-		
-		model.addAttribute("hasUnit", true);
+		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมเสริม.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมเสริม.getValue());
 		
 		
 		return "objectiveRegister";
 	}
 
 	
-	// --------------------------------------------------------------m51f09: ทะเบียนกิจกรรมรอง
-	@RequestMapping("/page/m51f09/")
-	public String render_m51f09(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 104);
-		
-		model.addAttribute("hasUnit", true);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-		
-		return "objectiveNameRegister";
-	}
 	
-	
-	// --------------------------------------------------------------m51f10: ทะเบียนกิจกรรมย่อย
-	@RequestMapping("/page/m51f10/")
-	public String render_m51f10(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 105);
-		
-		model.addAttribute("hasUnit", true);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-		
-		return "objectiveNameRegister";
-	}
-	
-	// --------------------------------------------------------------m51f11: ทะเบียนกิจกรรมเสริม
-	@RequestMapping("/page/m51f11/")
-	public String render_m51f11(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		
-		model.addAttribute("typeId", 106);
-		
-		model.addAttribute("hasUnit", true);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-		return "objectiveNameRegister";
-	}
-	
-	// --------------------------------------------------------------m51f12: ทะเบียนกิจกรรมสนับสนุน
-	@RequestMapping("/page/m51f12/")
-	public String render_m51f12(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 107);
-		
-		model.addAttribute("hasUnit", true);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-		
-		return "objectiveNameRegister";
-	}
-	
-	
-	// --------------------------------------------------------------m51f13: ทะเบียนกิจกรรมรายละเอียด
-	@RequestMapping("/page/m51f13/")
-	public String render_m51f13(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 108);
-		
-		model.addAttribute("hasUnit", true);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-		return "objectiveNameRegister";
-	}
 	
 	
 	// --------------------------------------------------------------m51f14: ทะเบียนรายการและระดับรายการ
@@ -930,176 +808,7 @@ public class GenericViewController {
 		return "m51f18";
 	}
 	
-	// --------------------------------------------------------------m52f01: ทะเบียนเป้าประสงค์เชิงนโยบนาย
-	@RequestMapping("/page/m52f01/")
-	public String render_m52f01(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
 
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 113);
-		
-		
-		String relatedTypeString = "";
-		model.addAttribute("relatedTypeString", relatedTypeString);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-
-		model.addAttribute("hasUnit", true);
-		
-		return "objectiveRegister";
-	}
-	
-	
-	// --------------------------------------------------------------m53f01: ทะเบียนยุทธศาสตร์กระทรวง
-	@RequestMapping("/page/m53f01/")
-	public String render_m53f01(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 114);
-		
-		String relatedTypeString = "";
-		model.addAttribute("relatedTypeString", relatedTypeString);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-
-		model.addAttribute("hasUnit", true);
-		
-		return "objectiveRegister";
-	}
-	
-	// --------------------------------------------------------------m53f02: ทะเบียนยุทธศาสตร์หน่วยงาน
-	@RequestMapping("/page/m53f02/") 
-	public String render_m53f02(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 115);
-		
-		model.addAttribute("hasUnit", true);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.ยุทธศาสตร์กระทรวง.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.ยุทธศาสตร์กระทรวง.getValue());
-		
-		
-		return "objectiveRegister";
-		
-	}
-	
-	
-	// --------------------------------------------------------------m53f03: ทะเบียนกลยุทธ์/วิธีการหน่วยงาน
-	@RequestMapping("/page/m53f03/")
-	public String render_m53f03(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 116);
-		
-		model.addAttribute("hasUnit", true);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.กลยุทธ์หน่วยงาน.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.กลยุทธ์หน่วยงาน.getValue());
-		
-		return "objectiveRegister";
-	}
-	
-	// --------------------------------------------------------------m54f01: ทะเบียนแนวทางการจัดสรรงบประมาณ
-	@RequestMapping("/page/m54f01/")
-	public String render_m54f01(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 118);
-		
-		String relatedTypeString = "";
-		model.addAttribute("relatedTypeString", relatedTypeString);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-
-		model.addAttribute("hasUnit", true);
-		
-		return "objectiveRegister";
-	}
-	
-	// --------------------------------------------------------------m55f01: ทะเบียนวิสัยทัศน์หน่วยงาน
-	@RequestMapping("/page/m55f01/")
-	public String render_m55f01(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 119);
-		
-		String relatedTypeString = "";
-		model.addAttribute("relatedTypeString", relatedTypeString);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-
-		model.addAttribute("hasUnit", false);
-		
-		return "objectiveRegister";
-	}
-	
-	// --------------------------------------------------------------m55f02: ทะเบียนพันธกิจหน่วยงาน
-	@RequestMapping("/page/m55f02/")
-	public String render_m55f02(
-			Model model,
-			HttpServletRequest request, HttpSession session) {
-
-				
-		model.addAttribute("rootPage", false);
-		setFiscalYearFromSession(model, session);
-		model.addAttribute("typeId", 120);
-		
-		String relatedTypeString = "";
-		model.addAttribute("relatedTypeString", relatedTypeString);
-		
-		String relatedTypeNameString = "";
-		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
-		
-		model.addAttribute("hasParent", "");
-
-		model.addAttribute("hasUnit", false);
-		
-		return "objectiveRegister";
-	}
 	
 	// --------------------------------------------------------------m61f03: การบันทึกงบประมาณ ระดับกิจกรรมหลัก
 	@RequestMapping("/page/m61f03_1/")
