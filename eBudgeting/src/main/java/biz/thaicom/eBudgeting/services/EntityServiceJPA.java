@@ -1787,7 +1787,7 @@ public class EntityServiceJPA implements EntityService {
 			parent.setIsLeaf(false);
 			objectiveRepository.save(parent);
 			
-		} else if(objective.getType().getId() == ObjectiveTypeId.ยุทธศาสตร์.getValue()) {
+		} else if(objective.getType().getId() == ObjectiveTypeId.แผนงาน.getValue()) {
 			// this parent  must be root!
 			Objective root = objectiveRepository.findRootOfFiscalYear(objective.getFiscalYear());
 			objective.setParent(root);
