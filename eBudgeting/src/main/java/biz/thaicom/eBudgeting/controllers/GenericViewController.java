@@ -595,8 +595,8 @@ public class GenericViewController {
 		model.addAttribute("hasUnit", false);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.ยุทธศาสตร์.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.ยุทธศาสตร์.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.แผนงาน.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.แผนงาน.getValue());
 		
 		
 		return "objectiveRegister";
