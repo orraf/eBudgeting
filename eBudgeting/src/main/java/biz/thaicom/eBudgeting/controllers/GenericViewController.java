@@ -626,7 +626,7 @@ public class GenericViewController {
 	}
 	
 	
-	// --------------------------------------------------------------m51f04: ทะเบียนยแผนปฏิบัติการ
+	// --------------------------------------------------------------m51f04: ทะเบียนกิจกรรมหลัก
 	@RequestMapping("/page/m51f04/")
 	public String render_m51f04(
 			Model model,
@@ -643,13 +643,13 @@ public class GenericViewController {
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมหลัก.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมหลัก.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.ผลผลิตโครงการ.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.ผลผลิตโครงการ.getValue());
 		
 		return "objectiveRegister";
 	}
 	
-	// --------------------------------------------------------------m51f05: ทะเบียนกิจกรรมรอง
+	// --------------------------------------------------------------m51f05: ทะเบียนแผนปฏิบัติการ
 	@RequestMapping("/page/m51f05/")
 	public String render_m51f05(
 			Model model,
@@ -667,13 +667,13 @@ public class GenericViewController {
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.แผนปฏิบัติการ.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.แผนปฏิบัติการ.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมหลัก.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมหลัก.getValue());
 		
 		return "objectiveRegister";
 	}
 
-	// --------------------------------------------------------------m51f06: ทะเบียนกิจกรรมย่อย
+	// --------------------------------------------------------------m51f06: ทะเบียนกิจกรรมรอง
 	@RequestMapping("/page/m51f06/")
 	public String render_m51f06(
 			Model model,
@@ -690,14 +690,14 @@ public class GenericViewController {
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมรอง.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมรอง.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.แผนปฏิบัติการ.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.แผนปฏิบัติการ.getValue());
 		
 		return "objectiveRegister";
 	}
 	
 	
-	// --------------------------------------------------------------m51f07: ทะเบียนกิจกรรมเสริม
+	// --------------------------------------------------------------m51f07: ทะเบียนกิจกรรมย่อย
 	@RequestMapping("/page/m51f07/")
 	public String render_m51f07(
 			Model model,
@@ -714,14 +714,14 @@ public class GenericViewController {
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมย่อย.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมย่อย.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมรอง.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมรอง.getValue());
 		
 		
 		return "objectiveRegister";
 	}
 
-	// --------------------------------------------------------------m51f08: ทะเบียนกิจกรรมสนับสนุน
+	// --------------------------------------------------------------m51f08: ทะเบียนกิจกรรมเสริม
 	@RequestMapping("/page/m51f08/")
 	public String render_m51f08(
 			Model model,
@@ -736,8 +736,8 @@ public class GenericViewController {
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมเสริม.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมเสริม.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.กิจกรรมย่อย.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.กิจกรรมย่อย.getValue());
 		
 		
 		return "objectiveRegister";
