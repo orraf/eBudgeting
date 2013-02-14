@@ -548,7 +548,7 @@ public class GenericViewController {
 
 
 
-	// --------------------------------------------------------------m51f01: ทะเบียนยุทธศาสตร์
+	// --------------------------------------------------------------m51f01: ทะเบียนแผนงาน
 	@RequestMapping("/page/m51f01/")
 	public String render_m51f01(
 			Model model, HttpServletRequest request, HttpSession session) {
@@ -571,7 +571,7 @@ public class GenericViewController {
 		return "objectiveRegister";
 	}
 	
-	// --------------------------------------------------------------m51f02: ทะเบียผลผลิต/โครงการ
+	// --------------------------------------------------------------m51f02: ทะเบียนยุทธศาสตร์
 	
 	@RequestMapping("/page/m51f02/")
 	public String render_m51f02(
@@ -595,14 +595,14 @@ public class GenericViewController {
 		model.addAttribute("hasUnit", false);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.ยุทธศาสตร์.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.ยุทธศาสตร์.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.แผนงาน.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.แผนงาน.getValue());
 		
 		
 		return "objectiveRegister";
 	}
 	
-	// --------------------------------------------------------------m51f03: ทะเบียนเป้าหมายกิจกรรมหลัก
+	// --------------------------------------------------------------m51f03: ทะเบียนเป้าหมายผลผลิต
 	@RequestMapping("/page/m51f03/")
 	public String render_m51f03(
 			Model model,
@@ -619,8 +619,8 @@ public class GenericViewController {
 		model.addAttribute("relatedTypeNameString", relatedTypeNameString);
 		
 		model.addAttribute("hasParent", true);
-		model.addAttribute("parentTypeName", ObjectiveTypeId.ผลผลิตโครงการ.getName());
-		model.addAttribute("parentTypeId", ObjectiveTypeId.ผลผลิตโครงการ.getValue());
+		model.addAttribute("parentTypeName", ObjectiveTypeId.ยุทธศาสตร์.getName());
+		model.addAttribute("parentTypeId", ObjectiveTypeId.ยุทธศาสตร์.getValue());
 		
 		return "objectiveRegister";
 	}
