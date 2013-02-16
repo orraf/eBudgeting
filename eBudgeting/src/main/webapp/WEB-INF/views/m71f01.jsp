@@ -141,15 +141,16 @@
 
 
 <script id="loadingTemplate" type="text/x-handler-template">
-	<div>Loading <img src="/eBudgeting/resources/graphics/spinner_bar.gif"/></div>
+	<div>Loading <img src="<c:url value='/resources/graphics/spinner_bar.gif'/>"/></div>
 </script>
 
 <script id="budgetInputSelectionTemplate" type="text/x-handler-template">
-<select id="budgetTypeSlt" {{#if editStrategy}} disabled {{/if}}>
-	<option value="0">กรุณาเลือกรายการ</option>
-	{{#each this}}
-	<option value="{{id}}" {{#if selected}}selected='selected'{{/if}}>{{name}}</option>
+<select id="budgetType_{{this.id}}" multiple="multiple" style="height: 100px;" class="span3">
+	{{#if this}}
+	{{#each this.children}}
+		<option value="{{this.id}}" {{#if this.selected}}selected='selected'{{/if}}>{{this.name}}</option>
 	{{/each}}
+{{else}} {{/if}}
 </select>
 </script>
 
@@ -296,24 +297,22 @@
 
 <script id="inputAllDivTemplate" type="text/x-handler-template">
 <div id="inputAll">
+	<div class="row">
+		<div class="span3" id="budgetTypeSelectionDivL1">แหล่งของเงิน<div></div></div>
+		<div class="span3" id="budgetTypeSelectionDivL2">ประเภทงบ<div></div></div>
+		<div class="span3" id="budgetTypeSelectionDivL3">หมวดงบ<div></div></div>
+	</div>
 	<div id="inputDiv" class="span10">
 		<form id="input-form" style="margin-bottom:0px;" data-id="{{id}}">
-			<div id="formulaBox">
-				<div>
-					<div style="height:35px;">
-						หมวดงบประมาณ:
-					</div>
-				</div>
-				<div>
-					{{#if budgetType}}
-						<div style="padding-top: 6px; padding-left:5px;"><strong>{{budgetType.name}}</strong></div>
-					{{else}}
-						<div class="span2" id="budgetTypeSelectionDivL1"></div>		
-					{{/if}}
-				</div>
-			</div>
-			<div class="clearfix"></div>
-			<div id="formulaBox">
+			
+		</form>
+	</div>
+</div>
+<button class="btn btn-mini btn-primary saveProposal">บันทึก</button> <button class="btn btn-mini backToProposal">ย้อนกลับ</button>
+</script>
+
+<script id="inputFormTemplate" type="text/x-handler-template">
+<div id="formulaBox">
 				<div>
 					<div style="height:35px;">
 						จำนวนจัดสรร:
@@ -321,7 +320,7 @@
 				</div>
 				<div>
 					<div style="height:35px;" id="totalInputForm">
-						<div class="input-append"><input type="text" id="totalInputTxt" style="width:120px;" value="{{amountAllocate}}"></input><span class="add-on">บาท</span></div>
+						<div class="input-append"><input type="text" id="totalInputTxt" style="width:120px;" value="{{amountAllocated}}"></input><span class="add-on">บาท</span></div>
 					</div>
 				</div>
 			</div>
@@ -338,12 +337,7 @@
 			</div>
 			<div class="clearfix"></div>
 {{/each}}
-		</form>
-	</div>
-</div>
-<button class="btn btn-mini btn-primary saveProposal">บันทึก</button> <button class="btn btn-mini backToProposal">ย้อนกลับ</button>
 </script>
-
 
 <script id="objectiveBudgetProposalListTemplate" type="text/x-handler-template">
 <ul>

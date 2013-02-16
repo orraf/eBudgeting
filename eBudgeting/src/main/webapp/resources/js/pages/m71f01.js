@@ -13,19 +13,43 @@ var BudgetTypeAllSelectionView = Backbone.View.extend({
 	render: function(){
 		// first clear the siblings select
 		this.$el.empty();
-		if(this.collection != null) {
-			e1=this.collection;
-			this.$el.html(this.budgetInputSelectionTemplate(this.collection.toJSON()));
+		if(this.model != null) {
+			this.$el.html(this.budgetInputSelectionTemplate(this.model.toJSON()));
 		} else {
 			this.$el.html(this.budgetInputSelectionTemplate({}));
 		}
 		
 		
 	},
+	events: {
+		"change select" : "selectionChange" 
+	},
 	
-	setCollection: function(collection) {
-		this.collection =  collection;
-	}
+	selectionChange: function(e) {
+		var selectedBudgetTypeId = $(e.target).val()[0];
+		// now try to get this model
+		var budgetType = BudgetType.findOrCreate(selectedBudgetTypeId);
+		budgetType.fetch({success: _.bind(function(model, response){
+			var fetchedBudgetType = response;
+			//if(fetchedBudgetType.children != null && fetchedBudgetType.children.length > 0) {
+				//we feed this to the next level?
+				this.parentModal.updateBudgetTypeSelectionLevelWithModel(this.level+1, budgetType);
+				
+			//} else {
+				// then we should now filling in the proposed budget
+				// nothing to do here
+			//Í}
+		}, this)});
+		
+		// ok we'll have to set back to this!?
+		
+	},
+
+	
+	setRootModel: function(rootModel) {
+		this.model =  rootModel;
+		
+	},
 });
 
 var ModalView = Backbone.View.extend({
@@ -43,6 +67,7 @@ var ModalView = Backbone.View.extend({
 	
 	modalTemplate : Handlebars.compile($('#modalTemplate').html()),
 	inputAllDivTemplate : Handlebars.compile($('#inputAllDivTemplate').html()),
+	inputFormTemplate : Handlebars.compile($('#inputFormTemplate').html()), 
 	
 	inputEditProposalTemplate: Handlebars.compile($('#inputEditProposalTemplate').html()), 
 	defaultInputTemplate : Handlebars.compile($('#defaultInputTemplate').html()),
@@ -73,6 +98,38 @@ var ModalView = Backbone.View.extend({
 		this.$el.find('#amountRequestNext2Year').val(valueToCopy);
 		this.$el.find('#amountRequestNext3Year').val(valueToCopy);
 	},
+	updateBudgetTypeSelectionLevelWithModel: function(level, model) {
+		//set the previos level to this model
+		this.currentBudgetTypeSelection[level-2]=model;
+		// and remove all the rest forward
+		for(var i=level-1; i<this.budgetTypeSelectionArray.length; i++) {
+			this.currentBudgetTypeSelection[i] = null;
+		}
+		
+		level = level-1;
+		var btView = this.budgetTypeSelectionArray[level];
+		if(btView == null) {
+			$('#input-form').html(this.inputFormTemplate( new AllocationRecord() ));
+			return;
+		}
+		
+		// reset input area
+		if(level < this.budgetTypeSelectionArray.length) {
+			$('#input-form').empty();
+		} 
+		// render the next selection
+		btView.setRootModel(model);
+		btView.render();
+		
+		// and for the rest set to null
+		for(var i=level+1; i<this.budgetTypeSelectionArray.length; i++) {
+			this.budgetTypeSelectionArray[i].setRootModel(null);
+			this.budgetTypeSelectionArray[i].render();
+		}
+		
+	},
+
+	
  	saveProposal: function(e) {
 		var validated1=true;
 		var validated2=true;
@@ -237,11 +294,34 @@ var ModalView = Backbone.View.extend({
 			json.next2Year = fiscalYear+2;
 			json.next3Year = fiscalYear+3;
 			
+			var rootBudgetType = BudgetType.findOrCreate({id:0});
+			
 			
 			this.$el.find('.modal-body').html(this.inputAllDivTemplate(json));
-			this.budgetTypeSelectionViewL1 =  new BudgetTypeAllSelectionView({el: '#budgetTypeSelectionDivL1', level: 1, parentModal: this});
-			this.budgetTypeSelectionViewL1.setCollection(budgetTypeSltCollection);
-		    this.budgetTypeSelectionViewL1.render();
+	    	
+			rootBudgetType.fetch({success: _.bind(function(){
+				this.budgetTypeSelectionViewL1 =  new BudgetTypeAllSelectionView({el: '#budgetTypeSelectionDivL1 > div', level: 1, parentModal: this});
+				this.budgetTypeSelectionViewL2 = new BudgetTypeAllSelectionView({el: '#budgetTypeSelectionDivL2 > div', level: 2, parentModal: this});
+				this.budgetTypeSelectionViewL3 = new BudgetTypeAllSelectionView({el: '#budgetTypeSelectionDivL3 > div', level: 3, parentModal: this});
+	
+				this.budgetTypeSelectionArray = [];
+				this.budgetTypeSelectionArray.push(this.budgetTypeSelectionViewL1);
+				this.budgetTypeSelectionArray.push(this.budgetTypeSelectionViewL2);
+				this.budgetTypeSelectionArray.push(this.budgetTypeSelectionViewL3);
+	
+		    	this.budgetTypeSelectionViewL1.$el = $('#budgetTypeSelectionDivL1 > div');
+		    	this.budgetTypeSelectionViewL1.setRootModel(rootBudgetType);
+		    	this.budgetTypeSelectionViewL1.render();
+		    	
+		    	
+		    	this.budgetTypeSelectionViewL2.$el = $('#budgetTypeSelectionDivL2 > div');
+		    	this.budgetTypeSelectionViewL2.setRootModel(null);
+		    	this.budgetTypeSelectionViewL2.render();
+		    	
+		    	this.budgetTypeSelectionViewL3.$el = $('#budgetTypeSelectionDivL3 > div');
+		    	this.budgetTypeSelectionViewL3.setRootModel(null);
+		    	this.budgetTypeSelectionViewL3.render();
+			},this)});
 		}	    			
 	},
 	
