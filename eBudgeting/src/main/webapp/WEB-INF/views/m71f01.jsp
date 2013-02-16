@@ -316,31 +316,16 @@
 			<div id="formulaBox">
 				<div>
 					<div style="height:35px;">
-						จำนวนขอตั้ง:
+						จำนวนจัดสรร:
 					</div>
 				</div>
 				<div>
 					<div style="height:35px;" id="totalInputForm">
-						<div class="input-append"><input type="text" id="totalInputTxt" style="width:120px;" value="{{amountRequest}}"></input><span class="add-on">บาท</span></div>
+						<div class="input-append"><input type="text" id="totalInputTxt" style="width:120px;" value="{{amountAllocate}}"></input><span class="add-on">บาท</span></div>
 					</div>
 				</div>
 			</div>
 	
-			<div class="clearfix"></div>
-			<div id="formulaBox">
-				<div>
-					<div style="margin-top:11px;"> <button class="btn copytoNextYear">คัดลอกไปประมาณการ 3 ปี</button></div>
-				</div>	
-				<div style="margin: 0px 8px;">
-					<div><b>ปี: {{next1Year}}</b></div><div class="input-append"><input style="width:120px;" type="text" id="amountRequestNext1Year" value="{{amountRequestNext1Year}}"/><span class="add-on">บาท</span></div>
-				</div>
-				<div style="margin: 0px 8px;">
-					<div><b>ปี : {{next2Year}}</b></div><div class="input-append"><input style="width:120px;" type="text" id="amountRequestNext2Year" value="{{amountRequestNext2Year}}"/><span class="add-on">บาท</span></div>
-				</div>
-				<div style="margin: 0px 8px;">
-					<div><b>ปี: {{next3Year}}</b></div><div class="input-append"><input style="width:120px;" type="text" id="amountRequestNext3Year" value="{{amountRequestNext3Year}}"/><span class="add-on">บาท</span></div>
-				</div>
-			</div>
 			<div class="clearfix"></div>
 {{#each targets}}
 			<div id="formulaBox">
