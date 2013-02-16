@@ -184,6 +184,13 @@ public class BudgetProposalRestController {
 		
 	}
 	
+	@RequestMapping(value="/AllocationReocord", method=RequestMethod.POST)
+	public @ResponseBody AllocationRecord saveAllocationRecord(
+			@RequestBody JsonNode data,
+			@Activeuser ThaicomUserDetail currentUser) {
+		return entityService.saveAllocationRecord(data);
+	}
+	
 	@RequestMapping(value="/AllocationRecord/{id}", method=RequestMethod.PUT)
 	public @ResponseBody AllocationRecord updateAllocationRecord(
 			@PathVariable Long id,

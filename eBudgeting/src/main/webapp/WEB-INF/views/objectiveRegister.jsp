@@ -70,10 +70,6 @@
 	<a href="#" class="btn btn-info menuNew"><i class="icon icon-file icon-white"></i> เพิ่มชื่อทะเบียน</a>
 	{{#if hasUnit}}<a href="#" class="btn btn-primary menuEditUnit"><i class="icon icon-edit icon-white"></i> จัดการหน่วยนับ</a>{{/if}}	
 	
-	<a href="#" class="btn btn-primary menuEdit"><i class="icon icon-edit icon-white"></i> แก้ไขทะเบียน{{#if relatedTypenameList}}และความเชื่อมโยง{{else}}{{#if hasParent}}และความเชื่อมโยง{{/if}} {{/if}}</a>
-	
-	<a href="#" class="btn btn-danger menuDelete"><i class="icon icon-trash icon-white"></i> ลบ</a>
-
 	{{#if pageParams}}
 	{{#with pageParams}}
     <div class="pagination pagination-small">
@@ -96,7 +92,7 @@
 <table class="table table-bordered table-striped" id="mainTbl">
 	<thead>
 		<tr>
-			<td style="width:20px;"></td>
+			<td style="width:30px;"></td>
 			<td style="width:40px;">รหัส</td>
 			<td>ชื่อ{{name}}</td>
 
@@ -119,7 +115,8 @@
 </script>
 
 <script id="objectiveRowTemplate" type="text/x-handelbars-template">
-<td><input type="radio" name="rowRdo" id="rdo_{{id}}" value="{id}}"/></td>
+<td id="td-{{id}}"><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
+	<a href="#td-{{id}}" class="deleteObjective menuDelete"><i class="icon-trash icon-red"></i></a> </td>
 	<td> {{code}} </td>
 	<td> {{name}} </td>
 
@@ -193,6 +190,9 @@
 <form>
 	<label>ระบุชื่อ{{type.name}}</label>
 	<textarea rows="2" class="span5" id="nameTxt">{{name}}</textarea>
+
+	<label>ระบุรหัส</label>
+	<input type="text" id="code" value="{{code}}"></input>
 	
 	{{#if hasParent}}
 	<label>เชื่อมโยง{{parentTypeName}}</label>
@@ -382,11 +382,14 @@ $(document).ready(function() {
 		save : function(e) {
 			var newObj = this.currentObjective.get('id') == null;
 			// now collect data 
-			var nameTxt = this.$el.find('#nameTxt').val();
+			var nameTxt = $.trim(this.$el.find('#nameTxt').val());
+			var code = $.trim(this.$el.find('#code').val());
+			
 			
 			this.currentObjective.set('name', nameTxt);
 			
 			this.currentObjective.set('objectiveName', new ObjectiveName({name: nameTxt}));
+			this.currentObjective.set('code', code);
 			
 			// now save parent
 			if(this.$el.find('#parentSlt').length > 0) {
@@ -426,7 +429,7 @@ $(document).ready(function() {
 						if(objectiveCollection.totalElements % objectiveCollection.pageSize == 0 ) {
 							lastPage++;
 						}
-						mainTblView.renderTargetPage(lastPage);						
+						mainTblView.renderTargetPage(lastPage);			
 					}
 					
 					this.$el.modal('hide');
@@ -615,19 +618,17 @@ $(document).ready(function() {
 			
 		},
 		editRow: function(e) {
-			var objectiveId = $('input[name=rowRdo]:checked').parents('tr').attr('data-id');
+			e1=e;
+			var objectiveId = $(e.target).parents('tr').attr('data-id');
 			
-			if((! $(e.currentTarget).hasClass('disabled') ) && $('input[name=rowRdo]:checked').length == 1) {
 				var model = this.collection.get(objectiveId);
 					
 				this.modalView.renderWithObjective(model);
 			
-			} else {
-				alert('กรุณาเลือกรายการที่ต้องการแก้ไข');
-			}
+		
 		},
 		editRowUnit: function(e) {
-			var objectiveId = $('input[name=rowRdo]:checked').parents('tr').attr('data-id');
+			var objectiveId = $(e.target).parents('tr').attr('data-id');
 			
 			if((! $(e.currentTarget).hasClass('disabled') ) && $('input[name=rowRdo]:checked').length == 1) {
 				var model = this.collection.get(objectiveId);

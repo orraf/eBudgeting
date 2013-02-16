@@ -1084,6 +1084,30 @@ public class GenericViewController {
 		return "m65f02";
 	}
 	
+	
+	// --------------------------------------------------------------m71f01: การจัดสรรงบประมาณ
+	@RequestMapping("/page/m71f01/")
+	public String render_m71f01(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		List<Objective> fiscalYears = entityService.findRootFiscalYear();
+		Integer fy = setFiscalYearFromSession(model, session);
+		model.addAttribute("rootPage", false);
+		model.addAttribute("fiscalYears", fiscalYears);
+		
+		//check the budgetSignOff
+		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
+				fy, currentUser.getWorkAt());
+		
+		if(bso != null && bso.getLock1Person() != null) {
+			// should not be able to edit!
+			model.addAttribute("readOnly", true);
+		}
+		
+		return "m71f01";
+	}
+	
 	@RequestMapping("/page/m71f02/")
 	public String runder_m71f02(
 			Model model, HttpServletRequest request) {

@@ -174,6 +174,7 @@ public interface EntityService {
 	//AllocationRecord
 	public String initAllocationRecord(Integer fiscalYear, Integer round);
 	public AllocationRecord updateAllocationRecord(Long id, JsonNode data);
+	public AllocationRecord saveAllocationRecord(JsonNode data);
 	
 	//BudgetReserved
 	public String initReservedBudget(Integer fiscalYear);

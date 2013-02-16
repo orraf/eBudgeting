@@ -1672,6 +1672,7 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		objective.setName(objectiveJsonNode.get("name").asText());
+		objective.setCode(objectiveJsonNode.get("code").asText());
 		
 		// doing away with name?
 		if(objectiveJsonNode.get("objectiveName") != null) {
@@ -2111,6 +2112,58 @@ public class EntityServiceJPA implements EntityService {
 	}
 
 
+	
+	
+	/**
+	 * บันทึกข้อมูลการจัดสรรงบประมาณลง Database 
+	 * 
+	 * @param  data ข้อมูลในรูปแบบ JSON ประกอบไปด้วย 
+	 * 				{ 
+	 * 				  objective.id,    // Objective 
+	 * 				  budgetType.id,   // หมวดงบประมาณ
+	 * 	              amountAllocated, // จำนวนเงินที่จัดสรร
+	 * 				  round	// รอบของการจัดสรร 
+	 * 				}
+	 * @return      ข้อมูลการจัดสรรงบประมาณที่บันทึกลง database แล้ว กรณี objective.id == null
+	 * 				หรือ budgetType.id == null จะ return null
+	 * @see         AllocationRecord
+	 */
+	@Override
+	public AllocationRecord saveAllocationRecord(JsonNode data) {
+	
+		// now get objective.id
+		Long objectiveId = getJsonNodeId(data.get("objective"));
+		if(objectiveId == null) return null;
+		
+		// now get budgetType.id
+		Long budgetTypeId = getJsonNodeId(data.get("budgetType"));
+		if(budgetTypeId == null) return null;
+		
+		Objective objective = objectiveRepository.findOne(objectiveId);
+		BudgetType budgetType = budgetTypeRepository.findOne(budgetTypeId);
+		
+		
+		AllocationRecord record = new AllocationRecord();
+		record.setBudgetType(budgetType);
+		record.setForObjective(objective);
+		record.setAmountAllocated(0L);
+		record.setIndex(data.get("round").asInt());
+		
+		allocationRecordRepository.save(record);
+		
+		return updateAllocationRecord(record.getId(), data);
+	}
+
+	/**
+	 * ปรับปรุงข้อมูลการจัดสรรงบประมาณลง Database โดย method จะทำการปรับปรุงข้อมูลการจัดสรร
+	 * งบประมาณให้กับ parent objective ด้วย 
+	 * 
+	 * @param  id primary key ของ การจัดสรรงบประมาณที่มีอยู่แล้วใน database
+	 * @param  data ข้อมูลในรูปแบบ JSON ประกอบไปด้วย {amountAllocated}
+	 * @return      ข้อมูลการจัดสรรงบประมาณที่บันทึกลง database แล้ว กรณี id == null 
+	 * 				จะ return null
+	 * @see         AllocationRecord
+	 */
 	@Override
 	public AllocationRecord updateAllocationRecord(Long id, JsonNode data) {
 		AllocationRecord record = allocationRecordRepository.findOne(id);
@@ -2133,6 +2186,14 @@ public class EntityServiceJPA implements EntityService {
 		while(parent.getParent() != null) {
 			logger.debug("parent.id: {}", parent.getId());
 			AllocationRecord temp = allocationRecordRepository.findOneByBudgetTypeAndObjectiveAndIndex(budgetType, parent, index);
+			
+			if(temp == null) {
+				temp = new AllocationRecord();
+				temp.setAmountAllocated(0L);
+				temp.setBudgetType(budgetType);
+				temp.setForObjective(parent);
+				temp.setIndex(record.getIndex());
+			}
 			
 			temp.adjustAmountAllocated(adjustedAmount);
 			
