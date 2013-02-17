@@ -741,6 +741,10 @@ ObjectiveTargetCollection = Backbone.Collection.extend({
 TargetUnitCollection = Backbone.Collection.extend({
 	model: TargetUnit
 });
+OrganizationCollection = Backbone.Collection.extend({
+	model: Organization
+});
+
 TargetUnitPagableCollection = PagableCollection.extend({
 	initialize: function(models, options) {
 	    this.targetPage = options.targetPage;

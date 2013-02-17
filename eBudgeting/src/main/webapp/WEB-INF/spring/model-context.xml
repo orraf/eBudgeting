@@ -35,6 +35,21 @@
 	</bean>
 
 	<!-- <context:property-placeholder location="jdbc.properties"/> -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+	   <property name="packagesToScan">
+        	<list>
+            	<value>biz.thaicom.eBudgeting.models</value>
+            	<value>biz.thaicom.security.models</value>
+        	</list>
+        </property>
+	    <property name="dataSource" ref="dataSource"/>
+	   	<property name="hibernateProperties">
+	   		<value>
+	   			hibernate.dialect=${hibernate.dialect}
+	   		</value>
+	   	</property>
+	</bean>
+
 
 		<bean id="myEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
   		<property name="dataSource" ref="dataSource"/>
@@ -53,6 +68,11 @@
         	</list>
         </property>
  	</bean>
+ 
+   
+            
+ 
+ 
  	
  	<bean id="bgtDAO" class="biz.thaicom.eBudgeting.dao.BgtJdbcDao">
 		<property name="dataSource" ref="dataSource" />

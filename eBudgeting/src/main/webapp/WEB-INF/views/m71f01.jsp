@@ -276,24 +276,158 @@
 	{{{childrenNodeTpl this.children this.level}}}  
 </script>
 
+
+<script id="allocationRecordCellTemplate" type="text/x-handler-template">
+<div data-id={{id}}>{{formatNumber amountAllocated}} บาท <div class="pull-right"><a href="#" class="editAllocationRecord"><i class="icon-edit"></i></a></div>
+</script>
+
+
 <script id="modalTemplate" type="text/x-handler-template">
-<div class="menu">{{#unless readOnly}}<button id="addBudget" class="btn">เพิ่มรายการงบประมาณ</button>{{/unless}}
-<div><u>รายการงบประมาณลงข้อมูลไว้แล้ว</u></div>
-	<ul>
-	{{#each filterObjectiveBudgetProposals}}
-		<li data-id="{{id}}">
-				{{#unless ../readOnly}}
-				<a href="#" class="editProposal"><i class="icon-edit icon-blue"></i></a>				
-				<a href="#" class="removeProposal"><i class="icon-trash icon-red"></i></a>
-				{{/unless}}
-				<strong>{{budgetType.name}} : </strong>	{{{formatNumber amountRequest}}} บาท
-				
-			</li>
-	{{/each}}
-	</ul>
+<div>
+<table class="table table-bordered">
+		<thead>
+			<tr>
+				<td rowspan="2" style="width:120px;">ประเภทงบ</td>
+				<td style="width:200px;" colspan="2">เงินสงเคราะห์ (sess)</td>
+				<td style="width:200px;" colspan="2">เงินงบประมาณแผ่นดิน</td>
+			</tr>
+			<tr>
+				<td style="width:100px;">งบทำการ</td>
+				<td style="width:100px;">งบลงทุน</td>
+				<td style="width:100px;">งบทำการ</td>
+				<td style="width:100px;">งบลงทุน</td>
+			</tr>
+		</thead>
+		<tbody>
+            <tr>
+				<td>งบสงเคราะห์</td>
+				<td data-budgetTypeId="9" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="10" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="13" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="14" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+			</tr>
+        	<tr>
+				<td>งบบริหาร</td>
+				<td data-budgetTypeId="8" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="7" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="11" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="12" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+			</tr>
+			<tr>
+				<td style="text-align:right"><strong>รวม</strong></td>
+				<td id="sum1" style="text-align:center;font-weight: bold;text-decoration: underline;"></td>
+				<td id="sum2" style="text-align:center;font-weight: bold;text-decoration: underline;"></td>
+				<td id="sum3" style="text-align:center;font-weight: bold;text-decoration: underline;"></td>
+				<td id="sum4" style="text-align:center;font-weight: bold;text-decoration: underline;"></td>
+			</tr>
+                
+		</tbody>
+	</table>
 </div>
 </script>
 
+
+
+<script id="inputAllocationRecordTemplate" type="text/x-handler-template">
+<div id="inputAll">
+	<div style="padding-top:7px; padding-right: 20px;height:35px; float:left">
+    	<strong>{{budgetType.name}}</strong> จำนวนจัดสรร:
+	</div>
+    <div style="height:35px; float:left" id="totalInputForm">
+		<div class="input-append"><input type="text" id="totalInputTxt" style="width:120px;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
+	</div>
+
+	<div class="clearfix"></div>
+        
+        <div style="padding-bottom:12px;">
+           <strong><u>การจัดสรรให้หน่วยงาน</u></strong>
+        </div>
+        <div class="row">
+
+    	    <div class="span6" style="height:290px; border: 1px solid #cccccc">
+        	    <div>
+            	    <table class="table table-bordered" style="margin-bottom:0px">
+                	<thead>
+                    	<tr>
+                        	<td style="width:237px;">หน่วยงาน</td>
+                        	<td>รวม: <span id="sumTotalAllocated"></span> บาท</td>
+                    	</tr>
+                	</thead>
+                	</table>
+            	</div>
+
+	            <div style="height:252px;overflow:auto;">
+    	            <table style="margin-bottom:0px;" class="table table-bordered" id="organizationProposalTbl">
+        	        	<tbody>
+            			</tbody>
+					</table>
+             	</div>
+         	</div>
+
+
+			<div class="span3" style="height:290px; width:270px;">
+			    <div class="pull-right">
+    				<form class="form-search" style="margin-bottom:10px;" id="organizationSearchForm">
+			    		<div class="input-append">
+    						<input type="text" class="span2 search-query" id="oraganizationQueryTxt">
+    						<button class="btn" type="submit" id="organizationSearchBtn">Search</button>
+    					</div>
+    				</form>
+	    		</div>
+    	 		<div class="clearfix"></div>
+    			<div style="border:1px solid #cccccc">
+		    		<div>
+        		 		<table style="margin-bottom:0px" class="table table-bordered">
+                		<thead>
+                    		<tr>
+                        		<td style="width:200px;">หน่วยงาน</td>
+                    		</tr>
+                		</thead>
+                		</table>
+            		</div>
+            		<div style="height:214px;overflow:auto;">
+                		<table style="margin-bottom:0px;" class="table table-bordered" id="organizationSearchTbl">
+                			<tbody>
+                			</tbody>
+						</table>
+            		</div>
+    			</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<div style="padding-top:5px;">
+<button class="btn btn-mini btn-primary saveProposal">บันทึก</button> <button class="btn btn-mini backToProposal">ย้อนกลับ</button>
+</div>
+
+</script>
+<script id="organizationSearchTbodyTemplate" type="text/x-handler-template">
+{{#each this}}
+<tr data-id="{{id}}"><td>
+	{{#if this._inProposalList}}
+		<span class="label label-warning">เลือกแล้ว</span>
+	{{else}}
+		<a href="#" class="addOrgazation"><i class="icon icon-plus-sign"></i></a>
+	{{/if}}
+
+ 	{{name}}</td>
+</tr>
+{{/each}}
+</script>
+
+<script id="organizationProposalTbodyTemplate" type="text/x-handler-template">
+{{#each this}}
+<tr data-id="{{owner.id}}"><td><a href="#" class="removeOrganizationProposal"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
+	<td  style="width:188px">
+		<div style="height:35px; float:left" id="totalInputForm">
+			<div class="input-append"><input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
+		</div>
+	</td>
+</tr>
+{{/each}}
+</script>
 
 <script id="inputAllDivTemplate" type="text/x-handler-template">
 <div id="inputAll">

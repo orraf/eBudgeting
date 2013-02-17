@@ -173,8 +173,10 @@ public interface EntityService {
 	
 	//AllocationRecord
 	public String initAllocationRecord(Integer fiscalYear, Integer round);
-	public AllocationRecord updateAllocationRecord(Long id, JsonNode data);
-	public AllocationRecord saveAllocationRecord(JsonNode data);
+	public AllocationRecord updateAllocationRecord(Long id, JsonNode data, JsonNode proposals);
+	public AllocationRecord saveAllocationRecord(JsonNode data, JsonNode proposals);
+	public List<AllocationRecord> findAllocationRecordByObjective(Objective o);
+	
 	
 	//BudgetReserved
 	public String initReservedBudget(Integer fiscalYear);
@@ -283,6 +285,10 @@ public interface EntityService {
 	public ObjectiveDetail deleteObjectiveDetail(Long id);
 	public ObjectiveDetail findOneObjectiveDetailByObjectiveIdAndOwner(Long objectiveId,
 			ThaicomUserDetail currentUser);
+	
+	//Organization
+	public List<Organization> findOrganizationByName(String query);
+	
 
 
 

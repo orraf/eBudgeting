@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -184,20 +185,22 @@ public class BudgetProposalRestController {
 		
 	}
 	
-	@RequestMapping(value="/AllocationReocord", method=RequestMethod.POST)
+	@RequestMapping(value="/AllocationRecord", method=RequestMethod.POST)
 	public @ResponseBody AllocationRecord saveAllocationRecord(
+			@RequestParam JsonNode proposals,
 			@RequestBody JsonNode data,
 			@Activeuser ThaicomUserDetail currentUser) {
-		return entityService.saveAllocationRecord(data);
+		return entityService.saveAllocationRecord(data, proposals);
 	}
 	
 	@RequestMapping(value="/AllocationRecord/{id}", method=RequestMethod.PUT)
 	public @ResponseBody AllocationRecord updateAllocationRecord(
 			@PathVariable Long id,
+			@RequestParam JsonNode proposals,
 			@RequestBody JsonNode data,
 			@Activeuser ThaicomUserDetail currentUser){
 		
-		return entityService.updateAllocationRecord(id, data);
+		return entityService.updateAllocationRecord(id, data, proposals);
 		
 	}
 	

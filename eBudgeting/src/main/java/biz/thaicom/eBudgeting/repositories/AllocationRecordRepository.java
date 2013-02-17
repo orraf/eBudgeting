@@ -39,6 +39,8 @@ public interface AllocationRecordRepository extends
 	
 	public List<AllocationRecord> findAllByForObjective_fiscalYearAndIndex(
 			Integer fiscalYear, int i);
+
+	public List<AllocationRecord> findAlByForObjective(Objective objective);
 	
 
 }

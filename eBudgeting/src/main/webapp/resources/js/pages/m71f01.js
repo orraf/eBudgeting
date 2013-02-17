@@ -1,57 +1,3 @@
-var BudgetTypeAllSelectionView = Backbone.View.extend({
-	/**
-     *  @memberOf BudgetTypeAllSelectionView
-     */
-	initialize: function(options){
-		if(options != null) {
-			this.level = options.level;
-			this.parentModal = options.parentModal;
-		} 
-	},
-	budgetInputSelectionTemplate : Handlebars.compile($("#budgetInputSelectionTemplate").html()),
-	
-	render: function(){
-		// first clear the siblings select
-		this.$el.empty();
-		if(this.model != null) {
-			this.$el.html(this.budgetInputSelectionTemplate(this.model.toJSON()));
-		} else {
-			this.$el.html(this.budgetInputSelectionTemplate({}));
-		}
-		
-		
-	},
-	events: {
-		"change select" : "selectionChange" 
-	},
-	
-	selectionChange: function(e) {
-		var selectedBudgetTypeId = $(e.target).val()[0];
-		// now try to get this model
-		var budgetType = BudgetType.findOrCreate(selectedBudgetTypeId);
-		budgetType.fetch({success: _.bind(function(model, response){
-			var fetchedBudgetType = response;
-			//if(fetchedBudgetType.children != null && fetchedBudgetType.children.length > 0) {
-				//we feed this to the next level?
-				this.parentModal.updateBudgetTypeSelectionLevelWithModel(this.level+1, budgetType);
-				
-			//} else {
-				// then we should now filling in the proposed budget
-				// nothing to do here
-			//Í}
-		}, this)});
-		
-		// ok we'll have to set back to this!?
-		
-	},
-
-	
-	setRootModel: function(rootModel) {
-		this.model =  rootModel;
-		
-	},
-});
-
 var ModalView = Backbone.View.extend({
 	/**
      *  @memberOf ModalView
@@ -67,7 +13,12 @@ var ModalView = Backbone.View.extend({
 	
 	modalTemplate : Handlebars.compile($('#modalTemplate').html()),
 	inputAllDivTemplate : Handlebars.compile($('#inputAllDivTemplate').html()),
+	inputAllocationRecordTemplate : Handlebars.compile($('#inputAllocationRecordTemplate').html()), 
+	allocationRecordCellTemplate: Handlebars.compile($('#allocationRecordCellTemplate').html()),
 	inputFormTemplate : Handlebars.compile($('#inputFormTemplate').html()), 
+	
+	organizationProposalTbodyTemplate: Handlebars.compile($('#organizationProposalTbodyTemplate').html()),
+	organizationSearchTbodyTemplate: Handlebars.compile($('#organizationSearchTbodyTemplate').html()), 
 	
 	inputEditProposalTemplate: Handlebars.compile($('#inputEditProposalTemplate').html()), 
 	defaultInputTemplate : Handlebars.compile($('#defaultInputTemplate').html()),
@@ -80,10 +31,106 @@ var ModalView = Backbone.View.extend({
 		"click #cancelBtn" : "cancelModal",
 		"click .close" : "cancelModal",
 		"click .backToProposal" : "backToProposal",
-		"click #addBudget" : "renderInputALL",
 		"click .copytoNextYear" : "copyToNextYear",
+		"click .addAllocationRecord" : "addAllocationRecord",
+		"click .editAllocationRecord" : "editAllocationRecord",
+		"click #organizationSearchBtn" : "organizationSearch",
+		"click .removeOrganizationProposal" : "removeOrganizationProposal",
+		"click .addOrgazation" : "addOrgazationProposal",
+		"change .proposalAllocated" : "changeProposalAllocated"
+			
 
 	},
+	
+	changeProposalAllocated: function(e) {
+		// validate this one first
+		if( isNaN( +$(e.target).val() ) ) {
+			$(e.target).parent('div').addClass('control-group error');
+			alert("กรุณาใส่ข้อมูลเป็นตัวเลข");
+		} else {
+			$(e.target).parent('div').removeClass('control-group error'); 
+			var i = $(e.target).parents('tr').prevAll('tr').length;
+			
+			this.proposals.at(i).set('amountAllocated', $(e.target).val());
+			this.updateSumProposal();	
+		}
+		
+	},
+	
+	addOrgazationProposal: function(e) {
+		var organizationId = $(e.target).parents('tr').attr('data-id');
+		var organization = Organization.findOrCreate(organizationId);
+		var newProposal = new BudgetProposal();
+		newProposal.set('owner', organization);
+		newProposal.set('budgetType', this.currentBudgetType);
+		newProposal.set('amountAllocated', 0);
+		newProposal.set('forObjective', this.objective);
+		
+		this.proposals.push(newProposal);
+		
+		var html=this.organizationProposalTbodyTemplate(this.proposals.toJSON());
+		$('#organizationProposalTbl').find('tbody').html(html);
+		
+		this.updateSumProposal();
+		
+		organization.set('_inProposalList', true);
+		//refresh the other list
+		var html=this.organizationSearchTbodyTemplate(this.organizationSearchList.toJSON());
+		$('#organizationSearchTbl').find('tbody').html(html);
+		
+	},
+	removeOrganizationProposal: function(e) {
+		var organizationId = $(e.target).parents('tr').attr('data-id');
+		var organization = Organization.findOrCreate(organizationId);
+		
+		
+		// now remove this one 
+		for(var i=0; i<this.proposals.length; i++) {
+			if(this.proposals.at(i).get('owner') == organization) {
+				
+				var y = confirm("คุณต้องการลบการจัดสรรงบประมาณของหน่วยงาน " + organization.get('name'));
+				if(y==true) {
+					
+					var p = this.proposals.at(i);
+					
+					// we remove this on from our list
+					this.proposals.remove(p);
+					
+					p.get('owner').set('_inProposalList', false);
+			
+					var html=this.organizationProposalTbodyTemplate(this.proposals.toJSON());
+					$('#organizationProposalTbl').find('tbody').html(html);
+					
+					this.updateSumProposal();
+					
+					//refresh the other list
+					var html=this.organizationSearchTbodyTemplate(this.organizationSearchList.toJSON());
+					$('#organizationSearchTbl').find('tbody').html(html);
+				}
+			}
+		}
+		
+		
+	},
+	
+	organizationSearch: function(e) {
+		var query = this.$el.find('#oraganizationQueryTxt').val();
+		
+		this.organizationSearchList = new OrganizationCollection();
+		this.organizationSearchList.url = appUrl("/Organization/findByName");
+		this.organizationSearchList.fetch({
+			data: {
+				query: query
+			},
+			type: 'POST',
+			success: _.bind(function() {
+				var html=this.organizationSearchTbodyTemplate(this.organizationSearchList.toJSON());
+				$('#organizationSearchTbl').find('tbody').html(html);
+			},this)
+		});
+		
+	},
+	
 	backToProposal: function(e) {
 		this.render();
 	},
@@ -110,6 +157,7 @@ var ModalView = Backbone.View.extend({
 		var btView = this.budgetTypeSelectionArray[level];
 		if(btView == null) {
 			$('#input-form').html(this.inputFormTemplate( new AllocationRecord() ));
+			this.currentBudgetType = model;
 			return;
 		}
 		
@@ -127,80 +175,59 @@ var ModalView = Backbone.View.extend({
 			this.budgetTypeSelectionArray[i].render();
 		}
 		
+		// reset the current budget type
+		this.currentBudgetType = null;
+		
 	},
 
 	
  	saveProposal: function(e) {
-		var validated1=true;
-		var validated2=true;
-		
-		this.$el.find('input:enabled').each(function(e) {
-			console.log($(this).val());
-			
-			if( isNaN( +$(this).val() ) ) {
-				$(this).parent('div').addClass('control-group error');
-				validated1 = false;
-				
-			} else {
-				$(this).parent('div').removeClass('control-group error');
-			}
+ 		var sum=0;
+		// now put the sum up
+		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
+			sum += parseInt($(el).val());
 		});
 		
-		if($('#budgetTypeSlt').length > 0) {
-			if($('#budgetTypeSlt').val() == 0) {
-				validated2 = false;
-				$(this).parent('div').addClass('control-group error');
-			} else {
-				$(this).parent('div').removeClass('control-group error');
-			}
-		}
-		
-		if(validated1 == false || validated2 == false) {
-			var msg1 = "";
-			var msg2 = "";
-			if(!validated1) {
-				msg1= " -- ข้อมูลที่ใส่ต้องเป็นตัวเลข\n";
-			}
-			
-			if(!validated2) {
-				msg2 = " -- ต้องระบุหมวดงบประมาณ\n";
-			}
-			
-			alert('กรุณาตรวจสอบข้อมูล\n' + msg1 + msg2);
+		if(sum != parseInt($('#totalInputTxt').val())) {
+			alert("กรุณาตรวจสอบการจัดสรร งบประมาณที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับงบประมาณที่จัดสรรไว้");
 			return;
 		}
+ 		
+ 		this.$el.find('button.saveProposal').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
 		
+		var record = this.currentAllocationRecord;
 		
-		this.$el.find('button.saveProposal').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+		record.set('amountAllocated', $('#totalInputTxt').val());
+		record.set('index', 0);
 		
-		var obp = this.currentObjectiveBudgetProposal;
-		
-		var budgetTypeId = this.$el.find('#budgetTypeSlt').val();
-		var budgetType = BudgetType.findOrCreate(budgetTypeId);
-		
-		if(obp.get('budgetType') == null ){
-			obp.set('budgetType', budgetType);
+		// put proposal into somewhat better thing
+		var proposalJson = [];
+		for(var i=0; i<this.proposals.length; i++) {
+			var p = this.proposals.at(i);
+			var pJson = {};
+			pJson.amountAllocated=p.get('amountAllocated');
+			pJson.organizationId=p.get('forObjective').get('id');
+			proposalJson.push(pJson);
 		}
 		
-					// now get the input
-		obp.set('amountRequest', this.$el.find('input#totalInputTxt').val());
-		obp.set('amountRequestNext1Year', this.$el.find('input#amountRequestNext1Year').val());
-		obp.set('amountRequestNext2Year', this.$el.find('input#amountRequestNext2Year').val());
-		obp.set('amountRequestNext3Year', this.$el.find('input#amountRequestNext3Year').val());
+		var allocationJson = record.toJSON();
+		allocationJson.forObjectiveId = allocationJson.forObjective.id;
+		allocationJson.budgetTypeId = allocationJson.budgetType.id;
+		allocationJson.forObjective = null;
+		allocationJson.budgetType = null;
 		
-		// now copy all target if exists!
-		if(obp.get('targets') != null) {
-			for(var i=0; i<obp.get('targets').length; i++) {
-				var target = obp.get('targets').at(i);
-				target.set('targetValue', this.$el.find('input#targetValue'+target.get('unit').get('id')).val());
-			}
-		}
 		
 		//now ready for save
-		obp.save(null, {
+		$.ajax({
+			type: 'POST',
+			data: {
+				allocationRecord: JSON.stringify(allocationJson),
+				proposals: JSON.stringify(proposalJson)
+			},
+			url: appUrl('/AllocationRecord/SaveWithProposals'),
 			success: _.bind(function() {
-				this.render();
-			}, this)
+				
+			},this)
 		});
 		
 	},
@@ -251,78 +278,59 @@ var ModalView = Backbone.View.extend({
 		this.$el.find('.modal-body').html(this.inputAllDivTemplate(json));		
 		
 	},
-
-	renderInputALL : function() {
-		
-		var obp = new ObjectiveBudgetProposal();
-
-		obp.set('forObjective', this.objective);
-		
-		if(this.objective.get('filterTargetValues') != null && this.objective.get('filterTargetValues').length > 0) {
-			// we have to create new target Unit for this one
-			for(var i=0; i< this.objective.get('filterTargetValues').length; i++) {
-				var objTarget = this.objective.get('filterTargetValues').at(i).get('target');
-				var target = new ObjectiveBudgetProposalTarget();
-				target.set('unit', objTarget.get('unit'));
-				target.set('objectiveBudgetProposal', obp);
-				if(obp.get('targets') == null) {
-					obp.set('targets', new ObjectiveBudgetProposalTargetCollection());
-				}
-				obp.get('targets').add(target);
-			}
-		}
-		
-		this.currentObjectiveBudgetProposal = obp;
-		
-
-		var budgetTypeSltCollection = new BudgetTypeCollection(mainBudgetTypeCollection.toJSON());
-		// now we go through all filterObjectiveBudgetProposal and remove the budgetType
-		var fobp = this.objective.get('filterObjectiveBudgetProposals');
-		
-		for(var i=0; i< fobp.length; i++) {
-			budgetTypeSltCollection.remove(fobp.at(i).get('budgetType'));
-		}
-		
-		console.log("budgetTypeSltCollection.length == " + budgetTypeSltCollection.length);
-		
-		if(budgetTypeSltCollection.length == 0) {
-			alert('ไม่สามารถเพิ่มรายการงบประมาณได้เนื่องจากเลือกลงข้อมูลหมดทุกหมวดแล้ว');
-		} else {
-			
-			var json = obp.toJSON();
-			json.next1Year = fiscalYear+1;
-			json.next2Year = fiscalYear+2;
-			json.next3Year = fiscalYear+3;
-			
-			var rootBudgetType = BudgetType.findOrCreate({id:0});
-			
-			
-			this.$el.find('.modal-body').html(this.inputAllDivTemplate(json));
-	    	
-			rootBudgetType.fetch({success: _.bind(function(){
-				this.budgetTypeSelectionViewL1 =  new BudgetTypeAllSelectionView({el: '#budgetTypeSelectionDivL1 > div', level: 1, parentModal: this});
-				this.budgetTypeSelectionViewL2 = new BudgetTypeAllSelectionView({el: '#budgetTypeSelectionDivL2 > div', level: 2, parentModal: this});
-				this.budgetTypeSelectionViewL3 = new BudgetTypeAllSelectionView({el: '#budgetTypeSelectionDivL3 > div', level: 3, parentModal: this});
 	
-				this.budgetTypeSelectionArray = [];
-				this.budgetTypeSelectionArray.push(this.budgetTypeSelectionViewL1);
-				this.budgetTypeSelectionArray.push(this.budgetTypeSelectionViewL2);
-				this.budgetTypeSelectionArray.push(this.budgetTypeSelectionViewL3);
+	editAllocationRecord: function(e) {
+		this.currentAllocationRecord = AllocationRecord.findOrCreate($(e.target).parents('div[data-id]').attr('data-id'));
+		
+		this.currentBudgetProposalList = new BudgetProposalCollection();
+		this.renderAllocationRecordInput();
+	},
 	
-		    	this.budgetTypeSelectionViewL1.$el = $('#budgetTypeSelectionDivL1 > div');
-		    	this.budgetTypeSelectionViewL1.setRootModel(rootBudgetType);
-		    	this.budgetTypeSelectionViewL1.render();
-		    	
-		    	
-		    	this.budgetTypeSelectionViewL2.$el = $('#budgetTypeSelectionDivL2 > div');
-		    	this.budgetTypeSelectionViewL2.setRootModel(null);
-		    	this.budgetTypeSelectionViewL2.render();
-		    	
-		    	this.budgetTypeSelectionViewL3.$el = $('#budgetTypeSelectionDivL3 > div');
-		    	this.budgetTypeSelectionViewL3.setRootModel(null);
-		    	this.budgetTypeSelectionViewL3.render();
-			},this)});
-		}	    			
+	addAllocationRecord: function(e) {
+		this.currentAllocationRecord = new AllocationRecord();
+		
+		var budgetTypeId = $(e.target).parents('td').attr('data-budgetTypeId');
+		this.currentBudgetType = BudgetType.findOrCreate(budgetTypeId);
+		this.currentAllocationRecord.set('budgetType', this.currentBudgetType);
+		this.currentAllocationRecord.set('forObjective', this.objective);
+		this.renderAllocationRecordInput();
+		
+	},
+	
+	renderAllocationRecordInput: function() {
+		var json = this.currentAllocationRecord.toJSON();
+		this.$el.find('.modal-body').html(this.inputAllocationRecordTemplate(json));
+		
+		// now get the budgetProposal of this objective
+		this.proposals = new BudgetProposalCollection();
+		this.proposals.url = appUrl('/BudgetProposal/find/'+fiscalYear+
+				'/' + this.objective.get('id') + 
+				'/' + this.currentAllocationRecord.get('budgetType').get('id'));
+		
+		this.proposals.fetch({
+			success: _.bind(function() {
+				var html=this.organizationProposalTbodyTemplate(this.proposals.toJSON());
+				$('#organizationProposalTbl').find('tbody').html(html);
+				
+				this.updateSumProposal();
+				
+				this.proposals.pluck('owner').forEach(function(owner) {
+					owner.set('_inProposalList', true);
+				});
+				
+			}, this)
+		});
+		
+		
+	},
+	updateSumProposal: function() {
+		var sum=0;
+		// now put the sum up
+		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
+			sum += parseInt($(el).val());
+		});
+		
+		$('#sumTotalAllocated').html(addCommas(sum));
 	},
 	
 	render : function() {
@@ -332,6 +340,34 @@ var ModalView = Backbone.View.extend({
 			var html = this.modalTemplate(json);
 			this.$el.find('.modal-header span').html(this.objective.get('name'));
 			this.$el.find('.modal-body').html(html);
+			
+			// now we'll just have to mapped the corrected budgetType
+			var records = this.objective.get('allocationRecords');
+			var sum1=0, sum2=0, sum3=0, sum4=0;
+			
+			records.forEach(_.bind(function(record) {
+				var budgetTypeId=record.get('budgetType').get('id');
+				var html = this.allocationRecordCellTemplate(record.toJSON());
+				$('td[data-budgettypeid='+budgetTypeId+']').html(html);
+				
+				if(budgetTypeId==9 || budgetTypeId==8) {
+					sum1 += record.get('amountAllocated');
+				} else if(budgetTypeId==10 || budgetTypeId==7) {
+					sum2 += record.get('amountAllocated');
+				} else if(budgetTypeId==13 || budgetTypeId==11) {
+					sum3 += record.get('amountAllocated');
+				} else if(budgetTypeId==14 || budgetTypeId==12) {
+					sum4 += record.get('amountAllocated');
+				} 
+			},this));
+			
+			// we can render sum
+			$('td#sum1').html(addCommas(sum1) + ' บาท');
+			$('td#sum2').html(addCommas(sum2) + ' บาท');
+			$('td#sum3').html(addCommas(sum3) + ' บาท');
+			$('td#sum4').html(addCommas(sum4) + ' บาท');
+			
+			
 		}
 
 		
@@ -409,7 +445,7 @@ var MainSelectionView = Backbone.View.extend({
 		var type103Id = $(e.target).val();
 		if(type103Id != 0) {
 			var obj = Objective.findOrCreate(type103Id);
-			obj.url = appUrl("/Objective/loadObjectiveBudgetProposal/" + obj.get('id'));
+			obj.url = appUrl("/Objective/loadObjectiveAllocationRecord/" + obj.get('id'));
 			obj.fetch({
 				success: function(model, xhr, option) {
 					mainCtrView.renderMainTblWithParent(obj);
@@ -512,10 +548,12 @@ var MainCtrView = Backbone.View.extend({
 		var currentObjectiveId = $(e.target).parents('tr').attr('data-id');
 		var currentObjective = Objective.findOrCreate(currentObjectiveId);
 		
-		// find objectiveBudgetProposal of this Object? 
-		
-		this.modalView.renderWith(currentObjective);
-	
+		currentObjective.url = appUrl("/Objective/loadObjectiveAllocationRecord/" + currentObjective.get('id'));
+		currentObjective.fetch({
+			success: _.bind(function(model, xhr, option) {
+				this.modalView.renderWith(currentObjective);
+			},this)
+		});
 	},
 	render : function() {
 		this.$el.html(this.mainCtrTemplate());
@@ -575,7 +613,6 @@ var MainCtrView = Backbone.View.extend({
 					var json = this.collection.toJSON();
 					json.allProposal = allProposal.toJSON();
 					json.objective = this.currentParentObjective.toJSON();
-					e1=this.currentParentObjective;
 					this.$el.find('#mainTbl').html(this.mainTblTpl(json));
 					
 					this.$el.find('#mainTbl tbody td:first-child', this).each(function(i){

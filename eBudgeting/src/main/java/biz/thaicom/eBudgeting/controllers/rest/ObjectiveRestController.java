@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 
 
+import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
@@ -88,6 +89,18 @@ public class ObjectiveRestController {
 		if(o!=null) {
 			List<ObjectiveBudgetProposal> obpList = entityService.findObjectiveBudgetproposalByObjectiveIdAndOwnerId(id, currentUser.getWorkAt().getId());
 			o.setFilterObjectiveBudgetProposals(obpList);
+		}
+		return o;  
+	}
+
+	@RequestMapping(value="/Objective/loadObjectiveAllocationRecord/{id}", method=RequestMethod.GET)
+	public @ResponseBody Objective getObjectiveLoadAllocationRecordById(
+			@PathVariable Long id, 
+			@Activeuser ThaicomUserDetail currentUser) {
+		Objective o = entityService.findOjectiveById(id);
+		if(o!=null) {
+			List<AllocationRecord> allocationRecords = entityService.findAllocationRecordByObjective(o);
+			o.setAllocationRecords(allocationRecords);
 		}
 		return o;  
 	}

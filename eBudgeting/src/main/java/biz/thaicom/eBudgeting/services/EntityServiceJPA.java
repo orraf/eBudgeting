@@ -61,6 +61,7 @@ import biz.thaicom.eBudgeting.repositories.ObjectiveRelationsRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveTargetRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveTypeRepository;
+import biz.thaicom.eBudgeting.repositories.OrganizationRepository;
 import biz.thaicom.eBudgeting.repositories.ProposalStrategyRepository;
 import biz.thaicom.eBudgeting.repositories.RequestColumnRepositories;
 import biz.thaicom.eBudgeting.repositories.ReservedBudgetRepository;
@@ -141,6 +142,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private ObjectiveDetailRepository objectiveDetailRepository;
+	
+	@Autowired
+	private OrganizationRepository organizationRepository;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -2111,9 +2115,19 @@ public class EntityServiceJPA implements EntityService {
 //		
 	}
 
+	
+	
+	/**
+	 * ค้นหาข้อมูลการจัดสรรงบประมาณโดยระบุ objective
+	 * 
+	 * @param objective objective ที่ต้องการค้นหาข้อมูลการจัดสรร
+	 * @return	ข้อมูลการจัดสรรงบประมาณทั้งหมด
+	 */
+	@Override
+	public List<AllocationRecord> findAllocationRecordByObjective(Objective objective) {
+		return allocationRecordRepository.findAlByForObjective(objective);
+	}
 
-	
-	
 	/**
 	 * บันทึกข้อมูลการจัดสรรงบประมาณลง Database 
 	 * 
@@ -2129,10 +2143,10 @@ public class EntityServiceJPA implements EntityService {
 	 * @see         AllocationRecord
 	 */
 	@Override
-	public AllocationRecord saveAllocationRecord(JsonNode data) {
+	public AllocationRecord saveAllocationRecord(JsonNode data, JsonNode proposals) {
 	
 		// now get objective.id
-		Long objectiveId = getJsonNodeId(data.get("objective"));
+		Long objectiveId = getJsonNodeId(data.get("forObjective"));
 		if(objectiveId == null) return null;
 		
 		// now get budgetType.id
@@ -2147,11 +2161,18 @@ public class EntityServiceJPA implements EntityService {
 		record.setBudgetType(budgetType);
 		record.setForObjective(objective);
 		record.setAmountAllocated(0L);
-		record.setIndex(data.get("round").asInt());
+		record.setIndex(data.get("index").asInt());
 		
 		allocationRecordRepository.save(record);
 		
-		return updateAllocationRecord(record.getId(), data);
+		AllocationRecord returnRecord = updateAllocationRecord(record.getId(), data, proposals);
+		
+		objective.setAllocationRecords(findAllocationRecordByObjective(objective));
+		
+		return returnRecord;
+		
+		
+		
 	}
 
 	/**
@@ -2165,7 +2186,7 @@ public class EntityServiceJPA implements EntityService {
 	 * @see         AllocationRecord
 	 */
 	@Override
-	public AllocationRecord updateAllocationRecord(Long id, JsonNode data) {
+	public AllocationRecord updateAllocationRecord(Long id, JsonNode data, JsonNode proposals) {
 		AllocationRecord record = allocationRecordRepository.findOne(id);
 		
 		// now update the value
@@ -2177,9 +2198,11 @@ public class EntityServiceJPA implements EntityService {
 		BudgetType budgetType = record.getBudgetType();
 		Objective objective = record.getForObjective();
 		
+		
 		record.setAmountAllocated(amountUpdate);
 		allocationRecordRepository.save(record);
 		
+		objective.setAllocationRecords(findAllocationRecordByObjective(objective));
 		
 		// now looking back
 		Objective parent = objective.getParent();
@@ -3659,5 +3682,22 @@ public class EntityServiceJPA implements EntityService {
 			ThaicomUserDetail currentUser) {
 		return objectiveDetailRepository.findByForObjective_IdAndOwner(objectiveId, currentUser.getWorkAt());
 	}
+
+	/**
+	 * ค้นหาหน่วยงานจากชื่อ
+	 * 
+	 * @param query 	ชื่อที่ต้องการค้นหา โดยจะค้นจาก name หรือ abbr และใส่
+	 * 					% + query + %
+	 */
+	@Override
+	public List<Organization> findOrganizationByName(String query) {
+		
+		return organizationRepository.findAllByNameLikeOrderByNameAsc("%"+query+ "%");
+	}
+	
+	
+	
+	
+	
 
 }
