@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import oracle.net.aso.r;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -930,6 +932,21 @@ public class EntityServiceJPA implements EntityService {
 		
 		return objectiveFromJpa;
 		
+	}
+
+	
+	
+	/**
+	 * ค้นหาลูกของ Objective พร้อม Load AllocationRecords
+	 * 
+	 * @param objectiveId id ของ parent Objective
+	 */
+	@Override
+	public List<Objective> findChildrenObjectivewithAllocationRecords(
+			Long objectiveId) {
+		
+		List<Objective> objectives = objectiveRepository.findByParent_IdLoadAllocationRecords("%."+objectiveId+".%");
+		return objectives;
 	}
 
 	@Override
@@ -2127,6 +2144,88 @@ public class EntityServiceJPA implements EntityService {
 	public List<AllocationRecord> findAllocationRecordByObjective(Objective objective) {
 		return allocationRecordRepository.findAlByForObjective(objective);
 	}
+	
+
+	/**
+	 * บันทึกข้อมูลการจัดสรรงบประมาณและการจัดสรรให้หน่วยงาน
+	 * 
+	 * @param allocationRecord ข้อมูลการจัดสรร โดยเป็น JSON ที่ประกอบไปด้วย field
+	 * 			{amountAllocated, forObjectiveId, budgetTypeId}
+	 * @param proposal ข้อมูลการจัดดสรรงบลงหน่วยงาน เป็น JSON Array ที่ในแต่ละอัน
+	 * 			ประกอบไปด้วย {amountAllocated, organizationId}
+	 * @return allocationRecord ข้อมูลการจัดสรรของหน่วยงานที่บันทึกลง database แล้ว
+	 */
+	@Override
+	public AllocationRecord saveAllocationRecordWithProposals(
+			JsonNode allocationRecord, JsonNode proposals) {
+		
+		Objective objective = objectiveRepository.findOne(allocationRecord.get("forObjectiveId").asLong());
+		BudgetType budgetType = budgetTypeRepository.findOne(allocationRecord.get("budgetTypeId").asLong());
+		
+		AllocationRecord record;
+		
+		if(getJsonNodeId(allocationRecord) == null) {
+			record = new AllocationRecord();
+			record.setBudgetType(budgetType);
+			record.setForObjective(objective);
+			record.setIndex(0);
+		} else {
+			record = allocationRecordRepository.findOne(getJsonNodeId(allocationRecord));
+		}
+		
+		// The method updateAllocationRecord will set this to the correct amount and save again!
+		record.setAmountAllocated(0L);
+		
+		//ready to save/update record
+		allocationRecordRepository.save(record);
+		
+		updateAllocationRecord(record.getId(), allocationRecord);
+		
+		// now we'll deal with proposals
+		
+		List<BudgetProposal> proposalsJpa = findBudgetProposalByObjectiveIdAndBudgetTypeId(
+				record.getForObjective().getId(), record.getBudgetType().getId());
+		
+		List<BudgetProposal> toSaveProposal = new ArrayList<BudgetProposal>();
+		
+		// now we'll do the saving for proposal
+		for(JsonNode proposal : proposals) {
+			Long orgId = proposal.get("organizationId").asLong();
+			Organization owner = organizationRepository.findOne(orgId);
+			Boolean found = false;
+			
+			// now loop through the list 
+			for(BudgetProposal proposalJpa : proposalsJpa) {
+				Long orgJpaId = proposalJpa.getOwner().getId();
+				if(orgJpaId == orgId) {
+					// we update this value
+					proposalJpa.setAmountAllocated(proposal.get("amountAllocated").asLong());
+					found = true;
+					
+					toSaveProposal.add(proposalJpa);
+					
+					break;
+				} 
+			}
+			
+			if(found==false) {
+				BudgetProposal newProposal = new  BudgetProposal();
+				newProposal.setAmountAllocated(proposal.get("amountAllocated").asLong());
+				newProposal.setForObjective(objective);
+				newProposal.setBudgetType(budgetType);
+				newProposal.setOwner(owner);
+				
+				toSaveProposal.add(newProposal);
+			} 
+		}
+		
+		proposalsJpa.removeAll(toSaveProposal);
+		
+		budgetProposalRepository.save(toSaveProposal);
+		budgetProposalRepository.delete(proposalsJpa);
+		
+		return record;
+	}
 
 	/**
 	 * บันทึกข้อมูลการจัดสรรงบประมาณลง Database 
@@ -2143,7 +2242,7 @@ public class EntityServiceJPA implements EntityService {
 	 * @see         AllocationRecord
 	 */
 	@Override
-	public AllocationRecord saveAllocationRecord(JsonNode data, JsonNode proposals) {
+	public AllocationRecord saveAllocationRecord(JsonNode data) {
 	
 		// now get objective.id
 		Long objectiveId = getJsonNodeId(data.get("forObjective"));
@@ -2165,7 +2264,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		allocationRecordRepository.save(record);
 		
-		AllocationRecord returnRecord = updateAllocationRecord(record.getId(), data, proposals);
+		AllocationRecord returnRecord = updateAllocationRecord(record.getId(), data);
 		
 		objective.setAllocationRecords(findAllocationRecordByObjective(objective));
 		
@@ -2186,7 +2285,7 @@ public class EntityServiceJPA implements EntityService {
 	 * @see         AllocationRecord
 	 */
 	@Override
-	public AllocationRecord updateAllocationRecord(Long id, JsonNode data, JsonNode proposals) {
+	public AllocationRecord updateAllocationRecord(Long id, JsonNode data) {
 		AllocationRecord record = allocationRecordRepository.findOne(id);
 		
 		// now update the value
@@ -3694,6 +3793,8 @@ public class EntityServiceJPA implements EntityService {
 		
 		return organizationRepository.findAllByNameLikeOrderByNameAsc("%"+query+ "%");
 	}
+
+
 	
 	
 	

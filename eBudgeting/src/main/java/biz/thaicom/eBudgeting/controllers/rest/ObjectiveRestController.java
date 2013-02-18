@@ -281,6 +281,20 @@ public class ObjectiveRestController {
 		
 	}
 	
+
+	@RequestMapping(value="/ObjectiveWithAllocationRecords/{objectiveId}/children", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> getChildrenbjectiveWithAllocationRecord(
+			@PathVariable Long objectiveId,
+			@Activeuser ThaicomUserDetail currentUser
+			) {
+		List<Objective> objectives = entityService.findChildrenObjectivewithAllocationRecords(objectiveId);
+		
+		return objectives;
+		
+	}
+	
+	
+	
 	@RequestMapping(value="/ObjectiveWithBudgetProposal/{fiscalYear}/{objectiveId}/children", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> getChildrenbjectiveWithBudgetPorposal(
 			@PathVariable Integer fiscalYear,

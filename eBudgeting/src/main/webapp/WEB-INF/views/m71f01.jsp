@@ -194,7 +194,7 @@
 				</ul>
 			</td>
 			<td><ul  style="list-style:none; margin: 0px;">{{#each objective.targets}}<li style="list-style:none; padding: 0px;">{{unit.name}} ({{#if isSumable}}นับ{{else}}ไม่นับ{{/if}})</li>{{/each}}</ul></td>
-			<td class="rightAlign"><strong>{{sumProposal allProposal}}</td>
+			<td class="rightAlign"><strong>{{sumAllocationRecords allRecords}}</td>
 			<td class="rightAlign"><strong>{{sumProposalNext1Year allProposal}}</strong></td>
 			<td class="rightAlign"><strong>{{sumProposalNext2Year allProposal}}</strong></td>
 			<td class="rightAlign"><strong>{{sumProposalNext3Year allProposal}}</strong></td>
@@ -260,7 +260,7 @@
 			</span>
 		</td>
 		<td style="width:80px;" class="{{#if this.children}}disable{{/if}} rightAlign">
-				<span>{{#if this.filterObjectiveBudgetProposals}}{{{sumProposal this.filterObjectiveBudgetProposals}}}{{else}}-{{/if}}</span>
+				<span>{{#if this.allocationRecords}}{{{sumAllocationRecords this.allocationRecords}}}{{else}}-{{/if}}</span>
 		</td>
 
 		<td style="width:80px;" class="{{#if this.children}}disable{{/if}} rightAlign">
@@ -550,6 +550,15 @@
 		return addCommas(amount);
 
 	});
+	Handlebars.registerHelper("sumAllocationRecords", function(records) {
+		var amount = 0;
+		for ( var i = 0; i < records.length; i++) {
+			amount += records[i].amountAllocated;
+		}
+		return addCommas(amount);
+
+	});
+	
 	Handlebars.registerHelper("sumProposalNext1Year", function(proposals) {
 		var amount = 0;
 		for ( var i = 0; i < proposals.length; i++) {

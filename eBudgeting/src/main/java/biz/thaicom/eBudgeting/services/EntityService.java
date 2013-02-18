@@ -111,6 +111,9 @@ public interface EntityService {
 	public List<List<Objective>> findObjectivesByFiscalyearAndTypeIdAndInitBudgetProposal(
 			Integer fiscalYear, long l, Organization organization);
 	
+	public List<Objective> findChildrenObjectivewithAllocationRecords(
+			Long objectiveId);
+	
 		
 	//BudgetType
 	public List<BudgetType> findRootBudgetType();
@@ -173,9 +176,11 @@ public interface EntityService {
 	
 	//AllocationRecord
 	public String initAllocationRecord(Integer fiscalYear, Integer round);
-	public AllocationRecord updateAllocationRecord(Long id, JsonNode data, JsonNode proposals);
-	public AllocationRecord saveAllocationRecord(JsonNode data, JsonNode proposals);
+	public AllocationRecord updateAllocationRecord(Long id, JsonNode data);
+	public AllocationRecord saveAllocationRecord(JsonNode data);
 	public List<AllocationRecord> findAllocationRecordByObjective(Objective o);
+	public AllocationRecord saveAllocationRecordWithProposals(
+			JsonNode allocationRecord, JsonNode proposals);
 	
 	
 	//BudgetReserved
@@ -288,7 +293,8 @@ public interface EntityService {
 	
 	//Organization
 	public List<Organization> findOrganizationByName(String query);
-	
+
+
 
 
 

@@ -32,9 +32,12 @@ import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.security.models.Activeuser;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class BudgetProposalRestController {
@@ -187,20 +190,32 @@ public class BudgetProposalRestController {
 	
 	@RequestMapping(value="/AllocationRecord", method=RequestMethod.POST)
 	public @ResponseBody AllocationRecord saveAllocationRecord(
-			@RequestParam JsonNode proposals,
 			@RequestBody JsonNode data,
 			@Activeuser ThaicomUserDetail currentUser) {
-		return entityService.saveAllocationRecord(data, proposals);
+		return entityService.saveAllocationRecord(data);
+	}
+	
+	@RequestMapping(value="/AllocationRecord/SaveWithProposals", method=RequestMethod.POST)
+	public @ResponseBody AllocationRecord saveAllocationRecord(
+			@RequestParam String allocationRecordJsonString,
+			@RequestParam String proposalsJsonString,
+			@Activeuser ThaicomUserDetail currentUser) throws JsonParseException, IOException {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonFactory factory = mapper.getFactory(); // since 2.1 use mapper.getFactory() instead
+		JsonNode allocationRecord = mapper.readTree(factory.createJsonParser(allocationRecordJsonString));
+		JsonNode proposals = mapper.readTree(factory.createJsonParser(proposalsJsonString));
+		
+		return entityService.saveAllocationRecordWithProposals(allocationRecord, proposals);
 	}
 	
 	@RequestMapping(value="/AllocationRecord/{id}", method=RequestMethod.PUT)
 	public @ResponseBody AllocationRecord updateAllocationRecord(
 			@PathVariable Long id,
-			@RequestParam JsonNode proposals,
 			@RequestBody JsonNode data,
 			@Activeuser ThaicomUserDetail currentUser){
 		
-		return entityService.updateAllocationRecord(id, data, proposals);
+		return entityService.updateAllocationRecord(id, data);
 		
 	}
 	

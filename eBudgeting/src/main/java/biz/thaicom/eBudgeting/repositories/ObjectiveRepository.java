@@ -200,6 +200,15 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 	public List<Objective> findAllByTypeIdAndFiscalYearInitBudgetProposal(
 			Integer fiscalYear, long typeId);
 
+	
+	@Query("" +  
+			"SELECT objective " +
+			"FROM Objective objective " +
+			"	LEFT OUTER JOIN FETCH objective.allocationRecords " +
+			"WHERE objective.parentPath like ?1 " + 
+			"ORDER BY objective.id asc ")
+	public List<Objective> findByParent_IdLoadAllocationRecords(String parentIdPath);
+
 
 
 

@@ -130,8 +130,19 @@ var ModalView = Backbone.View.extend({
 		});
 		
 	},
-	
+	resetProposalsInList: function() {
+		if(this.proposals != null) {
+			this.proposals.pluck('owner').forEach(function(owner) {
+				owner.set('_inProposalList', false);
+			});
+		}
+		
+		if(this.organizationSearchList != null) {
+			this.organizationSearchList.reset();
+		}
+	},
 	backToProposal: function(e) {
+		this.resetProposalsInList();
 		this.render();
 	},
 	cancelModal : function(e) {
@@ -206,7 +217,7 @@ var ModalView = Backbone.View.extend({
 			var p = this.proposals.at(i);
 			var pJson = {};
 			pJson.amountAllocated=p.get('amountAllocated');
-			pJson.organizationId=p.get('forObjective').get('id');
+			pJson.organizationId=p.get('owner').get('id');
 			proposalJson.push(pJson);
 		}
 		
@@ -221,12 +232,16 @@ var ModalView = Backbone.View.extend({
 		$.ajax({
 			type: 'POST',
 			data: {
-				allocationRecord: JSON.stringify(allocationJson),
-				proposals: JSON.stringify(proposalJson)
+				allocationRecordJsonString: JSON.stringify(allocationJson),
+				proposalsJsonString: JSON.stringify(proposalJson)
 			},
 			url: appUrl('/AllocationRecord/SaveWithProposals'),
-			success: _.bind(function() {
-				
+			success: _.bind(function(response) {
+				record.set('id', response.id);
+				this.objective.get("allocationRecords").push(record);
+				alert("บันทึกข้อมูลเรียบร้อย");
+				this.resetProposalsInList();
+				this.render();
 			},this)
 		});
 		
@@ -581,7 +596,7 @@ var MainCtrView = Backbone.View.extend({
 			objectiveCollection = new ObjectiveCollection();
 			this.collection = new ObjectiveCollection();
 			
-			objectiveCollection.url = appUrl("/ObjectiveWithObjectiveBudgetProposal/" + fiscalYear+ "/" + this.currentParentObjective.get('id') + "/flatDescendants");
+			objectiveCollection.url = appUrl("/ObjectiveWithAllocationRecords/" + this.currentParentObjective.get('id') + "/children");
 			
 			objectiveCollection.fetch({
 				success : _.bind( function() {
@@ -612,6 +627,7 @@ var MainCtrView = Backbone.View.extend({
 					
 					var json = this.collection.toJSON();
 					json.allProposal = allProposal.toJSON();
+					json.allRecords = {};
 					json.objective = this.currentParentObjective.toJSON();
 					this.$el.find('#mainTbl').html(this.mainTblTpl(json));
 					
