@@ -366,13 +366,13 @@ var ModalView = Backbone.View.extend({
 				$('td[data-budgettypeid='+budgetTypeId+']').html(html);
 				
 				if(budgetTypeId==9 || budgetTypeId==8) {
-					sum1 += record.get('amountAllocated');
+					sum1 += parseInt(record.get('amountAllocated'));
 				} else if(budgetTypeId==10 || budgetTypeId==7) {
-					sum2 += record.get('amountAllocated');
+					sum2 += parseInt(record.get('amountAllocated'));
 				} else if(budgetTypeId==13 || budgetTypeId==11) {
-					sum3 += record.get('amountAllocated');
+					sum3 += parseInt(record.get('amountAllocated'));
 				} else if(budgetTypeId==14 || budgetTypeId==12) {
-					sum4 += record.get('amountAllocated');
+					sum4 += parseInt(record.get('amountAllocated'));
 				} 
 			},this));
 			
