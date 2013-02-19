@@ -67,9 +67,20 @@
 
 <script id="mainCtrTemplate" type="text/x-handler-template">
 <div class="controls" style="margin-bottom: 15px;">
-	<a href="#" class="btn btn-info menuNew"><i class="icon icon-file icon-white"></i> เพิ่มชื่อทะเบียน</a>
-	{{#if hasUnit}}<a href="#" class="btn btn-primary menuEditUnit"><i class="icon icon-edit icon-white"></i> จัดการหน่วยนับ</a>{{/if}}	
+	<div class="pull-left"> 
+		<a href="#" class="btn btn-info menuNew"><i class="icon icon-file icon-white"></i> เพิ่มชื่อทะเบียน</a>
+		{{#if hasUnit}}<a href="#" class="btn btn-primary menuEditUnit"><i class="icon icon-edit icon-white"></i> จัดการหน่วยนับ</a>{{/if}}	
+	</div>
+	<div class="pull-left" style="margin-left: 20px;">
+	<form class="form-search pull-left" style="margin-bottom:10px;" id="objectiveSearchFrm">
+		<div class="input-append">
+    		<input type="text" class="span2 search-query" id="objectiveQueryTxt" value="{{queryTxt}}">
+    			<button class="btn" type="submit" id="objectiveSearchBtn">Search</button>
+    	</div>
+    </form>
+	</div>
 	
+	<div class="clearfix"></div>
 	{{#if pageParams}}
 	{{#with pageParams}}
     <div class="pagination pagination-small">
@@ -570,7 +581,7 @@ $(document).ready(function() {
 				json.hasUnit = false;
 			}
 			
-
+			json.queryTxt = this.query;
 			
 			var html = this.mainCtrTemplate(json);
 
@@ -599,7 +610,16 @@ $(document).ready(function() {
 			"click .menuEdit"	: "editRow",
 			"click .menuEditUnit"	: "editRowUnit",
 			
-			"click a.pageLink" : "gotoPage"
+			"click a.pageLink" : "gotoPage",
+			"click #objectiveSearchBtn" : "searchObjective"
+		},
+		
+		searchObjective: function(e) {
+			var query = this.$el.find('#objectiveQueryTxt').val();
+			this.query = query;
+			this.renderTargetPage(1, this.query);
+			return false;
+			
 		},
 		
 		newRow: function(e) {
@@ -661,58 +681,52 @@ $(document).ready(function() {
 		},
 		
 		deleteRow: function(e) {
-			var objectiveId = $('input[name=rowRdo]:checked').parents('tr').attr('data-id');
+			var objectiveId = $(e.target).parents('tr').attr('data-id');
+			var modelToDelete = this.collection.get(objectiveId);
 			
-			if( (! $(e.currentTarget).hasClass('disabled')) && $('input[name=rowRdo]:checked').length == 1 ) {
+			
+				if(confirm("คุณต้องการลบรายการ " + modelToDelete.get('name')) == true ) {
+					
+					var objectiveNameToDelete = modelToDelete.get('objectiveName');
 				
-				var modelToDelete = this.collection.get(objectiveId);
-				
-				
-					if(confirm("คุณต้องการลบรายการ " + modelToDelete.get('name'))) {
+					modelToDelete.destroy({wait: true,
+						success: _.bind(function() {					
+							this.collection.remove(modelToDelete);
 						
-						var objectiveNameToDelete = modelToDelete.get('objectiveName');
-					
-						modelToDelete.destroy({wait: true,
-							success: _.bind(function() {					
-								this.collection.remove(modelToDelete);
+							// now we have to run through and reindex
+							this.collection.each(function(model, index) {
+								model.set('index', index);
+							});
 							
-								// now we have to run through and reindex
-								this.collection.each(function(model, index) {
-									model.set('index', index);
-								});
-								
-								// we should be able to delete name here
-								objectiveNameToDelete.destroy({
-									success: _.bind(function() {
-										this.collection.trigger('reset');
-									},this)
-								});
+							// we should be able to delete name here
+							objectiveNameToDelete.destroy({
+								success: _.bind(function() {
+									this.collection.trigger('reset');
+								},this)
+							});
+						
 							
-								
-							},this),
-							error: _.bind(function(model, xhr, options) {
-								alert("ไม่สามารถลบรายการได้ \n Error: " + xhr.responseText);
-							},this)
-						});
+						},this),
+						error: _.bind(function(model, xhr, options) {
+							alert("ไม่สามารถลบรายการได้ \n Error: " + xhr.responseText);
+						},this)
+					});
 					}
-					
 
-				
-			} else {
-				alert('กรุณาเลือกรายการที่ต้องการลบ');
-			}
 		},
 		
 		gotoPage: function(e) {
 			var pageNumber = $(e.target).attr('data-id');
-			this.renderTargetPage(pageNumber);
+			this.renderTargetPage(pageNumber, this.query);
 		},
 		
-		renderTargetPage: function(pageNumber) {
+		renderTargetPage: function(pageNumber, query) {
 			
 			objectiveCollection.targetPage = pageNumber;
 			
 			objectiveCollection.fetch({
+				type: 'POST',
+				data: {query: query },
 				silent: true,
 				success: function(){
 					
@@ -796,6 +810,8 @@ $(document).ready(function() {
 				if( parentTypeId.length > 0 ) {
 					parentObjectiveCollection = new ObjectiveCollection();
 					parentObjectiveCollection.fetch({
+						type: 'POST',
+						data: {query: '' },
 						url: appUrl("/Objective/"+ fiscalYear +"/type/" + parentTypeId), 
 						success: function() {
 							
@@ -803,7 +819,7 @@ $(document).ready(function() {
 					});
 				} 
 				
-				mainTblView.renderTargetPage(1);
+				mainTblView.renderTargetPage(1, null);
 				
 			}
 		}

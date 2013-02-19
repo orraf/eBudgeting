@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -208,6 +209,15 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"WHERE objective.parentPath like ?1 " + 
 			"ORDER BY objective.id asc ")
 	public List<Objective> findByParent_IdLoadAllocationRecords(String parentIdPath);
+
+	
+	@Query("" +
+			"SELECT objective " +
+			"FROM Objective objective " +
+			"WHERE fiscalYear = ?1 and type.id = ?2 and " +
+			"	(name like ?3 or code like ?3) ")
+	public Page<Objective> findByFiscalYearAndType_Id(
+			Integer fiscalYear, Long typeId, String query, Pageable pageable);
 
 
 

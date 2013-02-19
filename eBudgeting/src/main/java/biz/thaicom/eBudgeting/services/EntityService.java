@@ -64,6 +64,7 @@ public interface EntityService {
 	public List<Objective> findRootObjectiveByFiscalyear(Integer fiscalYear, Boolean eagerLoad);
 	public Objective findOneRootObjectiveByFiscalyear(Integer fiscalYear);
 	
+	
 	public List<Objective> findRootFiscalYear();
 	public List<Breadcrumb> createBreadCrumbObjective(String string,
 			Integer fiscalYear, Objective objective);
@@ -104,6 +105,10 @@ public interface EntityService {
 	public String initFiscalYear(Integer fiscalYear);
 	public Page<Objective> findObjectivesByFiscalyearAndTypeId(
 			Integer fiscalYear, Long typeId, Pageable pageable);
+	public Page<Objective> findObjectivesByFiscalyearAndTypeId(
+			Integer fiscalYear, Long typeId,
+			String query, Pageable pageable);
+	
 	
 	public ObjectiveTarget addUnitToObjective(Long objectiveId, Long unitId, Integer isSumable);
 	public String removeUnitFromObjective(Long objectiveId, Long targetId);
@@ -293,6 +298,7 @@ public interface EntityService {
 	
 	//Organization
 	public List<Organization> findOrganizationByName(String query);
+	
 
 
 
