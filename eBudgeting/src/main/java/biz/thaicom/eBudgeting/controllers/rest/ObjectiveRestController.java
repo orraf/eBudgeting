@@ -197,6 +197,15 @@ public class ObjectiveRestController {
 			@RequestParam(value="ownerIds[]") Long ownerIds[] ){
 		return entityService.saveObjectiveOwners(id, ownerIds);
 	}
+
+	@RequestMapping(value="/Objective/currentOwner/{fiscalYear}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> findObjectiveByCurrentOwner(
+			@PathVariable Integer fiscalYear,
+			@Activeuser ThaicomUserDetail currentUser
+			){
+		return entityService.findObjectiveByOwnerAndFiscalYear(currentUser.getWorkAt(), fiscalYear);
+	}
+	
 	
 	
 	@RequestMapping(value="/Objective", method=RequestMethod.POST) 

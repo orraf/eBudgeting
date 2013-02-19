@@ -20,6 +20,7 @@ import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
 import biz.thaicom.eBudgeting.models.bgt.RequestColumn;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -59,6 +60,10 @@ public interface EntityService {
 	public List<Objective> findObjectiveChildrenByObjectiveId(Long id);
 	public List<Objective> findAvailableObjectiveChildrenByObjectiveId(Long id);
 	public List<Objective> findAllObjectiveChildren(Integer fiscalYear, Long id);
+	
+	
+	public List<Objective> findObjectiveByOwnerAndFiscalYear(
+			Organization workAt, Integer fiscalYear);
 	
 	
 	public List<Objective> findRootObjectiveByFiscalyear(Integer fiscalYear, Boolean eagerLoad);
@@ -300,6 +305,15 @@ public interface EntityService {
 	public List<Organization> findOrganizationByNameAndCode(String query, String code);
 	public List<Organization> findOrganizationByObjectiveOwner(Long objectiveId);
 	public List<Organization> saveObjectiveOwners(Long id, Long[] ownerIds);
+	
+	
+	// Activity
+	public List<Activity> findActivityByOwnerAndForObjective(
+			Organization workAt, Long objectiveId);
+	public Activity findOneActivity(Long id);
+	public Activity updateActivity(JsonNode node);
+	public Activity saveActivity(JsonNode node);
+	public Activity deleteActivity(Long id);
 	
 
 

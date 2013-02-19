@@ -716,7 +716,7 @@
         PLN_OBJECTIVEOWNERRELATION_id number(19,0) not null,
         owners_id number(19,0) not null,
     );
-
+    
     alter table PLN_OBJECTIVE_OWNER_JOIN 
         add constraint FK229966897ED7F2BF 
         foreign key (owners_id) 
@@ -727,3 +727,31 @@
         foreign key (PLN_OBJECTIVEOWNERRELATION_id) 
         references PLN_OBJECTIVEOWNERRELATION;
  
+    create table PLN_ACTIVITY (
+        id number(19,0) not null,
+        idx number(10,0),
+        name varchar2(255 char),
+        remark varchar2(255 char),
+        targetValue number(19,0),
+        OBJ_PLN_OBJECTIVETYPE_ID number(19,0) not null,
+        OWNER_HRX_ORGANIZATION number(19,0) not null,
+        UNIT_PLN_TARGETUNIT_ID number(19,0) not null,
+        primary key (id)
+    );
+    
+    alter table PLN_ACTIVITY 
+        add constraint FKDB204ADC7B0190A7 
+        foreign key (OBJ_PLN_OBJECTIVETYPE_ID) 
+        references PLN_OBJECTIVE;
+
+    alter table PLN_ACTIVITY 
+        add constraint FKDB204ADC2067F255 
+        foreign key (OWNER_HRX_ORGANIZATION) 
+        references HRX_ORGANIZATION;
+
+    alter table PLN_ACTIVITY 
+        add constraint FKDB204ADC67FA70E0 
+        foreign key (UNIT_PLN_TARGETUNIT_ID) 
+        references PLN_TARGETUNIT;
+
+    create sequence PLN_ACTIVITY_SEQ;

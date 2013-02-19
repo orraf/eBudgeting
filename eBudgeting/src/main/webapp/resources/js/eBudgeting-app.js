@@ -161,7 +161,23 @@ ObjectiveName = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('/ObjectiveName/')
 	    
 });
-
+Activity = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'forObjective',
+		relatedModel: 'Objective'
+	}, {
+		type: Backbone.HasOne,
+		key: 'unit',
+		relatedModel: 'TargetUnit'
+	}, {
+		type: Backbone.HasOne,
+		key: 'owner',
+		relatedModel: 'Organization'
+	}],
+	urlRoot: appUrl('/Activity')
+});
 
 ObjectiveDetail = Backbone.RelationalModel.extend({
 	idAttribute: 'id',
@@ -743,6 +759,10 @@ TargetUnitCollection = Backbone.Collection.extend({
 });
 OrganizationCollection = Backbone.Collection.extend({
 	model: Organization
+});
+
+ActivityCollection = Backbone.Collection.extend({
+	model: Activity
 });
 
 TargetUnitPagableCollection = PagableCollection.extend({

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveType;
@@ -218,6 +219,17 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"	(name like ?3 or code like ?3) ")
 	public Page<Objective> findByFiscalYearAndType_Id(
 			Integer fiscalYear, Long typeId, String query, Pageable pageable);
+
+	
+	@Query("" +
+			"SELECT owr.objective " +
+			"FROM ObjectiveOwnerRelation owr " +
+			"	INNER JOIN owr.owners owner " +
+			"WHERE " +
+			"	owner = ?1 AND " +
+			"	owr.objective.fiscalYear = ?2")
+	public List<Objective> findAllByOwnerAndfiscalYear(Organization workAt,
+			Integer fiscalYear);
 
 
 

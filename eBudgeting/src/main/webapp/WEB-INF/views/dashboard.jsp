@@ -269,8 +269,29 @@ var menuUserJson = [{
 	         [{name: "m61f03: การบันทึกงบประมาณ ระดับกิจกรรมหลัก",code: "m61f03",  link: "page/m61f03_1/"},
 		      {name: "m61f04: การบันทึกงบประมาณ ระดับรายการ", code: "m61f04", link: "page/m61f04_1/"},
 	          {name: "m61f05: การนำส่งคำของบประมาณ (Sign off) / ถอนนำส่ง (Release)", code: "m61f05", link: "page/m61f05/"}
-	        ]}]
+	        ]}],
+	       
 	         
+},
+{
+	name: "ระบบการจัดสรรงบประมาณ (m7)", code: "m7", 
+	menus: [
+		 {name: "การบันทึกกิจกรรมย่อย (m73)",code: "m73",  menus: 
+			    [ //{name: "m3f04: การประมวลผลก่อนการจัดสรรงบประมาณ", code: "m3f04", link: "page/m4f01/"},
+			     {name: "m73f01: บันทึกกิจกรรมย่อย", code: "m73f01", link: "page/m73f01/"} ]  
+			 }]
+		     //{name: "m71f02: การบันทึกงบประมาณระดับรายการ", code: "m71f02", link: "page/m71f02/"},  
+		     //{name: "m71f03: การนำส่งคำของบประมาณ (Sign off) / ถอนนำส่ง (Release)", code: "m71f03", link: "page/m2f14/", disabled: "disabled"}]},
+		 /* 
+		 	{name: "การจัดสรรเพิมเติม (m72)",code: "m72",  menus: 
+		    [{name: "m72f01: การบันทึกงบประมาณระดับกิจกรรม",code: "m72f01",  link: "page/m2f14/", disabled: "disabled"},
+		     {name: "m72f02: การบันทึกงบประมาณระดับรายการ", code: "m72f02", link: "page/m2f14/", disabled: "disabled"},
+		     {name: "m72f03: การนำส่งคำของบประมาณ (Sign off) / ถอนนำส่ง (Release)",code: "m72f03",  link: "page/m2f14/", disabled: "disabled"}]}
+		   ] 
+		   
+		   */
+		   
+		   
 },{
 	name: "ระบบรายงาน (Report)",
 	menus: [

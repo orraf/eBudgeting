@@ -37,6 +37,7 @@ import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
 import biz.thaicom.eBudgeting.models.bgt.RequestColumn;
 import biz.thaicom.eBudgeting.models.bgt.ReservedBudget;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -49,6 +50,7 @@ import biz.thaicom.eBudgeting.models.pln.TargetUnit;
 import biz.thaicom.eBudgeting.models.pln.TargetValue;
 import biz.thaicom.eBudgeting.models.pln.TargetValueAllocationRecord;
 import biz.thaicom.eBudgeting.models.webui.Breadcrumb;
+import biz.thaicom.eBudgeting.repositories.ActivityRepository;
 import biz.thaicom.eBudgeting.repositories.AllocationRecordRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetCommonTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetProposalRepository;
@@ -152,6 +154,11 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private ObjectiveOwnerRelationRepository objectiveOwnerRelationRepository;
+	
+	
+	@Autowired
+	private ActivityRepository activityRepository;
+	
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -2868,6 +2875,17 @@ public class EntityServiceJPA implements EntityService {
 		
 	}
 	
+	/** ค้นหา Objective ด้วยผู้รับผิดชอบและปีงบประมาณ
+	 * 
+	 */
+	public List<Objective> findObjectiveByOwnerAndFiscalYear(
+			Organization workAt, Integer fiscalYear){
+		
+		return objectiveRepository.findAllByOwnerAndfiscalYear(workAt, fiscalYear);
+		
+	}
+	
+	
 	
 	/**
 	 * ค้นหา  Objective ด้วยปีงบประมาณ และ ชนิด โดยกำหนด PageRequest และผ่านค่า 
@@ -3871,13 +3889,43 @@ public class EntityServiceJPA implements EntityService {
 	
 		owr.setOwners(paramList);
 		
-		
 		// we can save here
 		objectiveOwnerRelationRepository.save(owr);
 		
 		return owr.getOwners();
 	}
 
+	@Override
+	public List<Activity> findActivityByOwnerAndForObjective(
+			Organization workAt, Long objectiveId) {
+		return activityRepository.findAllByOwnerAndForObejctive_Id(workAt, objectiveId);
+	}
+
+	@Override
+	public Activity findOneActivity(Long id) {
+		// TODO Auto-generated method stub
+		return activityRepository.findOne(id);
+	}
+
+	@Override
+	public Activity updateActivity(JsonNode node) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Activity saveActivity(JsonNode node) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Activity deleteActivity(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 	
 	
 	
