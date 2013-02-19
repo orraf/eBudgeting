@@ -45,6 +45,9 @@ public class Organization implements Serializable {
 	@Column(name="IDX")
 	private Integer index;
 	
+	@Basic
+	private String code;
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="PARENT_HRX_ORGANIZATION_ID")
 	private Organization parent;
@@ -100,6 +103,12 @@ public class Organization implements Serializable {
 		this.children = children;
 	}
 
-	
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 	
 }

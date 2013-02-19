@@ -20,6 +20,10 @@ var ModalView = Backbone.View.extend({
 	organizationProposalTbodyTemplate: Handlebars.compile($('#organizationProposalTbodyTemplate').html()),
 	organizationSearchTbodyTemplate: Handlebars.compile($('#organizationSearchTbodyTemplate').html()), 
 	
+	inputOwnerTemplate : Handlebars.compile($('#inputOwnerTemplate').html()), 
+	organizationOwnerSearchTbodyTemplate: Handlebars.compile($('#organizationOwnerSearchTbodyTemplate').html()), 
+	organizationOwnerTbodyTemplate: Handlebars.compile($('#organizationOwnerTbodyTemplate').html()),
+	
 	inputEditProposalTemplate: Handlebars.compile($('#inputEditProposalTemplate').html()), 
 	defaultInputTemplate : Handlebars.compile($('#defaultInputTemplate').html()),
 	inputModalTemplate : Handlebars.compile($('#inputModalTemplate').html()),
@@ -27,6 +31,7 @@ var ModalView = Backbone.View.extend({
 	events : {
 		"click .removeProposal" : "removeProposal",
 		"click .saveProposal" : "saveProposal",
+		"click .saveOwner" : "saveOwner",
 		"click .editProposal" : "editProposal",
 		"click #cancelBtn" : "cancelModal",
 		"click .close" : "cancelModal",
@@ -35,11 +40,19 @@ var ModalView = Backbone.View.extend({
 		"click .addAllocationRecord" : "addAllocationRecord",
 		"click .editAllocationRecord" : "editAllocationRecord",
 		"click #organizationSearchBtn" : "organizationSearch",
+		"click #organizationOwnerSearchBtn" : "organizationOwnerSearch",
 		"click .removeOrganizationProposal" : "removeOrganizationProposal",
-		"click .addOrgazation" : "addOrgazationProposal",
-		"change .proposalAllocated" : "changeProposalAllocated"
+		"click .removeOrganizationOwner" : "removeOrganizationOwner",
+		"click .addOrganization" : "addOrganizationProposal",
+		"click .addOrganizationOwner" : "addOrganizationOwner",
+		"change .proposalAllocated" : "changeProposalAllocated",
+		"click #addOwnerBtn" : "addOwner"
 			
 
+	},
+
+	addOwner: function(e) {
+		this.renderOwnerInput();
 	},
 	
 	changeProposalAllocated: function(e) {
@@ -57,7 +70,24 @@ var ModalView = Backbone.View.extend({
 		
 	},
 	
-	addOrgazationProposal: function(e) {
+	addOrganizationOwner: function(e) {
+		var organizationId = $(e.target).parents('tr').attr('data-id');
+		var organization = Organization.findOrCreate(organizationId);
+		
+		this.owners.push(organization);
+		
+		var html=this.organizationOwnerTbodyTemplate(this.owners.toJSON());
+		$('#organizationOwnerTbl').find('tbody').html(html);
+		
+		
+		organization.set('_inProposalList', true);
+		//refresh the other list
+		var html=this.organizationOwnerSearchTbodyTemplate(this.organizationSearchList.toJSON());
+		$('#organizationOwnerSearchTbl').find('tbody').html(html);
+				
+	},
+	
+	addOrganizationProposal: function(e) {
 		var organizationId = $(e.target).parents('tr').attr('data-id');
 		var organization = Organization.findOrCreate(organizationId);
 		var newProposal = new BudgetProposal();
@@ -112,6 +142,54 @@ var ModalView = Backbone.View.extend({
 		
 		
 	},
+	removeOrganizationOwner: function(e) {
+		var organizationId = $(e.target).parents('tr').attr('data-id');
+		var organization = Organization.findOrCreate(organizationId);
+		
+		
+		// now remove this one 
+		for(var i=0; i<this.owners.length; i++) {
+			if(this.owners.at(i) == organization) {
+				
+				var y = confirm("คุณต้องการลบหน่วยงาน " + organization.get('name'));
+				if(y==true) {
+					
+					var o = this.owners.at(i);
+					
+					// we remove this on from our list
+					this.owners.remove(o);
+					
+					o.set('_inProposalList', false);
+			
+					var html=this.organizationOwnerTbodyTemplate(this.owners.toJSON());
+					$('#organizationOwnerTbl').find('tbody').html(html);
+					
+					//refresh the other list
+					var html=this.organizationOwnerSearchTbodyTemplate(this.organizationSearchList.toJSON());
+					$('#organizationOwnerSearchTbl').find('tbody').html(html);
+				}
+			}
+		}
+		
+		
+	},
+	
+	organizationOwnerSearch: function(e) {
+		var query = this.$el.find('#oraganizationOwnerQueryTxt').val();
+		
+		this.organizationSearchList = new OrganizationCollection();
+		this.organizationSearchList.url = appUrl("/Organization/code/00/findByName");
+		this.organizationSearchList.fetch({
+			data: {
+				query: query
+			},
+			type: 'POST',
+			success: _.bind(function() {
+				var html=this.organizationOwnerSearchTbodyTemplate(this.organizationSearchList.toJSON());
+				$('#organizationOwnerSearchTbl').find('tbody').html(html);
+			},this)
+		});		
+	},
 	
 	organizationSearch: function(e) {
 		var query = this.$el.find('#oraganizationQueryTxt').val();
@@ -137,6 +215,12 @@ var ModalView = Backbone.View.extend({
 			});
 		}
 		
+		if(this.owners != null) {
+			this.owners.forEach(function(owner) {
+				owner.set('_inProposalList', false);
+			});
+		}
+	
 		if(this.organizationSearchList != null) {
 			this.organizationSearchList.reset();
 		}
@@ -189,6 +273,23 @@ var ModalView = Backbone.View.extend({
 		// reset the current budget type
 		this.currentBudgetType = null;
 		
+	},
+	
+	saveOwner: function(e) {
+		$.ajax({
+			type: 'POST',
+			data: {
+				ownerIds: this.owners.pluck('id')
+			},
+			url: appUrl('/Objective/' + this.objective.get('id') + '/saveOwners'),
+			success: _.bind(function() {
+				alert("บันทึกข้อมูลเรียบร้อย");
+				this.owners.forEach(function(owner) {
+					owner.set("_inProposalList", false);
+				});
+				this.render();
+			}, this)
+		});
 	},
 
 	
@@ -309,6 +410,27 @@ var ModalView = Backbone.View.extend({
 		this.currentAllocationRecord.set('budgetType', this.currentBudgetType);
 		this.currentAllocationRecord.set('forObjective', this.objective);
 		this.renderAllocationRecordInput();
+		
+	},
+	
+	renderOwnerInput: function() {
+		this.$el.find('.modal-body').html(this.inputOwnerTemplate());
+		// now get the owner of this objective
+		this.owners = new OrganizationCollection();
+		this.owners.url = appUrl('/Organization/ownObjective/' + this.objective.get('id'));
+		this.owners.fetch({
+			success: _.bind(function() {
+				var html=this.organizationOwnerTbodyTemplate(this.owners.toJSON());
+				$('#organizationOwnerTbl').find('tbody').html(html);
+				
+				this.owners.forEach(function(owner) {
+					owner.set('_inProposalList', true);
+				});
+				
+				
+				
+			}, this)
+		});
 		
 	},
 	
@@ -602,7 +724,6 @@ var MainCtrView = Backbone.View.extend({
 				success : _.bind( function() {
 					// we will now sorted out this mess!
 					var i;
-					console.time("timing1");
 					for (i = 0; i < objectiveCollection.length; i++) {
 						var o = objectiveCollection.at(i);
 						if (o.get('parent') != null) {
@@ -618,13 +739,9 @@ var MainCtrView = Backbone.View.extend({
 							o.set('_planBudgetLevel', true);
 						}
 					}
-					console.timeEnd("timing1");
 					
-					console.time("timing2");
 					this.collection.add(objectiveCollection.where({parent: this.currentParentObjective}));
-					console.timeEnd("timing2");
 					
-					console.time("timing3");
 					var allProposal = new ObjectiveBudgetProposalCollection(); 
 					_.each(this.collection.pluck('filterObjectiveBudgetProposals'), function(bpCollection) {
 						if(bpCollection.length > 0) {
@@ -634,16 +751,12 @@ var MainCtrView = Backbone.View.extend({
 						}
 					});
 					
-					console.timeEnd("timing3");
 					
-					console.time("timing4");
 					var json = this.collection.toJSON();
 					json.allProposal = allProposal.toJSON();
 					json.allRecords = {};
 					json.objective = this.currentParentObjective.toJSON();
 					this.$el.find('#mainTbl').html(this.mainTblTpl(json));
-					
-					console.timeEnd("timing4");
 					
 					this.$el.find('#mainTbl tbody td:first-child', this).each(function(i){
 				        $(this).html((i+1) + ".");

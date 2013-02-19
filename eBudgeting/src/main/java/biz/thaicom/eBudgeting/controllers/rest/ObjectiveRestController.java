@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -188,6 +189,13 @@ public class ObjectiveRestController {
 		entityService.addTargetToObjective(id, targetId);
 		
 		return  "success";
+	}
+	
+	@RequestMapping(value="/Objective/{id}/saveOwners", method=RequestMethod.POST)
+	public @ResponseBody List<Organization> saveObjectiveOwners(
+			@PathVariable Long id,
+			@RequestParam(value="ownerIds[]") Long ownerIds[] ){
+		return entityService.saveObjectiveOwners(id, ownerIds);
 	}
 	
 	

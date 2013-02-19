@@ -284,11 +284,14 @@
 
 <script id="modalTemplate" type="text/x-handler-template">
 <div>
+	<div style="margin-bottom: 20px;">
+		<button id="addOwnerBtn" class="btn btn-primary">ระบุหน่วยงานรับผิดชอบ</button>
+	</div>
 <table class="table table-bordered">
 		<thead>
 			<tr>
 				<td rowspan="2" style="width:120px;">ประเภทงบ</td>
-				<td style="width:200px;" colspan="2">เงินสงเคราะห์ (sess)</td>
+				<td style="width:200px;" colspan="2">เงินสงเคราะห์ (CESS)</td>
 				<td style="width:200px;" colspan="2">เงินงบประมาณแผ่นดิน</td>
 			</tr>
 			<tr>
@@ -326,6 +329,74 @@
 </div>
 </script>
 
+<script id="inputOwnerTemplate" type="text/x-handler-template">
+<div id="inputAll">
+	
+	<div class="clearfix"></div>
+        
+        <div style="padding-bottom:12px;">
+           <strong><u>ระบุหน่วยงานที่รับผิดชอบ</u></strong>
+        </div>
+        <div class="row">
+
+    	    <div class="span6" style="height:290px; border: 1px solid #cccccc">
+        	    <div>
+            	    <table class="table table-bordered" style="margin-bottom:0px">
+                	<thead>
+                    	<tr>
+                        	<td style="width:237px;">หน่วยงาน</td>
+                    	</tr>
+                	</thead>
+                	</table>
+            	</div>
+
+	            <div style="height:252px;overflow:auto;">
+    	            <table style="margin-bottom:0px;" class="table table-bordered" id="organizationOwnerTbl">
+        	        	<tbody>
+            			</tbody>
+					</table>
+             	</div>
+         	</div>
+
+
+			<div class="span3" style="height:290px; width:270px;">
+			    <div class="pull-right">
+    				<form class="form-search" style="margin-bottom:10px;" id="organizationOwnerSearchForm">
+			    		<div class="input-append">
+    						<input type="text" class="span2 search-query" id="oraganizationOwnerQueryTxt">
+    						<button class="btn" type="submit" id="organizationOwnerSearchBtn">Search</button>
+    					</div>
+    				</form>
+	    		</div>
+    	 		<div class="clearfix"></div>
+    			<div style="border:1px solid #cccccc">
+		    		<div>
+        		 		<table style="margin-bottom:0px" class="table table-bordered">
+                		<thead>
+                    		<tr>
+                        		<td style="width:200px;">หน่วยงาน</td>
+                    		</tr>
+                		</thead>
+                		</table>
+            		</div>
+            		<div style="height:214px;overflow:auto;">
+                		<table style="margin-bottom:0px;" class="table table-bordered" id="organizationOwnerSearchTbl">
+                			<tbody>
+                			</tbody>
+						</table>
+            		</div>
+    			</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<div style="padding-top:5px;">
+<button class="btn btn-mini btn-primary saveOwner">บันทึก</button> <button class="btn btn-mini backToProposal">ย้อนกลับ</button>
+</div>
+
+</script>
 
 
 <script id="inputAllocationRecordTemplate" type="text/x-handler-template">
@@ -409,7 +480,7 @@
 	{{#if this._inProposalList}}
 		<span class="label label-warning">เลือกแล้ว</span>
 	{{else}}
-		<a href="#" class="addOrgazation"><i class="icon icon-plus-sign"></i></a>
+		<a href="#" class="addOrganization"><i class="icon icon-plus-sign"></i></a>
 	{{/if}}
 
  	{{name}}</td>
@@ -425,6 +496,26 @@
 			<div class="input-append"><input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
 		</div>
 	</td>
+</tr>
+{{/each}}
+</script>
+<script id="organizationOwnerSearchTbodyTemplate" type="text/x-handler-template">
+{{#each this}}
+<tr data-id="{{id}}"><td>
+	{{#if this._inProposalList}}
+		<span class="label label-warning">เลือกแล้ว</span>
+	{{else}}
+		<a href="#" class="addOrganizationOwner"><i class="icon icon-plus-sign"></i></a>
+	{{/if}}
+
+ 	{{name}}</td>
+</tr>
+{{/each}}
+</script>
+
+<script id="organizationOwnerTbodyTemplate" type="text/x-handler-template">
+{{#each this}}
+<tr data-id="{{id}}"><td><a href="#" class="removeOrganizationOwner"><i class="icon icon-trash"></i></a> {{name}}</td>
 </tr>
 {{/each}}
 </script>

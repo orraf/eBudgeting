@@ -691,3 +691,39 @@
         references PLN_OBJECTIVE;
         
    	create sequence PLN_OBJECTIVEDETAIL_SEQ;
+   	
+-- version 5
+-- Modified Date: Feb 19, 2013
+    update app_info set db_version=5;    
+    
+   	alter table hrx_organization add (code varchar2(20));
+   	
+   	create table PLN_OBJECTIVEOWNERRELATION (
+        id number(19,0) not null,
+        OBJ_PLN_OBJECTIVE_ID number(19,0) not null,
+        primary key (id)
+    );
+    
+	alter table PLN_OBJECTIVEOWNERRELATION 
+        add constraint FK8F586623D66F5021 
+        foreign key (OBJ_PLN_OBJECTIVE_ID) 
+        references PLN_OBJECTIVE;
+
+	create sequence PLN_OBJOWNERRELATION_SEQ;
+
+        
+	create table PLN_OBJECTIVE_OWNER_JOIN (
+        PLN_OBJECTIVEOWNERRELATION_id number(19,0) not null,
+        owners_id number(19,0) not null,
+    );
+
+    alter table PLN_OBJECTIVE_OWNER_JOIN 
+        add constraint FK229966897ED7F2BF 
+        foreign key (owners_id) 
+        references HRX_ORGANIZATION;
+
+    alter table PLN_OBJECTIVE_OWNER_JOIN 
+        add constraint FK229966893FFF619B 
+        foreign key (PLN_OBJECTIVEOWNERRELATION_id) 
+        references PLN_OBJECTIVEOWNERRELATION;
+ 

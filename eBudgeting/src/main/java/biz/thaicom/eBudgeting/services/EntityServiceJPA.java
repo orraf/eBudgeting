@@ -40,6 +40,7 @@ import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
+import biz.thaicom.eBudgeting.models.pln.ObjectiveOwnerRelation;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveRelations;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveTarget;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveType;
@@ -59,6 +60,7 @@ import biz.thaicom.eBudgeting.repositories.FormulaStrategyRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveBudgetProposalRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveDetailRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveNameRepository;
+import biz.thaicom.eBudgeting.repositories.ObjectiveOwnerRelationRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveRelationsRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveTargetRepository;
@@ -147,6 +149,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private OrganizationRepository organizationRepository;
+	
+	@Autowired
+	private ObjectiveOwnerRelationRepository objectiveOwnerRelationRepository;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -3816,13 +3821,62 @@ public class EntityServiceJPA implements EntityService {
 	 * 
 	 * @param query 	ชื่อที่ต้องการค้นหา โดยจะค้นจาก name หรือ abbr และใส่
 	 * 					% + query + %
+	 * @param code		รหัสของหน่วยงานที่ต้องการค้นหา
 	 */
 	@Override
-	public List<Organization> findOrganizationByName(String query) {
+	public List<Organization> findOrganizationByNameAndCode(String query, String code) {
 		
-		return organizationRepository.findAllByNameLikeOrderByNameAsc("%"+query+ "%");
+		if(code == null) {
+			code = "";
+		}
+		
+		return organizationRepository.findAllByNameLikeAndCodeLikeOrderByNameAsc("%"+query+ "%", "%"+code+ "%");
 	}
 
+	/**
+	 * ค้นหาหน่วยงานจาก Objective ที่ได้รับผิดชอบ
+	 * @param objectiveId id ของ {@link Objective} ที่รับผิดชอบ
+	 * 
+	 */
+	@Override
+	public List<Organization> findOrganizationByObjectiveOwner(Long objectiveId) {
+		return organizationRepository.findAllByOwningObjective(objectiveId);
+	}
+
+	/**
+	 * บันทึกข้อมูลหน่วยงานผู้รับผิดชอบ
+	 * @param id objective id ที่ต้องการบันทึก
+	 * @param ownerIds array ของ organization ids
+	 */
+	@Override
+	public List<Organization> saveObjectiveOwners(Long id, Long[] ownerIds) {
+		if(ownerIds == null || ownerIds.length == 0) {
+			// nothing to do here
+			return null;
+		}
+		
+		ObjectiveOwnerRelation owr = objectiveOwnerRelationRepository.findByObjective_Id(id);
+		if(owr == null) {
+			owr = new ObjectiveOwnerRelation();
+			owr.setObjective(objectiveRepository.findOne(id));
+			owr.setOwners(new ArrayList<Organization>());
+		}
+		
+		List<Organization> paramList = new ArrayList<Organization>();
+		for(Long ownerId : ownerIds) {
+			Organization o = organizationRepository.findOne(ownerId);
+			paramList.add(o);
+
+		}
+	
+		owr.setOwners(paramList);
+		
+		
+		// we can save here
+		objectiveOwnerRelationRepository.save(owr);
+		
+		return owr.getOwners();
+	}
 
 	
 	
