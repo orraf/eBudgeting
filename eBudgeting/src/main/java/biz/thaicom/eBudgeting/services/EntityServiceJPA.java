@@ -2169,14 +2169,12 @@ public class EntityServiceJPA implements EntityService {
 			record.setBudgetType(budgetType);
 			record.setForObjective(objective);
 			record.setIndex(0);
+			record.setAmountAllocated(0L);
 		} else {
 			record = allocationRecordRepository.findOne(getJsonNodeId(allocationRecord));
 		}
 		
 		// The method updateAllocationRecord will set this to the correct amount and save again!
-		record.setAmountAllocated(0L);
-		
-		//ready to save/update record
 		allocationRecordRepository.save(record);
 		
 		updateAllocationRecord(record.getId(), allocationRecord);

@@ -235,9 +235,9 @@
 			<div class="pull-left" style="width:{{nameWidth}}px;">
 					<input class="checkbox_tree" type="checkbox" id="item_{{this.id}}"/>
 					<label class="main" for="item_{{this.id}}">
-						{{#unless this.children}}<a href="#" class="detail">{{/unless}}
+						{{#if this._planBudgetLevel}}<a href="#" class="detail">{{/if}}
 						<b>{{this.type.name}}</b> [{{this.code}}] {{this.name}}
-						{{#unless this.children}}</a>{{/unless}}
+						{{#if this._planBudgetLevel}}</a>{{/if}}
 					</label>
 			</div>
 {{#unless this.children}}

@@ -602,6 +602,7 @@ var MainCtrView = Backbone.View.extend({
 				success : _.bind( function() {
 					// we will now sorted out this mess!
 					var i;
+					console.time("timing1");
 					for (i = 0; i < objectiveCollection.length; i++) {
 						var o = objectiveCollection.at(i);
 						if (o.get('parent') != null) {
@@ -612,10 +613,18 @@ var MainCtrView = Backbone.View.extend({
 								parentObj.get('children').add(o);
 							}
 						}
+						
+						if(o.get('type').get('id') == 105) {
+							o.set('_planBudgetLevel', true);
+						}
 					}
+					console.timeEnd("timing1");
 					
+					console.time("timing2");
 					this.collection.add(objectiveCollection.where({parent: this.currentParentObjective}));
+					console.timeEnd("timing2");
 					
+					console.time("timing3");
 					var allProposal = new ObjectiveBudgetProposalCollection(); 
 					_.each(this.collection.pluck('filterObjectiveBudgetProposals'), function(bpCollection) {
 						if(bpCollection.length > 0) {
@@ -625,11 +634,16 @@ var MainCtrView = Backbone.View.extend({
 						}
 					});
 					
+					console.timeEnd("timing3");
+					
+					console.time("timing4");
 					var json = this.collection.toJSON();
 					json.allProposal = allProposal.toJSON();
 					json.allRecords = {};
 					json.objective = this.currentParentObjective.toJSON();
 					this.$el.find('#mainTbl').html(this.mainTblTpl(json));
+					
+					console.timeEnd("timing4");
 					
 					this.$el.find('#mainTbl tbody td:first-child', this).each(function(i){
 				        $(this).html((i+1) + ".");
