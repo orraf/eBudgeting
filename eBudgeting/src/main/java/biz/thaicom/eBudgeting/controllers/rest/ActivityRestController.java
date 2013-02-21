@@ -49,8 +49,9 @@ public class ActivityRestController {
 	
 	@RequestMapping(value="/Activity/", method=RequestMethod.POST)
 	public @ResponseBody Activity saveActivity(
-			@RequestBody JsonNode node) {
-		return entityService.saveActivity(node);
+			@RequestBody JsonNode node,
+			@Activeuser ThaicomUserDetail currentUser) {
+		return entityService.saveActivity(node, currentUser.getWorkAt());
 	}
 	
 	@RequestMapping(value="/Activity/{id}", method=RequestMethod.DELETE)

@@ -22,6 +22,7 @@
 			</div>
 			<div class="modal-body"></div>
 			<div class="modal-footer">
+				<a href="#" class="btn" id="saveBtn">บันทึกข้อมูล</a>  
 				<a href="#" class="btn" id="cancelBtn">กลับหน้าหลัก</a> 
 			</div>
 		</div>
@@ -167,16 +168,16 @@
 <div>
 <form>
 	<label>ระบุชื่อกิจกรรมย่อย</label>
-	<textarea rows="2" class="span5" id="nameTxt">{{name}}</textarea>
+	<textarea rows="2" class="span5 model" id="nameTxt" data-modelName="name">{{name}}</textarea>
 
 	<label>ระบุรหัส</label>
-	<input type="text" id="code" value="{{code}}"></input>
+	<input type="text" class="model" id="code" value="{{code}}" data-modelName="code"></input>
 
 	<label>ระบุเป้าหมาย</label>
-	<input type="text" id="targetValue" value="{{targetValue}}"></input>
+	<input type="text" class="model" id="targetValue" value="{{targetValue}}" data-modelName="targetValue"></input>
 
 	<label>ระบุเป้าหมาย​</label>
-	<select class="span2" id="unitSlt">
+	<select class="span2" id="unitSlt" data-modelName="unit" data-modelType="TargetUnit">
 		<option value="0">กรุณาเลือก</option>
 		{{#each unitSelectionList}}
 			<option value="{{this.id}}" {{#if this.selected}}selected='selected'{{/if}}>{{this.name}}</option>

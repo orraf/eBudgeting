@@ -312,7 +312,7 @@ public interface EntityService {
 			Organization workAt, Long objectiveId);
 	public Activity findOneActivity(Long id);
 	public Activity updateActivity(JsonNode node);
-	public Activity saveActivity(JsonNode node);
+	public Activity saveActivity(JsonNode node, Organization owner);
 	public Activity deleteActivity(Long id);
 	
 

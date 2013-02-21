@@ -176,7 +176,7 @@ Activity = Backbone.RelationalModel.extend({
 		key: 'owner',
 		relatedModel: 'Organization'
 	}],
-	urlRoot: appUrl('/Activity')
+	urlRoot: appUrl('/Activity/')
 });
 
 ObjectiveDetail = Backbone.RelationalModel.extend({

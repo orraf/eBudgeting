@@ -9,7 +9,32 @@ var ModalView = Backbone.View.extend({
 	el : "#modal",
 	
 	events : {
+		"change .model" : "modelChange",
+		"change select#unitSlt" : "unitChange",
+		"click #saveBtn" : "saveModel"
+		
+	},
 	
+	saveModel : function(e) {
+		this.currentActivity.save(null, {
+			success: function() {
+				alert('บันทึกข้อมูลเรียบร้อยแล้ว');
+			}
+		});
+	},
+	
+	unitChange : function(e) {
+		var unitId = $(e.target).val();
+		this.currentActivity.set('unit', TargetUnit.findOrCreate(unitId));
+	},
+	
+	modelChange: function(e) {
+		var value = $(e.target).val();
+		var modelName = $(e.target).attr('data-modelName');
+		
+		if(this.currentActivity!=null) {
+			this.currentActivity.set(modelName,value);
+		}
 	},
 	
 	render: function() {

@@ -3903,26 +3903,50 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public Activity findOneActivity(Long id) {
-		// TODO Auto-generated method stub
 		return activityRepository.findOne(id);
 	}
 
 	@Override
 	public Activity updateActivity(JsonNode node) {
-		// TODO Auto-generated method stub
-		return null;
+		Activity activity = activityRepository.findOne(getJsonNodeId(node));
+		
+		activity.setCode(node.get("code").asText());
+		activity.setName(node.get("name").asText());
+		
+		activity.setTargetValue(node.get("targetValue").asLong());
+		
+		TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(node.get("unit")));
+		
+		activity.setUnit(unit);
+		
+		activityRepository.save(activity);
+		
+		return activity;
 	}
 
 	@Override
-	public Activity saveActivity(JsonNode node) {
-		// TODO Auto-generated method stub
-		return null;
+	public Activity saveActivity(JsonNode node, Organization owner) {
+		Activity activity = new Activity();
+		activity.setOwner(owner);
+		activity.setCode(node.get("code").asText());
+		activity.setName(node.get("name").asText());
+		
+		activity.setTargetValue(node.get("targetValue").asLong());
+		
+		TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(node.get("unit")));
+		
+		activity.setUnit(unit);
+		
+		activityRepository.save(activity);
+		
+		return activity;
 	}
 
 	@Override
 	public Activity deleteActivity(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		Activity activity = activityRepository.findOne(id);
+		activityRepository.delete(activity);
+		return activity;
 	}
 
 	
