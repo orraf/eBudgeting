@@ -2,8 +2,8 @@ var ModalView = Backbone.View.extend({
 	/**
      *  @memberOf ModalView
      */
-	initialize : function() {
-		
+	initialize : function(options) {
+		this.parentView = options.parentView;
 	},
 	modalTemplate: Handlebars.compile($("#modalTemplate").html()),
 	el : "#modal",
@@ -11,15 +11,24 @@ var ModalView = Backbone.View.extend({
 	events : {
 		"change .model" : "modelChange",
 		"change select#unitSlt" : "unitChange",
-		"click #saveBtn" : "saveModel"
+		"click #saveBtn" : "saveModel",
+		"click #cancelBtn" : "cancel"
+			
 		
+	},
+	
+	cancel : function(e) {
+		this.$el.modal('hide');
 	},
 	
 	saveModel : function(e) {
 		this.currentActivity.save(null, {
-			success: function() {
+			success: _.bind(function() {
 				alert('บันทึกข้อมูลเรียบร้อยแล้ว');
-			}
+				this.$el.modal('hide');
+				this.parentView.renderMainTblWithParent(this.currentActivity.get('forObjective'));
+				
+			},this)
 		});
 	},
 	
@@ -43,10 +52,7 @@ var ModalView = Backbone.View.extend({
 			this.$el.find('.modal-header span').html("เพิ่มทะเบียนรายการย่อย");
 		} else {
 			this.$el.find('.modal-header span').html(
-					objectiveType.get('name') +
-					"<br/> <span style='font-weight: normal;'>[" +
-					this.currentActivity.get('code') + "]"+ 
-					this.currentActivity.get('name') + "</span>");
+					"แก้ไขทะเบียนรายการย่อย");
 		}
 		
 		var json = this.currentActivity.toJSON();
@@ -155,16 +161,48 @@ var MainCtrView = Backbone.View.extend({
 	initialize : function() {
 		//this.collection.bind('reset', this.render, this);
 		this.$el.html(this.loadingTpl());
+		this.modalView = new ModalView({parentView: this});
 	},
 
 	el : "#mainCtr",
 	loadingTpl : Handlebars.compile($("#loadingTemplate").html()),
 	mainCtrTemplate : Handlebars.compile($("#mainCtrTemplate").html()),
 	mainTblTemplate : Handlebars.compile($("#mainTblTemplate").html()),
-	modalView : new ModalView(),
-
+	mainTblTbodyTemplate : Handlebars.compile($("#mainTblTbodyTemplate").html()),
+	
 	events : {
-		"click .newActivityBtn" : "newActivity"
+		"click .newActivityBtn" : "newActivity",
+		"click .menuDelete" : "deleteActivity",
+		"click .menuEdit" : "editActivity"
+			
+	},
+	
+	editActivity: function(e) {
+		var activityId = $(e.target).parents('tr').attr('data-id');
+		var activity = Activity.findOrCreate(activityId);
+
+		this.modalView.renderWithActivity(activity);
+	},
+	
+	deleteActivity : function(e) {
+		var activityId = $(e.target).parents('tr').attr('data-id');
+		var activity = Activity.findOrCreate(activityId);
+		if(activity != null) {
+			var answer = confirm("คุณต้องการลบกิจกรรมย่อย " + activity.get('name') + " ?" );
+			if(answer == true ) {
+				activity.destroy({
+					success: _.bind(function() {
+						alert("คุณได้ลบข้อมูลเรียบร้อยแล้ว");
+						this.renderMainTblWithParent(this.currentObjective);
+					},this)
+				});
+			} else {
+				// noting happend
+				return false;
+			}
+			
+		}
+		
 	},
 	
 	newActivity: function() {
@@ -204,7 +242,10 @@ var MainCtrView = Backbone.View.extend({
 		this.activities.url = appUrl("/Activity/currentOwner/forObjective/" + this.currentObjective.get('id'));
 		this.activities.fetch({
 			success : _.bind(function() {
+				var json = this.activities.toJSON();
+				var html = this.mainTblTbodyTemplate(json);
 				
+				this.$el.find("#mainTbl tbody").html(html);
 			},this)
 		});
 		

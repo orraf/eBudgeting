@@ -47,7 +47,7 @@ public class Activity implements Serializable {
 	private String code;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="OBJ_PLN_OBJECTIVETYPE_ID", nullable=false)
+	@JoinColumn(name="OBJ_PLN_OBJECTIVE_ID", nullable=false)
 	private Objective forObjective;
 	
 	@ManyToOne(fetch=FetchType.LAZY)

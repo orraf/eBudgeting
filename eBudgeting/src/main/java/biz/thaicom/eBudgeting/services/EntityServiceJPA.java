@@ -3928,13 +3928,15 @@ public class EntityServiceJPA implements EntityService {
 	public Activity saveActivity(JsonNode node, Organization owner) {
 		Activity activity = new Activity();
 		activity.setOwner(owner);
+		
+		Objective obj = objectiveRepository.findOne(getJsonNodeId(node.get("forObjective")));
+		activity.setForObjective(obj);
+		
 		activity.setCode(node.get("code").asText());
 		activity.setName(node.get("name").asText());
-		
 		activity.setTargetValue(node.get("targetValue").asLong());
 		
 		TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(node.get("unit")));
-		
 		activity.setUnit(unit);
 		
 		activityRepository.save(activity);

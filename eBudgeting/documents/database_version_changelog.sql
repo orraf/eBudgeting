@@ -714,7 +714,7 @@
         
 	create table PLN_OBJECTIVE_OWNER_JOIN (
         PLN_OBJECTIVEOWNERRELATION_id number(19,0) not null,
-        owners_id number(19,0) not null,
+        owners_id number(19,0) not null
     );
     
     alter table PLN_OBJECTIVE_OWNER_JOIN 
@@ -733,7 +733,7 @@
         name varchar2(255 char),
         remark varchar2(255 char),
         targetValue number(19,0),
-        OBJ_PLN_OBJECTIVETYPE_ID number(19,0) not null,
+        OBJ_PLN_OBJECTIVE_ID number(19,0) not null,
         OWNER_HRX_ORGANIZATION number(19,0) not null,
         UNIT_PLN_TARGETUNIT_ID number(19,0) not null,
         primary key (id)
@@ -741,7 +741,7 @@
     
     alter table PLN_ACTIVITY 
         add constraint FKDB204ADC7B0190A7 
-        foreign key (OBJ_PLN_OBJECTIVETYPE_ID) 
+        foreign key (OBJ_PLN_OBJECTIVE_ID) 
         references PLN_OBJECTIVE;
 
     alter table PLN_ACTIVITY 

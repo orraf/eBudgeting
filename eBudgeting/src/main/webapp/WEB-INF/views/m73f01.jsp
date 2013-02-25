@@ -22,7 +22,7 @@
 			</div>
 			<div class="modal-body"></div>
 			<div class="modal-footer">
-				<a href="#" class="btn" id="saveBtn">บันทึกข้อมูล</a>  
+				<a href="#" class="btn btn-primary" id="saveBtn">บันทึกข้อมูล</a>  
 				<a href="#" class="btn" id="cancelBtn">กลับหน้าหลัก</a> 
 			</div>
 		</div>
@@ -163,6 +163,19 @@
 	</tbody>
 </table>
 </script>
+<script id="mainTblTbodyTemplate" type="text/x-handler-template">
+{{#each this}}
+<tr data-id="{{id}}">
+			<td><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
+	<a href="#td-{{id}}" class="deleteObjective menuDelete"><i class="icon-trash icon-red"></i></a></td>
+			<td>{{code}}</td>
+			<td>{{name}}</td>
+			<td>{{formatNumber targetValue}}</td>
+			<td>{{unit.name}}</td>
+</tr>
+{{/each}}
+</script>
+
 
 <script id="modalTemplate" type="text/x-handler-template">
 <div>
@@ -176,7 +189,7 @@
 	<label>ระบุเป้าหมาย</label>
 	<input type="text" class="model" id="targetValue" value="{{targetValue}}" data-modelName="targetValue"></input>
 
-	<label>ระบุเป้าหมาย​</label>
+	<label>ระบุหน่วยนับ</label>
 	<select class="span2" id="unitSlt" data-modelName="unit" data-modelType="TargetUnit">
 		<option value="0">กรุณาเลือก</option>
 		{{#each unitSelectionList}}
