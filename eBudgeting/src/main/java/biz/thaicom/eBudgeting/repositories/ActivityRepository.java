@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.repositories;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 	@Query("" +
 			"SELECT act " +
 			"FROM Activity act " +
-			"WHERE owner =?1 AND forObjective.id = ?2 ")
+			"WHERE act.owner =?1 AND act.forObjective.id = ?2 AND act.parent is null ")
 	List<Activity> findAllByOwnerAndForObejctive_Id(Organization org, Long objectiveId);
 
 	

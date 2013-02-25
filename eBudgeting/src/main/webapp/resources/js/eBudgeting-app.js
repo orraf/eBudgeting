@@ -168,6 +168,11 @@ Activity = Backbone.RelationalModel.extend({
 		key: 'forObjective',
 		relatedModel: 'Objective'
 	}, {
+		type: Backbone.HasMany,
+		key: 'targets',
+		relatedModel: 'ActivityTarget',
+		collectionType: 'ActivityTargetCollection'
+	},{
 		type: Backbone.HasOne,
 		key: 'unit',
 		relatedModel: 'TargetUnit'
@@ -175,7 +180,16 @@ Activity = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'owner',
 		relatedModel: 'Organization'
-	}],
+	},{
+    	type: Backbone.HasMany,
+    	key: 'children',
+    	relatedModel: 'Activity',
+    	collectionType: 'ActivityCollection'	    
+    },,{
+    	type: Backbone.HasOne,
+    	key: 'parent',
+    	relatedModel: 'Activity'
+    },],
 	urlRoot: appUrl('/Activity/')
 });
 
@@ -477,6 +491,20 @@ Organization = Backbone.RelationalModel.extend({
 	idAttribute: 'id'
 });
 
+ActivityTarget = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'activity',
+		relatedModel: 'Activity'
+	},{
+		type: Backbone.HasOne,
+		key: 'unit',
+		relatedModel: 'TargetUnit'
+	}],
+	urlRoot: appUrl('/ActivityTarget/')
+});
+
 ObjectiveTarget = Backbone.RelationalModel.extend({
 	idAttribute: 'id',
 	relations: [{
@@ -750,6 +778,9 @@ TargetValueAllocationRecordCollection=Backbone.Collection.extend({
 });
 ReservedBudgetCollection =Backbone.Collection.extend({
 	model: ReservedBudget
+});
+ActivityTargetCollection = Backbone.Collection.extend({
+	model: ActivityTarget
 });
 ObjectiveTargetCollection = Backbone.Collection.extend({
 	model: ObjectiveTarget

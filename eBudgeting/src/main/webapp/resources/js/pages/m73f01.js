@@ -1,3 +1,135 @@
+var ActivityTargetTableView = Backbone.View.extend({
+	/**
+     *  @memberOf ActivityTargetTableView
+     */
+	initialize : function(options) {
+		this.currentActivity = options.activity;
+	},
+	
+	activityTargetTableTemplate: Handlebars.compile($("#activityTargetTableTemplate").html()),
+	activityTargetTemplate:  Handlebars.compile($("#activityTargetTemplate").html()),
+	
+	setCurrentActivity : function(activity) {
+		this.currentActivity = activity;
+	},
+	
+	el : '#activityTarget',
+	render : function() {
+		
+		var json = this.currentActivity.toJSON();
+		for(var i=0; i<json.targets.length; i++) {
+			json.targets[i].idx = i;
+		}
+		var html = this.activityTargetTableTemplate(json);
+		e1 = json;
+		this.$el.html(html);
+	},
+	
+	events : {
+		"click .newActivityTargetBtn" : "newActivityTarget",
+		"change select#unitSlt" : "unitChange",
+		"change .targetModel" : "targetModelChange",
+		"click .addActivityTargetBtn" : "addActivityTarget",
+		"click .backToActivity" : "backToActivity",
+		"click .deleteTarget" : "deleteActivityTarget",
+		"click .editTarget" : "editActivityTarget"
+		
+	},
+	
+	backToActivity: function(e) {
+		this.render();
+	},
+	
+	editActivityTarget : function(e) {
+		var index = $(e.target).parents('tr').attr('data-idx');
+		var target = this.currentActivity.get('targets').at(index);
+		
+		this.currentActivityTarget = target;
+		
+		var json = this.currentActivityTarget.toJSON();
+		
+		json.unitSelectionList = listTargetUnits.toJSON();
+		json.headerString="แก้ไขเป้าหมาย";
+		
+		// loop through the parent
+		for(var i=0; i<json.unitSelectionList.length; i++) {
+			if(this.currentActivityTarget.get('unit') != null) {
+				if(json.unitSelectionList[i].id == this.currentActivityTarget.get('unit').get('id')) {
+					json.unitSelectionList[i].selected = "selected";
+				}
+			}
+		}
+		
+		var html = this.activityTargetTemplate(json);
+		
+		this.$el.html(html);
+		
+	},
+	
+	deleteActivityTarget: function(e) {
+		var index = $(e.target).parents('tr').attr('data-idx');
+		var target = this.currentActivity.get('targets').at(index);
+		var answer = confirm ("คุณต้องการลบเป้าหมาย " + target.get('unit').get('name') + " ?");
+		if(answer == true) {
+			this.currentActivity.get('targets').remove(target);
+			this.render();
+		}
+	},
+	
+	targetModelChange: function(e) {
+		var value = $(e.target).val();
+		var modelName = $(e.target).attr('data-modelName');
+		
+		if(this.currentActivityTarget!=null) {
+			this.currentActivityTarget.set(modelName,value);
+		}
+	},
+	addActivityTarget : function() {
+		if(this.currentActivityTarget.get('unit') ==  null) {
+			alert('กรุณาระบุหน่วยนับ');
+			return;
+		}
+		
+		if(isNaN(parseInt(this.currentActivityTarget.get('targetValue'))) ) {
+			alert('กรุณาใส่ค่าเป้าหมายเป็นตัวเลข');
+			return;
+		}
+		
+		if(!this.currentActivity.get('targets').include(this.currentActivityTarget)) {
+			this.currentActivity.get('targets').add(this.currentActivityTarget);
+		}
+		this.render();
+			 
+	},
+	unitChange : function(e) {
+		var unitId = $(e.target).val();
+		this.currentActivityTarget.set('unit', TargetUnit.findOrCreate(unitId));
+	},
+	newActivityTarget: function() {
+		this.currentActivityTarget = new ActivityTarget();
+		this.currentActivityTarget.set('activity', this.currentActivity);
+		
+		var json = this.currentActivityTarget.toJSON();
+		
+		json.unitSelectionList = listTargetUnits.toJSON();
+		
+		json.headerString="เพิ่มเป้าหมาย";
+		// loop through the parent
+		for(var i=0; i<json.unitSelectionList.length; i++) {
+			if(this.currentActivityTarget.get('unit') != null) {
+				if(json.unitSelectionList[i].id == this.currentActivityTarget.get('unit').get('id')) {
+					json.unitSelectionList[i].selected = "selected";
+				}
+			}
+		}
+		
+		var html = this.activityTargetTemplate(json);
+		
+		this.$el.html(html);
+	}
+});
+
+
 var ModalView = Backbone.View.extend({
 	/**
      *  @memberOf ModalView
@@ -10,7 +142,6 @@ var ModalView = Backbone.View.extend({
 	
 	events : {
 		"change .model" : "modelChange",
-		"change select#unitSlt" : "unitChange",
 		"click #saveBtn" : "saveModel",
 		"click #cancelBtn" : "cancel"
 			
@@ -32,10 +163,7 @@ var ModalView = Backbone.View.extend({
 		});
 	},
 	
-	unitChange : function(e) {
-		var unitId = $(e.target).val();
-		this.currentActivity.set('unit', TargetUnit.findOrCreate(unitId));
-	},
+
 	
 	modelChange: function(e) {
 		var value = $(e.target).val();
@@ -47,30 +175,33 @@ var ModalView = Backbone.View.extend({
 	},
 	
 	render: function() {
+		var string = "";
+		if(this.currentActivity.get('parent') == null) {
+			string = "กิจกรรมย่อย";
+		} else {
+			string = "กิจกรรมเสริม";
+		}
+		
 		if(this.currentActivity.get('id') == null) {
 			
-			this.$el.find('.modal-header span').html("เพิ่มทะเบียนรายการย่อย");
+			this.$el.find('.modal-header span').html("เพิ่ม" + string);
 		} else {
 			this.$el.find('.modal-header span').html(
-					"แก้ไขทะเบียนรายการย่อย");
+					"แก้ไข" + string);
 		}
 		
 		var json = this.currentActivity.toJSON();
 		
-		json.unitSelectionList = listTargetUnits.toJSON();
-		
-		// loop through the parent
-		for(var i=0; i<json.unitSelectionList.length; i++) {
-			if(this.currentActivity.get('unit') != null) {
-				if(json.unitSelectionList[i].id == this.currentActivity.get('unit').get('id')) {
-					json.unitSelectionList[i].selected = "selected";
-				}
-			}
-		}
-			
 		var html = this.modalTemplate(json);
 		this.$el.find('.modal-body').html(html);
 		
+		// now render the currentActivityTargetTable
+		
+		this.activityTargetTableView = new ActivityTargetTableView({
+			activity: this.currentActivity
+		});
+		
+		this.activityTargetTableView.render();
 		
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		return this;
@@ -173,8 +304,8 @@ var MainCtrView = Backbone.View.extend({
 	events : {
 		"click .newActivityBtn" : "newActivity",
 		"click .menuDelete" : "deleteActivity",
-		"click .menuEdit" : "editActivity"
-			
+		"click .menuEdit" : "editActivity",
+		"click .newActivitityChild" : "newChildActivity"
 	},
 	
 	editActivity: function(e) {
@@ -205,9 +336,23 @@ var MainCtrView = Backbone.View.extend({
 		
 	},
 	
+	newChildActivity: function(e) {
+		var parentActivityId = $(e.target).parents('tr').attr('data-id');
+		
+		
+		var newActivity = new Activity();
+		newActivity.set('forObjective', this.currentObjective);
+		newActivity.set('parent', Activity.findOrCreate(parentActivityId));
+		
+		this.modalView.renderWithActivity(newActivity);
+		
+		
+	},
+	
 	newActivity: function() {
 		var newActivity = new Activity();
 		newActivity.set('forObjective', this.currentObjective);
+		newActivity.set('parent', null);
 		
 		this.modalView.renderWithActivity(newActivity);
 	},
@@ -242,13 +387,32 @@ var MainCtrView = Backbone.View.extend({
 		this.activities.url = appUrl("/Activity/currentOwner/forObjective/" + this.currentObjective.get('id'));
 		this.activities.fetch({
 			success : _.bind(function() {
-				var json = this.activities.toJSON();
+				var flatActivities = new ActivityCollection();
+				
+				for(var i=0; i<this.activities.length; i++) {
+					flatActivities.push(this.activities.at(i));
+					this.addChildrenTo(flatActivities, this.activities.at(i).get('children'));
+				}
+				
+				var json = flatActivities.toJSON();
 				var html = this.mainTblTbodyTemplate(json);
 				
 				this.$el.find("#mainTbl tbody").html(html);
 			},this)
 		});
 		
-	}
+	},
+	
+	addChildrenTo : function(flatCollection, collection) {
+		if(collection == null || collection.length == 0) {
+			return;
+		} 
+		
+		for(var i=0; i<collection.length; i++) {
+			flatCollection.push(collection.at(i));
+			this.addChildrenTo(flatCollection, collection.at(i).get('children'));
+		}
+		
+	} 
 	
 });

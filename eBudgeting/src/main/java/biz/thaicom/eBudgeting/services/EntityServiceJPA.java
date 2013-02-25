@@ -38,6 +38,7 @@ import biz.thaicom.eBudgeting.models.bgt.RequestColumn;
 import biz.thaicom.eBudgeting.models.bgt.ReservedBudget;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -51,6 +52,7 @@ import biz.thaicom.eBudgeting.models.pln.TargetValue;
 import biz.thaicom.eBudgeting.models.pln.TargetValueAllocationRecord;
 import biz.thaicom.eBudgeting.models.webui.Breadcrumb;
 import biz.thaicom.eBudgeting.repositories.ActivityRepository;
+import biz.thaicom.eBudgeting.repositories.ActivityTargetRepository;
 import biz.thaicom.eBudgeting.repositories.AllocationRecordRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetCommonTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetProposalRepository;
@@ -155,6 +157,8 @@ public class EntityServiceJPA implements EntityService {
 	@Autowired
 	private ObjectiveOwnerRelationRepository objectiveOwnerRelationRepository;
 	
+	@Autowired
+	private ActivityTargetRepository activityTargetRepository;
 	
 	@Autowired
 	private ActivityRepository activityRepository;
@@ -3898,12 +3902,28 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Activity> findActivityByOwnerAndForObjective(
 			Organization workAt, Long objectiveId) {
-		return activityRepository.findAllByOwnerAndForObejctive_Id(workAt, objectiveId);
+		List<Activity> list =  activityRepository.findAllByOwnerAndForObejctive_Id(workAt, objectiveId);
+		
+		for(Activity activity : list) {
+			activity.getTargets().size();
+			activity.getChildren().size();
+			if(activity.getChildren().size() > 0) {
+				for(Activity child : activity.getChildren()) {
+					child.getTargets().size();
+				}
+			}
+		}
+		
+		logger.debug("list size: " + list.size());
+		
+		return list;
 	}
 
 	@Override
 	public Activity findOneActivity(Long id) {
-		return activityRepository.findOne(id);
+		Activity activity =  activityRepository.findOne(id);
+		activity.getTargets().size();
+		return activity;
 	}
 
 	@Override
@@ -3913,13 +3933,36 @@ public class EntityServiceJPA implements EntityService {
 		activity.setCode(node.get("code").asText());
 		activity.setName(node.get("name").asText());
 		
-		activity.setTargetValue(node.get("targetValue").asLong());
+		List<ActivityTarget> oldTargets = activity.getTargets();
 		
-		TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(node.get("unit")));
+		activity.setTargets(new ArrayList<ActivityTarget> ());
 		
-		activity.setUnit(unit);
+		for(JsonNode targetNode : node.get("targets")) {
+			ActivityTarget target = new ActivityTarget();
+			
+			if(getJsonNodeId(targetNode) != null) {
+				target = activityTargetRepository.findOne(getJsonNodeId(targetNode));
+				oldTargets.remove(target);
+			}
+			
+			target.setActivity(activity);
+			
+			target.setTargetValue(targetNode.get("targetValue").asLong());
+			
+			TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(targetNode.get("unit")));
+			target.setUnit(unit);
+			
+			activityTargetRepository.save(target);
+			
+			activity.getTargets().add(target);
+		}
+		
+		// we'll delete each of the left over
+		activityTargetRepository.delete(oldTargets);
 		
 		activityRepository.save(activity);
+		
+		
 		
 		return activity;
 	}
@@ -3934,10 +3977,30 @@ public class EntityServiceJPA implements EntityService {
 		
 		activity.setCode(node.get("code").asText());
 		activity.setName(node.get("name").asText());
-		activity.setTargetValue(node.get("targetValue").asLong());
 		
-		TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(node.get("unit")));
-		activity.setUnit(unit);
+		activity.setTargets(new ArrayList<ActivityTarget> ());
+		activityRepository.save(activity);
+		
+		for(JsonNode targetNode : node.get("targets")) {
+			ActivityTarget target = new ActivityTarget();
+			target.setActivity(activity);
+			
+			target.setTargetValue(targetNode.get("targetValue").asLong());
+			
+			TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(targetNode.get("unit")));
+			target.setUnit(unit);
+			
+			activityTargetRepository.save(target);
+			
+			activity.getTargets().add(target);
+		}
+		
+		// now if there is a parent
+		if(getJsonNodeId(node.get("parent")) != null) {
+			Activity parent = activityRepository.findOne(getJsonNodeId(node.get("parent")));
+			activity.setParent(parent);
+		}
+		
 		
 		activityRepository.save(activity);
 		
@@ -3947,6 +4010,11 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Activity deleteActivity(Long id) {
 		Activity activity = activityRepository.findOne(id);
+		
+		if(activity.getTargets() != null) {
+			activityTargetRepository.delete(activity.getTargets());
+		}
+		
 		activityRepository.delete(activity);
 		return activity;
 	}

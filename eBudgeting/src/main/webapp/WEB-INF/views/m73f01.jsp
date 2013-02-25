@@ -135,7 +135,7 @@
 <script id="mainTblTemplate" type="text/x-handler-template">
 <div class="controls" style="margin-bottom: 15px;">
 	<div class="pull-left"> 
-		<a href="#" class="btn btn-info newActivityBtn"><i class="icon icon-file icon-white"></i> เพิ่มชื่อทะเบียน</a>
+		<a href="#" class="btn btn-info newActivityBtn"><i class="icon icon-file icon-white"></i> เพิ่มกิจกรรมย่อย</a>
 	</div>
 	<div class="pull-left" style="margin-left: 20px;">
 	<form class="form-search pull-left" style="margin-bottom:10px;" id="activitySearchFrm">
@@ -166,37 +166,94 @@
 <script id="mainTblTbodyTemplate" type="text/x-handler-template">
 {{#each this}}
 <tr data-id="{{id}}">
-			<td><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
-	<a href="#td-{{id}}" class="deleteObjective menuDelete"><i class="icon-trash icon-red"></i></a></td>
-			<td>{{code}}</td>
-			<td>{{name}}</td>
-			<td>{{formatNumber targetValue}}</td>
-			<td>{{unit.name}}</td>
+	<td><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
+		<a href="#td-{{id}}" class="deleteObjective menuDelete"><i class="icon-trash icon-red"></i></a>
+	</td>
+	<td>{{code}}</td>
+	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
+		{{name}} {{#unless parent}}<a href="#" class="newActivitityChild">เพิ่มกิจกรรมเสริม</a> {{/unless}}</td>
+	<td><ul>
+		{{#each targets}}
+			<li><a href="#" id="assignTargetLnk">{{formatNumber targetValue}}</a></li>
+		{{/each}}
+		</ul>
+	</td>
+	<td><ul>
+		{{#each targets}}
+			<li>{{unit.name}}</li>
+		{{/each}}
+		</ul>
+	</td>
 </tr>
 {{/each}}
 </script>
 
+<script id="activityTargetTemplate" type="text/x-handler-template">
+<div class="alert alert-info">
+	 <h4><u><strong>{{headerString}}</strong></u></h4>
+	<div class="pull-left" style="padding-top:10px;">
+	    <label>ระบุค่าเป้าหมาย</label>
+        <input type="text" class="targetModel" id="targetValue" data-modelname="targetValue" value="{{targetValue}}">
+	</div>
+	<div class="pull-left" style="padding-top:10px; padding-left: 30px;">
+        <label>ระบุหน่วยนับ</label>
+        <select class="span2" id="unitSlt" data-modelName="unit" data-modelType="TargetUnit">
+                <option value="0">กรุณาเลือก</option>
+                {{#each unitSelectionList}}
+                        <option value="{{this.id}}" {{#if this.selected}}selected='selected'{{/if}}>{{this.name}}</option>
+                {{/each}}
+         </select>
+	</div>
+	<div class="clearfix"></div>
+	<div>
+		<a href="#" class="btn btn-mini btn-info addActivityTargetBtn"><i class="icon icon-plus-sign icon-white"></i> {{headerString}}</a>
+		<a href="#" class="btn btn-mini backToActivity"><i class="icon icon-white"></i> ยกเลิก</a>
+	</div>
+
+</div>
+</script>
+
+<script  id="activityTargetTableTemplate" type="text/x-handler-template">
+<div id="activityTargetMenu">
+<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> เพิ่มเป้าหมาย</a>
+</div>
+<div id="activityTargetTblCtr">
+{{#if targets}}
+<table class="table table-bordered table-striped" id="activityTargetTbl" style="width:285px;margin-top:10px;">
+<thead>
+	<tr>
+		<td style="width:45px;"></td>
+		<td style="width:140px;">เป้าหมาย</td>
+		<td style="width:100px;">หน่วยนับ</td>
+	</tr>
+</thead>
+<tbody>
+	{{#each targets}}
+	<tr data-idx="{{idx}}" data-id="{{id}}">
+	<td><a href="#td-{{id}}" class="editObjective editTarget"><i class="icon-edit icon-blue"></i></a>				
+	<a href="#td-{{id}}" class="deleteObjective deleteTarget"><i class="icon-trash icon-red"></i></a></td>
+			<td style="text-align:center;">{{formatNumber targetValue}}</td>
+			<td style="text-align:center;">{{unit.name}}</td>
+	</tr>
+	{{/each}}
+</tbody>
+</table>
+{{/if}}
+</div>
+</script>
 
 <script id="modalTemplate" type="text/x-handler-template">
 <div>
 <form>
-	<label>ระบุชื่อกิจกรรมย่อย</label>
-	<textarea rows="2" class="span5 model" id="nameTxt" data-modelName="name">{{name}}</textarea>
-
 	<label>ระบุรหัส</label>
 	<input type="text" class="model" id="code" value="{{code}}" data-modelName="code"></input>
 
-	<label>ระบุเป้าหมาย</label>
-	<input type="text" class="model" id="targetValue" value="{{targetValue}}" data-modelName="targetValue"></input>
-
-	<label>ระบุหน่วยนับ</label>
-	<select class="span2" id="unitSlt" data-modelName="unit" data-modelType="TargetUnit">
-		<option value="0">กรุณาเลือก</option>
-		{{#each unitSelectionList}}
-			<option value="{{this.id}}" {{#if this.selected}}selected='selected'{{/if}}>{{this.name}}</option>
-		{{/each}}
-	 </select>	
-
+	<label>ระบุชื่อกิจกรรม</label>
+	<textarea rows="2" class="span5 model" id="nameTxt" data-modelName="name">{{name}}</textarea>
+	
+	<div id="activityTarget">
+		
+	</div>
 </form>
 
 </div>

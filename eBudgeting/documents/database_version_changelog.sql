@@ -735,7 +735,7 @@
         targetValue number(19,0),
         OBJ_PLN_OBJECTIVE_ID number(19,0) not null,
         OWNER_HRX_ORGANIZATION number(19,0) not null,
-        UNIT_PLN_TARGETUNIT_ID number(19,0) not null,
+        UNIT_PLN_TARGETUNIT_ID number(19,0),
         primary key (id)
     );
     
@@ -755,3 +755,122 @@
         references PLN_TARGETUNIT;
 
     create sequence PLN_ACTIVITY_SEQ;
+
+    
+    
+-- version 6
+-- Modified Date: Feb 25, 2013
+    update app_info set db_version=6;
+    
+    alter table PLN_ACTIVITY add (PARENT_PLN_ACTIVITY_ID number(19,0));
+    
+	create table PLN_ACTIVITYPERFORMANCE (
+        id number(19,0) not null,
+        budgetAllocated double precision,
+        ACTIVITY_PLN_ACTIVITY_ID number(19,0),
+        OWNER_HRX_ORGANIZATION_ID number(19,0),
+        primary key (id)
+    );
+    
+    
+    alter table PLN_ACTIVITYPERFORMANCE 
+        add constraint FKF6E37B4C9F5A78B 
+        foreign key (ACTIVITY_PLN_ACTIVITY_ID) 
+        references PLN_ACTIVITY;
+        
+    alter table PLN_ACTIVITYPERFORMANCE 
+        add constraint FKF6E37B462A663AF 
+        foreign key (OWNER_HRX_ORGANIZATION_ID) 
+        references HRX_ORGANIZATION;
+        
+    create sequence PLN_ACTIVITYPERFORMANCE_SEQ;
+    
+    create table PLN_ACTIVITYTARGET (
+        id number(19,0) not null,
+        targetValue number(19,0),
+        ACTIVITY_PLN_ACTIVITY_ID number(19,0) not null,
+        UNIT_PLN_TARGETUNIT_ID number(19,0) not null,
+        primary key (id)
+    );
+    
+    
+    alter table PLN_ACTIVITYTARGET 
+        add constraint FK992D1B6DC9F5A78B 
+        foreign key (ACTIVITY_PLN_ACTIVITY_ID) 
+        references PLN_ACTIVITY;
+
+    alter table PLN_ACTIVITYTARGET 
+        add constraint FK992D1B6D67FA70E0 
+        foreign key (UNIT_PLN_TARGETUNIT_ID) 
+        references PLN_TARGETUNIT;
+        
+    create sequence PLN_ACTIVITYTARGET_SEQ;
+    
+
+    create table PLN_ACTIVITYTARGETREPORT (
+        id number(19,0) not null,
+        targetValue number(19,0),
+        PERFORMANCE_PLN_ACTPER_ID number(19,0),
+        TARGET_PLN_ACTTARGET_ID number(19,0),
+        primary key (id)
+    );
+    
+    alter table PLN_ACTIVITYTARGETREPORT 
+        add constraint FKA1935EE1CE2DDF80 
+        foreign key (TARGET_PLN_ACTTARGET_ID) 
+        references PLN_ACTIVITYTARGET;
+
+    alter table PLN_ACTIVITYTARGETREPORT 
+        add constraint FKA1935EE135264F66 
+        foreign key (PERFORMANCE_PLN_ACTPER_ID) 
+        references PLN_ACTIVITYPERFORMANCE;
+        
+    create sequence PLN_ACTIVITYTARGETREPORT_SEQ;
+        
+    create table PLN_MONTHLYBGTREPORT (
+        id number(19,0) not null,
+        budgetPlan number(19,0),
+        budgetResult number(19,0),
+        fiscalMonth number(10,0),
+        remark varchar2(1024 char),
+        PERFORMANCE_PLN_ACTPER_ID number(19,0),
+        OWNER_HRX_ORGANIZATION_ID number(19,0),
+        primary key (id)
+    );
+    
+	alter table PLN_MONTHLYBGTREPORT 
+        add constraint FK2CB2142335264F66 
+        foreign key (PERFORMANCE_PLN_ACTPER_ID) 
+        references PLN_ACTIVITYPERFORMANCE;
+
+    alter table PLN_MONTHLYBGTREPORT 
+        add constraint FK2CB2142362A663AF 
+        foreign key (OWNER_HRX_ORGANIZATION_ID) 
+        references HRX_ORGANIZATION;
+
+    create sequence PLN_MONTHLYBGTREPORT_SEQ;
+
+        
+    create table PLN_MONTHLYACTREPORT (
+        id number(19,0) not null,
+        activityPlan number(19,0),
+        activityResult number(19,0),
+        fiscalMonth number(10,0),
+        remark varchar2(1024 char),
+        OWNER_HRX_ORGANIZATION_ID number(19,0),
+        REPORT_PLN_ACTTARGETREPORT_ID number(19,0),
+        primary key (id)
+    );    
+    
+    alter table PLN_MONTHLYACTREPORT 
+        add constraint FKF8E8F1A6AE5B179D 
+        foreign key (REPORT_PLN_ACTTARGETREPORT_ID) 
+        references PLN_ACTIVITYTARGETREPORT;
+
+    alter table PLN_MONTHLYACTREPORT 
+        add constraint FKF8E8F1A662A663AF 
+        foreign key (OWNER_HRX_ORGANIZATION_ID) 
+        references HRX_ORGANIZATION;
+    
+    create sequence PLN_MONTHLYACTREPORT_SEQ;
+        

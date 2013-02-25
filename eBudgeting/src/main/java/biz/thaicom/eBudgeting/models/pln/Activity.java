@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.models.pln;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -34,7 +36,7 @@ public class Activity implements Serializable {
 	private Long id;
 
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="UNIT_PLN_TARGETUNIT_ID", nullable=false)
+	@JoinColumn(name="UNIT_PLN_TARGETUNIT_ID")
 	private TargetUnit unit;
 	
 	@Basic
@@ -56,6 +58,16 @@ public class Activity implements Serializable {
 	
 	@Basic
 	private Integer idx;
+	
+	@OneToMany(mappedBy="activity", fetch=FetchType.LAZY)
+	private List<ActivityTarget> targets;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="PARENT_PLN_ACTIVITY_ID")
+	private Activity parent;
+	
+	@OneToMany(mappedBy="parent")
+	private List<Activity> children;
 
 	public Long getId() {
 		return id;
@@ -119,6 +131,30 @@ public class Activity implements Serializable {
 
 	public void setIdx(Integer idx) {
 		this.idx = idx;
+	}
+
+	public List<ActivityTarget> getTargets() {
+		return targets;
+	}
+
+	public void setTargets(List<ActivityTarget> targets) {
+		this.targets = targets;
+	}
+
+	public Activity getParent() {
+		return parent;
+	}
+
+	public void setParent(Activity parent) {
+		this.parent = parent;
+	}
+
+	public List<Activity> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<Activity> children) {
+		this.children = children;
 	}
 	
 	
