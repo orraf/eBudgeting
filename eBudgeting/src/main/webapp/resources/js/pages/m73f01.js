@@ -1,3 +1,21 @@
+var AssignTargetValueModalView = Backbone.View.extend({
+	/**
+     *  @memberOf ModalView
+     */
+	initialize : function(options) {
+		this.parentView = options.parentView;
+	},
+	assignTargetValueModalTemplate: Handlebars.compile($("#assignTargetValueModalTemplate").html()),
+	organizationSearchTbodyTemplate: Handlebars.compile($("#organizationSearchTbodyTemplate").html()),
+	organizationTargetValueTbodyTemplate: Handlebars.compile($("#organizationTargetValueTbodyTemplate").html()),
+	el : "#assignTargetValueModal",
+	
+	render: function() {
+		
+	}
+});
+
+
 var ActivityTargetTableView = Backbone.View.extend({
 	/**
      *  @memberOf ActivityTargetTableView

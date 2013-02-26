@@ -27,7 +27,7 @@
 			</div>
 		</div>
 
-		<div id="targetValueModal" class="modal hide fade">
+		<div id="assignTargetValueModal" class="modal hide fade">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<span style="font-weight: bold;"></span>
@@ -257,6 +257,107 @@
 </form>
 
 </div>
+</script>
+
+<script id="assignTargetValueModalTemplate" type="text/x-handler-template">
+<div id="inputAll">
+	<div style="padding-top:7px; padding-right: 20px;height:35px; float:left">
+    	<strong>{{budgetType.name}}</strong> จำนวนจัดสรร:
+	</div>
+    <div style="height:35px; float:left" id="totalInputForm">
+		<div class="input-append"><input type="text" id="totalInputTxt" style="width:120px;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
+	</div>
+
+	<div class="clearfix"></div>
+        
+        <div style="padding-bottom:12px;">
+           <strong><u>การจัดสรรให้หน่วยงาน</u></strong>
+        </div>
+        <div class="row">
+
+    	    <div class="span6" style="height:290px; border: 1px solid #cccccc">
+        	    <div>
+            	    <table class="table table-bordered" style="margin-bottom:0px">
+                	<thead>
+                    	<tr>
+                        	<td style="width:237px;">หน่วยงาน</td>
+                        	<td>รวม: <span id="sumTotalAllocated"></span> บาท</td>
+                    	</tr>
+                	</thead>
+                	</table>
+            	</div>
+
+	            <div style="height:252px;overflow:auto;">
+    	            <table style="margin-bottom:0px;" class="table table-bordered" id="organizationProposalTbl">
+        	        	<tbody>
+            			</tbody>
+					</table>
+             	</div>
+         	</div>
+
+
+			<div class="span3" style="height:290px; width:270px;">
+			    <div class="pull-right">
+    				<form class="form-search" style="margin-bottom:10px;" id="organizationSearchForm">
+			    		<div class="input-append">
+    						<input type="text" class="span2 search-query" id="oraganizationQueryTxt">
+    						<button class="btn" type="submit" id="organizationSearchBtn">Search</button>
+    					</div>
+    				</form>
+	    		</div>
+    	 		<div class="clearfix"></div>
+    			<div style="border:1px solid #cccccc">
+		    		<div>
+        		 		<table style="margin-bottom:0px" class="table table-bordered">
+                		<thead>
+                    		<tr>
+                        		<td style="width:200px;">หน่วยงาน</td>
+                    		</tr>
+                		</thead>
+                		</table>
+            		</div>
+            		<div style="height:214px;overflow:auto;">
+                		<table style="margin-bottom:0px;" class="table table-bordered" id="organizationSearchTbl">
+                			<tbody>
+                			</tbody>
+						</table>
+            		</div>
+    			</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<div style="padding-top:5px;">
+<button class="btn btn-mini btn-primary saveProposal">บันทึก</button> <button class="btn btn-mini backToProposal">ย้อนกลับ</button>
+</div>
+
+</script>
+<script id="organizationSearchTbodyTemplate" type="text/x-handler-template">
+{{#each this}}
+<tr data-id="{{id}}"><td>
+	{{#if this._inProposalList}}
+		<span class="label label-warning">เลือกแล้ว</span>
+	{{else}}
+		<a href="#" class="addOrganization"><i class="icon icon-plus-sign"></i></a>
+	{{/if}}
+
+ 	{{name}}</td>
+</tr>
+{{/each}}
+</script>
+
+<script id="organizationTargetValueTbodyTemplate" type="text/x-handler-template">
+{{#each this}}
+<tr data-id="{{owner.id}}"><td><a href="#" class="removeOrganizationProposal"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
+	<td  style="width:188px">
+		<div style="height:35px; float:left" id="totalInputForm">
+			<div class="input-append"><input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
+		</div>
+	</td>
+</tr>
+{{/each}}
 </script>
 
 
