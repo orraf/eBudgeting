@@ -55,7 +55,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			sum += parseInt($(el).val());
 		});
 		
-		if(sum != parseInt($('#totalInputTxt').val().replace(',',''))) {
+		if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
 			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
 			return;
 		}
