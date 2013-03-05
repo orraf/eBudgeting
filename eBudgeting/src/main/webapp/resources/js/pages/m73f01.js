@@ -6,8 +6,11 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		this.parentView = options.parentView;
 	},
 	assignTargetValueModalTemplate: Handlebars.compile($("#assignTargetValueModalTemplate").html()),
+	
 	organizationSearchTbodyTemplate: Handlebars.compile($("#organizationSearchTbodyTemplate").html()),
 	organizationTargetValueTbodyTemplate: Handlebars.compile($("#organizationTargetValueTbodyTemplate").html()),
+	
+	
 	el : "#assignTargetValueModal",
 	
 	setCurrentTarget: function(target) {
@@ -18,7 +21,46 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		this.currentActivity = activity;
 	},
 	
+	events: {
+		"click #organizationSearchBtn" : "organizationSearch",
+		"click #organizationOwnerSearchBtn" : "organizationOwnerSearch"
+	},
 	
+	organizationOwnerSearch: function(e) {
+		var query = this.$el.find('#oraganizationOwnerQueryTxt').val();
+		
+		this.organizationSearchList = new OrganizationCollection();
+		this.organizationSearchList.url = appUrl("/Organization/code/00/findByName");
+		this.organizationSearchList.fetch({
+			data: {
+				query: query
+			},
+			type: 'POST',
+			success: _.bind(function() {
+				var html=this.organizationOwnerSearchTbodyTemplate(this.organizationSearchList.toJSON());
+				$('#organizationOwnerSearchTbl').find('tbody').html(html);
+			},this)
+		});		
+	},
+	
+	organizationSearch: function(e) {
+		var query = this.$el.find('#oraganizationQueryTxt').val();
+		
+		this.organizationSearchList = new OrganizationCollection();
+		this.organizationSearchList.url = appUrl("/Organization/findByName");
+		this.organizationSearchList.fetch({
+			data: {
+				query: query
+			},
+			type: 'POST',
+			success: _.bind(function() {
+				var html=this.organizationSearchTbodyTemplate(this.organizationSearchList.toJSON());
+				$('#organizationSearchTbl').find('tbody').html(html);
+			},this)
+		});
+		
+	},
+
 	render: function() {
 		
 		
