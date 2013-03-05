@@ -38,6 +38,7 @@ import biz.thaicom.eBudgeting.models.bgt.RequestColumn;
 import biz.thaicom.eBudgeting.models.bgt.ReservedBudget;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
@@ -52,6 +53,7 @@ import biz.thaicom.eBudgeting.models.pln.TargetUnit;
 import biz.thaicom.eBudgeting.models.pln.TargetValue;
 import biz.thaicom.eBudgeting.models.pln.TargetValueAllocationRecord;
 import biz.thaicom.eBudgeting.models.webui.Breadcrumb;
+import biz.thaicom.eBudgeting.repositories.ActivityPerformanceRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetReportRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetRepository;
@@ -161,6 +163,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private ActivityTargetRepository activityTargetRepository;
+	
+	@Autowired
+	private ActivityPerformanceRepository activityPerformanceRepository;
 	
 	@Autowired
 	private ActivityRepository activityRepository;
@@ -4053,6 +4058,21 @@ public class EntityServiceJPA implements EntityService {
 				report.setOwner(owner);
 				report.setTarget(target);	
 			}
+			
+			// now find performance
+			ActivityPerformance performance = activityPerformanceRepository
+					.findOneByActivityAndOwner(target.getActivity(), report.getOwner());
+			
+			if(performance == null) {
+				performance = new ActivityPerformance();
+				performance.setActivity(target.getActivity());
+				performance.setOwner(report.getOwner());
+			
+				activityPerformanceRepository.save(performance);
+			} 
+			
+			
+			report.setActivityPerformance(performance);
 			report.setTargetValue(reportNode.get("targetValue").asLong());
 			
 			newList.add(report);
@@ -4061,7 +4081,20 @@ public class EntityServiceJPA implements EntityService {
 		// we should be able to delete oldList and save newList
 		
 		activityTargetReportRepository.save(newList);
+		
+		// now in each of the left old list 
+		// we iterate to see if we should delete performance
+		List<ActivityPerformance> toDeletePerformance = new ArrayList<ActivityPerformance>();
+ 		for(ActivityTargetReport oldReport: oldList) {
+			ActivityPerformance oldPerformance = oldReport.getActivityPerformance();
+			
+			if(oldPerformance.getTargetReports().size() == 0) {
+				toDeletePerformance.add(oldPerformance);
+			}
+		}
+		
 		activityTargetReportRepository.delete(oldList);
+		activityPerformanceRepository.delete(toDeletePerformance);
 		
 		return newList;
 	}

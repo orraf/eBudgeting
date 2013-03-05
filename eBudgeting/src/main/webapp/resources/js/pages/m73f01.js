@@ -31,7 +31,20 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		"click #saveAssignTargetBtn" : "saveAssignTarget",
 		"click #cancelBtn" : "cancelAssignTarget"
 	},
+	resetProposalsInList: function() {
+		if(this.targetReports != null) {
+			this.targetReports.pluck('owner').forEach(function(owner) {
+				owner.set('_inProposalList', false);
+			});
+		}
+			
+		if(this.organizationSearchList != null) {
+			this.organizationSearchList.reset();
+		}
+	},
+
 	cancelAssignTarget: function(e) {
+		this.resetProposalsInList();
 		this.$el.modal('hide');
 	},
 	saveAssignTarget: function(e) {
@@ -51,7 +64,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
  		// we should be ready to save the 
  		Backbone.sync('create', this.targetReports, {
  			success: _.bind(function() {
- 				alert('บันทึกเรียนบร้อยแล้ว');
+ 				alert('บันทึกเรียบร้อยแล้ว');
  			},this)
  		});
 	},
@@ -168,6 +181,11 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id'));
 		this.targetReports.fetch({
 			success: _.bind(function() {
+				
+				this.targetReports.pluck('owner').forEach(function(owner) {
+					owner.set('_inProposalList', true);
+				});
+
 				var html=this.organizationTargetValueTbodyTemplate(this.targetReports.toJSON());
 				$('#organizationProposalTbl').find('tbody').html(html);	
 			},this)
