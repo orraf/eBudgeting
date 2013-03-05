@@ -1168,6 +1168,52 @@ public class GenericViewController {
 		return "m73f01";
 	}
 
+	// --------------------------------------------------------------m73f02: การบันทึกกิจกรรมย่อย ระดับจังหวัด
+	@RequestMapping("/page/m73f02/")
+	public String render_m73f02(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		List<Objective> fiscalYears = entityService.findRootFiscalYear();
+		Integer fy = setFiscalYearFromSession(model, session);
+		model.addAttribute("rootPage", false);
+		model.addAttribute("fiscalYears", fiscalYears);
+		model.addAttribute("workAtId", currentUser.getWorkAt().getId());
+		
+		//check the budgetSignOff
+		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
+				fy, currentUser.getWorkAt());
+		
+		if(bso != null && bso.getLock1Person() != null) {
+			// should not be able to edit!
+			model.addAttribute("readOnly", true);
+		}
+		
+		return "m73f02";
+	}
+	// --------------------------------------------------------------m73f02: การบันทึกแผน ระดับจังหวัด
+	@RequestMapping("/page/m73f03/")
+	public String render_m73f03(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		List<Objective> fiscalYears = entityService.findRootFiscalYear();
+		Integer fy = setFiscalYearFromSession(model, session);
+		model.addAttribute("rootPage", false);
+		model.addAttribute("fiscalYears", fiscalYears);
+		model.addAttribute("workAtId", currentUser.getWorkAt().getId());
+		
+		//check the budgetSignOff
+		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
+				fy, currentUser.getWorkAt());
+		
+		if(bso != null && bso.getLock1Person() != null) {
+			// should not be able to edit!
+			model.addAttribute("readOnly", true);
+		}
+		
+		return "m73f03";
+	}
 
 }
 

@@ -21,6 +21,7 @@ import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
 import biz.thaicom.eBudgeting.models.bgt.RequestColumn;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
@@ -66,6 +67,10 @@ public interface EntityService {
 	public List<Objective> findObjectiveByOwnerAndFiscalYear(
 			Organization workAt, Integer fiscalYear);
 	
+	public List<Objective> findObjectiveByActivityOwnerAndFiscalYear(
+			Organization workAt, Integer fiscalYear);
+	public List<Objective> findObjectiveChildrenByActivityOwnerAndParentId(
+			Organization workAt, Long id);
 	
 	public List<Objective> findRootObjectiveByFiscalyear(Integer fiscalYear, Boolean eagerLoad);
 	public Objective findOneRootObjectiveByFiscalyear(Integer fiscalYear);
@@ -306,6 +311,9 @@ public interface EntityService {
 	public List<Organization> findOrganizationByNameAndCode(String query, String code);
 	public List<Organization> findOrganizationByObjectiveOwner(Long objectiveId);
 	public List<Organization> saveObjectiveOwners(Long id, Long[] ownerIds);
+	public List<Organization> findOrganizationByNameAndParent_Id(String query,
+			Long parentId);
+
 	
 	
 	// Activity
@@ -315,12 +323,18 @@ public interface EntityService {
 	public Activity updateActivity(JsonNode node);
 	public Activity saveActivity(JsonNode node, Organization owner);
 	public Activity deleteActivity(Long id);
+	public List<ActivityPerformance> findActivityPerformancesByOwnerAndObjectiveId(
+			Organization workAt, Long objectiveId);
+
 	
 	//ActivityTargetReport
 	public List<ActivityTargetReport> findActivityTargetReportByTargetId(
 			Long targetId);
 	public List<ActivityTargetReport> saveActivityTargetReportByTargetId(
-			Long targetId, JsonNode node);
+			Long targetId, JsonNode node, Long parentOrgId);
+	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
+			Long targetId, Long parentOrgId);
+
 	
 
 

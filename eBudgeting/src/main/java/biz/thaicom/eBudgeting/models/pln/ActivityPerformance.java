@@ -44,7 +44,7 @@ public class ActivityPerformance implements Serializable{
 	/**
 	 * แต่ละกิจกรรมมีหลายเป้าหมาย targetReports เก็บค่าแผน/ผลของแต่ละเป้าหมาย
 	 */
-	@OneToMany(mappedBy="target")
+	@OneToMany(mappedBy="activityPerformance" )
 	private List<ActivityTargetReport> targetReports;
 	
 	/**

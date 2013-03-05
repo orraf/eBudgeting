@@ -165,7 +165,9 @@ var menuJson = [{
 		 }, 
 		 {name: "การบันทึกกิจกรรมย่อย (m73)",code: "m73",  menus: 
 			    [ //{name: "m3f04: การประมวลผลก่อนการจัดสรรงบประมาณ", code: "m3f04", link: "page/m4f01/"},
-			     {name: "m73f01: บันทึกกิจกรรมย่อย", code: "m73f01", link: "page/m73f01/"} ]  
+			     {name: "m73f01: บันทึกกิจกรรมย่อย", code: "m73f01", link: "page/m73f01/"},
+			     {name: "m73f02: บันทึกกิจกรรมย่อย (ระดับจังหวัด)", code: "m73f02", link: "page/m73f02/"},
+			     {name: "m73f03: บันทึกแผนการดำเนินงานกิจกรรม", code: "m73f03", link: "page/m73f03/"}]  
 			 }]
 		     //{name: "m71f02: การบันทึกงบประมาณระดับรายการ", code: "m71f02", link: "page/m71f02/"},  
 		     //{name: "m71f03: การนำส่งคำของบประมาณ (Sign off) / ถอนนำส่ง (Release)", code: "m71f03", link: "page/m2f14/", disabled: "disabled"}]},
@@ -278,7 +280,9 @@ var menuUserJson = [{
 	menus: [
 		 {name: "การบันทึกกิจกรรมย่อย (m73)",code: "m73",  menus: 
 			    [ //{name: "m3f04: การประมวลผลก่อนการจัดสรรงบประมาณ", code: "m3f04", link: "page/m4f01/"},
-			     {name: "m73f01: บันทึกกิจกรรมย่อย", code: "m73f01", link: "page/m73f01/"} ]  
+			     {name: "m73f01: บันทึกกิจกรรมย่อย", code: "m73f01", link: "page/m73f01/"},
+			     {name: "m73f02: บันทึกกิจกรรมย่อย (ระดับจังหวัด)", code: "m73f02", link: "page/m73f02/"},
+			     {name: "m73f03: บันทึกแผนการดำเนินงานกิจกรรม", code: "m73f03", link: "page/m73f03/"}]  
 			 }]
 		     //{name: "m71f02: การบันทึกงบประมาณระดับรายการ", code: "m71f02", link: "page/m71f02/"},  
 		     //{name: "m71f03: การนำส่งคำของบประมาณ (Sign off) / ถอนนำส่ง (Release)", code: "m71f03", link: "page/m2f14/", disabled: "disabled"}]},

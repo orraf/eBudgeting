@@ -532,6 +532,10 @@ ActivityPerformance = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'owner',
 		relatedModel: 'Organization'
+	},{
+		type: Backbone.HasMany,
+		key: 'targetReports',
+		relatedModel: 'ActivityTargetReport'
 	}]
 });
 
@@ -829,6 +833,9 @@ OrganizationCollection = Backbone.Collection.extend({
 
 ActivityCollection = Backbone.Collection.extend({
 	model: Activity
+});
+ActivityPerformanceCollection = Backbone.Collection.extend({
+	model: ActivityPerformance
 });
 
 TargetUnitPagableCollection = PagableCollection.extend({

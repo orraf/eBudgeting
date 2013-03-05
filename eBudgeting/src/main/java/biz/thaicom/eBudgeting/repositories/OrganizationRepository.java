@@ -24,4 +24,7 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			"WHERE relation.objective.id = ?1 " +
 			"")
 	public List<Organization> findAllByOwningObjective(Long objectiveId);
+
+	public List<Organization> findAllByNameLikeAndParent_IdOrderByNameAsc(
+			String query, Long parentId);
 }

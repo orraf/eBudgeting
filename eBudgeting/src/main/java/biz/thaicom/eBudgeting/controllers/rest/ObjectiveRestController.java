@@ -206,7 +206,21 @@ public class ObjectiveRestController {
 		return entityService.findObjectiveByOwnerAndFiscalYear(currentUser.getWorkAt(), fiscalYear);
 	}
 	
+	@RequestMapping(value="/Objective/currentActivityOwner/{fiscalYear}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> findObjectiveByCurrentActivityOwner(
+			@PathVariable Integer fiscalYear,
+			@Activeuser ThaicomUserDetail currentUser
+			){
+		return entityService.findObjectiveByActivityOwnerAndFiscalYear(currentUser.getWorkAt(), fiscalYear);
+	}
 	
+	@RequestMapping(value="/Objective/{id}/childrenOnlyWithCurrentActivityOwner", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> findObjectiveChildrenByCurrentActivityOwner(
+			@PathVariable Long id,
+			@Activeuser ThaicomUserDetail currentUser
+			){
+		return entityService.findObjectiveChildrenByActivityOwnerAndParentId(currentUser.getWorkAt(), id);
+	}
 	
 	@RequestMapping(value="/Objective", method=RequestMethod.POST) 
 	public @ResponseBody Objective saveObjective(@RequestBody JsonNode node) {

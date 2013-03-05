@@ -15,4 +15,7 @@ public interface ActivityTargetReportRepository extends
 		
 	List<ActivityTargetReport> findAllByTarget_id(Long targetId);
 
+	List<ActivityTargetReport> findAllByTarget_idAndOwner_Parent_Id(
+			Long targetId, Long parentOrgId);
+
 }

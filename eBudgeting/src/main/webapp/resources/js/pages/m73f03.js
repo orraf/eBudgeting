@@ -13,8 +13,9 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	
 	el : "#assignTargetValueModal",
 	
-	setCurrentTarget: function(target) {
-		this.currentTarget = target;
+	setCurrentTargetReport: function(targetReport) {
+		this.currentTargetReport = targetReport;
+		this.currentTarget = targetReport.get('target');
 	},
 	
 	setCurrentActivity: function(activity){
@@ -153,7 +154,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		var query = this.$el.find('#oraganizationQueryTxt').val();
 		
 		this.organizationSearchList = new OrganizationCollection();
-		this.organizationSearchList.url = appUrl("/Organization/parentId/0/findByName");
+		this.organizationSearchList.url = appUrl("/Organization/parentId/"+currentOrganizationId+"/findByName");
 		this.organizationSearchList.fetch({
 			data: {
 				query: query
@@ -172,14 +173,15 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		
 		this.$el.find('.modal-header span').html("จัดสรรเป้าหมาย: " + this.currentActivity.get('name'));
 		
-		var json = this.currentTarget.toJSON();
+		var json = this.currentTargetReport.toJSON();
 		
 		var html = this.assignTargetValueModalTemplate(json);
 		this.$el.find('.modal-body').html(html);
 		
 		//now fill in 
 		this.targetReports = new ActivityTargetReportCollection();
-		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id'));
+		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id') 
+				+ '/parentOrganization/' + currentOrganizationId);
 		this.targetReports.fetch({
 			success: _.bind(function() {
 				
@@ -332,89 +334,7 @@ var ActivityTargetTableView = Backbone.View.extend({
 });
 
 
-var ModalView = Backbone.View.extend({
-	/**
-     *  @memberOf ModalView
-     */
-	initialize : function(options) {
-		this.parentView = options.parentView;
-	},
-	modalTemplate: Handlebars.compile($("#modalTemplate").html()),
-	el : "#modal",
-	
-	events : {
-		"change .model" : "modelChange",
-		"click #saveBtn" : "saveModel",
-		"click #cancelBtn" : "cancel"
-			
-		
-	},
-	
-	cancel : function(e) {
-		this.$el.modal('hide');
-	},
-	
-	saveModel : function(e) {
-		this.currentActivity.save(null, {
-			success: _.bind(function() {
-				alert('บันทึกข้อมูลเรียบร้อยแล้ว');
-				this.$el.modal('hide');
-				this.parentView.renderMainTblWithParent(this.currentActivity.get('forObjective'));
-				
-			},this)
-		});
-	},
-	
 
-	
-	modelChange: function(e) {
-		var value = $(e.target).val();
-		var modelName = $(e.target).attr('data-modelName');
-		
-		if(this.currentActivity!=null) {
-			this.currentActivity.set(modelName,value);
-		}
-	},
-	
-	render: function() {
-		var string = "";
-		if(this.currentActivity.get('parent') == null) {
-			string = "กิจกรรมย่อย";
-		} else {
-			string = "กิจกรรมเสริม";
-		}
-		
-		if(this.currentActivity.get('id') == null) {
-			
-			this.$el.find('.modal-header span').html("เพิ่ม" + string);
-		} else {
-			this.$el.find('.modal-header span').html(
-					"แก้ไข" + string);
-		}
-		
-		var json = this.currentActivity.toJSON();
-		
-		var html = this.modalTemplate(json);
-		this.$el.find('.modal-body').html(html);
-		
-		// now render the currentActivityTargetTable
-		
-		this.activityTargetTableView = new ActivityTargetTableView({
-			activity: this.currentActivity
-		});
-		
-		this.activityTargetTableView.render();
-		
-		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
-		return this;
-	},
-	
-	renderWithActivity: function(activity) {
-		this.currentActivity = activity;
-		this.render();
-	}
-
-});
 
 var MainSelectionView = Backbone.View.extend({
 	mainSelectionTemplate : Handlebars.compile($("#mainSelectionTemplate").html()),
@@ -439,7 +359,7 @@ var MainSelectionView = Backbone.View.extend({
 		var type101Id = $(e.target).val();
 		if(type101Id != 0) {
 			this.type102Collection.fetch({
-				url: appUrl('/Objective/' + type101Id + '/children'),
+				url: appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityOwner'),
 				success: _.bind(function() {
 					this.type102Collection.trigger('reset');
 				}, this)
@@ -494,7 +414,6 @@ var MainCtrView = Backbone.View.extend({
 	initialize : function() {
 		//this.collection.bind('reset', this.render, this);
 		this.$el.html(this.loadingTpl());
-		this.modalView = new ModalView({parentView: this});
 		this.assignTargetValueModalView = new AssignTargetValueModalView({parentView: this});
 	},
 
@@ -514,14 +433,15 @@ var MainCtrView = Backbone.View.extend({
 	},
 	
 	assignTarget: function(e) {
-		var activityId = $(e.target).parents('tr').attr('data-id');
-		var activity = Activity.findOrCreate(activityId);
+		var activityPerformanceId = $(e.target).parents('tr').attr('data-id');
+		var activityPerformance = ActivityPerformance.findOrCreate(activityPerformanceId);
+		var activity = activityPerformance.get('activity');
 		
 		var targetId = $(e.target).parents('li').attr('data-id');
-		var activityTarget = ActivityTarget.findOrCreate(targetId);
+		var activityTargetReport = ActivityTargetReport.findOrCreate(targetId);
 		
 		this.assignTargetValueModalView.setCurrentActivity(activity);
-		this.assignTargetValueModalView.setCurrentTarget(activityTarget);
+		this.assignTargetValueModalView.setCurrentTargetReport(activityTargetReport);
 		this.assignTargetValueModalView.render();
 	},
 	
@@ -580,7 +500,7 @@ var MainCtrView = Backbone.View.extend({
 		this.mainSelectionView = new MainSelectionView({el: "#mainCtr #mainSelection"});
 
 		this.rootSelection = new ObjectiveCollection();
-		this.rootSelection.url = appUrl("/Objective/currentOwner/" + fiscalYear);
+		this.rootSelection.url = appUrl("/Objective/currentActivityOwner/" + fiscalYear);
 		this.rootSelection.fetch({
 			success: _.bind(function() {
 				this.mainSelectionView.renderInitialWith(this.rootSelection);
@@ -600,18 +520,12 @@ var MainCtrView = Backbone.View.extend({
 		
 		// first find the activities
 		// and put them in the table 
-		this.activities = new ActivityCollection();
-		this.activities.url = appUrl("/Activity/currentOwner/forObjective/" + this.currentObjective.get('id'));
+		this.activities = new ActivityPerformanceCollection();
+		this.activities.url = appUrl("/ActivityPerformance/currentOwner/forObjective/" + this.currentObjective.get('id'));
 		this.activities.fetch({
 			success : _.bind(function() {
-				var flatActivities = new ActivityCollection();
-				
-				for(var i=0; i<this.activities.length; i++) {
-					flatActivities.push(this.activities.at(i));
-					this.addChildrenTo(flatActivities, this.activities.at(i).get('children'));
-				}
-				
-				var json = flatActivities.toJSON();
+			
+				var json = this.activities.toJSON();
 				var html = this.mainTblTbodyTemplate(json);
 				
 				this.$el.find("#mainTbl tbody").html(html);

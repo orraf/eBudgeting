@@ -231,6 +231,29 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 	public List<Objective> findAllByOwnerAndfiscalYear(Organization workAt,
 			Integer fiscalYear);
 
+	@Query("" +
+			"SELECT parentObjective " +
+			"FROM ActivityPerformance activityPerformance " +
+			"	INNER JOIN activityPerformance.activity activity " +
+			"	INNER JOIN activity.forObjective objective " +
+			"	INNER JOIN objective.parent parentObjective " +
+			"WHERE " +
+			"	activityPerformance.owner  = ?1 AND " +
+			"	objective.fiscalYear = ?2")
+	public List<Objective> findAllByActivityOwnerAndFiscalYear(
+			Organization workAt, Integer fiscalYear);
+
+	@Query("" +
+			"SELECT objective " +
+			"FROM ActivityPerformance activityPerformance " +
+			"	INNER JOIN activityPerformance.activity activity " +
+			"	INNER JOIN activity.forObjective objective " +
+			"WHERE " +
+			"	activityPerformance.owner  = ?1 AND " +
+			"	objective.parent.id = ?2")
+	public List<Objective> findAllChildrenByActivityOwnerAndPanrentId(
+			Organization workAt, Long id);
+
 
 
 

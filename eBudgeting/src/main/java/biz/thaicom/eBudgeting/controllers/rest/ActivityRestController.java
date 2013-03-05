@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.security.models.Activeuser;
@@ -61,18 +62,41 @@ public class ActivityRestController {
 		return entityService.deleteActivity(id);
 	}
 	
+	@RequestMapping(value="/ActivityPerformance/currentOwner/forObjective/{objectiveId}", method=RequestMethod.GET) 
+	public @ResponseBody List<ActivityPerformance> findActivityPerformancesByOwnerAndObjectiveId(
+			@PathVariable Long objectiveId,
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		return entityService.findActivityPerformancesByOwnerAndObjectiveId(currentUser.getWorkAt(), objectiveId);
+	}
 
 	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}", method=RequestMethod.GET)
 	public @ResponseBody List<ActivityTargetReport> findActivityTargetReportByTargetId(
 			@PathVariable Long targetId) {
 		return entityService.findActivityTargetReportByTargetId(targetId);
 	}
+
+	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/parentOrganization/{parentOrgId}", method=RequestMethod.GET)
+	public @ResponseBody List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
+			@PathVariable Long targetId,
+			@PathVariable Long parentOrgId) {
+		return entityService.findActivityTargetReportByTargetIdAndParentOrgId(targetId, parentOrgId);
+	}
+
+	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/parentOrganization/{parentOrgId}", method=RequestMethod.POST)
+	public @ResponseBody List<ActivityTargetReport> saveActivityTargetReportByTargetIdAndParentOrgId(
+			@PathVariable Long targetId,
+			@PathVariable Long parentOrgId,
+			@RequestBody JsonNode node) {
+		return entityService.saveActivityTargetReportByTargetId(targetId, node, parentOrgId);
+	}
+
 	
 	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}", method=RequestMethod.POST)
 	public @ResponseBody List<ActivityTargetReport> saveActivityTargetReportByTargetId(
 			@PathVariable Long targetId,
 			@RequestBody JsonNode node) {
-		return entityService.saveActivityTargetReportByTargetId(targetId, node);
+		return entityService.saveActivityTargetReportByTargetId(targetId, node, 0L);
 	}
 	
 	

@@ -2900,6 +2900,20 @@ public class EntityServiceJPA implements EntityService {
 	
 	
 	
+	@Override
+	public List<Objective> findObjectiveByActivityOwnerAndFiscalYear(
+			Organization workAt, Integer fiscalYear) {
+		return objectiveRepository.findAllByActivityOwnerAndFiscalYear(workAt, fiscalYear);
+	}
+	
+	
+
+	@Override
+	public List<Objective> findObjectiveChildrenByActivityOwnerAndParentId(
+			Organization workAt, Long id) {
+		return objectiveRepository.findAllChildrenByActivityOwnerAndPanrentId(workAt,id);
+	}
+
 	/**
 	 * ค้นหา  Objective ด้วยปีงบประมาณ และ ชนิด โดยกำหนด PageRequest และผ่านค่า 
 	 * คำที่ต้องการค้นหาเบื้องต้น
@@ -3864,6 +3878,15 @@ public class EntityServiceJPA implements EntityService {
 		return organizationRepository.findAllByNameLikeAndCodeLikeOrderByNameAsc("%"+query+ "%", "%"+code+ "%");
 	}
 
+	
+	
+	@Override
+	public List<Organization> findOrganizationByNameAndParent_Id(String query,
+			Long parentId) {
+		// TODO Auto-generated method stub
+		return organizationRepository.findAllByNameLikeAndParent_IdOrderByNameAsc("%"+query+"%", parentId);
+	}
+
 	/**
 	 * ค้นหาหน่วยงานจาก Objective ที่ได้รับผิดชอบ
 	 * @param objectiveId id ของ {@link Objective} ที่รับผิดชอบ
@@ -4036,9 +4059,9 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public List<ActivityTargetReport> saveActivityTargetReportByTargetId(
-			Long targetId, JsonNode node) {
+			Long targetId, JsonNode node, Long parentOrgId) {
 		// we get the current List
-		List<ActivityTargetReport> oldList = findActivityTargetReportByTargetId(targetId);
+		List<ActivityTargetReport> oldList = findActivityTargetReportByTargetIdAndParentOrgId(targetId, parentOrgId);
 		
 		List<ActivityTargetReport> newList = new ArrayList<ActivityTargetReport>();
 		
@@ -4097,6 +4120,18 @@ public class EntityServiceJPA implements EntityService {
 		activityPerformanceRepository.delete(toDeletePerformance);
 		
 		return newList;
+	}
+
+	@Override
+	public List<ActivityPerformance> findActivityPerformancesByOwnerAndObjectiveId(
+			Organization workAt, Long objectiveId) {
+		return activityPerformanceRepository.findByOwnerAndObjectiveId(workAt, objectiveId);
+	}
+
+	@Override
+	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
+			Long targetId, Long parentOrgId) {
+		return activityTargetReportRepository.findAllByTarget_idAndOwner_Parent_Id(targetId, parentOrgId);
 	}
 
 	
