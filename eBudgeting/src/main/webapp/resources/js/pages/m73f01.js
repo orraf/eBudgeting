@@ -1,6 +1,6 @@
 var AssignTargetValueModalView = Backbone.View.extend({
 	/**
-     *  @memberOf ModalView
+     *  @memberOf AssignTargetValueModalView
      */
 	initialize : function(options) {
 		this.parentView = options.parentView;
@@ -10,8 +10,27 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	organizationTargetValueTbodyTemplate: Handlebars.compile($("#organizationTargetValueTbodyTemplate").html()),
 	el : "#assignTargetValueModal",
 	
+	setCurrentTarget: function(target) {
+		this.currentTarget = target;
+	},
+	
+	setCurrentActivity: function(activity){
+		this.currentActivity = activity;
+	},
+	
+	
 	render: function() {
 		
+		
+		this.$el.find('.modal-header span').html("จัดสรรเป้าหมาย: " + this.currentActivity.get('name'));
+		
+		var json = this.currentTarget.toJSON();
+		
+		var html = this.assignTargetValueModalTemplate(json);
+		this.$el.find('.modal-body').html(html);
+		
+		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
+		return this;
 	}
 });
 
@@ -311,6 +330,7 @@ var MainCtrView = Backbone.View.extend({
 		//this.collection.bind('reset', this.render, this);
 		this.$el.html(this.loadingTpl());
 		this.modalView = new ModalView({parentView: this});
+		this.assignTargetValueModalView = new AssignTargetValueModalView({parentView: this});
 	},
 
 	el : "#mainCtr",
@@ -323,7 +343,21 @@ var MainCtrView = Backbone.View.extend({
 		"click .newActivityBtn" : "newActivity",
 		"click .menuDelete" : "deleteActivity",
 		"click .menuEdit" : "editActivity",
-		"click .newActivitityChild" : "newChildActivity"
+		"click .newActivitityChild" : "newChildActivity",
+		"click .assignTargetLnk" : "assignTarget"
+			
+	},
+	
+	assignTarget: function(e) {
+		var activityId = $(e.target).parents('tr').attr('data-id');
+		var activity = Activity.findOrCreate(activityId);
+		
+		var targetId = $(e.target).parents('li').attr('data-id');
+		var activityTarget = ActivityTarget.findOrCreate(targetId);
+		
+		this.assignTargetValueModalView.setCurrentActivity(activity);
+		this.assignTargetValueModalView.setCurrentTarget(activityTarget);
+		this.assignTargetValueModalView.render();
 	},
 	
 	editActivity: function(e) {

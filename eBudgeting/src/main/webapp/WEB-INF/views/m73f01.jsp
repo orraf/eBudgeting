@@ -27,7 +27,7 @@
 			</div>
 		</div>
 
-		<div id="assignTargetValueModal" class="modal hide fade">
+		<div id="assignTargetValueModal" class="modal wideModal hide fade">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<span style="font-weight: bold;"></span>
@@ -174,7 +174,7 @@
 		{{name}} {{#unless parent}}<a href="#" class="newActivitityChild">เพิ่มกิจกรรมเสริม</a> {{/unless}}</td>
 	<td><ul>
 		{{#each targets}}
-			<li><a href="#" id="assignTargetLnk">{{formatNumber targetValue}}</a></li>
+			<li data-id="{{id}}"><a href="#" class="assignTargetLnk">{{formatNumber targetValue}}</a></li>
 		{{/each}}
 		</ul>
 	</td>
@@ -262,10 +262,10 @@
 <script id="assignTargetValueModalTemplate" type="text/x-handler-template">
 <div id="inputAll">
 	<div style="padding-top:7px; padding-right: 20px;height:35px; float:left">
-    	<strong>{{budgetType.name}}</strong> จำนวนจัดสรร:
+    	<strong> ค่าเป้าหมายรวม: </strong>
 	</div>
     <div style="height:35px; float:left" id="totalInputForm">
-		<div class="input-append"><input type="text" id="totalInputTxt" style="width:120px;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
+		<div class="input-append"><input disabled type="text" id="totalInputTxt" style="width:120px;" value="{{formatNumber targetValue}}"><span class="add-on">{{unit.name}}</span></div>
 	</div>
 
 	<div class="clearfix"></div>
