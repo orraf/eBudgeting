@@ -39,6 +39,7 @@ import biz.thaicom.eBudgeting.models.bgt.ReservedBudget;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -52,6 +53,7 @@ import biz.thaicom.eBudgeting.models.pln.TargetValue;
 import biz.thaicom.eBudgeting.models.pln.TargetValueAllocationRecord;
 import biz.thaicom.eBudgeting.models.webui.Breadcrumb;
 import biz.thaicom.eBudgeting.repositories.ActivityRepository;
+import biz.thaicom.eBudgeting.repositories.ActivityTargetReportRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetRepository;
 import biz.thaicom.eBudgeting.repositories.AllocationRecordRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetCommonTypeRepository;
@@ -163,6 +165,8 @@ public class EntityServiceJPA implements EntityService {
 	@Autowired
 	private ActivityRepository activityRepository;
 	
+	@Autowired
+	private ActivityTargetReportRepository activityTargetReportRepository;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -4019,6 +4023,50 @@ public class EntityServiceJPA implements EntityService {
 		return activity;
 	}
 
+	@Override
+	public List<ActivityTargetReport> findActivityTargetReportByTargetId(
+			Long targetId) {
+		return activityTargetReportRepository.findAllByTarget_id(targetId);
+	}
+
+	@Override
+	public List<ActivityTargetReport> saveActivityTargetReportByTargetId(
+			Long targetId, JsonNode node) {
+		// we get the current List
+		List<ActivityTargetReport> oldList = findActivityTargetReportByTargetId(targetId);
+		
+		List<ActivityTargetReport> newList = new ArrayList<ActivityTargetReport>();
+		
+		ActivityTarget target = activityTargetRepository.findOne(targetId);
+		//now for each node 
+		for(JsonNode reportNode : node) {
+			// we'll go through the oldList
+			Long reportId = getJsonNodeId(reportNode);
+			ActivityTargetReport report;
+			if (reportId != null) {
+				// should be in the oldList
+				report = activityTargetReportRepository.findOne(reportId);
+				oldList.remove(report);
+			} else {
+				report = new ActivityTargetReport();
+				Organization owner = organizationRepository.findOne(getJsonNodeId(reportNode.get("owner")));
+				report.setOwner(owner);
+				report.setTarget(target);	
+			}
+			report.setTargetValue(reportNode.get("targetValue").asLong());
+			
+			newList.add(report);
+		}
+		
+		// we should be able to delete oldList and save newList
+		
+		activityTargetReportRepository.save(newList);
+		activityTargetReportRepository.delete(oldList);
+		
+		return newList;
+	}
+
+	
 	
 	
 	

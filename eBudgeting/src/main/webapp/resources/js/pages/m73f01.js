@@ -23,24 +23,116 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	
 	events: {
 		"click #organizationSearchBtn" : "organizationSearch",
-		"click #organizationOwnerSearchBtn" : "organizationOwnerSearch"
-	},
-	
-	organizationOwnerSearch: function(e) {
-		var query = this.$el.find('#oraganizationOwnerQueryTxt').val();
+		"click .addOrganization" : "addOrganizationTarget",
+		"click .removeOrganizationTarget" : "removeOrganizationTarget",
 		
-		this.organizationSearchList = new OrganizationCollection();
-		this.organizationSearchList.url = appUrl("/Organization/code/00/findByName");
-		this.organizationSearchList.fetch({
-			data: {
-				query: query
-			},
-			type: 'POST',
-			success: _.bind(function() {
-				var html=this.organizationOwnerSearchTbodyTemplate(this.organizationSearchList.toJSON());
-				$('#organizationOwnerSearchTbl').find('tbody').html(html);
-			},this)
-		});		
+		"change .proposalAllocated" : "changeProposalAllocated",
+		
+		"click #saveAssignTargetBtn" : "saveAssignTarget",
+		"click #cancelBtn" : "cancelAssignTarget"
+	},
+	cancelAssignTarget: function(e) {
+		this.$el.modal('hide');
+	},
+	saveAssignTarget: function(e) {
+		var sum=0;
+		// now put the sum up
+		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
+			sum += parseInt($(el).val());
+		});
+		
+		if(sum != parseInt($('#totalInputTxt').val().replace(',',''))) {
+			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
+			return;
+		}
+ 		
+ 		this.$el.find('button#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+ 		
+ 		// we should be ready to save the 
+ 		Backbone.sync('create', this.targetReports, {
+ 			success: _.bind(function() {
+ 				alert('บันทึกเรียนบร้อยแล้ว');
+ 			},this)
+ 		});
+	},
+	changeProposalAllocated: function(e) {
+		// validate this one first
+		if( isNaN( +$(e.target).val() ) ) {
+			$(e.target).parent('div').addClass('control-group error');
+			alert("กรุณาใส่ข้อมูลเป็นตัวเลข");
+		} else {
+			$(e.target).parent('div').removeClass('control-group error'); 
+			var i = $(e.target).parents('tr').prevAll('tr').length;
+			
+			this.targetReports.at(i).set('targetValue', $(e.target).val());
+			this.updateSumTarget();	
+		}
+		
+	},
+	addOrganizationTarget: function(e) {
+		var organizationId = $(e.target).parents('tr').attr('data-id');
+		var organization = Organization.findOrCreate(organizationId);
+		var newTargetReport = new ActivityTargetReport();
+		newTargetReport.set('owner', organization);
+		newTargetReport.set('targetValue', 0);
+		newTargetReport.set('target', this.currentTarget);
+		
+		this.targetReports.push(newTargetReport);
+		
+		var html=this.organizationTargetValueTbodyTemplate(this.targetReports.toJSON());
+		$('#organizationProposalTbl').find('tbody').html(html);
+		
+		this.updateSumTarget();
+		
+		organization.set('_inProposalList', true);
+		//refresh the other list
+		var html=this.organizationSearchTbodyTemplate(this.organizationSearchList.toJSON());
+		$('#organizationSearchTbl').find('tbody').html(html);
+		
+
+	},
+	updateSumTarget: function() {
+		var sum=0;
+		// now put the sum up
+		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
+			sum += parseInt($(el).val());
+		});
+		
+		$('#sumTotalAllocated').html(addCommas(sum));
+
+	},
+	removeOrganizationTarget: function(e) {
+		var organizationId = $(e.target).parents('tr').attr('data-id');
+		var organization = Organization.findOrCreate(organizationId);
+		
+		
+		// now remove this one 
+		for(var i=0; i<this.targetReports.length; i++) {
+			if(this.targetReports.at(i).get('owner') == organization) {
+				
+				var y = confirm("คุณต้องการลบการจัดสรรงบประมาณของหน่วยงาน " + organization.get('name'));
+				if(y==true) {
+					
+					var p = this.targetReports.at(i);
+					
+					// we remove this on from our list
+					this.targetReports.remove(p);
+					
+					p.get('owner').set('_inProposalList', false);
+			
+					var html=this.organizationTargetValueTbodyTemplate(this.targetReports.toJSON());
+					$('#organizationProposalTbl').find('tbody').html(html);
+					
+					this.updateSumTarget();
+					
+					//refresh the other list
+					var html=this.organizationSearchTbodyTemplate(this.organizationSearchList.toJSON());
+					$('#organizationSearchTbl').find('tbody').html(html);
+				}
+			}
+		}
+		
+
 	},
 	
 	organizationSearch: function(e) {
@@ -70,6 +162,16 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		
 		var html = this.assignTargetValueModalTemplate(json);
 		this.$el.find('.modal-body').html(html);
+		
+		//now fill in 
+		this.targetReports = new ActivityTargetReportCollection();
+		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id'));
+		this.targetReports.fetch({
+			success: _.bind(function() {
+				var html=this.organizationTargetValueTbodyTemplate(this.targetReports.toJSON());
+				$('#organizationProposalTbl').find('tbody').html(html);	
+			},this)
+		});
 		
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		return this;

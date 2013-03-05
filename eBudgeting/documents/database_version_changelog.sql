@@ -874,3 +874,15 @@
     
     create sequence PLN_MONTHLYACTREPORT_SEQ;
         
+-- version 7
+-- Modified Date: March 5, 2013
+    update app_info set db_version=7;
+    
+    alter table PLN_ACTIVITYTARGETREPORT 
+    	add (OWNER_HRX_ORGANIZATION_ID number(19,0));
+    	
+    alter table PLN_ACTIVITYTARGETREPORT 
+        add constraint FK2CB2142F6246358A 
+        foreign key (OWNER_HRX_ORGANIZATION_ID) 
+        references HRX_ORGANIZATION;
+

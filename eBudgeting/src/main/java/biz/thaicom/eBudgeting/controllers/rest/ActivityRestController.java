@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.security.models.Activeuser;
 import biz.thaicom.security.models.ThaicomUserDetail;
@@ -61,7 +62,18 @@ public class ActivityRestController {
 	}
 	
 
+	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}", method=RequestMethod.GET)
+	public @ResponseBody List<ActivityTargetReport> findActivityTargetReportByTargetId(
+			@PathVariable Long targetId) {
+		return entityService.findActivityTargetReportByTargetId(targetId);
+	}
 	
+	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}", method=RequestMethod.POST)
+	public @ResponseBody List<ActivityTargetReport> saveActivityTargetReportByTargetId(
+			@PathVariable Long targetId,
+			@RequestBody JsonNode node) {
+		return entityService.saveActivityTargetReportByTargetId(targetId, node);
+	}
 	
 	
 

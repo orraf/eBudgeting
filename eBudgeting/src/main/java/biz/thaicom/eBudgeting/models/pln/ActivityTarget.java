@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import biz.thaicom.eBudgeting.models.hrx.Organization;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -42,6 +44,7 @@ public class ActivityTarget implements Serializable {
 	@JoinColumn(name="UNIT_PLN_TARGETUNIT_ID", nullable=false)
 	private TargetUnit unit;
 
+	
 	public Long getId() {
 		return id;
 	}
@@ -72,8 +75,7 @@ public class ActivityTarget implements Serializable {
 
 	public void setUnit(TargetUnit unit) {
 		this.unit = unit;
-	}
-	
+	}	
 	
 	
 }

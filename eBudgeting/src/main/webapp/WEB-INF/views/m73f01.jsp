@@ -34,7 +34,7 @@
 			</div>
 			<div class="modal-body"></div>
 			<div class="modal-footer">
-				<a href="#" class="btn" id="saveBtn">บันทึกข้อมูล</a>  
+				<a href="#" class="btn btn-primary" id="saveAssignTargetBtn">บันทึกข้อมูล</a>  
 				<a href="#" class="btn" id="cancelBtn">ยกเลิก</a>
 			</div>
 		</div>
@@ -281,7 +281,7 @@
                 	<thead>
                     	<tr>
                         	<td style="width:237px;">หน่วยงาน</td>
-                        	<td>รวม: <span id="sumTotalAllocated"></span> บาท</td>
+                        	<td>รวม: <span id="sumTotalAllocated"></span> {{unit.name}}</td>
                     	</tr>
                 	</thead>
                 	</table>
@@ -328,11 +328,6 @@
 		</div>
 	</div>
 </div>
-
-<div style="padding-top:5px;">
-<button class="btn btn-mini btn-primary saveProposal">บันทึก</button> <button class="btn btn-mini backToProposal">ย้อนกลับ</button>
-</div>
-
 </script>
 <script id="organizationSearchTbodyTemplate" type="text/x-handler-template">
 {{#each this}}
@@ -350,10 +345,10 @@
 
 <script id="organizationTargetValueTbodyTemplate" type="text/x-handler-template">
 {{#each this}}
-<tr data-id="{{owner.id}}"><td><a href="#" class="removeOrganizationProposal"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
+<tr data-id="{{owner.id}}"><td><a href="#" class="removeOrganizationTarget"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
 	<td  style="width:188px">
 		<div style="height:35px; float:left" id="totalInputForm">
-			<div class="input-append"><input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
+			<div class="input-append"><input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{targetValue}}"><span class="add-on">{{target.unit.name}}</span></div>
 		</div>
 	</td>
 </tr>

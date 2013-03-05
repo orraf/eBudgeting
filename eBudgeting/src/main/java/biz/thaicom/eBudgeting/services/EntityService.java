@@ -21,6 +21,7 @@ import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
 import biz.thaicom.eBudgeting.models.bgt.RequestColumn;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -314,6 +315,12 @@ public interface EntityService {
 	public Activity updateActivity(JsonNode node);
 	public Activity saveActivity(JsonNode node, Organization owner);
 	public Activity deleteActivity(Long id);
+	
+	//ActivityTargetReport
+	public List<ActivityTargetReport> findActivityTargetReportByTargetId(
+			Long targetId);
+	public List<ActivityTargetReport> saveActivityTargetReportByTargetId(
+			Long targetId, JsonNode node);
 	
 
 

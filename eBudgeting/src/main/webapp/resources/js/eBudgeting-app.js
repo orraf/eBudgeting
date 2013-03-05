@@ -505,6 +505,37 @@ ActivityTarget = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('/ActivityTarget/')
 });
 
+ActivityTargetReport = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'target',
+		relatedModel: 'ActivityTarget'
+	}, {
+		type: Backbone.HasOne,
+		key: 'activityPerformance',
+		relatedModel: 'ActivityPerformance'
+	},{
+		type: Backbone.HasOne,
+		key: 'owner',
+		relatedModel: 'Organization'
+	}]
+});
+
+ActivityPerformance = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'activity',
+		relatedModel: 'Activity'
+	},{
+		type: Backbone.HasOne,
+		key: 'owner',
+		relatedModel: 'Organization'
+	}]
+});
+
+
 ObjectiveTarget = Backbone.RelationalModel.extend({
 	idAttribute: 'id',
 	relations: [{
@@ -782,6 +813,10 @@ ReservedBudgetCollection =Backbone.Collection.extend({
 ActivityTargetCollection = Backbone.Collection.extend({
 	model: ActivityTarget
 });
+ActivityTargetReportCollection = Backbone.Collection.extend({
+	model: ActivityTargetReport
+});
+
 ObjectiveTargetCollection = Backbone.Collection.extend({
 	model: ObjectiveTarget
 });
