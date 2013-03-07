@@ -24,9 +24,6 @@ var ModalView = Backbone.View.extend({
 	organizationOwnerSearchTbodyTemplate: Handlebars.compile($('#organizationOwnerSearchTbodyTemplate').html()), 
 	organizationOwnerTbodyTemplate: Handlebars.compile($('#organizationOwnerTbodyTemplate').html()),
 	
-	inputEditProposalTemplate: Handlebars.compile($('#inputEditProposalTemplate').html()), 
-	defaultInputTemplate : Handlebars.compile($('#defaultInputTemplate').html()),
-	inputModalTemplate : Handlebars.compile($('#inputModalTemplate').html()),
 	
 	events : {
 		"click .removeProposal" : "removeProposal",
@@ -670,8 +667,6 @@ var MainCtrView = Backbone.View.extend({
 	loadingTpl : Handlebars.compile($("#loadingTemplate").html()),
 	mainCtrTemplate : Handlebars.compile($("#mainCtrTemplate").html()),
 	mainTblTpl : Handlebars.compile($("#mainTblTemplate").html()),
-	nodeRowTpl : Handlebars.compile($("#nodeRowTemplate").html()),
-	mainTbl1Tpl : Handlebars.compile($("#mainCtr1Template").html()),
 	modalView : new ModalView(),
 
 	 

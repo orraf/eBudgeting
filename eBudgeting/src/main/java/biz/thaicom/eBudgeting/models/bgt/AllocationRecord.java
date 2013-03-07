@@ -91,7 +91,11 @@ public class AllocationRecord implements Serializable{
 	}
 
 	public void adjustAmountAllocated(Long adjustedAmount) {
-		this.amountAllocated = this.amountAllocated - adjustedAmount;
+		if(this.amountAllocated == null) {
+			this.amountAllocated = adjustedAmount;
+		} else {
+			this.amountAllocated = this.amountAllocated - adjustedAmount;
+		}
 		
 	}
 	

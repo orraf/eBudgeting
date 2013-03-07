@@ -378,8 +378,6 @@
 	
 	var readOnly = "${readOnly}";
 
-	var proposalListTemplate = Handlebars.compile($('#proposalListTemplate').html());
-	
 	Handlebars.registerHelper("sumTargetValue", function(unitId, proposals) {
 		// get all targetValue
 		sum=0;

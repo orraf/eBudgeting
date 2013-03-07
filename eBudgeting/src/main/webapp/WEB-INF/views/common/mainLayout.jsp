@@ -27,12 +27,12 @@
 	<link href="<c:url value='/resources/css/app.css'/>" rel="stylesheet">
 	<script src="<c:url value='/resources/jslibs/jqueryui-1.9.2/js/jquery-1.8.3.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/jqueryui-1.9.2/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
-	<script src="<c:url value='/resources/jslibs/underscore-dev-1.4.3.js'/>"></script>
+	<script src="<c:url value='/resources/jslibs/underscore-dev-1.4.4.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/bootstrap-2.2.2/js/bootstrap.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/bootstrap-editable-1.1.4/js/bootstrap-editable.min.js'/>"></script>
-	<script src="<c:url value='/resources/jslibs/backbone-0.9.2.js'/>"></script>
-	<script src="<c:url value='/resources/jslibs/backbone-relational-0.6.0.js'/>"></script>
-	<script src="<c:url value='/resources/jslibs/handlebars-1.0.0.beta.6.js'/>"></script>
+	<script src="<c:url value='/resources/jslibs/backbone-0.9.10.js'/>"></script>
+	<script src="<c:url value='/resources/jslibs/backbone-relational-0.8.0.js'/>"></script>
+	<script src="<c:url value='/resources/jslibs/handlebars-1.0.0-rc.3.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/moment-1.7.2.min.js'/>"></script>	
 		
 	<script src="<c:url value='/resources/js/appUtils.js'/>"></script>

@@ -368,8 +368,6 @@
 
 	
 	var readOnly = "${readOnly}";
-
-	var proposalListTemplate = Handlebars.compile($('#proposalListTemplate').html());
 	
 	Handlebars.registerHelper("sumTargetValue", function(unitId, proposals) {
 		// get all targetValue
@@ -389,28 +387,6 @@
 		}
 		
 		return addCommas(sum);
-	});
-	
-	Handlebars.registerHelper("listProposals", function(proposals) {
-		if(proposals == null || proposals.length == 0) return "";
-		
-		var budgetTypeList = [];
-		
-		for(var i=0; i< proposals.length; i++) {
- 			if(budgetTypeList[proposals[i].budgetType.topParentName] == null) budgetTypeList[proposals[i].budgetType.topParentName] = 0;
-
- 			budgetTypeList[proposals[i].budgetType.topParentName] += proposals[i].amountRequest;
- 		}
- 		
- 		var json=[];
- 		for(var i=0; i< topBudgetList.length; i++) {
- 			if(budgetTypeList[topBudgetList[i]] != null && budgetTypeList[topBudgetList[i]] > 0) {
- 				json.push({name: topBudgetList[i], total: budgetTypeList[topBudgetList[i]]});
- 			}
- 		}
- 		 		
- 		return proposalListTemplate(json);
-		
 	});
 	
 	Handlebars.registerHelper("sumProposal", function(proposals) {
