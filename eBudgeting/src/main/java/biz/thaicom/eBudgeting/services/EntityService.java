@@ -332,8 +332,13 @@ public interface EntityService {
 			Long targetId);
 	public List<ActivityTargetReport> saveActivityTargetReportByTargetId(
 			Long targetId, JsonNode node, Long parentOrgId);
+	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndOwnerId(
+			Long targetId, Long ownerId);
 	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
 			Long targetId, Long parentOrgId);
+	public ActivityTargetReport findActivityTargetReportById(Long id);
+
+	public ActivityTargetReport saveActivityTargetReportPlan(Long id, JsonNode node);
 
 	
 

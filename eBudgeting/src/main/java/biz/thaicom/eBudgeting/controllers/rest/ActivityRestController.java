@@ -70,6 +70,19 @@ public class ActivityRestController {
 		return entityService.findActivityPerformancesByOwnerAndObjectiveId(currentUser.getWorkAt(), objectiveId);
 	}
 
+	@RequestMapping(value="/ActivityTargetReport/saveReportPlan/{id}", method=RequestMethod.PUT) 
+	public @ResponseBody ActivityTargetReport saveActivityTargetReport(
+			@PathVariable Long id, 
+			@RequestBody JsonNode node){
+		return entityService.saveActivityTargetReportPlan(id, node);
+	}
+	
+	@RequestMapping(value="/ActivityTargetReport/{id}", method=RequestMethod.GET) 
+	public @ResponseBody ActivityTargetReport findActivityTargetReportById(
+			@PathVariable Long id){
+		return entityService.findActivityTargetReportById(id);
+	}
+	
 	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}", method=RequestMethod.GET)
 	public @ResponseBody List<ActivityTargetReport> findActivityTargetReportByTargetId(
 			@PathVariable Long targetId) {

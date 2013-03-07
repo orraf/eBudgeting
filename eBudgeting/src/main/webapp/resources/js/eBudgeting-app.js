@@ -519,7 +519,13 @@ ActivityTargetReport = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'owner',
 		relatedModel: 'Organization'
-	}]
+	},{
+		type: Backbone.HasMany,
+		key: 'monthlyReports',
+		relatedModel: 'MonthlyActivityReport',
+		collectionType: 'MonthlyActivityReportCollection'
+	}],
+	urlRoot: appUrl('/ActivityTargetReport/')
 });
 
 ActivityPerformance = Backbone.RelationalModel.extend({
@@ -592,6 +598,20 @@ TargetValueAllocationRecord = Backbone.RelationalModel.extend({
 		relatedModel : 'ObjectiveTarget'
 	}],
 	urlRoot: appUrl('/TargetValueAllocationRecord')
+});
+
+
+MonthlyActivityReport = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'report',
+		relatedModel: 'ActivityTargetReport'
+	}]
+});
+
+MonthlyBudgetReport = Backbone.RelationalModel.extend({
+	idAttribute: 'id'
 });
 
 Person = Backbone.RelationalModel.extend({
@@ -784,6 +804,9 @@ BudgetTypePagableCollection = PagableCollection.extend({
 	
 });
 
+
+
+
 ObjectiveTypeCollection = Backbone.Collection.extend({
 	model: ObjectiveType
 });
@@ -868,6 +891,10 @@ ObjectiveBudgetProposalTargetCollection = Backbone.Collection.extend({
 
 ObjectiveDetailCollection = Backbone.Collection.extend({
 	model: ObjectiveDetail
+});
+
+MonthlyActivityReportCollection = Backbone.Collection.extend({
+	model: MonthlyActivityReport
 });
 
 //Handlebars Utils

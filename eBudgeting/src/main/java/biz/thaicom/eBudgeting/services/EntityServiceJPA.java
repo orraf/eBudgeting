@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import oracle.net.aso.p;
 import oracle.net.aso.r;
 
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
+import biz.thaicom.eBudgeting.models.pln.MonthlyActivityReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -65,6 +67,7 @@ import biz.thaicom.eBudgeting.repositories.BudgetTypeRepository;
 import biz.thaicom.eBudgeting.repositories.FiscalBudgetTypeRepository;
 import biz.thaicom.eBudgeting.repositories.FormulaColumnRepository;
 import biz.thaicom.eBudgeting.repositories.FormulaStrategyRepository;
+import biz.thaicom.eBudgeting.repositories.MonthlyActivityReportRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveBudgetProposalRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveDetailRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveNameRepository;
@@ -172,6 +175,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private ActivityTargetReportRepository activityTargetReportRepository;
+	
+	@Autowired
+	private MonthlyActivityReportRepository monthlyActivityReportRepository;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -4123,17 +4129,62 @@ public class EntityServiceJPA implements EntityService {
 	}
 
 	@Override
+	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
+			Long targetId, Long parentOrgId) {
+		return activityTargetReportRepository.findAllByTarget_idAndOwner_Parent_id(targetId, parentOrgId);
+	}
+
+	@Override
 	public List<ActivityPerformance> findActivityPerformancesByOwnerAndObjectiveId(
 			Organization workAt, Long objectiveId) {
 		return activityPerformanceRepository.findByOwnerAndObjectiveId(workAt, objectiveId);
 	}
 
 	@Override
-	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
-			Long targetId, Long parentOrgId) {
-		return activityTargetReportRepository.findAllByTarget_idAndOwner_Parent_Id(targetId, parentOrgId);
+	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndOwnerId(
+			Long targetId, Long ownerId) {
+		return activityTargetReportRepository.findAllByTarget_idAndOwner_Id(targetId, ownerId);
 	}
 
+	@Override
+	public ActivityTargetReport findActivityTargetReportById(Long id) {
+		return activityTargetReportRepository.findOneAndFetchReportById(id);
+	}
+
+	@Override
+	public ActivityTargetReport saveActivityTargetReportPlan(Long id, JsonNode node) {
+		ActivityTargetReport report = activityTargetReportRepository.findOne(id);
+		if(report.getMonthlyReports() == null || report.getMonthlyReports().size() != 12) {
+			report.setMonthlyReports(new ArrayList<MonthlyActivityReport>());
+			List<MonthlyActivityReport> monthlyReports = report.getMonthlyReports();
+			for(Integer i=0; i<12; i++) {
+				MonthlyActivityReport monthly = new MonthlyActivityReport();
+				monthly.setFiscalMonth(i);
+				monthly.setOwner(report.getOwner());
+				monthly.setReport(report);
+				
+				monthlyReports.add(monthly);
+			}
+		}
+		
+		for(JsonNode monthlyNode : node.get("monthlyReports")) {
+			Integer month = monthlyNode.get("fiscalMonth").asInt();
+			MonthlyActivityReport monthly = report.getMonthlyReports().get(month);
+			if(monthlyNode.get("activityPlan")!=null) {
+				monthly.setActivityPlan(monthlyNode.get("activityPlan").asLong());
+			} else {
+				monthly.setActivityPlan(0L);
+			}
+			
+		}
+		
+		monthlyActivityReportRepository.save(report.getMonthlyReports());
+		
+		return report;
+	}
+
+	
+	
 	
 	
 	

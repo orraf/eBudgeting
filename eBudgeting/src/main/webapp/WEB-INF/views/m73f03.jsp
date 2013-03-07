@@ -264,7 +264,7 @@
     	<strong> ค่าเป้าหมายรวม: </strong>
 	</div>
     <div style="height:35px; float:left" id="totalInputForm">
-		<div class="input-append"><input disabled type="text" id="totalInputTxt" style="width:120px;" value="{{formatNumber targetValue}}"><span class="add-on">{{unit.name}}</span></div>
+		<div class="input-append"><input disabled type="text" id="totalInputTxt" style="width:120px;" value="{{formatNumber targetValue}}"><span class="add-on">{{target.unit.name}}</span></div>
 	</div>
 
 	<div class="clearfix"></div>
@@ -274,46 +274,46 @@
         </div>
         <div class="row">
 			<div class="span3">
-				ต.ค. <input type="text"></input>
+				ต.ค. <div class="input-append"><input type="text" data-idx="0" class="monthlyReportPlan" id="monthlyTarget0" style="width:120px;" value="{{monthlyReports.0.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				พ.ย. <input type="text"></input>
+				พ.ย. <div class="input-append"><input type="text" data-idx="1" class="monthlyReportPlan" id="monthlyTarget1" style="width:120px;" value="{{monthlyReports.1.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				ธ.ค. <input type="text"></input>
-			</div>
-		</div>
-        <div class="row">
-			<div class="span3">
-				ม.ค. <input type="text"></input>
-			</div>
-			<div class="span3">
-				ก.พ. <input type="text"></input>
-			</div>
-			<div class="span3">
-				มี.ค. <input type="text"></input>
+				ธ.ค. <div class="input-append"><input type="text" data-idx="2" class="monthlyReportPlan" id="monthlyTarget2" style="width:120px;" value="{{monthlyReports.2.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 		</div>
         <div class="row">
 			<div class="span3">
-				เม.ย. <input type="text"></input>
+				ม.ค. <div class="input-append"><input type="text" data-idx="3" class="monthlyReportPlan" id="monthlyTarget3" style="width:120px;" value="{{monthlyReports.3.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				พ.ค. <input type="text"></input>
+				ก.พ. <div class="input-append"><input type="text" data-idx="4" class="monthlyReportPlan" id="monthlyTarget4" style="width:120px;" value="{{monthlyReports.4.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				มิ.ย. <input type="text"></input>
+				มี.ค. <div class="input-append"><input type="text" data-idx="5" class="monthlyReportPlan" id="monthlyTarget5" style="width:120px;" value="{{monthlyReports.5.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 		</div>
         <div class="row">
 			<div class="span3">
-				ก.ค. <input type="text"></input>
+				เม.ย. <div class="input-append"><input type="text" data-idx="6" class="monthlyReportPlan" id="monthlyTarget6" style="width:120px;" value="{{monthlyReports.6.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				ส.ค. <input type="text"></input>
+				พ.ค. <div class="input-append"><input type="text" data-idx="7" class="monthlyReportPlan" id="monthlyTarget7" style="width:120px;" value="{{monthlyReports.7.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				ก.ย. <input type="text"></input>
+				มิ.ย. <div class="input-append"><input type="text" data-idx="8" class="monthlyReportPlan" id="monthlyTarget8" style="width:120px;" value="{{monthlyReports.8.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+		</div>
+        <div class="row">
+			<div class="span3">
+				ก.ค. <div class="input-append"><input type="text" data-idx="9" class="monthlyReportPlan" id="monthlyTarget9" style="width:120px;" value="{{monthlyReports.9.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				ส.ค. <div class="input-append"><input type="text" data-idx="10" class="monthlyReportPlan" id="monthlyTarget10" style="width:120px;" value="{{monthlyReports.10.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				ก.ย. <div class="input-append"><input type="text" data-idx="11" class="monthlyReportPlan" id="monthlyTarget11" style="width:120px;" value="{{monthlyReports.11.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 		</div>
 	</div>
@@ -351,7 +351,7 @@
 <script type="text/javascript">
 	var fiscalYear = parseInt("${fiscalYear}");
 	
-	var currentOrganizationId = "${workAtId}"
+	var currentOrganizationId = "${workAtId}";
 	var mainCtrView = null;
 	var objectiveCollection = null;
 	var budgetTypeSelectionView = null;

@@ -28,10 +28,18 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		"click .removeOrganizationTarget" : "removeOrganizationTarget",
 		
 		"change .proposalAllocated" : "changeProposalAllocated",
+		"change input.monthlyReportPlan" : "changeMonthlyReportPlan",
 		
 		"click #saveAssignTargetBtn" : "saveAssignTarget",
 		"click #cancelBtn" : "cancelAssignTarget"
 	},
+	
+	changeMonthlyReportPlan: function(e) {
+		var idx = $(e.target).attr('data-idx');
+		var planTxt = $(e.target).val();
+		this.currentTargetReport.get('monthlyReports').at(idx).set('activityPlan', planTxt);
+	},
+	
 	resetProposalsInList: function() {
 		if(this.targetReports != null) {
 			this.targetReports.pluck('owner').forEach(function(owner) {
@@ -51,22 +59,26 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	saveAssignTarget: function(e) {
 		var sum=0;
 		// now put the sum up
-		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseInt($(el).val());
+		_.forEach(this.$el.find("input.monthlyReportPlan"), function(el) {
+			var value = parseInt($(el).val());
+			sum += isNaN(value)?0:value;
 		});
 		
-		if(sum != parseInt($('#totalInputTxt').val().replace(',',''))) {
+		if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
 			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
 			return;
 		}
  		
- 		this.$el.find('button#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+ 		this.$el.find('a#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+ 		this.currentTargetReport.urlRoot = this.currentTargetReport.urlRoot + 'saveReportPlan';
  		
  		// we should be ready to save the 
- 		Backbone.sync('create', this.targetReports, {
- 			success: _.bind(function() {
- 				alert('บันทึกเรียบร้อยแล้ว');
- 				this.cancelAssignTarget();
+ 		this.currentTargetReport.save(null, {
+ 			success : _.bind(function() {
+ 				alert('บันทึกเสร็จแล้ว');
+ 				this.$el.modal('hide');
+ 				this.currentTargetReport.urlRoot = appUrl('/ActivityTargetReport/');
+ 				this.$el.find('a#saveAssignTargetBtn').html('บันทึกข้อมูล');
  			},this)
  		});
 	},
@@ -174,27 +186,9 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		this.$el.find('.modal-header span').html("จัดสรรเป้าหมาย: " + this.currentActivity.get('name'));
 		
 		var json = this.currentTargetReport.toJSON();
-		
+		e1=json;
 		var html = this.assignTargetValueModalTemplate(json);
 		this.$el.find('.modal-body').html(html);
-		
-		//now fill in 
-		this.targetReports = new ActivityTargetReportCollection();
-		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id') 
-				+ '/parentOrganization/' + currentOrganizationId);
-		this.targetReports.fetch({
-			success: _.bind(function() {
-				
-				this.targetReports.pluck('owner').forEach(function(owner) {
-					owner.set('_inProposalList', true);
-				});
-
-				var html=this.organizationTargetValueTbodyTemplate(this.targetReports.toJSON());
-				$('#organizationProposalTbl').find('tbody').html(html);	
-				
-				this.updateSumTarget();
-			},this)
-		});
 		
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		return this;
@@ -225,7 +219,6 @@ var ActivityTargetTableView = Backbone.View.extend({
 			json.targets[i].idx = i;
 		}
 		var html = this.activityTargetTableTemplate(json);
-		e1 = json;
 		this.$el.html(html);
 	},
 	
@@ -440,9 +433,32 @@ var MainCtrView = Backbone.View.extend({
 		var targetId = $(e.target).parents('li').attr('data-id');
 		var activityTargetReport = ActivityTargetReport.findOrCreate(targetId);
 		
-		this.assignTargetValueModalView.setCurrentActivity(activity);
-		this.assignTargetValueModalView.setCurrentTargetReport(activityTargetReport);
-		this.assignTargetValueModalView.render();
+		activityTargetReport.fetch({
+			success: _.bind(function() {
+				if(activityTargetReport.get('monthlyReports') == null){
+					activityTargetReport.set('monthlyReports', new MonthlyActivityReportCollection()); 
+				}
+				
+				var monthlyReports = activityTargetReport.get('monthlyReports');
+				// now go through each 12 month
+				for(var i=0; i<12; i++) {
+					if(monthlyReports.at(i) == null) {
+						var monthlyReport = new MonthlyActivityReport();
+						
+						monthlyReport.set('fiscalMonth', i);
+						monthlyReport.set('report', activityTargetReport);	
+						
+						monthlyReports.add(monthlyReport, {at: i});
+					}
+				}
+				
+				this.assignTargetValueModalView.setCurrentActivity(activity);
+				this.assignTargetValueModalView.setCurrentTargetReport(activityTargetReport);
+				this.assignTargetValueModalView.render();		
+			},this)
+		});
+		
+		
 	},
 	
 	editActivity: function(e) {
