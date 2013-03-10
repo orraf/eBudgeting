@@ -885,4 +885,35 @@
         add constraint FK2CB2142F6246358A 
         foreign key (OWNER_HRX_ORGANIZATION_ID) 
         references HRX_ORGANIZATION;
+        
+-- version 8
+-- Modeified Date: March 10, 2013
+	update app_info set db_version=8;
+
+    create table PLN_ACTIVITYTARGETRESULT (
+        id number(19,0) not null,
+        remark varchar2(1024 char),
+        removed number(1,0),
+        reportedResultDate date,
+        result number(19,0),
+        timestamp timestamp,
+        REPORTPERSON_HRX_PERSON_ID number(19,0),
+        TARGETREPORT_PLN_REPORT_ID number(19,0),
+        primary key (id)
+    );
+    
+    alter table PLN_ACTIVITYTARGETRESULT 
+        add constraint FKA194D1CAB697B485 
+        foreign key (REPORTPERSON_HRX_PERSON_ID) 
+        references HRX_PERSON;
+
+    alter table PLN_ACTIVITYTARGETRESULT 
+        add constraint FKA194D1CA1D131B41 
+        foreign key (TARGETREPORT_PLN_REPORT_ID) 
+        references PLN_ACTIVITYTARGETREPORT;
+        
+  	create sequence PLN_ACTIVITYTARGETSRESULT_SEQ;
+
+
+	
 

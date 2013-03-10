@@ -23,6 +23,7 @@ import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetResult;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -340,6 +341,10 @@ public interface EntityService {
 	public ActivityTargetReport findActivityTargetReportById(Long id);
 
 	public ActivityTargetReport saveActivityTargetReportPlan(Long id, JsonNode node);
+	
+	//ActivityTargetResult
+	public ActivityTargetResult saveActivityTargetResult(JsonNode node,
+			ThaicomUserDetail currentUser);
 
 
 	

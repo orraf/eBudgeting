@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetResult;
 import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.security.models.Activeuser;
 import biz.thaicom.security.models.ThaicomUserDetail;
@@ -116,6 +117,11 @@ public class ActivityRestController {
 		return entityService.saveActivityTargetReportByTargetId(targetId, node, currentuser.getWorkAt().getId());
 	}
 	
-	
+	@RequestMapping(value="/ActivityTargetResult/", method=RequestMethod.POST) 
+	public @ResponseBody ActivityTargetResult saveActivityTargetResult(
+			@RequestBody JsonNode node,
+			@Activeuser ThaicomUserDetail currentUser){
+		return entityService.saveActivityTargetResult(node, currentUser);
+	}
 
 }

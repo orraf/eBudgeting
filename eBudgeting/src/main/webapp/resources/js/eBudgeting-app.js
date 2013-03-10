@@ -537,7 +537,19 @@ ActivityTargetReport = Backbone.RelationalModel.extend({
 	}],
 	urlRoot: appUrl('/ActivityTargetReport/')
 });
-
+ActivityTargetResult = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'report',
+		relatedModel: 'ActivityTargetReport'
+	},{
+		type:Backbone.HasOne,
+		key: 'person',
+		relatedModel: 'Person'
+	}],
+	urlRoot: appUrl('/ActivityTargetResult/')
+}),
 ActivityPerformance = Backbone.RelationalModel.extend({
 	idAttribute: 'id',
 	relations: [{

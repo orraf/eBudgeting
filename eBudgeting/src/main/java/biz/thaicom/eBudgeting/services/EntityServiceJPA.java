@@ -1,11 +1,15 @@
 package biz.thaicom.eBudgeting.services;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -42,6 +46,7 @@ import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetResult;
 import biz.thaicom.eBudgeting.models.pln.MonthlyActivityReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
@@ -59,6 +64,7 @@ import biz.thaicom.eBudgeting.repositories.ActivityPerformanceRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetReportRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetRepository;
+import biz.thaicom.eBudgeting.repositories.ActivityTargetResultRepository;
 import biz.thaicom.eBudgeting.repositories.AllocationRecordRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetCommonTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetProposalRepository;
@@ -175,6 +181,10 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private ActivityTargetReportRepository activityTargetReportRepository;
+	
+	@Autowired
+	private ActivityTargetResultRepository activityTargetResultRepository;
+	
 	
 	@Autowired
 	private MonthlyActivityReportRepository monthlyActivityReportRepository;
@@ -4218,6 +4228,7 @@ public class EntityServiceJPA implements EntityService {
 			}
 			
 			report.getTarget().setFilterReport(report);
+			report.getTarget().getUnit().getId();
 			
 			report.getTarget().getActivity().getFilterTargets().add(report.getTarget());
 			
@@ -4225,6 +4236,48 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		return objectiveRepository.findByActivityTargetReportOfOrganization(workAt);
+	}
+
+	@Override
+	public ActivityTargetResult saveActivityTargetResult(JsonNode node,
+			ThaicomUserDetail currentUser) {
+		
+		ActivityTargetResult result = new ActivityTargetResult();
+		
+		ActivityTargetReport report = activityTargetReportRepository.findOne(getJsonNodeId(node.get("report")));
+		result.setReport(report);
+		result.setTimestamp(new Date());
+		result.setPerson(currentUser.getPerson());
+		result.setRemark(node.get("remark").asText());
+		result.setResult(node.get("result").asLong());
+		SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("TH", "TH"));
+		
+		try {
+			result.setReportedResultDate(df.parse(node.get("reportedResultDate").asText()));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+		activityTargetResultRepository.save(result);
+		// now we'll have to update the result month
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(result.getReportedResultDate());
+		Integer fiscalMonth = ( calendar.get(Calendar.MONTH) + 3 ) % 12;
+		
+		logger.debug("fiscalMonth : " + fiscalMonth); 
+		
+		Long monthlyResult = report.getMonthlyReports().get(fiscalMonth).getActivityResult();
+		if(monthlyResult == null ) {
+			monthlyResult = result.getResult();
+		} else {
+			monthlyResult += result.getResult();
+		}
+		
+		report.getMonthlyReports().get(fiscalMonth).setActivityResult(monthlyResult);		
+		monthlyActivityReportRepository.save(report.getMonthlyReports().get(fiscalMonth));
+		
+		return result;
 	}
 
 	

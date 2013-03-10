@@ -82,6 +82,7 @@ Handlebars.registerHelper('indexHuman', function(index) {
 });
 
 Handlebars.registerHelper('formatNumber', function(number) {
+	if(number==null || isNaN(number)) return "-";
 	return addCommas(number);
 });
 
