@@ -206,7 +206,7 @@
 	</div>
 	<div class="clearfix"></div>
 	<div>
-		<a href="#" class="btn btn-mini btn-info addActivityTargetBtn"><i class="icon icon-plus-sign icon-white"></i> บันทึกค่าเป้าหมา</a>
+		<a href="#" class="btn btn-mini btn-info addActivityTargetBtn"><i class="icon icon-plus-sign icon-white"></i> บันทึกค่าเป้าหมาย</a>
 		<a href="#" class="btn btn-mini backToActivity"><i class="icon icon-white"></i> ยกเลิก</a>
 	</div>
 
