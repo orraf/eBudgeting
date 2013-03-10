@@ -130,7 +130,8 @@ public interface EntityService {
 	public List<Objective> findChildrenObjectivewithAllocationRecords(
 			Long objectiveId);
 	
-		
+	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
+			Organization workAt, Integer fiscalYear);
 	//BudgetType
 	public List<BudgetType> findRootBudgetType();
 	public BudgetType findBudgetTypeById(Long id);
@@ -339,6 +340,7 @@ public interface EntityService {
 	public ActivityTargetReport findActivityTargetReportById(Long id);
 
 	public ActivityTargetReport saveActivityTargetReportPlan(Long id, JsonNode node);
+
 
 	
 

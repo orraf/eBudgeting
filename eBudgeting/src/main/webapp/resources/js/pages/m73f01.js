@@ -79,9 +79,9 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			var i = $(e.target).parents('tr').prevAll('tr').length;
 			
 			this.targetReports.at(i).set('targetValue', $(e.target).val());
-			this.updateSumTarget();	
+			
 		}
-		
+		this.updateSumTarget();	
 	},
 	addOrganizationTarget: function(e) {
 		var organizationId = $(e.target).parents('tr').attr('data-id');
@@ -109,7 +109,10 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		var sum=0;
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseInt($(el).val());
+			if(!isNaN(parseInt($(el).val()))) {
+				sum += parseInt($(el).val());
+			}
+			
 		});
 		
 		$('#sumTotalAllocated').html(addCommas(sum));
@@ -179,7 +182,8 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		
 		//now fill in 
 		this.targetReports = new ActivityTargetReportCollection();
-		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id'));
+		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' 
+				+ this.currentTarget.get('id'));
 		this.targetReports.fetch({
 			success: _.bind(function() {
 				

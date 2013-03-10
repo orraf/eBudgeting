@@ -142,6 +142,9 @@ public class Objective implements Serializable {
 	private List<TargetValue> filterTargetValues;
 	
 	@Transient
+	private List<Activity> filterActivities;
+	
+	@Transient
 	private List<BudgetProposal> sumBudgetTypeProposals;
 	
 	
@@ -582,6 +585,12 @@ public class Objective implements Serializable {
 		
 		return nextLineNumber;
 		
+	}
+	public List<Activity> getFilterActivities() {
+		return filterActivities;
+	}
+	public void setFilterActivities(List<Activity> filterActivities) {
+		this.filterActivities = filterActivities;
 	}
 	
 	

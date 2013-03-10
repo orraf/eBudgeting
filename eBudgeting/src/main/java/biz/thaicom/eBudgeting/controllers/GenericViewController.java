@@ -1215,6 +1215,21 @@ public class GenericViewController {
 		return "m73f03";
 	}
 
+	// --------------------------------------------------------------m81f01: การบันทึกผลการดำเนินงาน
+	@RequestMapping("/page/m81f01/")
+	public String render_m81f01(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		List<Objective> fiscalYears = entityService.findRootFiscalYear();
+		setFiscalYearFromSession(model, session);
+		model.addAttribute("rootPage", false);
+		model.addAttribute("fiscalYears", fiscalYears);
+		model.addAttribute("workAtId", currentUser.getWorkAt().getId());
+		
+		return "m81f01";
+	}
+	
 }
 
 

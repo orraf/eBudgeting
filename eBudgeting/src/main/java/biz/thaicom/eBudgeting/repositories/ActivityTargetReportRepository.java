@@ -14,17 +14,17 @@ public interface ActivityTargetReportRepository extends
 		PagingAndSortingRepository<ActivityTargetReport, Long>, JpaSpecificationExecutor<ActivityTargetReport> {
 
 		
-	List<ActivityTargetReport> findAllByTarget_id(Long targetId);
+	public List<ActivityTargetReport> findAllByTarget_id(Long targetId);
 
 	@Query("" +
 			"SELECT report " +
 			"FROM ActivityTargetReport report " +
 			"	INNER JOIN FETCH report.monthlyReports monthlyReports " +
 			"WHERE report.target.id = ?1 and report.owner.id = ?2 ")
-	List<ActivityTargetReport> findAllByTarget_idAndOwner_Id(
+	public List<ActivityTargetReport> findAllByTarget_idAndOwner_Id(
 			Long targetId, Long ownerId);
 
-	List<ActivityTargetReport> findAllByTarget_idAndOwner_Parent_id(
+	public List<ActivityTargetReport> findAllByTarget_idAndOwner_Parent_id(
 			Long targetId, Long parentOrgId);
 
 	
@@ -33,6 +33,13 @@ public interface ActivityTargetReportRepository extends
 			"FROM ActivityTargetReport report " +
 			"	INNER JOIN FETCH report.monthlyReports monthlyReports " +
 			"WHERE report.id = ?1  ")
-	ActivityTargetReport findOneAndFetchReportById(Long id);
+	public ActivityTargetReport findOneAndFetchReportById(Long id);
+	
+	@Query("" +
+			"SELECT report " +
+			"FROM ActivityTargetReport report " +
+			"WHERE report.owner.id = ?1 " +
+			" 	AND report.target.activity.forObjective.fiscalYear = ?2 ")
+	public List<ActivityTargetReport> findAllByOwner_idAndFiscalYear(Long ownerId, Integer fiscalYear);
 
 }

@@ -92,6 +92,11 @@ Objective = Backbone.RelationalModel.extend({
 	    	relatedModel: 'TargetValue',
 	    	collectionType: 'TargetValueCollection'
 	    }, {
+	    	type:Backbone.HasMany,
+	    	key: 'filterActivities',
+	    	relatedModel: 'Activity',
+	    	collectionType: 'ActivityCollection'
+	    }, {
 	    	type: Backbone.HasMany,
 	    	key: 'targetValueAllocationRecords',
 	    	relatedModel: 'TargetValueAllocationRecord',
@@ -167,7 +172,12 @@ Activity = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'forObjective',
 		relatedModel: 'Objective'
-	}, {
+	},{
+    	type:Backbone.HasMany,
+    	key: 'filterTargets',
+    	relatedModel: 'ActivityTarget',
+    	collectionType: 'ActivityTargetCollection'
+    }, {
 		type: Backbone.HasMany,
 		key: 'targets',
 		relatedModel: 'ActivityTarget',

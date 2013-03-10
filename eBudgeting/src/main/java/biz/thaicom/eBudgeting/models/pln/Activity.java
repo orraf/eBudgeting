@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 
@@ -69,6 +70,9 @@ public class Activity implements Serializable {
 	@OneToMany(mappedBy="parent")
 	private List<Activity> children;
 
+	@Transient
+	private List<ActivityTarget> filterTargets;
+	
 	public Long getId() {
 		return id;
 	}
@@ -155,6 +159,14 @@ public class Activity implements Serializable {
 
 	public void setChildren(List<Activity> children) {
 		this.children = children;
+	}
+
+	public List<ActivityTarget> getFilterTargets() {
+		return filterTargets;
+	}
+
+	public void setFilterTargets(List<ActivityTarget> filterTargets) {
+		this.filterTargets = filterTargets;
 	}
 	
 	

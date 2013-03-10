@@ -4069,6 +4069,9 @@ public class EntityServiceJPA implements EntityService {
 		// we get the current List
 		List<ActivityTargetReport> oldList = findActivityTargetReportByTargetIdAndParentOrgId(targetId, parentOrgId);
 		
+		logger.debug("oldList.size() =" + oldList.size());
+		
+		
 		List<ActivityTargetReport> newList = new ArrayList<ActivityTargetReport>();
 		
 		ActivityTarget target = activityTargetRepository.findOne(targetId);
@@ -4110,6 +4113,8 @@ public class EntityServiceJPA implements EntityService {
 		// we should be able to delete oldList and save newList
 		
 		activityTargetReportRepository.save(newList);
+		
+		logger.debug("oldList.size() now =" + oldList.size());
 		
 		// now in each of the left old list 
 		// we iterate to see if we should delete performance
@@ -4181,6 +4186,45 @@ public class EntityServiceJPA implements EntityService {
 		monthlyActivityReportRepository.save(report.getMonthlyReports());
 		
 		return report;
+	}
+
+	@Override
+	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
+			Organization workAt, Integer fiscalYear) {
+		
+		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(workAt.getId(), fiscalYear);
+		
+		List<Objective> objectives = new ArrayList<Objective>();
+		
+		
+		// now forEach Report
+		for(ActivityTargetReport report: reports) {
+			Objective obj = report.getTarget().getActivity().getForObjective();
+			
+			if(!objectives.contains(obj)) {
+				objectives.add(obj);
+			}
+			
+			if(obj.getFilterActivities() == null) {
+				obj.setFilterActivities(new ArrayList<Activity> ());
+			}
+			
+			if(!obj.getFilterActivities().contains(report.getTarget().getActivity())) {
+				obj.getFilterActivities().add(report.getTarget().getActivity());
+			}
+			
+			if(report.getTarget().getActivity().getFilterTargets() == null) {
+				report.getTarget().getActivity().setFilterTargets(new ArrayList<ActivityTarget>());
+			}
+			
+			report.getTarget().setFilterReport(report);
+			
+			report.getTarget().getActivity().getFilterTargets().add(report.getTarget());
+			
+		}
+		
+		
+		return objectiveRepository.findByActivityTargetReportOfOrganization(workAt);
 	}
 
 	

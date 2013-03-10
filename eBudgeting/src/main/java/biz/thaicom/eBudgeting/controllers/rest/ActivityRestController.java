@@ -2,6 +2,8 @@ package biz.thaicom.eBudgeting.controllers.rest;
 
 import java.util.List;
 
+import javax.servlet.ServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +87,9 @@ public class ActivityRestController {
 	
 	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}", method=RequestMethod.GET)
 	public @ResponseBody List<ActivityTargetReport> findActivityTargetReportByTargetId(
-			@PathVariable Long targetId) {
-		return entityService.findActivityTargetReportByTargetId(targetId);
+			@PathVariable Long targetId,
+			@Activeuser ThaicomUserDetail currentUser) {
+		return entityService.findActivityTargetReportByTargetIdAndParentOrgId(targetId, 0L);
 	}
 
 	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/parentOrganization/{parentOrgId}", method=RequestMethod.GET)
@@ -108,8 +111,9 @@ public class ActivityRestController {
 	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}", method=RequestMethod.POST)
 	public @ResponseBody List<ActivityTargetReport> saveActivityTargetReportByTargetId(
 			@PathVariable Long targetId,
-			@RequestBody JsonNode node) {
-		return entityService.saveActivityTargetReportByTargetId(targetId, node, 0L);
+			@RequestBody JsonNode node,
+			@Activeuser ThaicomUserDetail currentuser) {
+		return entityService.saveActivityTargetReportByTargetId(targetId, node, currentuser.getWorkAt().getId());
 	}
 	
 	
