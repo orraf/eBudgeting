@@ -4230,7 +4230,12 @@ public class EntityServiceJPA implements EntityService {
 			report.getTarget().setFilterReport(report);
 			report.getTarget().getUnit().getId();
 			
+			
+			
 			report.getTarget().getActivity().getFilterTargets().add(report.getTarget());
+			
+			
+			report.setLatestResult(activityTargetResultRepository.findByLatestTimeStamp(report));
 			
 		}
 		
@@ -4253,7 +4258,11 @@ public class EntityServiceJPA implements EntityService {
 		SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("TH", "TH"));
 		
 		try {
+			
 			result.setReportedResultDate(df.parse(node.get("reportedResultDate").asText()));
+			
+			logger.debug("saving date:" + result.getReportedResultDate());
+			
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return null;

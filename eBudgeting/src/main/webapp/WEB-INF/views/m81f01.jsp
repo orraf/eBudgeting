@@ -37,13 +37,13 @@
     	<div class="control-group">
     		<label class="control-label" for="reportedResultDate">วันที่รายงาน</label>
     		<div class="controls">
-    			<input type="text" id="reportedResultDate" placeholder="...">
+    			<div id="reportedResultDateDiv" class="input-append date datepicker" data-date-format="dd/mm/yyyy" data-date=""><input type="text" id="reportedResultDate" placeholder="..."><span class="add-on"><i class="icon-calendar"></i></span></div>
     		</div>
     	</div>
     	<div class="control-group">
     		<label class="control-label" for="result">ค่ารายงาน</label>
     		<div class="controls">
-				<div class="input-append"><input type="text" id="result" style="width:120px;" placeholder="..."><span class="add-on">{{unit.name}}</span></div>
+				<div class="input-append"><input type="text" id="result" placeholder="..."><span class="add-on">{{unit.name}}</span></div>
     		</div>
     	</div>
     	<div class="control-group">
@@ -223,7 +223,11 @@
 					</ul>
 				</td>
 				<td>
-
+					<ul>
+					{{#each this.filterTargets}}
+						<li>{{filterReport.lastSaveTxt}}</li>
+					{{/each}}
+					</ul>
 				</td>
 			</tr>
 			{{/each}}

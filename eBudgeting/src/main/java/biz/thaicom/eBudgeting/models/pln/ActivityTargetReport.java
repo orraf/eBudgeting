@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 
@@ -69,7 +70,8 @@ public class ActivityTargetReport implements Serializable {
 	@JoinColumn(name="OWNER_HRX_ORGANIZATION_ID")
 	private Organization owner;
 
-
+	@Transient
+	private ActivityTargetResult latestResult;
 	
 	public Long getId() {
 		return id;
@@ -118,6 +120,15 @@ public class ActivityTargetReport implements Serializable {
 	public void setOwner(Organization owner) {
 		this.owner = owner;
 	}
+
+	public ActivityTargetResult getLatestResult() {
+		return latestResult;
+	}
+
+	public void setLatestResult(ActivityTargetResult latestResult) {
+		this.latestResult = latestResult;
+	}
+	
 	
 	
 

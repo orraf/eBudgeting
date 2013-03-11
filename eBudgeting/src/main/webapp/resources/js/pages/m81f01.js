@@ -35,6 +35,14 @@ var ModalView = Backbone.View.extend({
 		json.unit = this.currentTargetReport.get("target").get("unit").toJSON();
 		var html = this.resultInputTemplate(json);
 		this.$el.find('.modal-body').html(html);
+		
+		this.$el.find('#reportedResultDate').datepicker({
+			autoclose: true,
+			language: 'th',
+			format: 'dd/mm/yyyy'
+		});
+		
+		
 	},
 	renderWithReport: function(report) {
 		this.currentTargetReport = report;
@@ -131,6 +139,22 @@ var MainCtrView = Backbone.View.extend({
 		var json = {};
 		if(this.collection != null) {
 			json = this.collection.toJSON();
+			for(var i=0; i< json.length; i++) {
+				var act = json[i].filterActivities;
+				for(var j=0; j< act.length; j++) {
+					var tgt = act[j].filterTargets;
+
+					for(var k=0; k<tgt.length; k++) {
+						var rpt = tgt[k].filterReport;
+						
+						rpt.lastSaveTxt = moment.utc(rpt.latestResult.timestamp).fromNow();
+						rpt.lastSaveTxt += " / " + rpt.latestResult.person.firstName + " " + rpt.latestResult.person.lastName;
+						
+					}
+					
+				}
+			}
+						
 		}
 		this.$el.html(this.mainCtrTemplate(json));
 		

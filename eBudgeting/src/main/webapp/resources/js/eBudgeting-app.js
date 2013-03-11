@@ -534,6 +534,10 @@ ActivityTargetReport = Backbone.RelationalModel.extend({
 		key: 'monthlyReports',
 		relatedModel: 'MonthlyActivityReport',
 		collectionType: 'MonthlyActivityReportCollection'
+	}, {
+		type: Backbone.HasOne,
+		key: 'latestResult',
+		relatedModel: 'ActivityTargetResult'
 	}],
 	urlRoot: appUrl('/ActivityTargetReport/')
 });
