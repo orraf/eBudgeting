@@ -146,10 +146,12 @@ var MainCtrView = Backbone.View.extend({
 
 					for(var k=0; k<tgt.length; k++) {
 						var rpt = tgt[k].filterReport;
-						
-						rpt.lastSaveTxt = moment.utc(rpt.latestResult.timestamp).fromNow();
-						rpt.lastSaveTxt += " / " + rpt.latestResult.person.firstName + " " + rpt.latestResult.person.lastName;
-						
+						if(rpt.latestResult != null) {
+							rpt.lastSaveTxt = moment.utc(rpt.latestResult.timestamp).fromNow();
+							rpt.lastSaveTxt += " / " + rpt.latestResult.person.firstName + " " + rpt.latestResult.person.lastName;
+						} else {
+							rpt.lastSaveTxt = 'ยังไม่เคยรายงาน';
+						}
 					}
 					
 				}
