@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.services.EntityService;
+import biz.thaicom.security.models.Activeuser;
+import biz.thaicom.security.models.ThaicomUserDetail;
 
 @Controller
 public class OrganizationRestController {
@@ -58,6 +60,12 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 			@PathVariable Long objectiveId) {
 		List<Organization> list = entityService.findOrganizationByObjectiveOwner(objectiveId);
 		return list;
+	}
+	
+	@RequestMapping(value="/Organization/currentSession/children")
+	public @ResponseBody List<Organization> findOneByCurrentSession(
+			@Activeuser ThaicomUserDetail currentUser) {
+		return entityService.findOrganizationByNameAndParent_Id("%", currentUser.getWorkAt().getId());
 	}
 	
 }

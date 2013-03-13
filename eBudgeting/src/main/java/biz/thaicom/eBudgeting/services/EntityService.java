@@ -70,6 +70,13 @@ public interface EntityService {
 	
 	public List<Objective> findObjectiveByActivityOwnerAndFiscalYear(
 			Organization workAt, Integer fiscalYear);
+	
+	public List<Objective> findObjectiveByActivityRegulatorAndFiscalYear(
+			Organization workAt, Integer fiscalYear);
+	
+	public List<Objective> findObjectiveChildrenByActivityRegulatorAndParentId(
+			Organization workAt, Long id);
+
 	public List<Objective> findObjectiveChildrenByActivityOwnerAndParentId(
 			Organization workAt, Long id);
 	
@@ -133,6 +140,10 @@ public interface EntityService {
 	
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear);
+	
+
+
+	
 	//BudgetType
 	public List<BudgetType> findRootBudgetType();
 	public BudgetType findBudgetTypeById(Long id);
@@ -327,7 +338,8 @@ public interface EntityService {
 	public Activity deleteActivity(Long id);
 	public List<ActivityPerformance> findActivityPerformancesByOwnerAndObjectiveId(
 			Organization workAt, Long objectiveId);
-
+	public List<Activity> findActivityByRegularAndObjectiveId(
+			Organization workAt, Long objectiveId);
 	
 	//ActivityTargetReport
 	public List<ActivityTargetReport> findActivityTargetReportByTargetId(
@@ -345,6 +357,7 @@ public interface EntityService {
 	//ActivityTargetResult
 	public ActivityTargetResult saveActivityTargetResult(JsonNode node,
 			ThaicomUserDetail currentUser);
+
 
 
 	

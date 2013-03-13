@@ -734,7 +734,7 @@
         remark varchar2(255 char),
         targetValue number(19,0),
         OBJ_PLN_OBJECTIVE_ID number(19,0) not null,
-        OWNER_HRX_ORGANIZATION number(19,0) not null,
+        OWNER_HRX_ORGANIZATION number(19,0),
         UNIT_PLN_TARGETUNIT_ID number(19,0),
         primary key (id)
     );
@@ -914,6 +914,31 @@
         
   	create sequence PLN_ACTIVITYTARGETSRESULT_SEQ;
 
-
+-- version 9
+-- Modified Date: March 12, 2013
+	update app_info set db_version=9;
 	
-
+	alter table bgt_proposalstrategy add (
+		targetvaluenext1year number(19,0), 
+		targetvaluenext2year number(19,0), 
+		targetvaluenext3year number(19,0)
+	);
+	
+	alter table BGT_OBJBGTPROPOSALTARGET add(
+		targetvaluenext1year number(19,0), 
+		targetvaluenext2year number(19,0), 
+		targetvaluenext3year number(19,0)	
+	);
+	
+-- version 10
+-- Modified Date: March 13, 2013
+	update app_info set db_version=10;
+	
+	alter table pln_activity add (
+		REGULATOR_HRX_ORGANIZATION number(19,0)
+	);
+	
+    alter table PLN_ACTIVITY 
+        add constraint FKDB204AC983D34833 
+        foreign key (REGULATOR_HRX_ORGANIZATION) 
+        references HRX_ORGANIZATION;

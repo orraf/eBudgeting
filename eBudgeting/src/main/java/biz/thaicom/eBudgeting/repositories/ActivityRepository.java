@@ -21,5 +21,14 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"WHERE act.owner =?1 AND act.forObjective.id = ?2 AND act.parent is null ")
 	List<Activity> findAllByOwnerAndForObejctive_Id(Organization org, Long objectiveId);
 
+	@Query("" +
+			"SELECT act " +
+			"FROM Activity act " +
+			"	INNER JOIN FETCH act.targets target " +
+			"	INNER JOIN FETCH target.unit " +
+			"WHERE act.regulator =?1 AND act.forObjective.id = ?2")
+	List<Activity> findAllByRegulatorAndForObejctive_Id(Organization workAt,
+			Long objectiveId);
+
 	
 }

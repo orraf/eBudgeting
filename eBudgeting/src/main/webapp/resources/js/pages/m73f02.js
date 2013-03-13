@@ -13,9 +13,8 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	
 	el : "#assignTargetValueModal",
 	
-	setCurrentTargetReport: function(targetReport) {
-		this.currentTargetReport = targetReport;
-		this.currentTarget = targetReport.get('target');
+	setCurrentTarget: function(target) {
+		this.currentTarget = target;
 	},
 	
 	setCurrentActivity: function(activity){
@@ -80,9 +79,9 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			var i = $(e.target).parents('tr').prevAll('tr').length;
 			
 			this.targetReports.at(i).set('targetValue', $(e.target).val());
-			this.updateSumTarget();	
+			
 		}
-		
+		this.updateSumTarget();	
 	},
 	addOrganizationTarget: function(e) {
 		var organizationId = $(e.target).parents('tr').attr('data-id');
@@ -110,7 +109,10 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		var sum=0;
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseInt($(el).val());
+			if(!isNaN(parseInt($(el).val()))) {
+				sum += parseInt($(el).val());
+			}
+			
 		});
 		
 		$('#sumTotalAllocated').html(addCommas(sum));
@@ -154,7 +156,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		var query = this.$el.find('#oraganizationQueryTxt').val();
 		
 		this.organizationSearchList = new OrganizationCollection();
-		this.organizationSearchList.url = appUrl("/Organization/parentId/"+currentOrganizationId+"/findByName");
+		this.organizationSearchList.url = appUrl("/Organization/parentId/0/findByName");
 		this.organizationSearchList.fetch({
 			data: {
 				query: query
@@ -173,15 +175,15 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		
 		this.$el.find('.modal-header span').html("จัดสรรเป้าหมาย: " + this.currentActivity.get('name'));
 		
-		var json = this.currentTargetReport.toJSON();
+		var json = this.currentTarget.toJSON();
 		
 		var html = this.assignTargetValueModalTemplate(json);
 		this.$el.find('.modal-body').html(html);
 		
 		//now fill in 
 		this.targetReports = new ActivityTargetReportCollection();
-		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id') 
-				+ '/parentOrganization/' + currentOrganizationId);
+		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' 
+				+ this.currentTarget.get('id'));
 		this.targetReports.fetch({
 			success: _.bind(function() {
 				
@@ -193,6 +195,9 @@ var AssignTargetValueModalView = Backbone.View.extend({
 				$('#organizationProposalTbl').find('tbody').html(html);	
 				
 				this.updateSumTarget();
+				
+				this.organizationSearch();
+				
 			},this)
 		});
 		
@@ -359,7 +364,7 @@ var MainSelectionView = Backbone.View.extend({
 		var type101Id = $(e.target).val();
 		if(type101Id != 0) {
 			this.type102Collection.fetch({
-				url: appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityOwner'),
+				url: appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityRegulator'),
 				success: _.bind(function() {
 					this.type102Collection.trigger('reset');
 				}, this)
@@ -433,15 +438,14 @@ var MainCtrView = Backbone.View.extend({
 	},
 	
 	assignTarget: function(e) {
-		var activityPerformanceId = $(e.target).parents('tr').attr('data-id');
-		var activityPerformance = ActivityPerformance.findOrCreate(activityPerformanceId);
-		var activity = activityPerformance.get('activity');
-		
+		var activityId = $(e.target).parents('tr').attr('data-id');
+		var activity = Activity.findOrCreate(activityId);
 		var targetId = $(e.target).parents('li').attr('data-id');
-		var activityTargetReport = ActivityTargetReport.findOrCreate(targetId);
+		
+		var activityTarget = ActivityTarget.findOrCreate(targetId);
 		
 		this.assignTargetValueModalView.setCurrentActivity(activity);
-		this.assignTargetValueModalView.setCurrentTargetReport(activityTargetReport);
+		this.assignTargetValueModalView.setCurrentTarget(activityTarget);
 		this.assignTargetValueModalView.render();
 	},
 	
@@ -500,7 +504,7 @@ var MainCtrView = Backbone.View.extend({
 		this.mainSelectionView = new MainSelectionView({el: "#mainCtr #mainSelection"});
 
 		this.rootSelection = new ObjectiveCollection();
-		this.rootSelection.url = appUrl("/Objective/currentActivityOwner/" + fiscalYear);
+		this.rootSelection.url = appUrl("/Objective/currentActivityRegulator/" + fiscalYear);
 		this.rootSelection.fetch({
 			success: _.bind(function() {
 				this.mainSelectionView.renderInitialWith(this.rootSelection);
@@ -520,8 +524,8 @@ var MainCtrView = Backbone.View.extend({
 		
 		// first find the activities
 		// and put them in the table 
-		this.activities = new ActivityPerformanceCollection();
-		this.activities.url = appUrl("/ActivityPerformance/currentOwner/forObjective/" + this.currentObjective.get('id'));
+		this.activities = new ActivityCollection();
+		this.activities.url = appUrl("/Activity/currentRegulator/forObjective/" + this.currentObjective.get('id'));
 		this.activities.fetch({
 			success : _.bind(function() {
 			

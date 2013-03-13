@@ -231,6 +231,8 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 	public List<Objective> findAllByOwnerAndfiscalYear(Organization workAt,
 			Integer fiscalYear);
 
+	
+	
 	@Query("" +
 			"SELECT parentObjective " +
 			"FROM ActivityPerformance activityPerformance " +
@@ -243,6 +245,20 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 	public List<Objective> findAllByActivityOwnerAndFiscalYear(
 			Organization workAt, Integer fiscalYear);
 
+	@Query("" +
+			"SELECT parentObjective " +
+			"FROM Activity activity " +
+			"	INNER JOIN activity.forObjective objective " +
+			"	INNER JOIN objective.parent parentObjective " +
+			"WHERE " +
+			"	activity.regulator  = ?1 AND " +
+			"	objective.fiscalYear = ?2")
+	public List<Objective> findAllByActivityRegulatorAndFiscalYear(
+			Organization workAt, Integer fiscalYear);
+
+
+	
+	
 	@Query("" +
 			"SELECT objective " +
 			"FROM ActivityPerformance activityPerformance " +
@@ -257,6 +273,19 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 
 	@Query("" +
 			"SELECT objective " +
+			"FROM ActivityPerformance activityPerformance " +
+			"	INNER JOIN activityPerformance.activity activity " +
+			"	INNER JOIN activity.forObjective objective " +
+			"WHERE " +
+			"	activity.regulator  = ?1 AND " +
+			"	objective.parent.id = ?2 " +
+			"ORDER BY objective.code asc ")	
+	public List<Objective> findAllChildrenByActivityRegulatorAndParentId(
+			Organization workAt, Long id);
+	
+	
+	@Query("" +
+			"SELECT objective " +
 			"FROM ActivityTargetReport activityTargetReport " +
 			"	INNER JOIN activityTargetReport.target target " +
 			"	INNER JOIN target.activity activity " +
@@ -264,6 +293,8 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"WHERE activityTargetReport.owner = ?1 ")
 	public List<Objective> findByActivityTargetReportOfOrganization(
 			Organization workAt);
+
+
 
 
 

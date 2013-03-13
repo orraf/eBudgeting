@@ -174,7 +174,7 @@
 		{{name}} {{#unless parent}}<a href="#" class="newActivitityChild">เพิ่มกิจกรรมเสริม</a> {{/unless}}</td>
 	<td><ul>
 		{{#each targets}}
-			<li data-id="{{id}}"><a href="#" class="assignTargetLnk">{{formatNumber targetValue}}</a></li>
+			<li data-id="{{id}}">{{formatNumber targetValue}}</li>
 		{{/each}}
 		</ul>
 	</td>
@@ -250,6 +250,15 @@
 
 	<label>ระบุชื่อกิจกรรม</label>
 	<textarea rows="2" class="span5 model" id="nameTxt" data-modelName="name">{{name}}</textarea>
+
+	<label>ส่วนงานที่รับผิดชอบ</label>
+	<select id="regulatorSlt">
+		<option value="-1">กรุณาเลือก</option>
+		{{#each currentChildrenOraganization}}
+			<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{name}}</option>
+		{{/each}}
+	</select>
+
 	
 	<div id="activityTarget">
 		

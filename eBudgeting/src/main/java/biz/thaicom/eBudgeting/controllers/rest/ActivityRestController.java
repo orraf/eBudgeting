@@ -65,6 +65,16 @@ public class ActivityRestController {
 		return entityService.deleteActivity(id);
 	}
 	
+
+	
+	@RequestMapping(value="/Activity/currentRegulator/forObjective/{objectiveId}", method=RequestMethod.GET) 
+	public @ResponseBody List<Activity> findActivityByRegulatorAndObjectiveId(
+			@PathVariable Long objectiveId,
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		return entityService.findActivityByRegularAndObjectiveId(currentUser.getWorkAt(), objectiveId);
+	}
+	
 	@RequestMapping(value="/ActivityPerformance/currentOwner/forObjective/{objectiveId}", method=RequestMethod.GET) 
 	public @ResponseBody List<ActivityPerformance> findActivityPerformancesByOwnerAndObjectiveId(
 			@PathVariable Long objectiveId,

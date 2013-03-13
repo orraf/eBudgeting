@@ -168,18 +168,18 @@
 <tr data-id="{{id}}">
 	<td><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
 	</td>
-	<td>{{activity.code}}</td>
+	<td>{{code}}</td>
 	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
-		{{activity.name}}</td>
+		{{name}}</td>
 	<td><ul>
-		{{#each targetReports}}
+		{{#each targets}}
 			<li data-id="{{id}}"><a href="#" class="assignTargetLnk">{{formatNumber targetValue}}</a></li>
 		{{/each}}
 		</ul>
 	</td>
 	<td><ul>
-		{{#each targetReports}}
-			<li>{{target.unit.name}}</li>
+		{{#each targets}}
+			<li>{{unit.name}}</li>
 		{{/each}}
 		</ul>
 	</td>
@@ -360,7 +360,7 @@
 <script type="text/javascript">
 	var fiscalYear = parseInt("${fiscalYear}");
 	
-	var currentOrganizationId = "${workAtId}"
+	var currentOrganizationId = "${workAtId}";
 	var mainCtrView = null;
 	var objectiveCollection = null;
 	var budgetTypeSelectionView = null;

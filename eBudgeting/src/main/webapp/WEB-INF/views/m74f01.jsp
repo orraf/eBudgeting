@@ -264,66 +264,57 @@
     	<strong> ค่าเป้าหมายรวม: </strong>
 	</div>
     <div style="height:35px; float:left" id="totalInputForm">
-		<div class="input-append"><input disabled type="text" id="totalInputTxt" style="width:120px;" value="{{formatNumber targetValue}}"><span class="add-on">{{unit.name}}</span></div>
+		<div class="input-append"><input disabled type="text" id="totalInputTxt" style="width:120px;" value="{{formatNumber targetValue}}"><span class="add-on">{{target.unit.name}}</span></div>
 	</div>
 
 	<div class="clearfix"></div>
         
         <div style="padding-bottom:12px;">
-           <strong><u>การจัดสรรให้หน่วยงาน</u></strong>
+           <strong><u>แผนการดำเนินงาน</u></strong>
         </div>
         <div class="row">
-
-    	    <div class="span6" style="height:290px; border: 1px solid #cccccc">
-        	    <div>
-            	    <table class="table table-bordered" style="margin-bottom:0px">
-                	<thead>
-                    	<tr>
-                        	<td style="width:237px;">หน่วยงาน</td>
-                        	<td>รวม: <span id="sumTotalAllocated"></span> {{unit.name}}</td>
-                    	</tr>
-                	</thead>
-                	</table>
-            	</div>
-
-	            <div style="height:252px;overflow:auto;">
-    	            <table style="margin-bottom:0px;" class="table table-bordered" id="organizationProposalTbl">
-        	        	<tbody>
-            			</tbody>
-					</table>
-             	</div>
-         	</div>
-
-
-			<div class="span3" style="height:290px; width:270px;">
-			    <div class="pull-right">
-    				<form class="form-search" style="margin-bottom:10px;" id="organizationSearchForm">
-			    		<div class="input-append">
-    						<input type="text" class="span2 search-query" id="oraganizationQueryTxt">
-    						<button class="btn" type="submit" id="organizationSearchBtn">Search</button>
-    					</div>
-    				</form>
-	    		</div>
-    	 		<div class="clearfix"></div>
-    			<div style="border:1px solid #cccccc">
-		    		<div>
-        		 		<table style="margin-bottom:0px" class="table table-bordered">
-                		<thead>
-                    		<tr>
-                        		<td style="width:200px;">หน่วยงาน</td>
-                    		</tr>
-                		</thead>
-                		</table>
-            		</div>
-            		<div style="height:214px;overflow:auto;">
-                		<table style="margin-bottom:0px;" class="table table-bordered" id="organizationSearchTbl">
-                			<tbody>
-                			</tbody>
-						</table>
-            		</div>
-    			</div>
+			<div class="span3">
+				ต.ค. <div class="input-append"><input type="text" data-idx="0" class="monthlyReportPlan" id="monthlyTarget0" style="width:120px;" value="{{monthlyReports.0.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
-
+			<div class="span3">
+				พ.ย. <div class="input-append"><input type="text" data-idx="1" class="monthlyReportPlan" id="monthlyTarget1" style="width:120px;" value="{{monthlyReports.1.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				ธ.ค. <div class="input-append"><input type="text" data-idx="2" class="monthlyReportPlan" id="monthlyTarget2" style="width:120px;" value="{{monthlyReports.2.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+		</div>
+        <div class="row">
+			<div class="span3">
+				ม.ค. <div class="input-append"><input type="text" data-idx="3" class="monthlyReportPlan" id="monthlyTarget3" style="width:120px;" value="{{monthlyReports.3.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				ก.พ. <div class="input-append"><input type="text" data-idx="4" class="monthlyReportPlan" id="monthlyTarget4" style="width:120px;" value="{{monthlyReports.4.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				มี.ค. <div class="input-append"><input type="text" data-idx="5" class="monthlyReportPlan" id="monthlyTarget5" style="width:120px;" value="{{monthlyReports.5.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+		</div>
+        <div class="row">
+			<div class="span3">
+				เม.ย. <div class="input-append"><input type="text" data-idx="6" class="monthlyReportPlan" id="monthlyTarget6" style="width:120px;" value="{{monthlyReports.6.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				พ.ค. <div class="input-append"><input type="text" data-idx="7" class="monthlyReportPlan" id="monthlyTarget7" style="width:120px;" value="{{monthlyReports.7.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				มิ.ย. <div class="input-append"><input type="text" data-idx="8" class="monthlyReportPlan" id="monthlyTarget8" style="width:120px;" value="{{monthlyReports.8.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+		</div>
+        <div class="row">
+			<div class="span3">
+				ก.ค. <div class="input-append"><input type="text" data-idx="9" class="monthlyReportPlan" id="monthlyTarget9" style="width:120px;" value="{{monthlyReports.9.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				ส.ค. <div class="input-append"><input type="text" data-idx="10" class="monthlyReportPlan" id="monthlyTarget10" style="width:120px;" value="{{monthlyReports.10.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				ก.ย. <div class="input-append"><input type="text" data-idx="11" class="monthlyReportPlan" id="monthlyTarget11" style="width:120px;" value="{{monthlyReports.11.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -355,7 +346,7 @@
 </script>
 
 
-<script src="<c:url value='/resources/js/pages/m73f03.js'/>"></script>
+<script src="<c:url value='/resources/js/pages/m74f01.js'/>"></script>
 
 <script type="text/javascript">
 	var fiscalYear = parseInt("${fiscalYear}");
@@ -377,7 +368,7 @@
 
 	
 	var readOnly = "${readOnly}";
-
+	
 	Handlebars.registerHelper("sumTargetValue", function(unitId, proposals) {
 		// get all targetValue
 		sum=0;
@@ -396,28 +387,6 @@
 		}
 		
 		return addCommas(sum);
-	});
-	
-	Handlebars.registerHelper("listProposals", function(proposals) {
-		if(proposals == null || proposals.length == 0) return "";
-		
-		var budgetTypeList = [];
-		
-		for(var i=0; i< proposals.length; i++) {
- 			if(budgetTypeList[proposals[i].budgetType.topParentName] == null) budgetTypeList[proposals[i].budgetType.topParentName] = 0;
-
- 			budgetTypeList[proposals[i].budgetType.topParentName] += proposals[i].amountRequest;
- 		}
- 		
- 		var json=[];
- 		for(var i=0; i< topBudgetList.length; i++) {
- 			if(budgetTypeList[topBudgetList[i]] != null && budgetTypeList[topBudgetList[i]] > 0) {
- 				json.push({name: topBudgetList[i], total: budgetTypeList[topBudgetList[i]]});
- 			}
- 		}
- 		 		
- 		return proposalListTemplate(json);
-		
 	});
 	
 	Handlebars.registerHelper("sumProposal", function(proposals) {

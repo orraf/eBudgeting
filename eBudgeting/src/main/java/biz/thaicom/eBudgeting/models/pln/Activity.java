@@ -54,8 +54,12 @@ public class Activity implements Serializable {
 	private Objective forObjective;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="OWNER_HRX_ORGANIZATION", nullable=false)
+	@JoinColumn(name="OWNER_HRX_ORGANIZATION")
 	private Organization owner;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="REGULATOR_HRX_ORGANIZATION")
+	private Organization regulator;
 	
 	@Basic
 	private Integer idx;
@@ -167,6 +171,14 @@ public class Activity implements Serializable {
 
 	public void setFilterTargets(List<ActivityTarget> filterTargets) {
 		this.filterTargets = filterTargets;
+	}
+
+	public Organization getRegulator() {
+		return regulator;
+	}
+
+	public void setRegulator(Organization regulator) {
+		this.regulator = regulator;
 	}
 	
 	

@@ -10,7 +10,7 @@
 		 		<div class="nav-collapse collapse">
 				<p class="navbar-text pull-right" style="color: #FFFFFF;">
 					Logged in as
-						<sec:authentication property="principal.username"/> @ <sec:authentication property="principal.workAtAbbr"/> | <a class="navbar-link" href="<c:url value='/logout'/>">Logout</a>
+						 <sec:authentication property="principal.username"/> @ <sec:authentication property="principal.workAtAbbr"/> | <a class="navbar-link" href="<c:url value='/logout'/>">Logout</a>
 				</p>
 				</div>
 			

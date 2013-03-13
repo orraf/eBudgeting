@@ -34,7 +34,7 @@
 	<script src="<c:url value='/resources/jslibs/datepicker/js/locales/bootstrap-datepicker.th.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/backbone-0.9.10.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/backbone-relational-0.8.0.js'/>"></script>
-	<script src="<c:url value='/resources/jslibs/handlebars-1.0.0-rc.3.js'/>"></script>
+	<script src="<c:url value='/resources/jslibs/handlebars-1.0.0.beta.6.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/moment-2.0/moment.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/moment-2.0/lang/th.js'/>"></script>		
 		

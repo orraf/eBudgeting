@@ -342,6 +342,11 @@ var ModalView = Backbone.View.extend({
      */
 	initialize : function(options) {
 		this.parentView = options.parentView;
+		
+		this.currentChildrenOrganization = new OrganizationCollection();
+		this.currentChildrenOrganization.url = appUrl('/Organization/currentSession/children');
+		this.currentChildrenOrganization.fetch();
+		
 	},
 	modalTemplate: Handlebars.compile($("#modalTemplate").html()),
 	el : "#modal",
@@ -359,6 +364,16 @@ var ModalView = Backbone.View.extend({
 	},
 	
 	saveModel : function(e) {
+		var regulatorId=this.$el.find('#regulatorSlt').val();
+		
+		if(regulatorId < 0) {
+			alert("กรุณาระบุส่วนงานที่รับผิดชอบ");
+			return;
+		}
+		
+		this.currentActivity.set('regulator', Organization.findOrCreate(regulatorId));
+
+		
 		this.currentActivity.save(null, {
 			success: _.bind(function() {
 				alert('บันทึกข้อมูลเรียบร้อยแล้ว');
@@ -397,6 +412,17 @@ var ModalView = Backbone.View.extend({
 		}
 		
 		var json = this.currentActivity.toJSON();
+		
+		json.currentChildrenOraganization = this.currentChildrenOrganization.toJSON();
+		var regulator = this.currentActivity.get('regulator');
+		if(regulator != null) {
+			var regulatorId = regulator.get('id');
+			var foundOrgInJson = _.find(json.currentChildrenOraganization, function(o) { return o.id == regulatorId; });
+			if(foundOrgInJson != null) {
+				foundOrgInJson.selected = true;
+			}
+		}
+		
 		
 		var html = this.modalTemplate(json);
 		this.$el.find('.modal-body').html(html);

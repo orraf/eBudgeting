@@ -14,9 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import oracle.net.aso.p;
-import oracle.net.aso.r;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2922,12 +2919,24 @@ public class EntityServiceJPA implements EntityService {
 		return objectiveRepository.findAllByActivityOwnerAndFiscalYear(workAt, fiscalYear);
 	}
 	
-	
+	@Override
+	public List<Objective> findObjectiveByActivityRegulatorAndFiscalYear(
+			Organization workAt, Integer fiscalYear) {
+		return objectiveRepository.findAllByActivityRegulatorAndFiscalYear(workAt, fiscalYear);
+	}
 
 	@Override
 	public List<Objective> findObjectiveChildrenByActivityOwnerAndParentId(
 			Organization workAt, Long id) {
 		return objectiveRepository.findAllChildrenByActivityOwnerAndPanrentId(workAt,id);
+	}
+
+	
+	
+	@Override
+	public List<Objective> findObjectiveChildrenByActivityRegulatorAndParentId(
+			Organization workAt, Long id) {
+		return objectiveRepository.findAllChildrenByActivityRegulatorAndParentId(workAt, id);
 	}
 
 	/**
@@ -3981,6 +3990,9 @@ public class EntityServiceJPA implements EntityService {
 		activity.setCode(node.get("code").asText());
 		activity.setName(node.get("name").asText());
 		
+		Organization regulator = organizationRepository.findOne(getJsonNodeId(node.get("regulator")));
+		activity.setRegulator(regulator);
+		
 		List<ActivityTarget> oldTargets = activity.getTargets();
 		
 		activity.setTargets(new ArrayList<ActivityTarget> ());
@@ -4025,6 +4037,9 @@ public class EntityServiceJPA implements EntityService {
 		
 		activity.setCode(node.get("code").asText());
 		activity.setName(node.get("name").asText());
+		
+		Organization regulator = organizationRepository.findOne(getJsonNodeId(node.get("regulator")));
+		activity.setRegulator(regulator);
 		
 		activity.setTargets(new ArrayList<ActivityTarget> ());
 		activityRepository.save(activity);
@@ -4153,6 +4168,14 @@ public class EntityServiceJPA implements EntityService {
 	public List<ActivityPerformance> findActivityPerformancesByOwnerAndObjectiveId(
 			Organization workAt, Long objectiveId) {
 		return activityPerformanceRepository.findByOwnerAndObjectiveId(workAt, objectiveId);
+	}
+
+	
+	
+	@Override
+	public List<Activity> findActivityByRegularAndObjectiveId(
+			Organization workAt, Long objectiveId) {
+		return activityRepository.findAllByRegulatorAndForObejctive_Id(workAt, objectiveId);
 	}
 
 	@Override

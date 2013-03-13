@@ -191,6 +191,10 @@ Activity = Backbone.RelationalModel.extend({
 		key: 'owner',
 		relatedModel: 'Organization'
 	},{
+		type: Backbone.HasOne,
+		key: 'regulator',
+		relatedModel: 'Organization'
+	},{
     	type: Backbone.HasMany,
     	key: 'children',
     	relatedModel: 'Activity',
