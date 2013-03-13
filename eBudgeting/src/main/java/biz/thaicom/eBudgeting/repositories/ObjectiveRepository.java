@@ -273,8 +273,7 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 
 	@Query("" +
 			"SELECT objective " +
-			"FROM ActivityPerformance activityPerformance " +
-			"	INNER JOIN activityPerformance.activity activity " +
+			"FROM Activity activity " +
 			"	INNER JOIN activity.forObjective objective " +
 			"WHERE " +
 			"	activity.regulator  = ?1 AND " +
