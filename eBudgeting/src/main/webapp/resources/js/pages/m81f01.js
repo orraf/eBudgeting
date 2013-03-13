@@ -11,8 +11,13 @@ var ModalView = Backbone.View.extend({
 	events : {
 		"click #resultInputBtn" : "inputResult",
 		"click #backToModalBtn" : "backToModal",
-		"click #saveResultBtn" : "saveResult"
+		"click #saveResultBtn" : "saveResult",
+		"click #cancelBtn" : "cancelModal"
 	},
+	cancelModal: function(e) {
+		this.$el.modal('hide');
+	},
+	
 	backToModal: function(e) {
 		this.render();
 	},
