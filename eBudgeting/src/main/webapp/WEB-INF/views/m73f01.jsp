@@ -171,7 +171,9 @@
 	</td>
 	<td>{{code}}</td>
 	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
-		{{name}} {{#unless parent}}<a href="#" class="newActivitityChild">เพิ่มกิจกรรมเสริม</a> {{/unless}}</td>
+		{{name}} {{#unless parent}}
+			<div class="pull-right"><a href="#" class="btn btn-primary newActivitityChild">เพิ่มกิจกรรมเสริม</a> {{/unless}}</div>
+	</td>
 	<td><ul>
 		{{#each targets}}
 			<li data-id="{{id}}">{{formatNumber targetValue}}</li>

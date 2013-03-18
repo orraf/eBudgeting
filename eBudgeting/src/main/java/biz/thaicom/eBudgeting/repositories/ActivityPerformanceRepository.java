@@ -27,7 +27,8 @@ public interface ActivityPerformanceRepository extends
 			"	INNER JOIN FETCH target.unit unit " +
 			"WHERE " +
 			"	activityPerformance.owner = ?1 AND" +
-			"	objective.id = ?2 ")
+			"	objective.id = ?2 " +
+			"ORDER BY activityPerformanace.activity.code ASC")
 	public List<ActivityPerformance> findByOwnerAndObjectiveId(
 			Organization workAt, Long objectiveId);
 	
