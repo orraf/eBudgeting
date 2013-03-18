@@ -215,7 +215,7 @@
 
 <script  id="activityTargetTableTemplate" type="text/x-handler-template">
 <div id="activityTargetMenu">
-<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> เพิ่มเป้าหมาย</a>
+<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> บันทึกค่าเป้าหมาย</a>
 </div>
 <div id="activityTargetTblCtr">
 {{#if targets}}
