@@ -3,7 +3,9 @@ var ModalView = Backbone.View.extend({
 	 * @memberOf ModalView
 	 */
 	initialize: function(options) {
-		
+		if(options.parentView != null) {
+			this.parentView = options.parentView;
+		}
 	},
 	el: "#modal",
 	targerReportModalTemplate: Handlebars.compile($("#targerReportModalTemplate").html()),
@@ -16,6 +18,9 @@ var ModalView = Backbone.View.extend({
 	},
 	cancelModal: function(e) {
 		this.$el.modal('hide');
+		if(this.parentView != null) {
+			this.parentView.render();
+		}
 	},
 	
 	backToModal: function(e) {
@@ -29,6 +34,7 @@ var ModalView = Backbone.View.extend({
 		this.currentTargetResult.save(null, {
 			success: _.bind(function() {
 				alert("บันทึกการรายงานผลเรียบร้อยแล้ว");
+				this.currentTargetReport.set('latestResult', this.currentTargetResult);
 				this.render();
 			},this)
 		});
@@ -63,6 +69,12 @@ var ModalView = Backbone.View.extend({
 			this.$el.find('.modal-body').html(html);
 			
 			var monthly = this.currentTargetReport.get("monthlyReports");
+			
+			if(monthly.length != 12) {
+				alert("กิจกรรมนี้ยังไม่ได้มีการทำแผน");
+				return;
+			}
+			
 			var q1Plan, q1Result, q2Plan, q2Result, q3Plan, q3Result, q4Plan, q4Result;
 			q1Plan = q2Plan = q3Plan = q4Plan = q1Result = q2Result = q3Result = q4Result = 0;
 			
@@ -107,13 +119,13 @@ var MainCtrView = Backbone.View.extend({
      *  @memberOf MainCtrView
      */
 	initialize : function(options) {
-		
+		this.modalView = new ModalView({parentView: this});	
 
 	},
 
 	el : "#mainCtr",
 	mainCtrTemplate : Handlebars.compile($("#mainCtrTemplate").html()),
-	modalView : new ModalView(),
+	
 	
 	events : {
 		"click a.showReport" : "showReportModal"

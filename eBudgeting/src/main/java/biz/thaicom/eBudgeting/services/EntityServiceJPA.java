@@ -4186,7 +4186,13 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public ActivityTargetReport findActivityTargetReportById(Long id) {
-		return activityTargetReportRepository.findOneAndFetchReportById(id);
+		
+		
+		ActivityTargetReport atr = activityTargetReportRepository.findOneAndFetchReportById(id);
+		
+		logger.debug("----------------------" + atr.getActivityPerformance().getId());
+		
+		return atr;
 	}
 
 	@Override
@@ -4257,9 +4263,16 @@ public class EntityServiceJPA implements EntityService {
 			
 			report.getTarget().getActivity().getFilterTargets().add(report.getTarget());
 			
+			logger.debug("reportId : " + report.getId());
 			
 			report.setLatestResult(activityTargetResultRepository.findByLatestTimeStamp(report));
 			
+			
+			if(report.getLatestResult() == null ) {
+				 logger.debug("LatestResult is null");
+			} else {
+				logger.debug("LatestResult: " + report.getLatestResult().getId() + " : " + report.getLatestResult().getTimestamp() );
+			}
 		}
 		
 		

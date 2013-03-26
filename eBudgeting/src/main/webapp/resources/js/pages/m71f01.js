@@ -306,7 +306,7 @@ var ModalView = Backbone.View.extend({
 		
 		var record = this.currentAllocationRecord;
 		
-		record.set('amountAllocated', $('#totalInputTxt').val());
+		record.set('amountAllocated', parseInt($('#totalInputTxt').val()));
 		record.set('index', 0);
 		
 		// put proposal into somewhat better thing

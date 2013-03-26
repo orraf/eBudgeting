@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,7 +38,7 @@ public class ActivityPerformance implements Serializable{
 	/**
 	 * กิจกรรม
 	 */
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ACTIVITY_PLN_ACTIVITY_ID")
 	private Activity activity;
 	

@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetResult;
-import biz.thaicom.eBudgeting.models.pln.MonthlyActivityReport;
 
 public interface ActivityTargetResultRepository extends JpaRepository<ActivityTargetResult, Long> {
 
@@ -14,7 +13,7 @@ public interface ActivityTargetResultRepository extends JpaRepository<ActivityTa
 			"FROM ActivityTargetResult result " +
 			"WHERE result.report = ?1 " +
 			"	AND result.timestamp = " +
-			"		(SELECT max(result1.timestamp) FROM ActivityTargetResult result1 WHERE  result.report = ?1) ")
+			"		(SELECT max(result1.timestamp) FROM ActivityTargetResult result1 WHERE  result1.report = ?1) ")
 	ActivityTargetResult findByLatestTimeStamp(ActivityTargetReport report);
 
 }

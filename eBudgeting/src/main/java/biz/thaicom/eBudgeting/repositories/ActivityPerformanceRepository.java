@@ -22,13 +22,13 @@ public interface ActivityPerformanceRepository extends
 			"FROM ActivityPerformance activityPerformance " +
 			"	INNER JOIN FETCH activityPerformance.activity activity " +
 			"	INNER JOIN activity.forObjective objective " +
-			"	INNER JOIN FETCH activityPerformance.targetReports reports" +
+			"	INNER JOIN FETCH activityPerformance.targetReports reports " +
 			"	INNER JOIN FETCH reports.target target " +
 			"	INNER JOIN FETCH target.unit unit " +
 			"WHERE " +
 			"	activityPerformance.owner = ?1 AND" +
 			"	objective.id = ?2 " +
-			"ORDER BY activityPerformanace.activity.code ASC")
+			"ORDER BY activity.code ASC")
 	public List<ActivityPerformance> findByOwnerAndObjectiveId(
 			Organization workAt, Long objectiveId);
 	

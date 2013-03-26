@@ -169,17 +169,12 @@
 </div>
 </script>
 <script id="mainTblTemplate" type="text/x-handler-template">
-<table class="table table-bordered" id="headerTbl" style="margin-bottom:0px; width:875px; table-layout:fixed;">
+<table class="table table-bordered" id="headerTbl" style="margin-bottom:0px; table-layout:fixed;">
 	<thead>
 		<tr>
 			<td style="width:20px;">#</td>
-			<td style="width:246px;"><strong>แผนงาน/กิจกรรม ประจำปี {{this.0.fiscalYear}}</strong></td>
-			<td style="width:60px;">เป้าหมาย</td>
-			<td style="width:60px;">หน่วยนับ</td>
-			<td style="width:80px;">งบประมาณปี  {{this.0.fiscalYear}}</td>
-			<td style="width:80px;">ปี  {{next this.0.fiscalYear 1}}</td>
-			<td style="width:80px;">ปี  {{next this.0.fiscalYear 2}}</td>
-			<td style="width:80px;">ปี  {{next this.0.fiscalYear 3}}</td>
+			<td style="width:600px;"><strong>แผนงาน/กิจกรรม ประจำปี {{this.0.fiscalYear}}</strong></td>
+			<td style="width:120px;">งบประมาณปี  {{this.0.fiscalYear}}</td>
 			<td style="width:15px;padding:0px;">&nbsp;</td>
 		</tr>
 	</thead>
@@ -187,23 +182,13 @@
 		<tr>
 			<td></td>
 			<td><strong>รวม{{objective.type.name}}{{objective.name}}</strong></td>
-			<td><ul  style="list-style:none; margin: 0px;">
-				{{#each objective.targets}}
-					<li style="list-style:none; padding: 0px;">{{sumTargetValue unit.id ../filterObjectiveBudgetProposals}}</li>
-				{{/each}}
-				</ul>
-			</td>
-			<td><ul  style="list-style:none; margin: 0px;">{{#each objective.targets}}<li style="list-style:none; padding: 0px;">{{unit.name}} ({{#if isSumable}}นับ{{else}}ไม่นับ{{/if}})</li>{{/each}}</ul></td>
 			<td class="rightAlign"><strong>{{sumAllocationRecords allRecords}}</td>
-			<td class="rightAlign"><strong>{{sumProposalNext1Year allProposal}}</strong></td>
-			<td class="rightAlign"><strong>{{sumProposalNext2Year allProposal}}</strong></td>
-			<td class="rightAlign"><strong>{{sumProposalNext3Year allProposal}}</strong></td>
 			<td style="width:15px;padding:0px;">&nbsp;</td>
 		</tr>
 	</tbody>
 </table>
 <div class="inRow" style="height: 600px;overflow-y: scroll; width:860px; border-left:1px solid #DDDDDD;">
-<table class="table table-bordered" id="mainTbl" style="width:720px; table-layout:fixed; margin: 0px; border-radius: 0px;">
+<table class="table table-bordered" id="mainTbl" style=" table-layout:fixed; margin: 0px; border-radius: 0px;">
 	<tbody>
 			{{{childrenNodeTpl this 0}}}
 	</tbody>
@@ -221,7 +206,7 @@
 <script id="childrenNodeTemplate" type="text/x-handler-template">
 	<tr data-level="{{this.level}}" data-id="{{this.id}}" class="type-{{type.id}}" showChildren="true" parentPath="{{this.parentPath}}">
 		<td style="width:20px;"></td>
-		<td style="width:246px;" class="{{#if this.children}}disable{{/if}}">
+		<td style="width:600px;" class="{{#if this.children}}disable{{/if}}">
 			<div class="pull-left" style="margin-left:{{this.padding}}px; width:18px;">
 					{{#if this.children}}
 					<input class="checkbox_tree bullet" type="checkbox" id="bullet_{{this.id}}"/>
@@ -245,32 +230,8 @@
 {{/unless}}
 			
 		</td>
-		<td  style="width:60px;" class="{{#if this.children}}disable{{/if}} centerAlign">
-			<span>
-				<ul  style="list-style:none; margin: 0px;">
-					{{#each filterTargetValues}}
-							<li style="list-style:none; padding: 0px;">{{sumTargetValue target.unit.id ../filterObjectiveBudgetProposals}}</li>
-					{{/each}}
-				</ul>
-			</span>
-		</td>
-		<td  style="width:60px;" class="{{#if this.children}}disable{{/if}} centerAlign">
-			<span>
-				<ul  style="list-style:none; margin: 0px;">{{#each filterTargetValues}}<li style="list-style:none; padding: 0px;">{{target.unit.name}} ({{#if target.isSumable}}นับ{{else}}ไม่นับ{{/if}})</li>{{/each}}</ul>
-			</span>
-		</td>
-		<td style="width:80px;" class="{{#if this.children}}disable{{/if}} rightAlign">
+		<td style="width:120px;" class="{{#if this.children}}disable{{/if}} rightAlign">
 				<span>{{#if this.allocationRecords}}{{{sumAllocationRecords this.allocationRecords}}}{{else}}-{{/if}}</span>
-		</td>
-
-		<td style="width:80px;" class="{{#if this.children}}disable{{/if}} rightAlign">
-				<span>{{#if this.filterObjectiveBudgetProposals}}{{{sumProposalNext1Year this.filterObjectiveBudgetProposals}}}{{else}}-{{/if}}</span>
-		</td>
-		<td style="width:80px;" class="{{#if this.children}}disable{{/if}} rightAlign">
-				<span>{{#if this.filterObjectiveBudgetProposals}}{{{sumProposalNext2Year this.filterObjectiveBudgetProposals}}}{{else}}-{{/if}}</span>				
-		</td>
-		<td style="width:80px;" class="{{#if this.children}}disable{{/if}} rightAlign">
-				<span>{{#if this.filterObjectiveBudgetProposals}}{{{sumProposalNext3Year this.filterObjectiveBudgetProposals}}}{{else}}-{{/if}}</span>
 		</td>
 	</tr>
 	{{{childrenNodeTpl this.children this.level}}}  
@@ -703,7 +664,7 @@
 					
 					child["padding"] = parseInt(level) * 20;
 					
-					child["nameWidth"] = 246 - 18 - child["padding"];
+					child["nameWidth"] = 600 - 18 - child["padding"];
 					out = out + childNodeTpl(child);
 				});
 
