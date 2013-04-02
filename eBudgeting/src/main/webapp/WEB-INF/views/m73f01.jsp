@@ -77,7 +77,7 @@
 	<div class="controls">
 		<select id="type101Slt" class="span5">
 			<option>กรุณาเลือก...</option>
-			{{#each this}}<option value={{id}}>[{{code}}] {{name}}</option>{{/each}}
+			{{#each this}}<option value={{id}}>[{{code}}] {{name}} งบได้รับ {{formatNumber filterProposals.0.amountAllocated}} บาท</option>{{/each}}
 		</select>
 	</div>
 </div>

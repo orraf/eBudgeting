@@ -2907,7 +2907,16 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveByOwnerAndFiscalYear(
 			Organization workAt, Integer fiscalYear){
 		
-		return objectiveRepository.findAllByOwnerAndfiscalYear(workAt, fiscalYear);
+		List<Objective> list = objectiveRepository.findAllByOwnerAndfiscalYear(workAt, fiscalYear);
+		
+		for(Objective obj: list) {
+			List<BudgetProposal> proposals = 
+					budgetProposalRepository.findByForObjectiveAndOwner(obj, workAt);
+			
+			obj.setFilterProposals(proposals);
+		}
+		
+		return list;
 		
 	}
 	

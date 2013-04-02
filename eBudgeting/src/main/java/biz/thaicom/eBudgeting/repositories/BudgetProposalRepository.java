@@ -41,7 +41,7 @@ public interface BudgetProposalRepository extends
 
 
 	
-	public BudgetProposal findByForObjectiveAndOwner(Objective parent,
+	public List<BudgetProposal> findByForObjectiveAndOwner(Objective parent,
 			Organization owner);
 
 

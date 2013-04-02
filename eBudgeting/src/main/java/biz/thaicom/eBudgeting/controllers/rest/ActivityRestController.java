@@ -49,14 +49,20 @@ public class ActivityRestController {
 	public @ResponseBody Activity updateActivity(
 			@PathVariable Long id,
 			@RequestBody JsonNode node) {
-		return entityService.updateActivity(node);
+		entityService.updateActivity(node);
+		
+		// we're not updating the model!
+		return null;
 	}
 	
 	@RequestMapping(value="/Activity/", method=RequestMethod.POST)
 	public @ResponseBody Activity saveActivity(
 			@RequestBody JsonNode node,
 			@Activeuser ThaicomUserDetail currentUser) {
-		return entityService.saveActivity(node, currentUser.getWorkAt());
+		entityService.saveActivity(node, currentUser.getWorkAt());
+		
+		// we're not updating the model!
+		return null;
 	}
 	
 	@RequestMapping(value="/Activity/{id}", method=RequestMethod.DELETE)
