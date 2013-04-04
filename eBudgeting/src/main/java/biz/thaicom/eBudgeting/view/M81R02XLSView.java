@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
@@ -23,14 +21,12 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
-public class M81R01XLSView extends AbstractPOIExcelView {
+public class M81R02XLSView extends AbstractPOIExcelView {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:sss");
 	
@@ -124,9 +120,17 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
 		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space from pln_objective m where exists " +
-									   "(select 1 from pln_activity t1, pln_objective t2, s_user t3 where t1.obj_pln_objective_id = t2.id " +
-									   "and t1.owner_hrx_organization = t3.dept_id and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
-									   "and t2.fiscalyear = " + fiscalYear + " and t3.login = '" + currentUser.getUsername() + "') connect by prior m.id = m.parent_pln_objective_id ");
+									   "(select 1 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, " +
+					                       "(select id from hrx_organization " +
+					                           "connect by prior id = parent_hrx_organization_id " +
+					                           "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t3 " +
+					                        "where t4.target_pln_acttarget_id = t5.id " +
+					                        "and t5.activity_pln_activity_id = t1.id " +
+					                        "and t1.obj_pln_objective_id = t2.id " +
+					                        "and t4.owner_hrx_organization_id = t3.id " + 
+					                        "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
+					                        "and t2.fiscalyear = " + fiscalYear + ") " +
+									   "connect by prior m.id = m.parent_pln_objective_id ");
 
 		int i = 4;
 		int j = 0;
@@ -147,10 +151,14 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 				}
 				i = i+1;
 				Statement st1 = connection.createStatement();
-				ResultSet rs1 = st1.executeQuery("select t1.name, t1.id, t1.owner_hrx_organization, '   (เป้าหมาย '|| t3.targetvalue||' '||t4.name||')' acttarget " +
-												 "from pln_activity t1, pln_activitytarget t3, pln_targetunit t4, s_user t2 " +
-												 "where t1.owner_hrx_organization = t2.dept_id and t1.id = t3.activity_pln_activity_id and t3.unit_pln_targetunit_id = t4.id " +
-												 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " and t2.login = '" + currentUser.getUsername() + "'");
+				ResultSet rs1 = st1.executeQuery("select t1.name, t1.id, t5.owner_hrx_organization_id, '   (เป้าหมาย '|| t5.targetvalue||' '||t4.name||')' acttarget " +
+												 "from pln_activitytargetreport t5, pln_activity t1, pln_activitytarget t3, pln_targetunit t4, s_user t2 " +
+												 "where t5.target_pln_acttarget_id = t3.id " +
+												 "and t5.owner_hrx_organization_id = t2.dept_id " +
+												 "and t1.id = t3.activity_pln_activity_id " +
+												 "and t3.unit_pln_targetunit_id = t4.id " +
+												 "and t1.obj_pln_objective_id = " + rs.getInt(3) + 
+												 " and t2.login = '" + currentUser.getUsername() + "'");
 				while (rs1.next()) {
 					Row rows1 = sheet.createRow(i);
 					Cell rsc11 = rows1.createCell(0);
@@ -203,8 +211,14 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 					}
 					
 					Statement st2 = connection.createStatement();
-					ResultSet rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3 " +
-													 "where t1.report_pln_acttargetreport_id = t2.id and t2.target_pln_acttarget_id = t3.id " +
+					ResultSet rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
+													 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
+												     "(select id from hrx_organization " +
+												        "connect by prior id = parent_hrx_organization_id " +
+												        "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t4 " +
+													 "where t1.report_pln_acttargetreport_id = t2.id " +
+												     "and t2.target_pln_acttarget_id = t3.id " +
+													 "and t1.owner_hrx_organization_id = t4.id " +
 													 "and t3.activity_pln_activity_id = " + rs1.getInt(2) + 
 													 " group by t1.fiscalmonth order by t1.fiscalmonth ");
 					j = 2;
@@ -228,7 +242,11 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 /*					Statement st3 = connection.createStatement();
 					ResultSet rs3 = st3.executeQuery("select t1.fiscalmonth, sum(t1.budgetplan), sum(t1.budgetresult) " +
 													 "from pln_monthlybgtreport t1, pln_activityperformance t2 " +
+												         "(select id from hrx_organization " +
+												            "connect by prior id = parent_hrx_organization_id " +
+												            "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t3 " +
 													 "where t1.performance_pln_actper_id = t2.id " +
+													 "and t1.owner_hrx_organization_id = t3.id " +
 													 "and t2.activity_pln_activity_id = " + rs1.getInt(2) + 
 													 " group by t1.fiscalmonth order by t1.fiscalmonth ");
 					j = 2;
