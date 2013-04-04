@@ -502,7 +502,8 @@ RequestColumn = Backbone.RelationalModel.extend({
 });
 
 Organization = Backbone.RelationalModel.extend({
-	idAttribute: 'id'
+	idAttribute: 'id',
+	urlRoot: appUrl('/Organization')
 });
 
 ActivityTarget = Backbone.RelationalModel.extend({
