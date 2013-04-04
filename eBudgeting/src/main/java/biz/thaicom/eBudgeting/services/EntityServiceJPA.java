@@ -2327,6 +2327,9 @@ public class EntityServiceJPA implements EntityService {
 		// now update the value
 		Long amountUpdate = data.get("amountAllocated").asLong();
 		Long oldAmount = record.getAmountAllocated();
+		if(oldAmount == null) {
+			oldAmount = 0L;
+		}
 		Long adjustedAmount = oldAmount - amountUpdate;
 		
 		Integer index = record.getIndex();
