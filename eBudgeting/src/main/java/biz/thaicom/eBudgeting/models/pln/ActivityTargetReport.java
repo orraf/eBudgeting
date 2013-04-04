@@ -75,7 +75,7 @@ public class ActivityTargetReport implements Serializable {
 	 * ระดับของรายงาน 0 = จังหวัด/ส่วน, 1 = อำเภอ
 	 */
 	@Basic
-	private Integer level;
+	private Integer reportLevel;
 	
 	@Transient
 	private ActivityTargetResult latestResult;
@@ -136,12 +136,12 @@ public class ActivityTargetReport implements Serializable {
 		this.latestResult = latestResult;
 	}
 
-	public Integer getLevel() {
-		return level;
+	public Integer getReportLevel() {
+		return reportLevel;
 	}
 
-	public void setLevel(Integer level) {
-		this.level = level;
+	public void setReportLevel(Integer reportLevel) {
+		this.reportLevel = reportLevel;
 	}
 	
 	

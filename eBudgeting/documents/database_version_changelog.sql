@@ -953,5 +953,5 @@
     );
     
     alter table PLN_ACTIVITYTARGETREPORT add(
-    	"LEVEL" number (4,0)
+    	REPORTLEVEL number (4,0)
     );
