@@ -42,6 +42,9 @@ public class ActivityTarget implements Serializable {
 	@Basic
 	private Long targetValue;
 	
+	@Basic
+	private Long budgetAllocated;
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="UNIT_PLN_TARGETUNIT_ID", nullable=false)
 	private TargetUnit unit;
@@ -87,6 +90,14 @@ public class ActivityTarget implements Serializable {
 
 	public void setFilterReport(ActivityTargetReport filterReport) {
 		this.filterReport = filterReport;
+	}
+
+	public Long getBudgetAllocated() {
+		return budgetAllocated;
+	}
+
+	public void setBudgetAllocated(Long budgetAllocated) {
+		this.budgetAllocated = budgetAllocated;
 	}
 	
 	

@@ -152,10 +152,11 @@
 	<thead>
 		<tr>
 			<td style="width:30px;"></td>
-			<td style="width:80px;">รหัส</td>
+			<td style="width:30px;">รหัส</td>
 			<td>ชื่อกิจกรรมย่อย</td>
-			<td style="width:140px;">เป้าหมาย</td>
+			<td style="width:100px;">เป้าหมาย</td>
 			<td style="width:100px;">หน่วยนับ</td>
+			<td style="width:100px;">งบประมาณที่จัดสรร (บาท)</td>
 
 		</tr>
 	</thead>
@@ -174,18 +175,25 @@
 		{{name}} {{#unless parent}}
 			<div class="pull-right"><a href="#" class="btn btn-primary newActivitityChild">เพิ่มกิจกรรมเสริม</a> {{/unless}}</div>
 	</td>
-	<td><ul>
+	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each targets}}
 			<li data-id="{{id}}">{{formatNumber targetValue}}</li>
 		{{/each}}
 		</ul>
 	</td>
-	<td><ul>
+	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each targets}}
 			<li>{{unit.name}}</li>
 		{{/each}}
 		</ul>
 	</td>
+	<td><ul style="list-style-type: none;margin:0px;padding-right:10px; text-align:right;"">
+		{{#each targets}}
+			<li>{{formatNumber budgetAllocated}}</li>
+		{{/each}}
+		</ul>
+	</td>
+
 </tr>
 {{/each}}
 </script>
@@ -206,6 +214,14 @@
                 {{/each}}
          </select>
 	</div>
+	<div class="pull-left" style="padding-top:10px; padding-left: 30px;">
+		<label>ระบุงบประมาณ</label>
+		<div class="input-append">
+			<input class="span2 targetModel" id="budgetAllocated" type="text" data-modelName="budgetAllocated" value="{{budgetAllocated}}">
+			<span class="add-on">บาท</span>
+		</div>
+	</div>
+
 	<div class="clearfix"></div>
 	<div>
 		<a href="#" class="btn btn-mini btn-info addActivityTargetBtn"><i class="icon icon-plus-sign icon-white"></i> บันทึกค่าเป้าหมาย</a>
@@ -217,16 +233,17 @@
 
 <script  id="activityTargetTableTemplate" type="text/x-handler-template">
 <div id="activityTargetMenu">
-<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> บันทึกค่าเป้าหมาย</a>
+<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> เพิ่มค่าเป้าหมาย</a>
 </div>
 <div id="activityTargetTblCtr">
 {{#if targets}}
-<table class="table table-bordered table-striped" id="activityTargetTbl" style="width:285px;margin-top:10px;">
+<table class="table table-bordered table-striped" id="activityTargetTbl" style="width:485px;margin-top:10px;">
 <thead>
 	<tr>
 		<td style="width:45px;"></td>
 		<td style="width:140px;">เป้าหมาย</td>
 		<td style="width:100px;">หน่วยนับ</td>
+		<td style="width:200px;">งบประมาณ</td>
 	</tr>
 </thead>
 <tbody>
@@ -236,6 +253,7 @@
 	<a href="#td-{{id}}" class="deleteObjective deleteTarget"><i class="icon-trash icon-red"></i></a></td>
 			<td style="text-align:center;">{{formatNumber targetValue}}</td>
 			<td style="text-align:center;">{{unit.name}}</td>
+			<td style="text-align:right;">{{formatNumber budgetAllocated}} บาท</td>
 	</tr>
 	{{/each}}
 </tbody>

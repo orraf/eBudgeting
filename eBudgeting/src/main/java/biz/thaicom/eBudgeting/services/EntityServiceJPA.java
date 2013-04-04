@@ -4017,6 +4017,10 @@ public class EntityServiceJPA implements EntityService {
 			target.setActivity(activity);
 			
 			target.setTargetValue(targetNode.get("targetValue").asLong());
+			if(targetNode.get("budgetAllocated") != null) {
+				target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
+			}
+				
 			
 			TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(targetNode.get("unit")));
 			target.setUnit(unit);
@@ -4058,7 +4062,9 @@ public class EntityServiceJPA implements EntityService {
 			target.setActivity(activity);
 			
 			target.setTargetValue(targetNode.get("targetValue").asLong());
-			
+			if(targetNode.get("budgetAllocated") != null) {
+				target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
+			}
 			TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(targetNode.get("unit")));
 			target.setUnit(unit);
 			

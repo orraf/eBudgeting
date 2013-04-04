@@ -942,3 +942,12 @@
         add constraint FKDB204AC983D34833 
         foreign key (REGULATOR_HRX_ORGANIZATION) 
         references HRX_ORGANIZATION;
+
+        
+-- version 11
+-- Modified Date : April 3, 2013
+    update app_info set db_version=11;
+    
+    alter table PLN_ACTIVITYTARGET add (
+    	BUDGETALLOCATED number(19,0)
+    );
