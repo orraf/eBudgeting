@@ -558,6 +558,41 @@ public class ExcelReportsController {
 		return "m81r01.xls";
 	}
 	
+	@RequestMapping("/m81r02.xls/{fiscalYear}/file/m81r02.xls")
+	public String excelM81R02(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
+		
+		List<Objective> objList = new ArrayList<Objective>();
+ 		List<Objective> allList = returnList.get(0);
+		HashMap<Long, Objective> objMap = new HashMap<Long, Objective>();		
+		for(Objective o : allList) {
+			o.setChildren(new ArrayList<Objective>());
+			objMap.put(o.getId(), o);
+			logger.debug("put " + o.getFilterObjectiveBudgetProposals().size());
+		}
+		// now connect the children
+		for(Objective obj : allList) {
+			Objective parent = objMap.get(obj.getParent().getId());
+			if(parent != null) {
+				parent.getChildren().add(obj);
+			} else {
+				if(obj.getType().getId() == 101L) 
+					objList.add(obj);
+			}
+			
+		}
+		
+		model.addAttribute("objectiveList", objList);
+		
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		model.addAttribute("currentUser", currentUser);
+		
+		return "m81r02.xls";
+	}
+	
 	@RequestMapping("/admin/excel/report1.xls/{id}")
 	public String excelReport1(@PathVariable Long id, Model model) {
 		
