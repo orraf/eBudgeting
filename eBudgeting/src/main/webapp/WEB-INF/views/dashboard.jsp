@@ -221,11 +221,15 @@ var menuUserJson = [
 		}]  
 	}]
 },{
-	name: "ระบบรายงาน (Report)",
-	menus: [
-		 {name: "รายงานการตรวจสอบ (m52r)", menus: 
-		    [{name: "m52r01: การบันทึกงบประมาณระดับกิจกรรม", link: "m52r01_1.xls/"+fiscalYear+"/file/m52r01_1.xls"},
-		     {name: "m52r02: การบันทึกงบประมาณระดับรายการ", link: "m52r02_1.xls/"+fiscalYear+"/file/m52r02_1.xls"}]}]
+	name: "ระบบรายงาน (r)", code: "m8", 
+	menus: [{
+		name: "รายงานทะเบียน (m81r)", code: "m81", menus: 
+		    [{
+		    	name: "m81r01: รายงานสำหรับส่วนกลาง", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls"
+		    },{
+		    	name: "m81r02: รายงานสำหรับจังหวัดและอำเภอ", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls"
+		    }]
+	}]
 }];
 
 var menuTemplate = Handlebars.compile($("#menuTemplate").html());
