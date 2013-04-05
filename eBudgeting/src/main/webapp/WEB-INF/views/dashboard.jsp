@@ -138,47 +138,14 @@ var menuJson = [{
 		 }]
 },{
 	name: "ระบบรายงาน (r)", code: "m8", 
-	menus: [
-		 {name: "รายงานทะเบียน (m51r)", code: "m81", menus: 
-		    [{name: "m51r01: ทะเบียนยุทธศาสตร์จัดสรร", link: "m51r01.xls/"+fiscalYear+"/file/m51r01.xls"},
-		     {name: "m51r02: ทะเบียนประเด็นยุทธศาสตร์", link: "m51r02.xls/"+fiscalYear+"/file/m51r02.xls"},
-		     {name: "m51r03: ทะเบียนเป้าหมายเชิงยุทธศาสตร์", link: "m51r03.xls/"+fiscalYear+"/file/m51r03.xls"},
-		     {name: "m51r04: ทะเบียนเป้าหมายบริการกระทรวง", link: "m51r04.xls/"+fiscalYear+"/file/m51r04.xls"},
-		     {name: "m51r05: ทะเบียนเป้าหมายบริการหน่วยงาน", link: "m51r05.xls/"+fiscalYear+"/file/m51r05.xls"},
-		     {name: "m51r06: ทะเบียนแผนงาน", link: "m51r06.xls/"+fiscalYear+"/file/m51r06.xls"},
-		     {name: "m51r07: ทะเบียนผลผลิต-โครงการ และรายละเอียดประกอบ", link: "m51r07.xls/"+fiscalYear+"/file/m51r07.xls"},
-		     {name: "m51r08: ทะเบียนกิจกรรมหลัก", link: "m51r08.xls/"+fiscalYear+"/file/m51r08.xls"},
-		     {name: "m51r09: ทะเบียนกิจกรรมรอง", link: "m51r09.xls/"+fiscalYear+"/file/m51r09.xls"},
-		     {name: "m51r10: ทะเบียนกิจกรรมย่อย", link: "m51r10.xls/"+fiscalYear+"/file/m51r10.xls"},
-		     {name: "m51r11: ทะเบียนกิจกรรมเสริม", link: "m51r11.xls/"+fiscalYear+"/file/m51r11.xls"},
-		     {name: "m51r12: ทะเบียนกิจกรรมสนับสนุน", link: "m51r12.xls/"+fiscalYear+"/file/m51r12.xls"},
-		     {name: "m51r13: ทะเบียนกิจกรรมรายละเอียด", link: "m51r13.xls/"+fiscalYear+"/file/m51r13.xls"},
-		
-		     {name: "m51r15: ทะเบียนประเภทรายการกลาง", link: "m51r15.xls/"+fiscalYear+"/file/m51r15.xls"},
-		     {name: "m51r16: ตรวจสอบสายการเชื่อมโยงข้อมูล", link: "m51r16.xls/"+fiscalYear+"/file/m51r16.xls", disabled: "disabled"},
-		     {name: "m51r17: ตรวจสอบสายการเชื่อมโยงข้อมูล (สายยุทธศาสตร์กระทรวงฯ-กลยุทธ์หน่วยงาน)", link: "m51r17.xls/"+fiscalYear+"/file/m51r17.xls",disabled: "disabled"},
-		     {name: "m51r17: ทะเบียนหน่วยนับ", link: "m51r18.xls/"+fiscalYear+"/file/m51r18.xls"}
-		     ]},
-	  {name: "รายงานการตรวจสอบ (m52r)", menus: 
-				    [{name: "m52r01: การบันทึกงบประมาณระดับกิจกรรม", link: "m52r01_1.xls/"+fiscalYear+"/file/m52r01_1.xls"},
-				     {name: "m52r02: การบันทึกงบประมาณระดับรายการ", link: "m52r02_1.xls/"+fiscalYear+"/file/m52r02_1.xls"}]},		 
-	     {name: "รายงานตามแบบแผนปฏิบัติราชการ] (m83)", code: "m83",  menus: 
-			    [{name: "m82f01: ตรวจสอบสายการเชื่อมโยงข้อมูล", link: "page/m2f14/", disabled: "disabled"},
-			     {name: "m82f02: ตรวจสอบการบันทึกเงินระดับกิจกรรม", link: "page/m2f14/", disabled: "disabled"},
-			     {name: "m82f03: ตรวจสอบการบันทึกเงินระดับรายการ", link: "page/m2f14/", disabled: "disabled"}]},
-	     {name: "รายงานตามแบบคำของบประมาณ (m84)", code: "m84", menus: 
-			    [{name: "m82f01: ตรวจสอบสายการเชื่อมโยงข้อมูล", link: "page/m2f14/", disabled: "disabled"},
-			     {name: "m82f02: ตรวจสอบการบันทึกเงินระดับกิจกรรม", link: "page/m2f14/", disabled: "disabled"},
-			     {name: "m82f03: ตรวจสอบการบันทึกเงินระดับรายการ", link: "page/m2f14/", disabled: "disabled"}]},
-	     {name: "รายงานตามแบบตารางขวาง] (m85)", code: "m85", menus: 
-			    [{name: "m82f01: ตรวจสอบสายการเชื่อมโยงข้อมูล", link: "page/m2f14/", disabled: "disabled"},
-			     {name: "m82f02: ตรวจสอบการบันทึกเงินระดับกิจกรรม", link: "page/m2f14/", disabled: "disabled"},
-			     {name: "m82f03: ตรวจสอบการบันทึกเงินระดับรายการ", link: "page/m2f14/", disabled: "disabled"}]},
-	     {name: "รายงานตามแผนปฏิบัติการและงบประมาณ (m86)", code: "m86", menus: 
-			    [{name: "m82f01: ตรวจสอบสายการเชื่อมโยงข้อมูล", link: "page/m2f14/", disabled: "disabled"},
-			     {name: "m82f02: ตรวจสอบการบันทึกเงินระดับกิจกรรม", link: "page/m2f14/", disabled: "disabled"},
-			     {name: "m82f03: ตรวจสอบการบันทึกเงินระดับรายการ", link: "page/m2f14/", disabled: "disabled"}]}
-	    ]
+	menus: [{
+		name: "รายงานทะเบียน (m81r)", code: "m81", menus: 
+		    [{
+		    	name: "m81r01: รายงานสำหรับส่วนกลาง", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls"
+		    },{
+		    	name: "m81r02: รายงานสำหรับจังหวัดและอำเภอ", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls"
+		    }]
+	}]
 }];
 
 var menuOld = [
