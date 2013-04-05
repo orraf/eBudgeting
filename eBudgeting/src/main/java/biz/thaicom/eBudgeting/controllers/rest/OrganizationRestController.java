@@ -1,5 +1,6 @@
 package biz.thaicom.eBudgeting.controllers.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,6 +32,30 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 		List<Organization> list =entityService.findOrganizationByNameAndCode(query, null);
 
 		return  list;
+	}
+
+	@RequestMapping(value="/Organization/findTopLevelByName", method=RequestMethod.POST)
+	public @ResponseBody List<Organization> findOrganizationTopLevelByName(
+			@RequestParam String query) {
+		logger.debug("query: " + query);
+		List<Organization> list =entityService.findOrganizationTopLevelByName(query);
+
+		return  list;
+	}
+
+	
+	@RequestMapping(value="/Organization/findAllProvincesAndSelf", method=RequestMethod.POST)
+	public @ResponseBody List<Organization> findAllProvincesAndSelf(
+			@Activeuser ThaicomUserDetail currentUser, 
+			@RequestParam String query
+			) {
+		List<Organization> list = new ArrayList<Organization>();
+		
+		list.add(currentUser.getWorkAt());
+		list.addAll(entityService.findOrganizationByProvinces());
+		
+		
+		return list;
 	}
 
 	@RequestMapping(value="/Organization/parentId/{parentId}/findByName", method=RequestMethod.POST)
@@ -66,6 +91,12 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 	public @ResponseBody List<Organization> findOneByCurrentSession(
 			@Activeuser ThaicomUserDetail currentUser) {
 		return entityService.findOrganizationByNameAndParent_Id("%", currentUser.getWorkAt().getId());
+	}
+	
+	@RequestMapping(value="/Organization/{id}", method=RequestMethod.GET)
+	public @ResponseBody Organization findOrganizationById(
+			@PathVariable Long id) {
+		return entityService.findOrganizationById(id);
 	}
 	
 }

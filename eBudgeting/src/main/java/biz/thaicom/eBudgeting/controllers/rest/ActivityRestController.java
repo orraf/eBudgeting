@@ -106,7 +106,7 @@ public class ActivityRestController {
 	public @ResponseBody List<ActivityTargetReport> findActivityTargetReportByTargetId(
 			@PathVariable Long targetId,
 			@Activeuser ThaicomUserDetail currentUser) {
-		return entityService.findActivityTargetReportByTargetIdAndParentOrgId(targetId, 0L);
+		return entityService.findActivityTargetReportByTargetIdAndParentOrgId(targetId, null);
 	}
 
 	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/parentOrganization/{parentOrgId}", method=RequestMethod.GET)
@@ -130,7 +130,7 @@ public class ActivityRestController {
 			@PathVariable Long targetId,
 			@RequestBody JsonNode node,
 			@Activeuser ThaicomUserDetail currentuser) {
-		return entityService.saveActivityTargetReportByTargetId(targetId, node, currentuser.getWorkAt().getId());
+		return entityService.saveActivityTargetReportByTargetId(targetId, node, null);
 	}
 	
 	@RequestMapping(value="/ActivityTargetResult/", method=RequestMethod.POST) 

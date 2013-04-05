@@ -71,6 +71,12 @@ public class ActivityTargetReport implements Serializable {
 	@JoinColumn(name="OWNER_HRX_ORGANIZATION_ID")
 	private Organization owner;
 
+	/**
+	 * ระดับของรายงาน 0 = จังหวัด/ส่วน, 1 = อำเภอ
+	 */
+	@Basic
+	private Integer reportLevel;
+	
 	@Transient
 	private ActivityTargetResult latestResult;
 	
@@ -128,6 +134,14 @@ public class ActivityTargetReport implements Serializable {
 
 	public void setLatestResult(ActivityTargetResult latestResult) {
 		this.latestResult = latestResult;
+	}
+
+	public Integer getReportLevel() {
+		return reportLevel;
+	}
+
+	public void setReportLevel(Integer reportLevel) {
+		this.reportLevel = reportLevel;
 	}
 	
 	

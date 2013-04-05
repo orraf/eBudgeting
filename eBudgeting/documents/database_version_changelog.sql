@@ -951,3 +951,7 @@
     alter table PLN_ACTIVITYTARGET add (
     	BUDGETALLOCATED number(19,0)
     );
+    
+    alter table PLN_ACTIVITYTARGETREPORT add(
+    	REPORTLEVEL number (4,0)
+    );

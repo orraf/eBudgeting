@@ -255,9 +255,9 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Objective findOjectiveById(Long id) {
 		Objective objective = objectiveRepository.findOne(id);
-		if(objective != null) {
-			objective.doBasicLazyLoad();
-		}
+//		if(objective != null) {
+//			objective.doBasicLazyLoad();
+//		}
 		
 		
 		return objective;
@@ -2327,6 +2327,9 @@ public class EntityServiceJPA implements EntityService {
 		// now update the value
 		Long amountUpdate = data.get("amountAllocated").asLong();
 		Long oldAmount = record.getAmountAllocated();
+		if(oldAmount == null) {
+			oldAmount = 0L;
+		}
 		Long adjustedAmount = oldAmount - amountUpdate;
 		
 		Integer index = record.getIndex();
@@ -3895,6 +3898,20 @@ public class EntityServiceJPA implements EntityService {
 		return objectiveDetailRepository.findByForObjective_IdAndOwner(objectiveId, currentUser.getWorkAt());
 	}
 
+	
+	
+	
+	@Override
+	public List<Organization> findOrganizationTopLevelByName(
+			String query) {
+		if(query == null) {
+			query = "%";
+		} else {
+			query = "%" + query + "%";
+		}
+		return organizationRepository.findAllTopLevelByNameLike(query);
+	}
+
 	/**
 	 * ค้นหาหน่วยงานจากชื่อ
 	 * 
@@ -3920,7 +3937,19 @@ public class EntityServiceJPA implements EntityService {
 		// TODO Auto-generated method stub
 		return organizationRepository.findAllByNameLikeAndParent_IdOrderByNameAsc("%"+query+"%", parentId);
 	}
+	
+	@Override
+	public List<Organization> findOrganizationByProvinces() {
+		return organizationRepository.findAllByProvinces();
+	}
+	
+	@Override
+	public Organization findOrganizationById(Long id) {
+		return organizationRepository.findOne(id);
+	}
 
+
+	
 	/**
 	 * ค้นหาหน่วยงานจาก Objective ที่ได้รับผิดชอบ
 	 * @param objectiveId id ของ {@link Objective} ที่รับผิดชอบ
@@ -4107,7 +4136,14 @@ public class EntityServiceJPA implements EntityService {
 	public List<ActivityTargetReport> saveActivityTargetReportByTargetId(
 			Long targetId, JsonNode node, Long parentOrgId) {
 		// we get the current List
-		List<ActivityTargetReport> oldList = findActivityTargetReportByTargetIdAndParentOrgId(targetId, parentOrgId);
+		
+		logger.debug("parentOrgId : " + parentOrgId);
+		List<ActivityTargetReport> oldList;
+		if(parentOrgId == null ) {
+			oldList = findActivityTargetReportByTargetId(targetId);
+		} else {
+			oldList = findActivityTargetReportByTargetIdAndParentOrgId(targetId, parentOrgId);
+		}
 		
 		logger.debug("oldList.size() =" + oldList.size());
 		
@@ -4119,6 +4155,8 @@ public class EntityServiceJPA implements EntityService {
 		for(JsonNode reportNode : node) {
 			// we'll go through the oldList
 			Long reportId = getJsonNodeId(reportNode);
+			logger.debug("-----------------------report ID : " + reportId);
+			logger.debug("=======================owner ID  : " + getJsonNodeId(reportNode.get("owner")));
 			ActivityTargetReport report;
 			if (reportId != null) {
 				// should be in the oldList
@@ -4176,7 +4214,13 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
 			Long targetId, Long parentOrgId) {
-		return activityTargetReportRepository.findAllByTarget_idAndOwner_Parent_id(targetId, parentOrgId);
+		if( parentOrgId == null ) {
+			return activityTargetReportRepository.findAllByTarget_id(targetId);
+			
+		} else {
+			return activityTargetReportRepository.findAllByTarget_idAndOwner_Parent_id(targetId, parentOrgId);
+			
+		}
 	}
 
 	@Override
@@ -4202,10 +4246,11 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public ActivityTargetReport findActivityTargetReportById(Long id) {
 		
+		logger.debug("----------------------id: " + id);
 		
 		ActivityTargetReport atr = activityTargetReportRepository.findOneAndFetchReportById(id);
 		
-		logger.debug("----------------------" + atr.getActivityPerformance().getId());
+		logger.debug("----------------------" + atr);
 		
 		return atr;
 	}

@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.services;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -321,11 +322,16 @@ public interface EntityService {
 			ThaicomUserDetail currentUser);
 	
 	//Organization
+	public List<Organization> findOrganizationTopLevelByName(String query);
 	public List<Organization> findOrganizationByNameAndCode(String query, String code);
 	public List<Organization> findOrganizationByObjectiveOwner(Long objectiveId);
 	public List<Organization> saveObjectiveOwners(Long id, Long[] ownerIds);
 	public List<Organization> findOrganizationByNameAndParent_Id(String query,
 			Long parentId);
+	public List<Organization> findOrganizationByProvinces();
+	public Organization findOrganizationById(Long id);
+
+
 
 	
 	
@@ -353,10 +359,12 @@ public interface EntityService {
 	public ActivityTargetReport findActivityTargetReportById(Long id);
 
 	public ActivityTargetReport saveActivityTargetReportPlan(Long id, JsonNode node);
+
 	
 	//ActivityTargetResult
 	public ActivityTargetResult saveActivityTargetResult(JsonNode node,
 			ThaicomUserDetail currentUser);
+	
 
 
 

@@ -192,7 +192,7 @@ var ModalView = Backbone.View.extend({
 		var query = this.$el.find('#oraganizationQueryTxt').val();
 		
 		this.organizationSearchList = new OrganizationCollection();
-		this.organizationSearchList.url = appUrl("/Organization/findByName");
+		this.organizationSearchList.url = appUrl("/Organization/parentId/0/findByName");
 		this.organizationSearchList.fetch({
 			data: {
 				query: query

@@ -151,11 +151,11 @@
 <table class="table table-bordered table-striped" id="mainTbl">
 	<thead>
 		<tr>
-			<td style="width:30px;"></td>
-			<td style="width:80px;">รหัส</td>
+			<td style="width:30px;">รหัส</td>
 			<td>ชื่อกิจกรรมย่อย</td>
-			<td style="width:140px;">เป้าหมาย</td>
+			<td style="width:100px;">เป้าหมาย</td>
 			<td style="width:100px;">หน่วยนับ</td>
+			<td style="width:100px;">งบประมาณที่ได้รับจัดสรร (บาท)</td>
 
 		</tr>
 	</thead>
@@ -166,23 +166,29 @@
 <script id="mainTblTbodyTemplate" type="text/x-handler-template">
 {{#each this}}
 <tr data-id="{{id}}">
-	<td><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
-	</td>
 	<td>{{code}}</td>
 	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
-		{{name}}</td>
-	<td><ul>
+		{{name}} </div>
+	</td>
+	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each targets}}
 			<li data-id="{{id}}"><a href="#" class="assignTargetLnk">{{formatNumber targetValue}}</a></li>
 		{{/each}}
 		</ul>
 	</td>
-	<td><ul>
+	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each targets}}
 			<li>{{unit.name}}</li>
 		{{/each}}
 		</ul>
 	</td>
+	<td><ul style="list-style-type: none;margin:0px;padding-right:10px; text-align:right;"">
+		{{#each targets}}
+			<li>{{formatNumber budgetAllocated}}</li>
+		{{/each}}
+		</ul>
+	</td>
+
 </tr>
 {{/each}}
 </script>
@@ -361,6 +367,7 @@
 	var fiscalYear = parseInt("${fiscalYear}");
 	
 	var currentOrganizationId = "${workAtId}";
+	var currentOrganization = new Organization({id: currentOrganizationId});
 	var mainCtrView = null;
 	var objectiveCollection = null;
 	var budgetTypeSelectionView = null;
@@ -534,5 +541,7 @@
 	$(document).ready(function() {		
 		mainCtrView = new MainCtrView();
 		mainCtrView.render();
+		
+		currentOrganization.fetch();
 	});
 </script>
