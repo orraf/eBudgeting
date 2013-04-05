@@ -123,10 +123,16 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 		Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@www.innova.or.th:1521:xe", "afrpmt", "afrpmt");
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space from pln_objective m where exists " +
-									   "(select 1 from pln_activity t1, pln_objective t2, s_user t3 where t1.obj_pln_objective_id = t2.id " +
-									   "and t1.owner_hrx_organization = t3.dept_id and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
-									   "and t2.fiscalyear = " + fiscalYear + " and t3.login = '" + currentUser.getUsername() + "') connect by prior m.id = m.parent_pln_objective_id ");
+		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space " +
+		                               "from pln_objective m where m.id <> 21 and exists " +
+									   "(select 1 from pln_activity t1, pln_objective t2, s_user t3 " +
+		                               "where t1.obj_pln_objective_id = t2.id " +
+									   "and t1.owner_hrx_organization = t3.dept_id " +
+		                               "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
+									   "and t2.fiscalyear = " + fiscalYear + 
+									   " and t3.login = '" + currentUser.getUsername() + "') " +
+									   "connect by prior m.id = m.parent_pln_objective_id " +
+									   "start with m.id = 21");
 
 		int i = 4;
 		int j = 0;

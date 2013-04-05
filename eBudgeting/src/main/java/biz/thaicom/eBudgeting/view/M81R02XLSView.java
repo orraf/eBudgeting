@@ -119,7 +119,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@www.innova.or.th:1521:xe", "afrpmt", "afrpmt");
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space from pln_objective m where exists " +
+		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space " +
+									   "from pln_objective m where m.id <> 21 and exists " +
 									   "(select 1 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, " +
 					                       "(select id from hrx_organization " +
 					                           "connect by prior id = parent_hrx_organization_id " +
@@ -130,7 +131,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 					                        "and t4.owner_hrx_organization_id = t3.id " + 
 					                        "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
 					                        "and t2.fiscalyear = " + fiscalYear + ") " +
-									   "connect by prior m.id = m.parent_pln_objective_id ");
+									   "connect by prior m.id = m.parent_pln_objective_id " +
+					                   "start with m.id = 21 ");
 
 		int i = 4;
 		int j = 0;
