@@ -33,6 +33,16 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 
 		return  list;
 	}
+
+	@RequestMapping(value="/Organization/findTopLevelByName", method=RequestMethod.POST)
+	public @ResponseBody List<Organization> findOrganizationTopLevelByName(
+			@RequestParam String query) {
+		logger.debug("query: " + query);
+		List<Organization> list =entityService.findOrganizationTopLevelByName(query);
+
+		return  list;
+	}
+
 	
 	@RequestMapping(value="/Organization/findAllProvincesAndSelf", method=RequestMethod.POST)
 	public @ResponseBody List<Organization> findAllProvincesAndSelf(

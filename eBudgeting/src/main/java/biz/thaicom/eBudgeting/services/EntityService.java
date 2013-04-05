@@ -322,6 +322,7 @@ public interface EntityService {
 			ThaicomUserDetail currentUser);
 	
 	//Organization
+	public List<Organization> findOrganizationTopLevelByName(String query);
 	public List<Organization> findOrganizationByNameAndCode(String query, String code);
 	public List<Organization> findOrganizationByObjectiveOwner(Long objectiveId);
 	public List<Organization> saveObjectiveOwners(Long id, Long[] ownerIds);

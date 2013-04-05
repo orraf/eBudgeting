@@ -3898,6 +3898,20 @@ public class EntityServiceJPA implements EntityService {
 		return objectiveDetailRepository.findByForObjective_IdAndOwner(objectiveId, currentUser.getWorkAt());
 	}
 
+	
+	
+	
+	@Override
+	public List<Organization> findOrganizationTopLevelByName(
+			String query) {
+		if(query == null) {
+			query = "%";
+		} else {
+			query = "%" + query + "%";
+		}
+		return organizationRepository.findAllTopLevelByNameLike(query);
+	}
+
 	/**
 	 * ค้นหาหน่วยงานจากชื่อ
 	 * 
