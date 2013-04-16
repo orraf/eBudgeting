@@ -25,6 +25,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
+import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
+import biz.thaicom.eBudgeting.models.bgt.AssetKind;
+import biz.thaicom.eBudgeting.models.bgt.AssetType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetCommonType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetLevel;
 import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
@@ -63,6 +66,9 @@ import biz.thaicom.eBudgeting.repositories.ActivityTargetReportRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetResultRepository;
 import biz.thaicom.eBudgeting.repositories.AllocationRecordRepository;
+import biz.thaicom.eBudgeting.repositories.AssetGroupRepository;
+import biz.thaicom.eBudgeting.repositories.AssetKindRepository;
+import biz.thaicom.eBudgeting.repositories.AssetTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetCommonTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetProposalRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetSignOffRepository;
@@ -185,6 +191,16 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private MonthlyActivityReportRepository monthlyActivityReportRepository;
+	
+	@Autowired
+	private AssetGroupRepository assetGroupRepository;
+	
+	@Autowired
+	private AssetTypeRepository assetTypeRepository;
+	
+	@Autowired
+	private AssetKindRepository assetKindRepository;
+	
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -4383,6 +4399,29 @@ public class EntityServiceJPA implements EntityService {
 		monthlyActivityReportRepository.save(report.getMonthlyReports().get(fiscalMonth));
 		
 		return result;
+	}
+
+	
+	
+	
+	@Override
+	public List<AssetGroup> findAssetGroupAll() {
+		return assetGroupRepository.findAllOrderByIdAsc();
+	}
+
+	@Override
+	public AssetGroup findAssetGroupById(Long id) {
+		return assetGroupRepository.findOne(id);
+	}
+
+	@Override
+	public List<AssetType> findAssetTypeByAssetGroupId(Long groupId) {
+		return assetTypeRepository.findAllByGroup_IdOrderByIdAsc(groupId);
+	}
+
+	@Override
+	public List<AssetKind> findAssetKindByAssetTypeId(Long typeId) {
+		return assetKindRepository.findAllByType_idOrderByIdAsc(typeId);
 	}
 
 	

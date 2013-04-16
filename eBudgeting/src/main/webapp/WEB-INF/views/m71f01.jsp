@@ -116,6 +116,17 @@
 </div>
 </script>
 
+<script id="assetKindDisabledSelectionTemplate" type="text/x-handler-template">
+		<div class="control-group"  style="margin-bottom:5px;">
+			<label class="control-label">รายการ :</label>
+			<div class="controls">
+				<select class="span5" disabled="disabled">
+					<option>กรุณาเลือก...</option>
+				</select>
+			</div> 
+		</div>
+</script>
+
 <script id="type102DisabledSelection" type="text/x-handler-template">
 		<div class="control-group"  style="margin-bottom:5px;">
 			<label class="control-label">ยุทธศาสตร์ :</label>
@@ -237,6 +248,9 @@
 	{{{childrenNodeTpl this.children this.level}}}  
 </script>
 
+<script id="allocationRecordAssetCellTemplate" type="text/x-handler-template">
+<div data-id={{id}}>{{formatNumber amountAllocated}} บาท <div class="pull-right"><a href="#" class="editAssetAllocationRecord"><i class="icon-edit"></i></a></div>
+</script>
 
 <script id="allocationRecordCellTemplate" type="text/x-handler-template">
 <div data-id={{id}}>{{formatNumber amountAllocated}} บาท <div class="pull-right"><a href="#" class="editAllocationRecord"><i class="icon-edit"></i></a></div>
@@ -266,16 +280,16 @@
             <tr>
 				<td>งบสงเคราะห์</td>
 				<td data-budgetTypeId="9" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
-				<td data-budgetTypeId="10" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="10" style="text-align:center"><div class="pull-right"><a href="#" class="addAssetAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
 				<td data-budgetTypeId="13" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
-				<td data-budgetTypeId="14" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="14" style="text-align:center"><div class="pull-right"><a href="#" class="addAssetAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
 			</tr>
         	<tr>
 				<td>งบบริหาร</td>
 				<td data-budgetTypeId="8" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
-				<td data-budgetTypeId="7" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="7" style="text-align:center"><div class="pull-right"><a href="#" class="addAssetAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
 				<td data-budgetTypeId="11" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
-				<td data-budgetTypeId="12" style="text-align:center"><div class="pull-right"><a href="#" class="addAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
+				<td data-budgetTypeId="12" style="text-align:center"><div class="pull-right"><a href="#" class="addAssetAllocationRecord"><i class="icon-plus-sign"></i></a></div></td>
 			</tr>
 			<tr>
 				<td style="text-align:right"><strong>รวม</strong></td>
@@ -449,13 +463,75 @@
 {{/each}}
 </script>
 
+<script id="assetAllocationDetailTemplate" type="text/x-handler-template">
+<div>
+<strong>งบลงทุน สำหรับหน่วยงาน : {{owner.name}}</strong>
+</div>
+<div id="assetSlt">
+</div>
+<div id="assetCtr">
+	<table id="assetTbl" class="table table-bordered">
+		<thead>
+			<tr>
+				<td>ชื่อรายการ</td>
+				<td>หน่วยงาน</td>
+				<td>จำนวน</td>
+				<td>งบประมาณต่อหน่วย</td>
+				<td>รวม</td>
+			</tr>
+		</thead>
+		<tbody></tbody> 
+	</table>
+</div>
+</script>
+
+<script id="assetGroupSelectionTemplate" type="text/x-handler-template">
+<form class="form-horizontal">
+<div class="control-group" style="margin-bottom:5px;">
+	<label class="control-label">หมวด :</label> 
+	<div class="controls">
+		<select id="assetGroupSlt" class="span5">
+			<option>กรุณาเลือก...</option>
+			{{#each this}}<option value={{id}}>[{{code}}] {{name}}</option>{{/each}}
+		</select>
+	</div>
+</div>
+	<div id="assetTypeSltDiv">
+		<div class="control-group"  style="margin-bottom:5px;">
+			<label class="control-label">ประเภท :</label>
+			<div class="controls">
+				<select class="span5" disabled="disabled">
+					<option>กรุณาเลือก...</option>
+				</select>
+			</div> 
+		</div>	
+	</div>
+	<div id="assetKindSltDiv">
+		<div class="control-group"  style="margin-bottom:5px;">
+			<label class="control-label">ชนิด :</label>
+			<div class="controls">
+				<select class="span5" disabled="disabled">
+					<option>กรุณาเลือก...</option>
+				</select>
+			</div> 
+		</div>
+
+	</div>
+</form>
+</script>
+
 <script id="organizationProposalTbodyTemplate" type="text/x-handler-template">
 {{#each this}}
-<tr data-id="{{owner.id}}"><td><a href="#" class="removeOrganizationProposal"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
-	<td  style="width:188px">
-		<div style="height:35px; float:left" id="totalInputForm">
-			<div class="input-append"><input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
-		</div>
+<tr data-id="{{owner.id}}">
+	<td><a href="#" class="removeOrganizationProposal"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
+	<td  style="width:188px; {{#if ../assetAllocation}}text-align:right;{{/if}}">
+		{{#if ../assetAllocation}}
+			<span> {{formatNumber amountAllocated}} บาท <a href="#" class="assetAllocationDetail"><i class="icon icon-plus-sign"></i></a></span>
+		{{else}}
+			<div style="height:35px; float:left" id="totalInputForm">
+				<div class="input-append"><input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
+			</div>
+		{{/if}}
 	</td>
 </tr>
 {{/each}}
@@ -614,7 +690,6 @@
 	});
 
 	Handlebars.registerHelper("formulaLine", function(strategy) {
-		console.log(strategy);
 		var s = addCommas(strategy.formulaStrategy.standardPrice) + " บาท ";
 
 		if (strategy.formulaStrategy != null) {
@@ -690,5 +765,7 @@
 		
 		mainCtrView = new MainCtrView();
 		mainCtrView.render();
+		
+		mainCtrView.detailModalWithObjectiveId(197);
 	});
 </script>

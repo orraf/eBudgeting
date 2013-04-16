@@ -15,7 +15,9 @@ var ModalView = Backbone.View.extend({
 	inputAllDivTemplate : Handlebars.compile($('#inputAllDivTemplate').html()),
 	inputAllocationRecordTemplate : Handlebars.compile($('#inputAllocationRecordTemplate').html()), 
 	allocationRecordCellTemplate: Handlebars.compile($('#allocationRecordCellTemplate').html()),
+	allocationRecordAssetCellTemplate :Handlebars.compile($('#allocationRecordAssetCellTemplate').html()),
 	inputFormTemplate : Handlebars.compile($('#inputFormTemplate').html()), 
+	assetAllocationDetailTemplate : Handlebars.compile($('#assetAllocationDetailTemplate').html()),
 	
 	organizationProposalTbodyTemplate: Handlebars.compile($('#organizationProposalTbodyTemplate').html()),
 	organizationSearchTbodyTemplate: Handlebars.compile($('#organizationSearchTbodyTemplate').html()), 
@@ -35,6 +37,10 @@ var ModalView = Backbone.View.extend({
 		"click .backToProposal" : "backToProposal",
 		"click .copytoNextYear" : "copyToNextYear",
 		"click .addAllocationRecord" : "addAllocationRecord",
+		
+		"click .addAssetAllocationRecord" : "addAssetAllocationRecord",
+		"click .assetAllocationDetail" : "assetAllocationDetail",
+		
 		"click .editAllocationRecord" : "editAllocationRecord",
 		"click #organizationSearchBtn" : "organizationSearch",
 		"click #organizationOwnerSearchBtn" : "organizationOwnerSearch",
@@ -46,6 +52,28 @@ var ModalView = Backbone.View.extend({
 		"click #addOwnerBtn" : "addOwner"
 			
 
+	},
+	
+	assetAllocationDetail :function(e) {
+		this.saveDetailHtml = this.$el.find('.modal-body').html();
+		var organizationId = $(e.target).parents('tr').attr('data-id');
+		var organization = Organization.findOrCreate(organizationId);
+		for(var i=0; i<this.proposals.length; i++) {
+			if(this.proposals.at(i).get('owner') == organization) {
+				this.currentProposal = this.proposals.at(i);
+				break;
+			}
+		}
+		
+		var json = this.currentProposal.toJSON();
+		var html = this.assetAllocationDetailTemplate(json);
+		
+		this.$el.find('.modal-body').html(html);
+		
+		this.assetSelectionView = new AssetSelectionView();
+		this.assetSelectionView.setElement('#assetSlt');
+		this.assetSelectionView.render();
+		
 	},
 
 	addOwner: function(e) {
@@ -73,7 +101,9 @@ var ModalView = Backbone.View.extend({
 		
 		this.owners.push(organization);
 		
-		var html=this.organizationOwnerTbodyTemplate(this.owners.toJSON());
+		var json=this.owners.toJSON();
+		
+		var html=this.organizationOwnerTbodyTemplate(json);
 		$('#organizationOwnerTbl').find('tbody').html(html);
 		
 		
@@ -95,7 +125,11 @@ var ModalView = Backbone.View.extend({
 		
 		this.proposals.push(newProposal);
 		
-		var html=this.organizationProposalTbodyTemplate(this.proposals.toJSON());
+		var json = this.proposals.toJSON();
+		if(this.assetAllocation == true) {
+			json.assetAllocation = true;
+		}
+		var html=this.organizationProposalTbodyTemplate(json);
 		$('#organizationProposalTbl').find('tbody').html(html);
 		
 		this.updateSumProposal();
@@ -400,13 +434,25 @@ var ModalView = Backbone.View.extend({
 		this.organizationSearch();
 	},
 	
+	addAssetAllocationRecord: function(e) {
+		this.assetAllocation = true;
+		this.renderAddAllocationRecord(e);
+	},
+	
 	addAllocationRecord: function(e) {
+		this.assetAllocation = false;
+		this.renderAddAllocationRecord(e);
+	},
+	renderAddAllocationRecord: function(e) {
 		this.currentAllocationRecord = new AllocationRecord();
 		
 		var budgetTypeId = $(e.target).parents('td').attr('data-budgetTypeId');
 		this.currentBudgetType = BudgetType.findOrCreate(budgetTypeId);
 		this.currentAllocationRecord.set('budgetType', this.currentBudgetType);
 		this.currentAllocationRecord.set('forObjective', this.objective);
+		this.objective.get('allocationRecords').push(this.currentAllocationRecord);
+		
+		
 		this.renderAllocationRecordInput();
 		this.organizationSearch();
 	},
@@ -483,7 +529,12 @@ var ModalView = Backbone.View.extend({
 			
 			records.forEach(_.bind(function(record) {
 				var budgetTypeId=record.get('budgetType').get('id');
-				var html = this.allocationRecordCellTemplate(record.toJSON());
+				var html = "";
+				if(record.get('budgetType').get('name').indexOf('ลงทุน') > 0 ) {
+					html = this.allocationRecordAssetCellTemplate(record.toJSON());
+				} else {
+					html = this.allocationRecordCellTemplate(record.toJSON());
+				}
 				$('td[data-budgettypeid='+budgetTypeId+']').html(html);
 				
 				if(budgetTypeId==9 || budgetTypeId==8) {
@@ -652,6 +703,106 @@ var MainSelectionView = Backbone.View.extend({
 	
 });
 
+var AssetSelectionView = Backbone.View.extend({
+	/**
+	 * @memberOf AssetSelectionView
+	 */
+	initialize : function() {
+		this.assetTypes = new AssetTypeCollection();
+		this.assetKinds = new AssetKindCollection();
+
+		_.bindAll(this, 'renderType');
+		_.bindAll(this, 'renderKind');
+		
+		this.assetTypes.bind('reset', this.renderType);
+		this.assetKinds.bind('reset', this.renderKind);
+
+		
+	},
+	selectionTemplate : Handlebars.compile($("#selectionTemplate").html()),
+	assetGroupSelectionTemplate : Handlebars.compile($("#assetGroupSelectionTemplate").html()),
+	assetKindDisabledSelectionTemplate : Handlebars.compile($("#assetKindDisabledSelectionTemplate").html()), 
+	
+	events: {
+		"change #assetGroupSlt" : "assetGroupSltChange",
+		"change #typeAssetTypeSlt" : "assetTypeSltChange",
+		"change #typeAssetKindSlt" : "assetKindSltChange"
+	},
+	
+	assetGroupSltChange : function(e) {
+		var groupId = $(e.target).val();
+		if(groupId != 0) {
+			this.assetTypes.fetch({
+				url: appUrl('/AssetType/byGroupId/' + groupId),
+				success: _.bind(function() {
+					this.assetTypes.trigger('reset');
+				}, this)
+			});
+		}
+	},
+	assetTypeSltChange : function(e) {
+		var typeId = $(e.target).val();
+		if(typeId != 0) {
+			this.assetKinds.fetch({
+				url: appUrl('/AssetKind/byTypeId/' + typeId),
+				success: _.bind(function() {
+					this.assetKinds.trigger('reset');
+				}, this)
+			});
+		}
+	},
+	assetKindSltChange: function(e) {
+		var kindId = $(e.target).val();
+		
+	},
+
+	renderType: function(e) {
+		var json = this.assetTypes.toJSON();
+		json.type =  {};
+		json.type.name ="ประเภท";
+		json.type.id = "AssetType";
+		var html = this.selectionTemplate(json);
+		
+		// now render 
+		this.$el.find('#assetTypeSltDiv').empty();
+		this.$el.find('#assetTypeSltDiv').html(html);
+		
+		this.$el.find('#assetKindSltDiv').empty();
+		this.$el.find('#assetKindSltDiv').html(this.assetKindDisabledSelectionTemplate());
+		
+		
+	},
+	renderKind: function(e) {
+		var json = this.assetKinds.toJSON();
+		json.type =  {};
+		json.type.name = "ชนิด";
+		json.type.id = "AssetKind";
+		var html = this.selectionTemplate(json);
+		
+		// now render 
+		this.$el.find('#assetKindSltDiv').empty();
+		this.$el.find('#assetKindSltDiv').html(html);
+		
+	},
+
+	render: function() {
+		if(this.$el != null) {
+			
+			this.assetGroups = new AssetGroupCollection();
+			this.assetGroups.url = appUrl('/AssetGroup/');
+			this.assetGroups.fetch({
+				success: _.bind(function() {
+					var html = this.assetGroupSelectionTemplate(this.assetGroups.toJSON());
+					this.$el.html(html);
+				},this)
+			});
+			
+		}
+		
+		return this;
+	}
+});
+
 
 var MainCtrView = Backbone.View.extend({
 	/**
@@ -677,6 +828,16 @@ var MainCtrView = Backbone.View.extend({
 		"click .detail" : "detailModal"
 	},
 
+	detailModalWithObjectiveId : function(id) {
+		var currentObjective = Objective.findOrCreate({id: id});
+		currentObjective.url = appUrl("/Objective/loadObjectiveAllocationRecord/" + currentObjective.get('id'));
+		currentObjective.fetch({
+			success: _.bind(function(model, xhr, option) {
+				this.modalView.renderWith(currentObjective);
+			},this)
+		});
+		
+	},
 	
 	detailModal : function(e) {
 		var currentObjectiveId = $(e.target).parents('tr').attr('data-id');

@@ -808,6 +808,13 @@ public class GenericViewController {
 		return "m51f18";
 	}
 	
+	// --------------------------------------------------- m52f01: ทะเบียนรายการงบลงทุน
+		@RequestMapping("/page/m52f01/")
+		public String render_m52f01(
+				Model model, HttpServletRequest request, HttpSession session) {
+			return "m52f01";
+		}
+	
 
 	
 	// --------------------------------------------------------------m61f03: การบันทึกงบประมาณ ระดับกิจกรรมหลัก
