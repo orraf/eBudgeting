@@ -95,17 +95,35 @@
 </form>
 </script>
 
+<script  id="mainTblTemplate" type="text/x-handler-template">
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<td></td>
+			<td>รหัสรายการ</td>
+			<td>ชื่อรายการ</td>
+			<td>คำอธิบาย</td>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+</script>
+
+
 <script src="<c:url value='/resources/js/pages/m52f01.js'/>"></script>
 
 <script type="text/javascript">
 <!--
-var mainCtrView;
-var mainSltView;
+var mainTblView;
+var assetSltView;
 
 $(document).ready(function() {
-	
+	mainTblView = new MainTblView();
 	assetSltView = new AssetSelectionView();
 	assetSltView.render();
+	
+	
 });
 
 //-->

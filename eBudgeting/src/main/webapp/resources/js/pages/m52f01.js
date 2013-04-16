@@ -50,7 +50,9 @@ var AssetSelectionView = Backbone.View.extend({
 	},
 	assetKindSltChange: function(e) {
 		var kindId = $(e.target).val();
+		var assetKind = AssetKind.findOrCreate(kindId);
 		
+		mainTblView.renderWithAssetKind(assetKind);
 	},
 
 	renderType: function(e) {
@@ -99,4 +101,34 @@ var AssetSelectionView = Backbone.View.extend({
 		return this;
 	}
 });
+
+var MainTblView = Backbone.View.extend({
+	/**
+	 * @memberOf MainTblView
+	 */
+	initialize : function() {
+		
+	},
+	el : '#mainTbl',
+	mainTblTemplate: Handlebars.compile($("#mainTblTemplate").html()), 
+	
+	renderWithAssetKind: function(assetKind) {
+		this.assetKind = assetKind;
+		this.collection = new AssetBudgetCollection();
+		this.collection.fetch({
+			url: appUrl("/AssetBudget/byKindId/" + this.assetKind.get('id')),
+			success: _.bind(function() {
+				var json = this.collection.toJSON();
+				var html = this.mainTblTemplate(json);
+				this.$el.html(html);
+			}, this)
+		});
+	},
+	
+	render: function() {
+		
+	}
+
+});
+
 

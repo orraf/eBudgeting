@@ -679,6 +679,14 @@ AssetKind = Backbone.RelationalModel.extend({
 	}]
 });
 
+AssetBudget = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'kind',
+		relatedModel: 'AssetKind'
+	}]
+});
 
 BudgetSignOff = Backbone.RelationalModel.extend({
 	idAttribute: 'id',
@@ -969,6 +977,9 @@ AssetTypeCollection = Backbone.Collection.extend({
 
 AssetKindCollection = Backbone.Collection.extend({
 	model: AssetKind
+});
+AssetBudgetCollection = Backbone.Collection.extend({
+	model: AssetBudget
 });
 //Handlebars Utils
 
