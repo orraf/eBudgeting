@@ -960,6 +960,18 @@
 -- Modified Date : April 16, 2013
     update app_info set db_version=12;
 
+    create table BGT_ASSETBUDGET (
+        id number(19,0) not null,
+        code varchar2(255 char),
+        description varchar2(255 char),
+        name varchar2(255 char),
+        ASSETKIND_ID number(19,0),
+        primary key (id)
+    );
+    
+	create sequence BGT_ASSETBUDGET_SEQ;
+
+    
     create table BGT_ASSETALLOCATION (
         id number(19,0) not null,
         fiscalYear number(10,0),
@@ -968,7 +980,7 @@
         BGT_BUDGETTYPE_ID number(19,0),
         PLN_ACTIVITY_ID number(19,0),
         PLN_OBJECTIVE_ID number(19,0),
-        ASSETKIND_ID number(19,0),
+        BGT_ASSETBUDGET_ID number(19,0),
         owner_id number(19,0),
         primary key (id)
     );
@@ -987,16 +999,11 @@
         add constraint FKB03304205898EDD9 
         foreign key (PLN_OBJECTIVE_ID) 
         references PLN_OBJECTIVE;
+    
+  	alter table BGT_ASSETALLOCATION 
+        add constraint FKB0333887AE9F83CC 
+        foreign key (BGT_ASSETBUDGET_ID) 
+        references BGT_ASSETBUDGET;
         
     create sequence BGT_ASSETALLOCATION_SEQ;
 
-    create table BGT_ASSETBUDGET (
-        id number(19,0) not null,
-        code varchar2(255 char),
-        description varchar2(255 char),
-        name varchar2(255 char),
-        ASSETKIND_ID number(19,0),
-        primary key (id)
-    );
-    
-	create sequence BGT_ASSETBUDGET_SEQ;

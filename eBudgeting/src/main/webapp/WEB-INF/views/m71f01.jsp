@@ -118,6 +118,16 @@
 
 <script id="assetKindDisabledSelectionTemplate" type="text/x-handler-template">
 		<div class="control-group"  style="margin-bottom:5px;">
+			<label class="control-label">ชนิด :</label>
+			<div class="controls">
+				<select class="span5" disabled="disabled">
+					<option>กรุณาเลือก...</option>
+				</select>
+			</div> 
+		</div>
+</script>
+<script id="assetBudgetDisabledSelectionTemplate" type="text/x-handler-template">
+		<div class="control-group"  style="margin-bottom:5px;">
 			<label class="control-label">รายการ :</label>
 			<div class="controls">
 				<select class="span5" disabled="disabled">
@@ -509,6 +519,17 @@
 	<div id="assetKindSltDiv">
 		<div class="control-group"  style="margin-bottom:5px;">
 			<label class="control-label">ชนิด :</label>
+			<div class="controls">
+				<select class="span5" disabled="disabled">
+					<option>กรุณาเลือก...</option>
+				</select>
+			</div> 
+		</div>
+
+	</div>
+	<div id="assetBudgetSltDiv">
+		<div class="control-group"  style="margin-bottom:5px;">
+			<label class="control-label">รายการ :</label>
 			<div class="controls">
 				<select class="span5" disabled="disabled">
 					<option>กรุณาเลือก...</option>
