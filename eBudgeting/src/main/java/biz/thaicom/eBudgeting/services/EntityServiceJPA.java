@@ -25,6 +25,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
+import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
+import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
+import biz.thaicom.eBudgeting.models.bgt.AssetKind;
+import biz.thaicom.eBudgeting.models.bgt.AssetType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetCommonType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetLevel;
 import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
@@ -63,6 +67,10 @@ import biz.thaicom.eBudgeting.repositories.ActivityTargetReportRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetResultRepository;
 import biz.thaicom.eBudgeting.repositories.AllocationRecordRepository;
+import biz.thaicom.eBudgeting.repositories.AssetBudgetRepository;
+import biz.thaicom.eBudgeting.repositories.AssetGroupRepository;
+import biz.thaicom.eBudgeting.repositories.AssetKindRepository;
+import biz.thaicom.eBudgeting.repositories.AssetTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetCommonTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetProposalRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetSignOffRepository;
@@ -185,6 +193,19 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private MonthlyActivityReportRepository monthlyActivityReportRepository;
+	
+	@Autowired
+	private AssetGroupRepository assetGroupRepository;
+	
+	@Autowired
+	private AssetTypeRepository assetTypeRepository;
+	
+	@Autowired
+	private AssetKindRepository assetKindRepository;
+	
+	@Autowired
+	private AssetBudgetRepository assetBudgetRepository;
+	
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -4386,11 +4407,86 @@ public class EntityServiceJPA implements EntityService {
 	}
 
 	
-	
-	
-	
-	
-	
+	@Override
+	public List<AssetGroup> findAssetGroupAll() {
+		return assetGroupRepository.findAllOrderByIdAsc();
+	}
+
+	@Override
+	public AssetGroup findAssetGroupById(Long id) {
+		return assetGroupRepository.findOne(id);
+	}
+
+	@Override
+	public List<AssetType> findAssetTypeByAssetGroupId(Long groupId) {
+		return assetTypeRepository.findAllByGroup_IdOrderByIdAsc(groupId);
+	}
+
+	@Override
+	public List<AssetKind> findAssetKindByAssetTypeId(Long typeId) {
+		return assetKindRepository.findAllByType_idOrderByIdAsc(typeId);
+	}
+
+	@Override
+	public List<AssetBudget> findAssetBudgetByKindId(Long kindId) {
+		return assetBudgetRepository.findAllByKind_IdOrderByIdAsc(kindId);
+	}
+
+	@Override
+	public AssetBudget saveAssetBudget(JsonNode node) {
+		AssetBudget assetBudget = new AssetBudget();
+		if(node.get("code") != null) {
+			assetBudget.setCode(node.get("code").asText());
+		}
+		if(node.get("name") != null) {
+			assetBudget.setName(node.get("name").asText());
+		}
+		if(node.get("description") != null) {
+			assetBudget.setDescription(node.get("description").asText());
+		}
+		if(getJsonNodeId(node.get("kind")) != null) {
+			AssetKind kind = assetKindRepository.findOne(getJsonNodeId(node.get("kind")));
+			assetBudget.setKind(kind);
+		}
+		
+		assetBudgetRepository.save(assetBudget);
+		return assetBudget;
+	}
+
+	@Override
+	public AssetBudget deleteAssetBudget(Long id) {
+		AssetBudget assetBudget = assetBudgetRepository.findOne(id);
+
+		assetBudgetRepository.delete(assetBudget);		
+		return assetBudget;
+	}
+
+	@Override
+	public AssetBudget updateAssetBudget(JsonNode node) {
+		AssetBudget assetBudget = assetBudgetRepository.findOne(getJsonNodeId(node));
+		if(node.get("code") != null) {
+			assetBudget.setCode(node.get("code").asText());
+		}
+		if(node.get("name") != null) {
+			assetBudget.setName(node.get("name").asText());
+		}
+		if(node.get("description") != null) {
+			assetBudget.setDescription(node.get("description").asText());
+		}
+		if(getJsonNodeId(node.get("kind")) != null) {
+			AssetKind kind = assetKindRepository.findOne(getJsonNodeId(node.get("kind")));
+			assetBudget.setKind(kind);
+		}
+		
+		assetBudgetRepository.save(assetBudget);
+		return assetBudget;
+	}
+
+	@Override
+	public AssetBudget findOneAssetBudget(Long id) {
+		return assetBudgetRepository.findOne(id);
+	}
+
 	
 	
 	

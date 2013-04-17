@@ -955,3 +955,48 @@
     alter table PLN_ACTIVITYTARGETREPORT add(
     	REPORTLEVEL number (4,0)
     );
+    
+-- version 12
+-- Modified Date : April 16, 2013
+    update app_info set db_version=12;
+
+    create table BGT_ASSETALLOCATION (
+        id number(19,0) not null,
+        fiscalYear number(10,0),
+        quantity number(10,0),
+        unitBudget number(19,0),
+        BGT_BUDGETTYPE_ID number(19,0),
+        PLN_ACTIVITY_ID number(19,0),
+        PLN_OBJECTIVE_ID number(19,0),
+        ASSETKIND_ID number(19,0),
+        owner_id number(19,0),
+        primary key (id)
+    );
+    
+    alter table BGT_ASSETALLOCATION 
+        add constraint FKB03304201C26D3BB 
+        foreign key (BGT_BUDGETTYPE_ID) 
+        references BGT_BUDGETTYPE;
+
+    alter table BGT_ASSETALLOCATION 
+        add constraint FKB033042075DA5CBB 
+        foreign key (PLN_ACTIVITY_ID) 
+        references PLN_ACTIVITY;
+
+    alter table BGT_ASSETALLOCATION 
+        add constraint FKB03304205898EDD9 
+        foreign key (PLN_OBJECTIVE_ID) 
+        references PLN_OBJECTIVE;
+        
+    create sequence BGT_ASSETALLOCATION_SEQ;
+
+    create table BGT_ASSETBUDGET (
+        id number(19,0) not null,
+        code varchar2(255 char),
+        description varchar2(255 char),
+        name varchar2(255 char),
+        ASSETKIND_ID number(19,0),
+        primary key (id)
+    );
+    
+	create sequence BGT_ASSETBUDGET_SEQ;

@@ -653,6 +653,41 @@ Person = Backbone.RelationalModel.extend({
 	idAttribute: 'id'
 });
 
+AssetGroup = Backbone.RelationalModel.extend({
+	idAttribute: 'id'
+});
+
+AssetType = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'group',
+		relatedModel: 'AssetGroup'
+	}]
+});
+
+AssetKind = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'group',
+		relatedModel: 'AssetGroup'		
+	},{
+		type: Backbone.HasOne,
+		key: 'type',
+		relatedModel: 'AssetType'		
+	}]
+});
+
+AssetBudget = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'kind',
+		relatedModel: 'AssetKind'
+	}]
+});
+
 BudgetSignOff = Backbone.RelationalModel.extend({
 	idAttribute: 'id',
 	relations: [{
@@ -932,6 +967,20 @@ MonthlyActivityReportCollection = Backbone.Collection.extend({
 	model: MonthlyActivityReport
 });
 
+AssetGroupCollection = Backbone.Collection.extend({
+	model: AssetGroup
+});
+
+AssetTypeCollection = Backbone.Collection.extend({
+	model: AssetType
+});
+
+AssetKindCollection = Backbone.Collection.extend({
+	model: AssetKind
+});
+AssetBudgetCollection = Backbone.Collection.extend({
+	model: AssetBudget
+});
 //Handlebars Utils
 
 
