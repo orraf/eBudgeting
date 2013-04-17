@@ -1,3 +1,46 @@
+var ModalView = Backbone.View.extend({
+	/** 
+	 * @memberOf ModalView
+	 */
+	initialize: function() {
+		
+	},
+	el: '#modal',
+	events: {
+		"click #closeBtn" : "close",
+		"click #saveBtn" : "saveForm"
+	},
+	saveForm: function() {
+		// update 
+		this.currentAssetBudget.set('name', this.$el.find('#nameTxt').val());
+		this.currentAssetBudget.set('code', this.$el.find('#codeTxt').val());
+		this.currentAssetBudget.set('description', this.$el.find('#descriptionTxt').val());
+		
+		this.currentAssetBudget.save(null,{
+			success: _.bind(function() {
+				alert('คุณได้ทำการบันทึกข้อมูลเรียบร้อยแล้ว');
+				mainTblView.addAssetBudget(this.currentAssetBudget);
+				this.close();
+			},this)
+		});
+	},
+	close : function() {
+		this.$el.modal('hide');
+	},
+	
+	modalBodyTemplate : Handlebars.compile($("#modalBodyTemplate").html()),
+	
+	renderWithAssetBudget : function(assetBudget) {
+		this.currentAssetBudget = assetBudget;
+		var json = this.currentAssetBudget.toJSON();
+		var html = this.modalBodyTemplate(json);
+		this.$el.find('.modal-body').html(html);
+		
+		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
+		return this;
+	}
+});
+
 var AssetSelectionView = Backbone.View.extend({
 	/**
 	 * @memberOf AssetSelectionView
@@ -110,25 +153,94 @@ var MainTblView = Backbone.View.extend({
 		
 	},
 	el : '#mainTbl',
+	events: {
+		"click .menuNew" : "newForm",
+		"click .menuEdit" : "editForm",
+		"click .menuDelete" : "deleteRow"
+	},
 	mainTblTemplate: Handlebars.compile($("#mainTblTemplate").html()), 
+	assetBudgetRowTemplate: Handlebars.compile($("#assetBudgetRowTemplate").html()),
+	tbodyTemplate: Handlebars.compile($("#tbodyTemplate").html()),
+	modalView: new ModalView(),
 	
+	newForm : function() {
+		this.currentAssetBudget = new AssetBudget();
+		this.currentAssetBudget.set('kind', this.assetKind);
+		this.modalView.renderWithAssetBudget(this.currentAssetBudget);
+
+	},
+	
+	editForm : function(e) {
+		var assetBudgetId = $(e.target).parents('tr').attr('data-id');
+		this.currentAssetBudget = AssetBudget.findOrCreate(assetBudgetId);
+		this.modalView.renderWithAssetBudget(this.currentAssetBudget);
+
+		
+	},	
 	renderWithAssetKind: function(assetKind) {
 		this.assetKind = assetKind;
 		this.collection = new AssetBudgetCollection();
 		this.collection.fetch({
 			url: appUrl("/AssetBudget/byKindId/" + this.assetKind.get('id')),
 			success: _.bind(function() {
-				var json = this.collection.toJSON();
-				var html = this.mainTblTemplate(json);
+				var html = this.mainTblTemplate();
 				this.$el.html(html);
+				
+				if(this.collection.length>0) {
+					// then the inside row
+					var json=this.collection.toJSON();
+					
+					html = this.tbodyTemplate(json);
+					this.$el.find('tbody').html(html);
+				}
+
+				// bind all cell
+				this.collection.each(function(model){
+					model.bind('change', this.renderAssetBudget, this);
+					this.renderAssetBudget(model);
+				}, this);
+				
 			}, this)
 		});
 	},
 	
-	render: function() {
+	renderAssetBudget: function(model) {
+		var modelEl = this.$el.find('tr[data-id='+ model.get('id') +']');
 		
-	}
+		var json = model.toJSON();		
+			
+		modelEl.html(this.assetBudgetRowTemplate(json));
 
+	},
+	
+	addAssetBudget: function(assetBudget) {
+		var assetBudgetEl = this.$el.find('tr[data-id='+ assetBudget.get('id') +']');
+		
+		if(assetBudgetEl == null ){
+			this.collection.push(assetBudget);
+			this.$el.find('tbody').append('<tr data-id='+ assetBudget.get('id')+ '></tr>');
+			this.renderAssetBudget(assetBudget);
+		}
+
+	},
+	deleteRow: function(e) {
+		var assetBudgetId = $(e.target).parents('tr').attr('data-id');
+		var trEl = $(e.target).parents('tr');
+		var assetBudgetToDelete = AssetBudget.findOrCreate(assetBudgetId);
+
+			if(confirm("คุณต้องการลบรายการ " + assetBudgetToDelete.get('name')) == true ) {
+
+				assetBudgetToDelete.destroy({wait: true,
+					success: _.bind(function() {					
+						this.collection.remove(assetBudgetToDelete);
+						trEl.remove();
+					},this),
+					error: _.bind(function(model, xhr, options) {
+						alert("ไม่สามารถลบรายการได้ \n Error: " + xhr.responseText);
+					},this)
+				});
+			}
+	}
 });
 
 

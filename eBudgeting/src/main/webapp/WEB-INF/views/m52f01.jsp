@@ -60,6 +60,21 @@
 		</div>
 </script>
 
+<script id="modalBodyTemplate" type="text/x-handlebars-template">
+<form>
+	<label>ระบุชื่อรายการ</label>
+	<textarea rows="2" class="span5" id="nameTxt">{{name}}</textarea>
+
+	<label>ระบุรหัส</label>
+	<input type="text" id="codeTxt" value="{{code}}"></input>
+
+	<label>ระบุคำอธิบายรายการ</label>
+	<textarea row="3" class="span5" id="descriptionTxt">{{description}}</textarea>
+
+</form>
+</script>
+
+
 <script id="assetGroupSelectionTemplate" type="text/x-handler-template">
 <form class="form-horizontal">
 <div class="control-group" style="margin-bottom:5px;">
@@ -96,11 +111,17 @@
 </script>
 
 <script  id="mainTblTemplate" type="text/x-handler-template">
+<div class="controls" style="margin-bottom: 15px;">
+	<div class="pull-left" style="margin-bottom: 15px;"> 
+		<a href="#" class="btn btn-info menuNew"><i class="icon icon-file icon-white"></i> เพิ่มชื่อทะเบียน</a>
+	</div>
+</div>
+<div class="clearfix"></div>
 <table class="table table-bordered">
 	<thead>
 		<tr>
-			<td></td>
-			<td>รหัสรายการ</td>
+			<td style="width:30px;"></td>
+			<td style="width:100px;">รหัสรายการ</td>
 			<td>ชื่อรายการ</td>
 			<td>คำอธิบาย</td>
 		</tr>
@@ -109,6 +130,22 @@
 	</tbody>
 </table>
 </script>
+
+<script id="assetBudgetRowTemplate" type="text/x-handelbars-template">
+<td id="td-{{id}}"><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
+	<a href="#td-{{id}}" class="deleteObjective menuDelete"><i class="icon-trash icon-red"></i></a> </td>
+<td> {{code}} </td>
+<td> {{name}} </td>
+<td> {{description}} </td>
+</script>
+
+<script id="tbodyTemplate" type="text/x-handlebars-template">
+{{#each this}}
+<tr data-id="{{id}}">
+</tr>
+{{/each}}
+</script>
+
 
 
 <script src="<c:url value='/resources/js/pages/m52f01.js'/>"></script>

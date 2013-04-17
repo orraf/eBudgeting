@@ -35,8 +35,8 @@ public class AssetAllocation implements Serializable{
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name="ASSETKIND_ID")
-	private AssetKind kind;
+	@JoinColumn(name="BGT_ASSETBUDGET_ID")
+	private AssetBudget assetBudget;
 	
 	@Basic
 	private Integer fiscalYear;
@@ -70,12 +70,13 @@ public class AssetAllocation implements Serializable{
 		this.id = id;
 	}
 
-	public AssetKind getKind() {
-		return kind;
+
+	public AssetBudget getAssetBudget() {
+		return assetBudget;
 	}
 
-	public void setKind(AssetKind kind) {
-		this.kind = kind;
+	public void setAssetBudget(AssetBudget assetBudget) {
+		this.assetBudget = assetBudget;
 	}
 
 	public Integer getFiscalYear() {

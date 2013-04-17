@@ -680,6 +680,7 @@ AssetKind = Backbone.RelationalModel.extend({
 });
 
 AssetBudget = Backbone.RelationalModel.extend({
+	urlRoot: appUrl('/AssetBudget/'),
 	idAttribute: 'id',
 	relations: [{
 		type: Backbone.HasOne,
@@ -687,6 +688,8 @@ AssetBudget = Backbone.RelationalModel.extend({
 		relatedModel: 'AssetKind'
 	}]
 });
+
+AssetAllocation =
 
 BudgetSignOff = Backbone.RelationalModel.extend({
 	idAttribute: 'id',

@@ -70,10 +70,14 @@ var ModalView = Backbone.View.extend({
 		
 		this.$el.find('.modal-body').html(html);
 		
-		this.assetSelectionView = new AssetSelectionView();
+		this.assetSelectionView = new AssetSelectionView({parentView: this});
 		this.assetSelectionView.setElement('#assetSlt');
 		this.assetSelectionView.render();
 		
+	},
+	
+	addAssetBudgetAllocation: function(assetBudget) {
+		console.log('xxx' + assetBudget.get('name'));
 	},
 
 	addOwner: function(e) {
@@ -707,26 +711,36 @@ var AssetSelectionView = Backbone.View.extend({
 	/**
 	 * @memberOf AssetSelectionView
 	 */
-	initialize : function() {
+	initialize : function(options) {
+		if(options != null) {
+			this.parentView = options.parentView;
+		}
+		
 		this.assetTypes = new AssetTypeCollection();
 		this.assetKinds = new AssetKindCollection();
+		this.assetBudgets = new AssetBudgetCollection();
 
 		_.bindAll(this, 'renderType');
 		_.bindAll(this, 'renderKind');
+		_.bindAll(this, 'renderAssetBudget');
 		
 		this.assetTypes.bind('reset', this.renderType);
 		this.assetKinds.bind('reset', this.renderKind);
+		this.assetBudgets.bind('reset', this.renderAssetBudget);
 
 		
 	},
 	selectionTemplate : Handlebars.compile($("#selectionTemplate").html()),
 	assetGroupSelectionTemplate : Handlebars.compile($("#assetGroupSelectionTemplate").html()),
 	assetKindDisabledSelectionTemplate : Handlebars.compile($("#assetKindDisabledSelectionTemplate").html()), 
+	assetBudgetDisabledSelectionTemplate : Handlebars.compile($("#assetBudgetDisabledSelectionTemplate").html()), 
 	
 	events: {
 		"change #assetGroupSlt" : "assetGroupSltChange",
 		"change #typeAssetTypeSlt" : "assetTypeSltChange",
-		"change #typeAssetKindSlt" : "assetKindSltChange"
+		"change #typeAssetKindSlt" : "assetKindSltChange",
+		"change #typeAssetBudgetSlt" : "assetBudgetSltChange",
+		"click #addAssetBudget" : "addAssetBudget"
 	},
 	
 	assetGroupSltChange : function(e) {
@@ -753,9 +767,28 @@ var AssetSelectionView = Backbone.View.extend({
 	},
 	assetKindSltChange: function(e) {
 		var kindId = $(e.target).val();
+		if(kindId != 0) {
+			this.assetBudgets.fetch({
+				url: appUrl('/AssetBudget/byKindId/' + kindId),
+				success: _.bind(function() {
+					this.assetBudgets.trigger('reset');
+				}, this)
+			});
+		}
 		
 	},
+	addAssetBudget: function(e) {
+		this.currentAssetBudgetId = this.$el.find("#typeAssetBudgetSlt").val();
+		if(this.currentAssetBudgetId != 0) {
+			this.currentAssetBudget = AssetBudget.findOrCreate(this.currentAssetBudgetId);
+			
+			this.parentView.addAssetBudgetAllocation(this.currentAssetBudget);
+			
+		}
+	},
+	assetBudgetSltChange: function(e) {
 
+	},
 	renderType: function(e) {
 		var json = this.assetTypes.toJSON();
 		json.type =  {};
@@ -769,6 +802,9 @@ var AssetSelectionView = Backbone.View.extend({
 		
 		this.$el.find('#assetKindSltDiv').empty();
 		this.$el.find('#assetKindSltDiv').html(this.assetKindDisabledSelectionTemplate());
+
+		this.$el.find('#assetBudgetSltDiv').empty();
+		this.$el.find('#assetBudgetSltDiv').html(this.assetBudgetDisabledSelectionTemplate());
 		
 		
 	},
@@ -782,6 +818,23 @@ var AssetSelectionView = Backbone.View.extend({
 		// now render 
 		this.$el.find('#assetKindSltDiv').empty();
 		this.$el.find('#assetKindSltDiv').html(html);
+	
+		this.$el.find('#assetBudgetSltDiv').empty();
+		this.$el.find('#assetBudgetSltDiv').html(this.assetBudgetDisabledSelectionTemplate());
+	
+	},
+	renderAssetBudget: function(e) {
+		var json = this.assetBudgets.toJSON();
+		json.type =  {};
+		json.type.name = "รายการ";
+		json.type.id = "AssetBudget";
+		var html = this.selectionTemplate(json);
+		
+		// now render 
+		this.$el.find('#assetBudgetSltDiv').empty();
+		this.$el.find('#assetBudgetSltDiv').html(html);
+		
+		this.$el.find('#typeAssetBudgetSlt').after('<button style="margin-left: 15px;" id="addAssetBudget" class="btn btn-primary">Add</button>');
 		
 	},
 

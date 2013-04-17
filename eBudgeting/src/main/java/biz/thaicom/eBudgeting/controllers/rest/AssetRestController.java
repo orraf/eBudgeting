@@ -93,6 +93,7 @@ public class AssetRestController {
 	@RequestMapping(value="/AssetBudget/{id}", method=RequestMethod.DELETE)
 	public @ResponseBody String deleteAssetBudget(
 			@PathVariable Long id) {
+		entityService.deleteAssetBudget(id);
 		return "OK";
 	}
 	
