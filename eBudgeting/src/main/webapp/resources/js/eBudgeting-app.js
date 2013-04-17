@@ -689,7 +689,31 @@ AssetBudget = Backbone.RelationalModel.extend({
 	}]
 });
 
-AssetAllocation =
+AssetAllocation = Backbone.RelationalModel.extend({
+	urlRoot: appUrl('/AssetAllocation/'),
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'assetBudget',
+		relatedModel: 'AssetBudget'
+	}, {
+		type: Backbone.HasOne,
+		key: 'budgetType',
+		relatedModel: 'BudgetType'
+	}, {
+		type: Backbone.HasOne,
+		key: 'forObjective',
+		relatedModel: 'Objective',
+	}, {
+		type: Backbone.HasOne,
+		key: 'forActivity',
+		relatedModel: 'Activity'
+	}, {
+		type: Backbone.HasOne,
+		key: 'owner',
+		relatedModel: 'Organization'
+	}]
+});
 
 BudgetSignOff = Backbone.RelationalModel.extend({
 	idAttribute: 'id',
@@ -984,6 +1008,9 @@ AssetKindCollection = Backbone.Collection.extend({
 AssetBudgetCollection = Backbone.Collection.extend({
 	model: AssetBudget
 });
+AssetAllocationCollection = Backbone.Collection.extend({
+	model: AssetAllocation
+})
 //Handlebars Utils
 
 

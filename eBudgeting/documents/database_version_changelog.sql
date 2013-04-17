@@ -980,8 +980,10 @@
         BGT_BUDGETTYPE_ID number(19,0),
         PLN_ACTIVITY_ID number(19,0),
         PLN_OBJECTIVE_ID number(19,0),
+        BGT_PROPOSAL_ID number(19,0),
         BGT_ASSETBUDGET_ID number(19,0),
-        owner_id number(19,0),
+        HRX_OWNER_ID number(19,0),
+        HRX_PARENTOWNER_ID number(19,0),
         primary key (id)
     );
     
@@ -995,6 +997,11 @@
         foreign key (PLN_ACTIVITY_ID) 
         references PLN_ACTIVITY;
 
+    alter table BGT_ASSETALLOCATION 
+        add constraint FKB98E4275BC9DF315 
+        foreign key (BGT_PROPOSAL_ID) 
+        references BGT_BUDGETPROPOSAL;
+        
     alter table BGT_ASSETALLOCATION 
         add constraint FKB03304205898EDD9 
         foreign key (PLN_OBJECTIVE_ID) 

@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
+import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
@@ -382,6 +383,13 @@ public interface EntityService {
 	public AssetBudget deleteAssetBudget(Long id);
 	public AssetBudget updateAssetBudget(JsonNode node);
 	public AssetBudget findOneAssetBudget(Long id);
+	
+	// AssetAllocation
+	public AssetAllocation saveAssetAllocation(JsonNode node);
+	public AssetAllocation updateAssetAllocation(JsonNode node);
+	public List<AssetAllocation> findAssetAllocationByParentOwnerAndForObjectiveAndBudgetType(
+			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId);
+	public AssetAllocation deleteAssetAllocation(Long id);
 	
 	
 

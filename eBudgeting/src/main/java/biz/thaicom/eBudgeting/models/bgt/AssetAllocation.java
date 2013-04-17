@@ -48,11 +48,21 @@ public class AssetAllocation implements Serializable{
 	private Long unitBudget;
 	
 	@ManyToOne
+	@JoinColumn(name="HRX_OWNER_ID")
 	private Organization owner;
+
+	@ManyToOne
+	@JoinColumn(name="HRX_PARENTOWNER_ID")
+	private Organization parentOwner;
+
 	
 	@ManyToOne
 	@JoinColumn(name="PLN_OBJECTIVE_ID")
 	private Objective forObjective;
+	
+	@ManyToOne
+	@JoinColumn(name="BGT_PROPOSAL_ID")
+	private BudgetProposal proposal;
 	
 	@ManyToOne
 	@JoinColumn(name="PLN_ACTIVITY_ID")
@@ -133,6 +143,22 @@ public class AssetAllocation implements Serializable{
 
 	public void setBudgetType(BudgetType budgetType) {
 		this.budgetType = budgetType;
+	}
+
+	public Organization getParentOwner() {
+		return parentOwner;
+	}
+
+	public void setParentOwner(Organization parentOwner) {
+		this.parentOwner = parentOwner;
+	}
+
+	public BudgetProposal getProposal() {
+		return proposal;
+	}
+
+	public void setProposal(BudgetProposal proposal) {
+		this.proposal = proposal;
 	}
 	
 	

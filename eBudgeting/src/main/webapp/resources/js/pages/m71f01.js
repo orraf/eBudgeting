@@ -26,6 +26,7 @@ var ModalView = Backbone.View.extend({
 	organizationOwnerSearchTbodyTemplate: Handlebars.compile($('#organizationOwnerSearchTbodyTemplate').html()), 
 	organizationOwnerTbodyTemplate: Handlebars.compile($('#organizationOwnerTbodyTemplate').html()),
 	
+	assetAllocationTbodyTemplate :Handlebars.compile($('#assetAllocationTbodyTemplate').html()),
 	
 	events : {
 		"click .removeProposal" : "removeProposal",
@@ -40,6 +41,7 @@ var ModalView = Backbone.View.extend({
 		
 		"click .addAssetAllocationRecord" : "addAssetAllocationRecord",
 		"click .assetAllocationDetail" : "assetAllocationDetail",
+		"click .deleteAssetAllocation" : "deleteAssetAllocation",
 		
 		"click .editAllocationRecord" : "editAllocationRecord",
 		"click #organizationSearchBtn" : "organizationSearch",
@@ -58,6 +60,18 @@ var ModalView = Backbone.View.extend({
 		this.saveDetailHtml = this.$el.find('.modal-body').html();
 		var organizationId = $(e.target).parents('tr').attr('data-id');
 		var organization = Organization.findOrCreate(organizationId);
+		this.currentOrganization = organization;
+		
+		// now hold children org
+		this.childrenOrganization = new OrganizationCollection();
+		this.childrenOrganization.fetch({
+			url: appUrl('/Organization/parentId/'+organizationId+'/findByName'),
+			type: 'POST',
+			data : {
+				query: ""
+			}
+		});
+		
 		for(var i=0; i<this.proposals.length; i++) {
 			if(this.proposals.at(i).get('owner') == organization) {
 				this.currentProposal = this.proposals.at(i);
@@ -74,10 +88,74 @@ var ModalView = Backbone.View.extend({
 		this.assetSelectionView.setElement('#assetSlt');
 		this.assetSelectionView.render();
 		
+		// and put the entry in the table body 
+		this.assetAllocations = new AssetAllocationCollection();
+		this.assetAllocations.fetch({
+			url: appUrl('/AssetAllocation/findByParentOwner/'+  this.currentOrganization.get('id') +
+					'/forObjective/'+ this.currentProposal.get('forObjective').get('id') +
+					'/budgetType/' + this.currentBudgetType.get('id')),
+			success: _.bind(function(){
+				
+				for(var i=0; i<this.assetAllocations.length; i++) {
+					var record = this.assetAllocations.at(i);
+					var json = record.toJSON();
+					json.organizations = this.childrenOrganization.toJSON();
+					if(record.get('owner') != null) {
+						_.each(json.organizations,function(org) {
+							if(org.id == record.get('owner').get('id')) {
+								org.selected = true;
+							}
+						});
+					}
+					var html = this.assetAllocationTbodyTemplate(json);
+					this.$el.find('#assetTbl tbody').append(html);		
+				}
+				
+			},this)
+		});
+		
 	},
+	deleteAssetAllocation: function(e) {
+		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
+		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
 	
+		var y = confirm("คุณต้องการลบการจัดสรรรายการ " + assetAllocation.get('assetBudget').get('name'));
+		if(y==true) {
+			assetAllocation.destroy({
+				success: _.bind(function() {
+					$(e.target).parents('tr').remove();
+					this.assetAllocations.remove(assetAllocation);
+				},this),
+				error: _.bind(function(model, xhr, options) {
+					alert("ไม่สามารถลบรายการได้ \n Error: " + xhr.responseText);
+				},this)
+			});
+		}
+		
+	},
 	addAssetBudgetAllocation: function(assetBudget) {
-		console.log('xxx' + assetBudget.get('name'));
+		var record = new AssetAllocation();
+		record.set('assetBudget', assetBudget);
+		record.set('fiscalYear', fiscalYear);
+		record.set('forObjective', this.currentProposal.get('forObjective'));
+		record.set('budgetType', this.currentBudgetType);
+		record.set('parentOwner', this.currentOrganization);
+		record.set('proposal', this.currentProposal);
+		
+		
+		record.save(null, {
+			success: _.bind(function() {
+				this.assetAllocations.push(record);
+				
+				var json = record.toJSON();
+				json.organizations = this.childrenOrganization.toJSON();
+				var html = this.assetAllocationTbodyTemplate(json);
+				this.$el.find('#assetTbl tbody').append(html);		
+			},this)
+		});
+		
+		
+		
 	},
 
 	addOwner: function(e) {

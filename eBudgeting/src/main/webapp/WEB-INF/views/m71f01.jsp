@@ -483,16 +483,34 @@
 	<table id="assetTbl" class="table table-bordered">
 		<thead>
 			<tr>
-				<td>ชื่อรายการ</td>
-				<td>หน่วยงาน</td>
-				<td>จำนวน</td>
-				<td>งบประมาณต่อหน่วย</td>
-				<td>รวม</td>
+				<td style="width:15px;"></td>
+				<td style="width:260px;">ชื่อรายการ</td>
+				<td style="width:140px;">หน่วยงาน</td>
+				<td style="width:60px;">จำนวน</td>
+				<td style="width:140px;">งบประมาณต่อหน่วย</td>
+				<td style="width:140px;">รวม</td>
 			</tr>
 		</thead>
 		<tbody></tbody> 
 	</table>
 </div>
+</script>
+
+<script id="assetAllocationTbodyTemplate"  type="text/x-handler-template">
+<tr data-id="{{id}}">
+	<td><a href="#td-{{id}}" class="deleteAssetAllocation"><i class="icon-trash icon-red"></i></a></td>
+	<td>{{assetBudget.name}}</td>
+	<td><select class="span2" id="assetAllocationOwnerOption-{{id}}">
+			<option value="0">กรุณาเลือก</option>
+			{{#each organizations}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{abbr}}</option>
+			{{/each}}
+		</select>
+	</td>
+	<td><input class="span1" type="text" id="assetAllocationQuantity-{{id}}" value="{{quantity}}"></input></td>
+	<td><input class="span2" type="text" id="assetAllocationUnitBudget-{{id}}" value="{{unitBudget}}"></input></td>
+	<td></td>
+</tr>
 </script>
 
 <script id="assetGroupSelectionTemplate" type="text/x-handler-template">

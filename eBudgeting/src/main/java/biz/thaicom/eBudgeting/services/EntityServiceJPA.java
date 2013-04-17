@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
+import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
@@ -67,6 +68,7 @@ import biz.thaicom.eBudgeting.repositories.ActivityTargetReportRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetRepository;
 import biz.thaicom.eBudgeting.repositories.ActivityTargetResultRepository;
 import biz.thaicom.eBudgeting.repositories.AllocationRecordRepository;
+import biz.thaicom.eBudgeting.repositories.AssetAllocationRepository;
 import biz.thaicom.eBudgeting.repositories.AssetBudgetRepository;
 import biz.thaicom.eBudgeting.repositories.AssetGroupRepository;
 import biz.thaicom.eBudgeting.repositories.AssetKindRepository;
@@ -206,6 +208,8 @@ public class EntityServiceJPA implements EntityService {
 	@Autowired
 	private AssetBudgetRepository assetBudgetRepository;
 	
+	@Autowired
+	private AssetAllocationRepository assetAllocationRepository;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -1560,28 +1564,28 @@ public class EntityServiceJPA implements EntityService {
 		
 		// the fs suppose to be there or either null?
 		FormulaStrategy fs = null;
-		if(getJsonNodeId(psNode.get("formulaStrategy")) != null) {
+		if(psNode != null && getJsonNodeId(psNode.get("formulaStrategy")) != null) {
 			fs = formulaStrategyRepository.findOne(getJsonNodeId(psNode.get("formulaStrategy")));
 		}
 		
 		
 		ps.setFormulaStrategy(fs);
 		
-		if(psNode.get("name") != null)
+		if(psNode != null && psNode.get("name") != null)
 			ps.setName(psNode.get("name").asText());
 		else 
 			ps.setName("");
 		
-		
-		ps.setTotalCalculatedAmount(psNode.get("totalCalculatedAmount").asLong());
-		ps.setAmountRequestNext1Year(psNode.get("amountRequestNext1Year").asLong());
-		ps.setAmountRequestNext2Year(psNode.get("amountRequestNext2Year").asLong());
-		ps.setAmountRequestNext3Year(psNode.get("amountRequestNext3Year").asLong());
-		
+		if(psNode != null) {
+			ps.setTotalCalculatedAmount(psNode.get("totalCalculatedAmount").asLong());
+			ps.setAmountRequestNext1Year(psNode.get("amountRequestNext1Year").asLong());
+			ps.setAmountRequestNext2Year(psNode.get("amountRequestNext2Year").asLong());
+			ps.setAmountRequestNext3Year(psNode.get("amountRequestNext3Year").asLong());
+		}
 		
 		
 		// now look at the formulaColumns
-		if(psNode.get("formulaStrategy") != null) {
+		if(psNode!= null && psNode.get("formulaStrategy") != null) {
 			
 			logger.debug(">> formulaStrategy: "+ psNode.get("formulaStrategy").toString());
 			
@@ -1609,11 +1613,8 @@ public class EntityServiceJPA implements EntityService {
 				rcList.add(rc);
 			}
 		}
-		logger.debug(">>> " + psNode.toString());
-		logger.debug(">>> " + psNode.get("targetUnit").toString());
-		
 		// lastly do the targetValue
-		if( getJsonNodeId(psNode.get("targetUnit")) != null ) {
+		if( psNode != null && getJsonNodeId(psNode.get("targetUnit")) != null ) {
 			TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(psNode.get("targetUnit")));
 			ps.setTargetUnit(unit);
 			if(psNode.get("targetValue") != null) {
@@ -1627,8 +1628,7 @@ public class EntityServiceJPA implements EntityService {
 		return ps;
 	}
 	
-	@Override
-	public BudgetProposal saveBudgetProposal(JsonNode proposalNode, ThaicomUserDetail currentUser) {
+	private BudgetProposal saveBudgetProposal(JsonNode proposalNode, Organization owner) {
 		
 		logger.debug(proposalNode.toString());
 		
@@ -1640,7 +1640,7 @@ public class EntityServiceJPA implements EntityService {
 		BudgetProposal proposal = new BudgetProposal();
 		// now wire up all the dressing?
 		
-		proposal.setOwner(currentUser.getWorkAt());
+		proposal.setOwner(owner);
 		
 		Long objectiveId = getJsonNodeId(proposalNode.get("forObjective"));
 		
@@ -1681,6 +1681,12 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		return proposal;
+	
+	}
+	
+	@Override
+	public BudgetProposal saveBudgetProposal(JsonNode proposalNode, ThaicomUserDetail currentUser) {
+		return saveBudgetProposal(proposalNode, currentUser.getWorkAt());
 	}
 
 	@Override
@@ -4487,8 +4493,109 @@ public class EntityServiceJPA implements EntityService {
 		return assetBudgetRepository.findOne(id);
 	}
 
+	@Override
+	public AssetAllocation saveAssetAllocation(JsonNode node) {
+		AssetAllocation assetAllocation = new AssetAllocation();
+		
+		copyAssetAllocationFromNode(node, assetAllocation);
+		
+		assetAllocationRepository.save(assetAllocation);
+		
+		return assetAllocation;
+	}
+
+	private AssetAllocation copyAssetAllocationFromNode(JsonNode node, AssetAllocation assetAllocation){
+		if(node.get("fiscalYear") != null) {
+			assetAllocation.setFiscalYear(node.get("fiscalYear").asInt());
+		}
+		
+		if(getJsonNodeId(node.get("assetBudget")) != null) {
+			AssetBudget assetBudget = assetBudgetRepository.findOne(getJsonNodeId(node.get("assetBudget")));
+			assetAllocation.setAssetBudget(assetBudget);
+		}
+		
+		if(getJsonNodeId(node.get("owner")) != null) {
+			Organization owner = organizationRepository.findOne(getJsonNodeId(node.get("owner")));
+			assetAllocation.setOwner(owner);
+		}
+
+		if(getJsonNodeId(node.get("parentOwner")) != null) {
+			Organization parentOwner = organizationRepository.findOne(getJsonNodeId(node.get("parentOwner")));
+			assetAllocation.setParentOwner(parentOwner);
+		}
+
+		
+		if(getJsonNodeId(node.get("budgetType")) != null) {
+			BudgetType budgetType = budgetTypeRepository.findOne(getJsonNodeId(node.get("budgetType")));
+			assetAllocation.setBudgetType(budgetType);
+		}
+		
+		if(getJsonNodeId(node.get("forObjective")) != null) {
+			Objective forObjective = objectiveRepository.findOne(getJsonNodeId(node.get("forObjective")));
+			assetAllocation.setForObjective(forObjective);
+		}
+		
+		if(getJsonNodeId(node.get("forActivity")) != null) {
+			Activity forActivity = activityRepository.findOne(getJsonNodeId(node.get("forActivity")));
+			assetAllocation.setForActitvity(forActivity);
+		}
+
+
+		
+		if(node.get("quantity") != null ) {
+			assetAllocation.setQuantity(node.get("quantity").asInt());
+		}
+		
+		if(node.get("unitBudget") != null ) {
+			assetAllocation.setUnitBudget(node.get("unitBudget").asLong());
+		}
+		
+		BudgetProposal proposal = null;		
+		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + node.get("proposal"));
+		if(getJsonNodeId(node.get("proposal")) != null) {
+			proposal = budgetProposalRepository.findOne(getJsonNodeId(node.get("proposal")));
+			assetAllocation.setProposal(proposal);
+		} else if(node.get("proposal") != null) {
+			proposal = new BudgetProposal();
+			proposal.setBudgetType(assetAllocation.getBudgetType());
+			proposal.setOwner(assetAllocation.getParentOwner());
+			proposal.setForObjective(assetAllocation.getForObjective());
+			budgetProposalRepository.save(proposal);
+			
+			assetAllocation.setProposal(proposal);
+		}
+		
+
+		// we'll update proposal at last
+		Long sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
+		proposal.setAmountAllocated(sumAssetAllocation);
+		budgetProposalRepository.save(proposal);
+		
+		return assetAllocation;
+	}
 	
-	
+	@Override
+	public AssetAllocation deleteAssetAllocation(Long id) {
+		AssetAllocation assetAllocation = assetAllocationRepository.findOne(id);
+		assetAllocationRepository.delete(assetAllocation);
+		return assetAllocation;
+	}
+
+	@Override
+	public AssetAllocation updateAssetAllocation(JsonNode node) {
+		AssetAllocation assetAllocation = assetAllocationRepository.findOne(getJsonNodeId(node));
+		copyAssetAllocationFromNode(node, assetAllocation);
+		assetAllocationRepository.save(assetAllocation);
+		
+		return assetAllocation;
+	}
+
+	@Override
+	public List<AssetAllocation> findAssetAllocationByParentOwnerAndForObjectiveAndBudgetType(
+			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId) {
+		return assetAllocationRepository.findAllByParentOwner_IdAndForObjective_IdAndBudgetType_Id(parentOwnerId, forObjectiveId, budgetTyeId);
+	}
+
 	
 
 }

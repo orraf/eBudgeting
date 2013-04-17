@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
@@ -96,7 +97,36 @@ public class AssetRestController {
 		entityService.deleteAssetBudget(id);
 		return "OK";
 	}
+
+	@RequestMapping(value="/AssetAllocation/", method=RequestMethod.POST)
+	public @ResponseBody JsonNode saveAssetAllocation(
+			@RequestBody JsonNode node) {
+		AssetAllocation assetAllocation = entityService.saveAssetAllocation(node);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode rootNode = mapper.createObjectNode(); // will be of type ObjectNode
+		((ObjectNode) rootNode).put("id", assetAllocation.getId());
+		JsonNode proposalNode = mapper.createObjectNode();
+		((ObjectNode) proposalNode).put("id", assetAllocation.getProposal().getId());
+		((ObjectNode) rootNode).put("proposal", proposalNode);
+		
+		return rootNode;
+	}
 	
+	@RequestMapping(value="/AssetAllocation/{id}", method=RequestMethod.DELETE)
+	public @ResponseBody String deleteAssetAllocation(
+			@PathVariable Long id) {
+		entityService.deleteAssetAllocation(id);
+		return "OK";
+	}
+
+	@RequestMapping(value="/AssetAllocation/findByParentOwner/{parentOwnerId}/forObjective/{forObjectiveId}/budgetType/{budgetTypeId}")
+	public @ResponseBody List<AssetAllocation> findByParentOwnerAndForObjectiveAndBudgetType(
+			@PathVariable Long parentOwnerId,
+			@PathVariable Long forObjectiveId,
+			@PathVariable Long budgetTypeId) {
+		return entityService.findAssetAllocationByParentOwnerAndForObjectiveAndBudgetType(parentOwnerId, forObjectiveId, budgetTypeId);
+	}
 
 	
 }
