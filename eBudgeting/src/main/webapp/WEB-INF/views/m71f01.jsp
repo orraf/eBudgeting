@@ -805,6 +805,6 @@
 		mainCtrView = new MainCtrView();
 		mainCtrView.render();
 		
-		mainCtrView.detailModalWithObjectiveId(197);
+		//mainCtrView.detailModalWithObjectiveId(197);
 	});
 </script>
