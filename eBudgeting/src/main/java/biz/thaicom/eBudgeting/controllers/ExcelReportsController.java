@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
+import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveType;
 import biz.thaicom.eBudgeting.models.pln.TargetUnit;
@@ -527,31 +528,6 @@ public class ExcelReportsController {
 	public String excelM81R01(@PathVariable Integer fiscalYear, Model model, 
 			@Activeuser ThaicomUserDetail currentUser) {
 		
-		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
-		
-		List<Objective> objList = new ArrayList<Objective>();
- 		List<Objective> allList = returnList.get(0);
-		HashMap<Long, Objective> objMap = new HashMap<Long, Objective>();		
-		for(Objective o : allList) {
-			o.setChildren(new ArrayList<Objective>());
-			objMap.put(o.getId(), o);
-			logger.debug("put " + o.getFilterObjectiveBudgetProposals().size());
-		}
-		// now connect the children
-		for(Objective obj : allList) {
-			Objective parent = objMap.get(obj.getParent().getId());
-			if(parent != null) {
-				parent.getChildren().add(obj);
-			} else {
-				if(obj.getType().getId() == 101L) 
-					objList.add(obj);
-			}
-			
-		}
-		
-		model.addAttribute("objectiveList", objList);
-		
-		
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("currentUser", currentUser);
 		
@@ -591,6 +567,54 @@ public class ExcelReportsController {
 		model.addAttribute("currentUser", currentUser);
 		
 		return "m81r02.xls";
+	}
+	
+	@RequestMapping("/m81r03.xls/{fiscalYear}/file/m81r03.xls")
+	public String excelM81R03(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
+		
+		List<Objective> objList = new ArrayList<Objective>();
+ 		List<Objective> allList = returnList.get(0);
+		HashMap<Long, Objective> objMap = new HashMap<Long, Objective>();		
+		for(Objective o : allList) {
+			o.setChildren(new ArrayList<Objective>());
+			objMap.put(o.getId(), o);
+			logger.debug("put " + o.getFilterObjectiveBudgetProposals().size());
+		}
+		// now connect the children
+		for(Objective obj : allList) {
+			Objective parent = objMap.get(obj.getParent().getId());
+			if(parent != null) {
+				parent.getChildren().add(obj);
+			} else {
+				if(obj.getType().getId() == 101L) 
+					objList.add(obj);
+			}
+			
+		}
+		
+		model.addAttribute("objectiveList", objList);
+		
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		model.addAttribute("currentUser", currentUser);
+		
+		return "m81r03.xls";
+	}
+	
+	@RequestMapping("/m81r04.xls/{fiscalYear}/{id}/file/m81r04.xls")
+	public String excelM81R04(@PathVariable Integer fiscalYear, @PathVariable Integer id, Model model, 
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		Activity activity = entityService.findOneActivity((long) id);
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		model.addAttribute("activity", activity);
+		model.addAttribute("currentUser", currentUser);
+		
+		return "m81r04.xls";
 	}
 	
 	@RequestMapping("/admin/excel/report1.xls/{id}")

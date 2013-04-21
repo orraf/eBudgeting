@@ -60,4 +60,12 @@
  		<property name="dataSource" ref="dataSource"></property>
  	</bean>
 
+ 	<bean id="m81r03.xls" class="biz.thaicom.eBudgeting.view.M81R03XLSView">
+ 		<property name="dataSource" ref="dataSource"></property>
+ 	</bean>
+
+ 	<bean id="m81r04.xls" class="biz.thaicom.eBudgeting.view.M81R04XLSView">
+ 		<property name="dataSource" ref="dataSource"></property>
+ 	</bean>
+
 </beans>

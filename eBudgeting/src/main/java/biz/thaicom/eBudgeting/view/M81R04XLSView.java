@@ -1,7 +1,6 @@
 package biz.thaicom.eBudgeting.view;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -22,10 +21,12 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
+import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
-public class M81R02XLSView extends AbstractPOIExcelView {
+public class M81R04XLSView extends AbstractPOIExcelView {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:sss");
 	
@@ -43,15 +44,14 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		
         Map<String, CellStyle> styles = createStyles(workbook);
 
-        
-		List<Objective> objectiveList = (List<Objective>) model.get("objectiveList");
 		Integer fiscalYear = (Integer) model.get("fiscalYear");
+		Activity activity = (Activity) model.get("activity");
 		Sheet sheet = workbook.createSheet("sheet1");
 		Integer oldYear = fiscalYear - 1;
 
 		Row firstRow = sheet.createRow(0);
 		Cell cell11 = firstRow.createCell(0);
-		cell11.setCellValue("แผนปฏิบัติการประจำปีงบประมาณ " + fiscalYear);
+		cell11.setCellValue("ตรวจสอบแผนปฏิบัติการของ" + activity.getName() +" ประจำปีงบประมาณ " + fiscalYear);
 		cell11.setCellStyle(styles.get("title"));
 
 /*		Row subFirstRow = sheet.createRow(1);
@@ -59,16 +59,16 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		subCell11.setCellValue("ผู้จัดทำรายงาน " + 
 				currentUser.getPerson().getFirstName() + " " +	currentUser.getPerson().getLastName() + 
 				" เวลาที่จัดทำรายงาน " +  sdf.format(new Date()) + "น.");
-*/		
 		Row secondRow = sheet.createRow(1);
 		Cell cell21 = secondRow.createCell(0);
-		cell21.setCellValue("หน่วยงาน " + currentUser.getWorkAt().getName());
+		cell21.setCellValue("หน่วยงาน  " + currentUser.getWorkAt().getName());
 		cell21.setCellStyle(styles.get("title"));
+*/		
 		
 		
-		Row thirdRow = sheet.createRow(3);
+		Row thirdRow = sheet.createRow(2);
 		Cell cell301 = thirdRow.createCell(0);
-		cell301.setCellValue("แผนงาน/ผลผลิต/โครงการ/กิจกรรม");
+		cell301.setCellValue("สกย.จ.");
 		cell301.setCellStyle(styles.get("header"));
 		Cell cell302 = thirdRow.createCell(1);
 		cell302.setCellValue("เป้าหมาย");
@@ -116,167 +116,118 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		cell316.setCellValue("รวม");
 		cell316.setCellStyle(styles.get("header"));
 
-		//Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
-		//Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@www.innova.or.th:1521:xe", "afrpmt", "afrpmt");
-		Connection connection = dataSource.getConnection();
 		
+		Connection connection = dataSource.getConnection();
+				
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space " +
-									   "from pln_objective m where m.id <> 21 and exists " +
-									   "(select 1 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, " +
-					                       "(select id from hrx_organization " +
-					                           "connect by prior id = parent_hrx_organization_id " +
-					                           "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t3 " +
-					                        "where t4.target_pln_acttarget_id = t5.id " +
-					                        "and t5.activity_pln_activity_id = t1.id " +
-					                        "and t1.obj_pln_objective_id = t2.id " +
-					                        "and t4.owner_hrx_organization_id = t3.id " + 
-					                        "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
-					                        "and t2.fiscalyear = " + fiscalYear + ") " +
-									   "connect by prior m.id = m.parent_pln_objective_id " +
-					                   "start with m.id = 21 ");
+		ResultSet rs = st.executeQuery("select t4.id, t4.name, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t1.targetvalue,'999,999,999,999'))||' '||t3.name||')' target " +
+									   "from pln_activitytargetreport t1, pln_activitytarget t2, pln_targetunit t3, hrx_organization t4 " +
+									   "where t1.target_pln_acttarget_id = t2.id " +
+										"and t1.owner_hrx_organization_id = t4.id " +
+										"and t2.unit_pln_targetunit_id = t3.id " +
+										"and t2.activity_pln_activity_id = " + activity.getId() +
+										" and t4.parent_hrx_organization_id = 0 " +
+										"union all " +
+										"select t6.id, t6.name, '2' type, null, '   (จัดสรรเงิน '||nvl(ltrim(to_char(budgetallocated,'999,999,999,999')), '...')||' บาท)' " +
+										"from pln_activityperformance t5, hrx_organization t6 " +
+										"where t5.owner_hrx_organization_id = t6.id " +
+										"and t5.activity_pln_activity_id = " + activity.getId() +
+										" and t6.parent_hrx_organization_id = 0 " +
+										"order by 1, 3 ");
 
-		int i = 4;
+		int i = 3;
 		int j = 0;
 		int s1 = 0;
 		int s2 = 0;
+		int orgId = 0;	 
 		while (rs.next()) {
 			Row rows = sheet.createRow(i);
 			
-			Cell rsc0 = rows.createCell(0);
-			rsc0.setCellValue(rs.getString(1));
-			rsc0.setCellStyle(styles.get("cellleft"));
-			
-			if (rs.getInt(2) == 1) {
-				for (j=1;j<16;j++) {
-					Cell rscj = rows.createCell(j);
-					rscj.setCellStyle(styles.get("cellleft"));
+			Cell rsc10 = rows.createCell(0);
+			if (rs.getInt(1)!=orgId) {
+				rsc10.setCellValue(rs.getString(2));
+				orgId = rs.getInt(1);
+			}
+			rsc10.setCellStyle(styles.get("cellleft"));
 
-				}
-				i = i+1;
-				Statement st1 = connection.createStatement();
-				ResultSet rs1 = st1.executeQuery("select distinct t1.code, t1.name, t1.id, t5.owner_hrx_organization_id, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t5.targetvalue,'999,999,999,999'))||' '||t4.name||')' target " +
-												 "from pln_activitytargetreport t5, pln_activity t1, pln_activitytarget t3, pln_targetunit t4, s_user t2 " +
-						 						 "where t5.target_pln_acttarget_id = t3.id " +
-												 "and t5.owner_hrx_organization_id = t2.dept_id " +
-												 "and t1.id = t3.activity_pln_activity_id " +
-												 "and t3.unit_pln_targetunit_id = t4.id " +
-												 "and t1.obj_pln_objective_id = " + rs.getInt(3) +
-												 "and t2.login = '" + currentUser.getUsername() + "' " +
-												 "union all " +
-												 "select t1.code, t1.name, t1.id, t3.owner_hrx_organization_id, '2', null, '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(budgetallocated),'999,999,999,999')), '...')||' บาท)' " +
-												 "from pln_activityperformance t3, pln_activity t1, s_user t2 " +
-												 "where t3.owner_hrx_organization_id = t2.dept_id  " +
-												 "and t1.id = t3.activity_pln_activity_id " +
-												 "and t1.obj_pln_objective_id = " + rs.getInt(3) +
-												 "and t2.login = '" + currentUser.getUsername() + "' " +
-												 "group by t1.code, t1.name, t1.id, t3.owner_hrx_organization_id " +
-												 "order by 3, 5 ");
-				int actId = 0;
-				while (rs1.next()) {
-					Row rows1 = sheet.createRow(i);
-					Cell rsc11 = rows1.createCell(0);
-					if (rs1.getInt(3)!=actId) {
-						rsc11.setCellValue(rs.getString(4)+rs1.getString(2));
-						actId = rs1.getInt(3);
-					}
-					rsc11.setCellStyle(styles.get("cellleft"));
-					
-					Cell rsc12 = rows1.createCell(1);
-					rsc12.setCellValue(rs1.getString(7));
-					rsc12.setCellStyle(styles.get("cellcenter"));
+			Cell rsc11 = rows.createCell(1);
+			rsc11.setCellValue(rs.getString(5));
+			rsc11.setCellStyle(styles.get("cellcenter"));
 
-					Cell rsc13 = rows1.createCell(2);
-					if (rs1.getString(5).equals("1")) rsc13.setCellValue("แผนงาน");
-					else rsc13.setCellValue("แผนการใช้เงิน");
-					rsc13.setCellStyle(styles.get("cellcenter"));
-					
-					for (j=3;j<16;j++) {
-						Cell rscj = rows1.createCell(j);
-						rscj.setCellStyle(styles.get("cellcenter"));
+			Cell rsc12 = rows.createCell(2);
+			if (rs.getString(3).equals("1")) rsc12.setCellValue("แผนงาน");
+			else rsc12.setCellValue("แผนการใช้เงิน");
+			rsc12.setCellStyle(styles.get("cellcenter"));
 
-					}
+			for (j=3;j<16;j++) {
+				Cell rscj = rows.createCell(j);
+				rscj.setCellStyle(styles.get("cellcenter"));
 
-					Row rows2 = sheet.createRow(i+1);
-					Cell rsc21 = rows2.createCell(0);
-					rsc21.setCellStyle(styles.get("cellleft"));
-					
-					Cell rsc22 = rows2.createCell(1);
-					rsc22.setCellStyle(styles.get("cellcenter"));
-					
-					Cell rsc23 = rows2.createCell(2);
-					if (rs1.getString(5).equals("1")) rsc23.setCellValue("ผลงาน");
-					else rsc23.setCellValue("ผลการใช้เงิน");
-					rsc23.setCellStyle(styles.get("cellcenter"));
-					
-					for (j=3;j<16;j++) {
-						Cell rscj = rows2.createCell(j);
-						rscj.setCellStyle(styles.get("cellcenter"));
+			}
 
-					}
-					
-					Statement st2 = connection.createStatement();
-					ResultSet rs2;
-					if (rs1.getString(5).equals("1")) {
-						rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
-								 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
-							     "(select id from hrx_organization " +
-							        "connect by prior id = parent_hrx_organization_id " +
-							        "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t4 " +
-								 "where t1.report_pln_acttargetreport_id = t2.id " +
-							     "and t2.target_pln_acttarget_id = t3.id " +
-								 "and t1.owner_hrx_organization_id = t4.id " +
-								 "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
-								 " and t3.id = " + rs1.getInt(6) +
-								 " group by t1.fiscalmonth order by t1.fiscalmonth ");
-						
-					}
-					else {
-						rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.budgetplan), sum(t1.budgetresult) " +
-								 "from pln_monthlybgtreport t1, pln_activityperformance t2, " +
-							         "(select id from hrx_organization " +
-							            "connect by prior id = parent_hrx_organization_id " +
-							            "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t3 " +
-								 "where t1.performance_pln_actper_id = t2.id " +
-								 "and t1.owner_hrx_organization_id = t3.id " +
-								 "and t2.activity_pln_activity_id = " + rs1.getInt(3) + 
-								 " group by t1.fiscalmonth order by t1.fiscalmonth ");
-					}
+			Row rows2 = sheet.createRow(i+1);
+			Cell rsc21 = rows2.createCell(0);
+			rsc21.setCellStyle(styles.get("cellleft"));
+			Cell rsc22 = rows2.createCell(1);
+			rsc22.setCellStyle(styles.get("cellcenter"));
+			Cell rsc23 = rows2.createCell(2);
+			if (rs.getString(3).equals("1")) rsc23.setCellValue("ผลงาน");
+			else rsc23.setCellValue("ผลการใช้เงิน");
+			rsc23.setCellStyle(styles.get("cellcenter"));
 
-					j = 3;
-					s1 = 0;
-					s2 = 0;
-					while (rs2.next()) {
-						Cell rscj1 = rows1.getCell(j);
-						rscj1.setCellValue(rs2.getInt(2));
-						Cell rscj2 = rows2.getCell(j);
-						rscj2.setCellValue(rs2.getInt(3));
-						s1 = s1 + rs2.getInt(2);
-						s2 = s2 + rs2.getInt(3);
-						j = j+1;
-					}
-					rs2.close();
-					Cell rscs1 = rows1.getCell(j);
-					rscs1.setCellValue(s1);
-					Cell rscs2 = rows2.getCell(j);
-					rscs2.setCellValue(s2);
-					
-					i = i+2;
-				}
-				rs1.close();
-				
+			for (j=3;j<16;j++) {
+				Cell rscj = rows2.createCell(j);
+				rscj.setCellStyle(styles.get("cellcenter"));
+
+			}
+
+			Statement st2 = connection.createStatement();
+			ResultSet rs2;
+			if (rs.getString(3).equals("1")) {
+				rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
+										"from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, hrx_organization t4 " +
+										"where t1.report_pln_acttargetreport_id = t2.id " +
+										"and t2.target_pln_acttarget_id = t3.id " +
+										"and t1.owner_hrx_organization_id = t4.id " +
+										"and t3.activity_pln_activity_id = " + activity.getId() +
+										" and t3.unit_pln_targetunit_id = " + rs.getInt(4) +
+										" and t4.parent_hrx_organization_id = " + rs.getInt(1) +
+										" group by t1.fiscalmonth order by t1.fiscalmonth ");
 			}
 			else {
-				for (j=1;j<16;j++) {
-					Cell rscj = rows.createCell(j);
-					rscj.setCellStyle(styles.get("cellleft"));
-
-				}
-				i = i+1;
+				rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.budgetplan), sum(t1.budgetresult) " +
+									   "from pln_monthlybgtreport t1, pln_activityperformance t2, hrx_organization t3 " +
+								  	   "where t1.performance_pln_actper_id = t2.id " +
+								  	   "and t1.owner_hrx_organization_id = t3.id " +
+									   "and t2.activity_pln_activity_id = " + activity.getId() + 
+									   " and t3.parent_hrx_organization_id = " + rs.getInt(1) +
+									   " group by t1.fiscalmonth order by t1.fiscalmonth ");
+				
 			}
+
+			j = 3;
+			s1 = 0;
+			s2 = 0;
+			while (rs2.next()) {
+				Cell rscj1 = rows.getCell(j);
+				rscj1.setCellValue(rs2.getInt(2));
+				Cell rscj2 = rows2.getCell(j);
+				rscj2.setCellValue(rs2.getInt(3));
+				s1 = s1 + rs2.getInt(2);
+				s2 = s2 + rs2.getInt(3);
+				j = j+1;
+			}
+			rs2.close();
+			Cell rscs1 = rows.getCell(j);
+			rscs1.setCellValue(s1);
+			Cell rscs2 = rows2.getCell(j);
+			rscs2.setCellValue(s2);
+
+			i = i+2;
+			
 		}
-		
+
 		Row rowE = sheet.createRow(i);
 		Cell re = rowE.createCell(0);
 		re.setCellStyle(styles.get("celltop"));
@@ -285,7 +236,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		connection.close();
 
 		sheet.setColumnWidth(0, 15000);
-		sheet.setColumnWidth(1, 7000);
+		sheet.setColumnWidth(1, 8000);
 		sheet.setColumnWidth(2, 5000);
 		sheet.setColumnWidth(3, 3000);
 		sheet.setColumnWidth(4, 3000);
@@ -299,8 +250,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		sheet.setColumnWidth(12, 3000);
 		sheet.setColumnWidth(13, 3000);
 		sheet.setColumnWidth(14, 3000);
-		sheet.setColumnWidth(15, 3000);
-		sheet.createFreezePane( 3, 4 );
+		sheet.setColumnWidth(14, 3000);
+		sheet.createFreezePane( 3, 3 );
 	}
 	
 	
