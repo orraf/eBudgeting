@@ -44,6 +44,8 @@ var ModalView = Backbone.View.extend({
 		"click .assetAllocationDetail" : "assetAllocationDetail",
 		"click .deleteAssetAllocation" : "deleteAssetAllocation",
 		"change .assetAllocationNumber" : "changeAssetAllocationNumber",
+		"click #saveAssetAllocationBtn" : "saveAssetAllocation",
+		"change .assetAllocationOnwerSlt" : "changeAssetAllocationOnwerSlt",
 		
 		"click .editAllocationRecord" : "editAllocationRecord",
 		"click #organizationSearchBtn" : "organizationSearch",
@@ -115,6 +117,48 @@ var ModalView = Backbone.View.extend({
 				
 			},this)
 		});
+		
+	},
+	saveAssetAllocation : function(e) {
+		// first check all owner is not zero!
+		var allSelected = true;
+		var allSlt = this.$el.find('.assetAllocationOnwerSlt');
+		
+		for(var i=0; i< allSlt.length; i++) {
+			if($(allSlt[i]).val() == 0) {
+				allSelected = false;
+			}
+		}
+		
+		if(allSelected) {
+			Backbone.sync('update', this.assetAllocations, {
+				url: appUrl('/AssetAllocation/saveCollection'),
+			    success: _.bind(function(model, response, options){                                                                                                                                                                                                                                                                                                                                          
+			                       
+			    	// now sync up this Objective
+			    	mainCtrView.updateAllocationForObjective(this.objective);
+			    	mainCtrView.updateAllocationForObjective(this.objective.get('parent'));
+			    	
+			    	alert("บันทึกข้อมูลเรียบร้อย");
+			      
+			    },this),
+			    error: function(model, xhr, options) {
+			    	alert("Error Status Code: " + xhr.status + " " + xhr.statusText + "\n" + xhr.responseText);
+			    }
+			 });
+		} else {
+			alert('กรุณาเลือกหน่วยงาน');
+		}
+	},
+	changeAssetAllocationOnwerSlt: function(e) {
+		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
+		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
+		
+		var ownerId = $(e.target).val();
+		if(ownerId > 0) {
+			var owner = Organization.findOrCreate(ownerId);
+			assetAllocation.set('owner', owner);
+		}
 		
 	},
 	changeAssetAllocationNumber : function(e) {
@@ -1028,6 +1072,23 @@ var MainCtrView = Backbone.View.extend({
 				this.modalView.renderWith(currentObjective);
 			},this)
 		});
+	},
+	
+	updateAllocationForObjective: function(objective) {
+		objective.get('allocationRecords').fetch({
+    		url: appUrl('/AllocationReocrd/sync/Objective/' + objective.get('id')),
+    		success: function(model, response, options) {
+    			var records = objective.get('allocationRecords');
+    			var sumAllocation = 0;
+    			for(var i=0; i<records.length; i++) {
+    				sumAllocation += records.at(i).get('amountAllocated');
+    			}
+    			
+    			// we have to update the number 
+    			$('tr[data-id='+objective.get('id')+'] span#sumAllocationSpan')
+    					.html(addCommas(sumAllocation));
+       		}
+    	});
 	},
 	render : function() {
 		this.$el.html(this.mainCtrTemplate());

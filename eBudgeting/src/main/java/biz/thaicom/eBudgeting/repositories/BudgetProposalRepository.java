@@ -80,7 +80,7 @@ public interface BudgetProposalRepository extends
 
 
 	@Query("" +
-			"SELECT sum(proposal.amountRequest) " +
+			"SELECT sum(proposal.amountAllocated) " +
 			"FROM BudgetProposal proposal " +
 			"WHERE proposal.budgetType = ?1  " +
 			"	AND proposal.forObjective = ?2 ")

@@ -252,7 +252,7 @@
 			
 		</td>
 		<td style="width:120px;" class="{{#if this.children}}disable{{/if}} rightAlign">
-				<span>{{#if this.allocationRecords}}{{{sumAllocationRecords this.allocationRecords}}}{{else}}-{{/if}}</span>
+				<span class="sumAllocationSpan">{{#if this.allocationRecords}}{{{sumAllocationRecords this.allocationRecords}}}{{else}}-{{/if}}</span>
 		</td>
 	</tr>
 	{{{childrenNodeTpl this.children this.level}}}  
@@ -494,13 +494,14 @@
 		<tbody></tbody> 
 	</table>
 </div>
+<div><button class="btn btn-mini" id="saveAssetAllocationBtn">บันทึกข้อมูล</button></div>
 </script>
 
 <script id="assetAllocationTbodyTemplate"  type="text/x-handler-template">
 <tr data-id="{{id}}">
 	<td><a href="#td-{{id}}" class="deleteAssetAllocation"><i class="icon-trash icon-red"></i></a></td>
 	<td>{{assetBudget.name}}</td>
-	<td><select class="span2" id="assetAllocationOwnerOption-{{id}}">
+	<td><select class="span2 assetAllocationOnwerSlt" id="assetAllocationOwnerOption-{{id}}">
 			<option value="0">กรุณาเลือก</option>
 			{{#each organizations}}
 				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{abbr}}</option>

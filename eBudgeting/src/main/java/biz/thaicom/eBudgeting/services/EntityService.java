@@ -390,6 +390,7 @@ public interface EntityService {
 	public List<AssetAllocation> findAssetAllocationByParentOwnerAndForObjectiveAndBudgetType(
 			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId);
 	public AssetAllocation deleteAssetAllocation(Long id);
+	public void saveAssetAllocationCollection(JsonNode node);
 	
 	
 

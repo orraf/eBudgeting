@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -102,6 +103,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service
 @Transactional
@@ -2207,7 +2209,14 @@ public class EntityServiceJPA implements EntityService {
 	 */
 	@Override
 	public List<AllocationRecord> findAllocationRecordByObjective(Objective objective) {
-		return allocationRecordRepository.findAlByForObjective(objective);
+		List<AllocationRecord> allocList =  allocationRecordRepository.findAlByForObjective(objective);
+		
+		for(AllocationRecord alloc : allocList) {
+			alloc.getForObjective().getId();
+			alloc.getBudgetType().getId();
+		}
+		
+		return allocList;
 	}
 	
 
@@ -4643,6 +4652,44 @@ public class EntityServiceJPA implements EntityService {
 	public AssetAllocation deleteAssetAllocation(Long id) {
 		AssetAllocation assetAllocation = assetAllocationRepository.findOne(id);
 		assetAllocationRepository.delete(assetAllocation);
+		
+		// have to update proposal! 
+		BudgetProposal proposal = assetAllocation.getProposal();
+		Long sumAssetAllocation = assetAllocationRepository
+				.findSumBudgetOfPropsoal(proposal);
+		if(sumAssetAllocation != null) {
+			proposal.setAmountAllocated(sumAssetAllocation);
+			
+		} else {
+			proposal.setAmountAllocated(0L);
+		}
+		budgetProposalRepository.save(proposal);	
+
+		// and then allocationRecord
+		AllocationRecord allocationRecord = allocationRecordRepository
+				.findOneByBudgetTypeAndObjectiveAndIndex(
+						proposal.getBudgetType(),
+						proposal.getForObjective(), 0);
+		
+		Long sumBudgetProposalAmountAllocated = budgetProposalRepository
+				.findSumByBudgetTypeAndForObjective(
+						allocationRecord.getBudgetType(),
+						allocationRecord.getForObjective());
+
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode allocNode = mapper.createObjectNode();
+				
+		if(sumBudgetProposalAmountAllocated != null) { 
+			((ObjectNode) allocNode).put("amountAllocated", sumBudgetProposalAmountAllocated);
+			//allocationRecord.setAmountAllocated(sumBudgetProposalAmountAllocated);
+		} else {
+			((ObjectNode) allocNode).put("amountAllocated", 0L);
+			//allocationRecord.setAmountAllocated(0L);
+		}
+		allocationRecordRepository.save(allocationRecord);
+		updateAllocationRecord(allocationRecord.getId(), allocNode);
+				
+		
 		return assetAllocation;
 	}
 
@@ -4660,6 +4707,72 @@ public class EntityServiceJPA implements EntityService {
 			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId) {
 		return assetAllocationRepository.findAllByParentOwner_IdAndForObjective_IdAndBudgetType_Id(parentOwnerId, forObjectiveId, budgetTyeId);
 	}
+
+	@Override
+	public void saveAssetAllocationCollection(JsonNode node) {
+		Set<BudgetProposal> proposalSet = new HashSet<BudgetProposal>();
+		Set<AllocationRecord> allocationRecordSet = new HashSet<AllocationRecord>();
+		List<AssetAllocation> allocList = new ArrayList<AssetAllocation>();
+		
+		for(JsonNode assetAllocNode : node ) {
+			AssetAllocation assetAlloc = assetAllocationRepository.findOne(getJsonNodeId(assetAllocNode));
+			
+			Organization owner = organizationRepository.findOne(getJsonNodeId(assetAllocNode.get("owner")));
+			assetAlloc.setOwner(owner);
+			
+			assetAlloc.setQuantity(assetAllocNode.get("quantity").asInt());
+			assetAlloc.setUnitBudget(assetAllocNode.get("unitBudget").asLong());
+			
+			allocList.add(assetAlloc);
+			
+			BudgetProposal proposal = assetAlloc.getProposal();
+			proposalSet.add(proposal);
+		}
+	
+		assetAllocationRepository.save(allocList);
+		
+		// have to update proposal! 
+		for(BudgetProposal proposal : proposalSet) {
+			Long sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
+			if(sumAssetAllocation != null) {
+				proposal.setAmountAllocated(sumAssetAllocation);
+				
+			} else {
+				proposal.setAmountAllocated(0L);
+			}
+			budgetProposalRepository.save(proposal);	
+			
+			AllocationRecord allocationRecord = allocationRecordRepository
+					.findOneByBudgetTypeAndObjectiveAndIndex(
+							proposal.getBudgetType(),
+							proposal.getForObjective(), 0);
+			
+			allocationRecordSet.add(allocationRecord);
+			
+		}
+		
+		// and allocation record!
+		for(AllocationRecord allocationRecord : allocationRecordSet) {
+			Long sumBudgetProposalAmountAllocated = budgetProposalRepository
+					.findSumByBudgetTypeAndForObjective(
+							allocationRecord.getBudgetType(),
+							allocationRecord.getForObjective());
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode allocNode = mapper.createObjectNode();
+			
+			if(sumBudgetProposalAmountAllocated != null) { 
+				((ObjectNode) allocNode).put("amountAllocated", sumBudgetProposalAmountAllocated);
+				//allocationRecord.setAmountAllocated(sumBudgetProposalAmountAllocated);
+			} else {
+				((ObjectNode) allocNode).put("amountAllocated", 0L);
+				//allocationRecord.setAmountAllocated(0L);
+			}
+			allocationRecordRepository.save(allocationRecord);
+			updateAllocationRecord(allocationRecord.getId(), allocNode);
+		}
+		
+	}
+	
 
 	
 

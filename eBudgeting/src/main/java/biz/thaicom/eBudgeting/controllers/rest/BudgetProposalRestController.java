@@ -28,6 +28,7 @@ import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
 import biz.thaicom.eBudgeting.models.bgt.BudgetSignOff;
 import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
+import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.security.models.Activeuser;
 import biz.thaicom.security.models.ThaicomUserDetail;
@@ -38,6 +39,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
 public class BudgetProposalRestController {
@@ -208,6 +211,33 @@ public class BudgetProposalRestController {
 		
 		return entityService.saveAllocationRecordWithProposals(allocationRecord, proposals);
 	}
+	
+	@RequestMapping(value="/AllocationReocrd/sync/Objective/{objectiveId}", method=RequestMethod.GET)
+	public @ResponseBody JsonNode syncAllocationRecordByObjectiveId(
+			@PathVariable Long objectiveId) {
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode returnNode = mapper.createObjectNode();
+		((ObjectNode) returnNode).put("id", objectiveId);
+		ArrayNode node = mapper.createArrayNode();
+		((ObjectNode) returnNode).put("allocationRecords", node);
+		
+		Objective obj = entityService.findOjectiveById(objectiveId);
+		List <AllocationRecord> allocationList = entityService.findAllocationRecordByObjective(obj);
+		
+		for(AllocationRecord record: allocationList) {
+			ObjectNode recordNode = mapper.createObjectNode();
+			recordNode.put("amountAllocated", record.getAmountAllocated());
+			recordNode.put("index", record.getIndex());
+			recordNode.put("id", record.getId());
+			recordNode.put("budgetType", record.getBudgetType().getId());
+			recordNode.put("forObjective", record.getForObjective().getId());
+			((ArrayNode) node).add(recordNode);
+		}
+		
+		
+		return node;
+	}
+	
 	
 	@RequestMapping(value="/AllocationRecord/{id}", method=RequestMethod.PUT)
 	public @ResponseBody AllocationRecord updateAllocationRecord(

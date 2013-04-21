@@ -129,6 +129,13 @@ public class AssetRestController {
 			@PathVariable Long budgetTypeId) {
 		return entityService.findAssetAllocationByParentOwnerAndForObjectiveAndBudgetType(parentOwnerId, forObjectiveId, budgetTypeId);
 	}
+	
+	@RequestMapping(value="/AssetAllocation/saveCollection", method=RequestMethod.PUT)
+	public @ResponseBody String saveCollection(
+			@RequestBody JsonNode node) {
+		entityService.saveAssetAllocationCollection(node);
+		return "OK";
+	}
 
 	
 }
