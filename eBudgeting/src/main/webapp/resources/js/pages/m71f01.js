@@ -40,8 +40,10 @@ var ModalView = Backbone.View.extend({
 		"click .addAllocationRecord" : "addAllocationRecord",
 		
 		"click .addAssetAllocationRecord" : "addAssetAllocationRecord",
+		"click .editAssetAllocationRecord" : "editAssetAllocationRecord",
 		"click .assetAllocationDetail" : "assetAllocationDetail",
 		"click .deleteAssetAllocation" : "deleteAssetAllocation",
+		"change .assetAllocationNumber" : "changeAssetAllocationNumber",
 		
 		"click .editAllocationRecord" : "editAllocationRecord",
 		"click #organizationSearchBtn" : "organizationSearch",
@@ -115,6 +117,21 @@ var ModalView = Backbone.View.extend({
 		});
 		
 	},
+	changeAssetAllocationNumber : function(e) {
+		var type = $(e.target).attr('data-type');
+		var value = $(e.target).val();
+		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
+		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
+		
+		if(!isNaN(parseInt(value))) {
+			assetAllocation.set(type,value);
+													 
+			this.$el.find('#totalAssetAllocation-' + assetAllocationId)
+				.html(addCommas(assetAllocation.get('unitBudget') * assetAllocation.get('quantity')) + ' บาท');
+		}
+		
+		
+	},
 	deleteAssetAllocation: function(e) {
 		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
 		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
@@ -144,13 +161,19 @@ var ModalView = Backbone.View.extend({
 		
 		
 		record.save(null, {
-			success: _.bind(function() {
+			success: _.bind(function(model, response, options) {
 				this.assetAllocations.push(record);
 				
 				var json = record.toJSON();
 				json.organizations = this.childrenOrganization.toJSON();
 				var html = this.assetAllocationTbodyTemplate(json);
-				this.$el.find('#assetTbl tbody').append(html);		
+				this.$el.find('#assetTbl tbody').append(html);	
+				
+				this.currentProposal.set('id', response.proposal.id);
+				this.currentProposal.set('amountAllocated',response.proposal.amountAllocated);
+				
+				
+				
 			},this)
 		});
 		
@@ -340,6 +363,11 @@ var ModalView = Backbone.View.extend({
 	},
 	backToProposal: function(e) {
 		this.resetProposalsInList();
+		if(this.currentAllocationRecord.get('id') == null) {
+			// we must remove this one from this.objective;
+			this.objective.get('allocationRecords').remove(this.currentAllocationRecord);
+			this.currentAllocationRecord = null;
+		}
 		this.render();
 	},
 	cancelModal : function(e) {
@@ -507,19 +535,32 @@ var ModalView = Backbone.View.extend({
 		this.$el.find('.modal-body').html(this.inputAllDivTemplate(json));		
 		
 	},
-	
+	editAssetAllocationRecord:function(e) {
+		this.assetAllocation = true;
+		this.renderEditAllocationRecord(e);
+	},
 	editAllocationRecord: function(e) {
+		this.assetAllocation = false;
+		this.renderEditAllocationRecord(e);
+	},
+	
+	renderEditAllocationRecord: function(e) {
 		this.currentAllocationRecord = AllocationRecord.findOrCreate($(e.target).parents('div[data-id]').attr('data-id'));
+		
+		var budgetTypeId = $(e.target).parents('td').attr('data-budgetTypeId');
+		this.currentBudgetType = BudgetType.findOrCreate(budgetTypeId);
 		
 		this.currentBudgetProposalList = new BudgetProposalCollection();
 		this.renderAllocationRecordInput();
-		this.organizationSearch();
+		this.organizationSearch();		
 	},
 	
 	addAssetAllocationRecord: function(e) {
 		this.assetAllocation = true;
 		this.renderAddAllocationRecord(e);
 	},
+	
+
 	
 	addAllocationRecord: function(e) {
 		this.assetAllocation = false;
@@ -572,7 +613,12 @@ var ModalView = Backbone.View.extend({
 		
 		this.proposals.fetch({
 			success: _.bind(function() {
-				var html=this.organizationProposalTbodyTemplate(this.proposals.toJSON());
+				var json = this.proposals.toJSON();
+				if(this.assetAllocation == true) {
+					json.assetAllocation = true;
+				}
+				var html=this.organizationProposalTbodyTemplate(json);
+				
 				$('#organizationProposalTbl').find('tbody').html(html);
 				
 				this.updateSumProposal();
@@ -862,6 +908,8 @@ var AssetSelectionView = Backbone.View.extend({
 			
 			this.parentView.addAssetBudgetAllocation(this.currentAssetBudget);
 			
+		} else {
+			alert("กรุณาเลือกรายการงบลงทุน");
 		}
 	},
 	assetBudgetSltChange: function(e) {
