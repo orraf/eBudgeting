@@ -507,9 +507,9 @@
 			{{/each}}
 		</select>
 	</td>
-	<td><input class="span1" type="text" id="assetAllocationQuantity-{{id}}" value="{{quantity}}"></input></td>
-	<td><input class="span2" type="text" id="assetAllocationUnitBudget-{{id}}" value="{{unitBudget}}"></input></td>
-	<td></td>
+	<td><input class="span1 assetAllocationNumber" data-type="quantity" type="text" id="assetAllocationQuantity-{{id}}" value="{{quantity}}"></input></td>
+	<td><input class="span2 assetAllocationNumber" data-type="unitBudget" type="text" id="assetAllocationUnitBudget-{{id}}" value="{{unitBudget}}"></input></td>
+	<td style="text-align:right;" id="totalAssetAllocation-{{id}}">{{totalAssetAllocation this}} บาท</td>
 </tr>
 </script>
 
@@ -681,6 +681,12 @@
 	
 	var readOnly = "${readOnly}";
 
+	Handlebars.registerHelper("totalAssetAllocation", function(assetAllocation) {
+		if(assetAllocation.quantity != null && assetAllocation.unitBudget != null) {
+			var total = parseInt(assetAllocation.quantity) * parseInt(assetAllocation.unitBudget);
+			return addCommas(total);
+		}
+	});
 	
 	Handlebars.registerHelper("sumTargetValue", function(unitId, proposals) {
 		// get all targetValue

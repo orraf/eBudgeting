@@ -43,6 +43,7 @@ var ModalView = Backbone.View.extend({
 		"click .editAssetAllocationRecord" : "editAssetAllocationRecord",
 		"click .assetAllocationDetail" : "assetAllocationDetail",
 		"click .deleteAssetAllocation" : "deleteAssetAllocation",
+		"change .assetAllocationNumber" : "changeAssetAllocationNumber",
 		
 		"click .editAllocationRecord" : "editAllocationRecord",
 		"click #organizationSearchBtn" : "organizationSearch",
@@ -114,6 +115,21 @@ var ModalView = Backbone.View.extend({
 				
 			},this)
 		});
+		
+	},
+	changeAssetAllocationNumber : function(e) {
+		var type = $(e.target).attr('data-type');
+		var value = $(e.target).val();
+		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
+		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
+		
+		if(!isNaN(parseInt(value))) {
+			assetAllocation.set(type,value);
+													 
+			this.$el.find('#totalAssetAllocation-' + assetAllocationId)
+				.html(addCommas(assetAllocation.get('unitBudget') * assetAllocation.get('quantity')) + ' บาท');
+		}
+		
 		
 	},
 	deleteAssetAllocation: function(e) {
