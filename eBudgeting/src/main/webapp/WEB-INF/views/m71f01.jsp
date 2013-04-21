@@ -109,7 +109,7 @@
 	<label class="control-label">{{type.name}} :</label>
 	<div class="controls">
 		<select id="type{{type.id}}Slt" class="span5">
-			<option>กรุณาเลือก...</option>
+			<option value="0">กรุณาเลือก...</option>
 			{{#each this}}<option value={{id}}>[{{code}}] {{name}}</option>{{/each}}
 		</select>
 	</div> 
@@ -558,7 +558,23 @@
 	</div>
 </form>
 </script>
+<script id="organizationAssetProposalTbodyTemplate" type="text/x-handler-template">
+{{#each this}}
+<tr data-id="{{owner.id}}">
+	<td><a href="#" class="removeOrganizationProposal"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
+	<td  style="width:188px; {{#if ../assetAllocation}}text-align:right;{{/if}}">
+		{{#if ../assetAllocation}}
+			<span> {{formatNumber amountAllocated}} บาท <a href="#" class="assetAllocationDetail"><i class="icon icon-plus-sign"></i></a></span>
+		{{else}}
+			<div style="height:35px; float:left" id="totalInputForm">
+				<div class="input-append"><input type="text" class="proposalAllocated disabled" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
 
+			</div>
+		{{/if}}
+	</td>
+</tr>
+{{/each}}
+</script>
 <script id="organizationProposalTbodyTemplate" type="text/x-handler-template">
 {{#each this}}
 <tr data-id="{{owner.id}}">

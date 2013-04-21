@@ -4456,6 +4456,7 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		assetBudgetRepository.save(assetBudget);
+		
 		return assetBudget;
 	}
 
@@ -4540,14 +4541,22 @@ public class EntityServiceJPA implements EntityService {
 			assetAllocation.setForActitvity(forActivity);
 		}
 
-
+		Integer oldQuantity = null;
+		Long oldUnitBudget = null;
+		Long adjustAmount = null;
 		
 		if(node.get("quantity") != null ) {
+			oldQuantity = assetAllocation.getQuantity();
 			assetAllocation.setQuantity(node.get("quantity").asInt());
+		} else {
+			assetAllocation.setQuantity(0);
 		}
 		
 		if(node.get("unitBudget") != null ) {
+			oldUnitBudget = assetAllocation.getUnitBudget();
 			assetAllocation.setUnitBudget(node.get("unitBudget").asLong());
+		} else {
+			assetAllocation.setUnitBudget(0L);
 		}
 		
 		BudgetProposal proposal = null;		
@@ -4555,21 +4564,77 @@ public class EntityServiceJPA implements EntityService {
 		if(getJsonNodeId(node.get("proposal")) != null) {
 			proposal = budgetProposalRepository.findOne(getJsonNodeId(node.get("proposal")));
 			assetAllocation.setProposal(proposal);
+//			if(assetAllocation.getQuantity() != null && assetAllocation.getUnitBudget() != null) {
+//				Long amount = assetAllocation.getQuantity() * assetAllocation.getUnitBudget();
+//				if(proposal.getAmountAllocated() == null || proposal.getAmountAllocated() == 0) {
+//					proposal.setAmountAllocated(amount);
+//				} else {
+//					// we update
+//					if(oldQuantity != null && oldUnitBudget != null) {
+//						Long oldAmount = oldQuantity * oldUnitBudget;
+//						adjustAmount = amount - oldAmount;
+//						
+//						proposal.setAmountAllocated(proposal.getAmountAllocated() + adjustAmount);
+//					}
+//				}
+//				
+//				budgetProposalRepository.save(proposal);
+//			}
+			
 		} else if(node.get("proposal") != null) {
 			proposal = new BudgetProposal();
 			proposal.setBudgetType(assetAllocation.getBudgetType());
 			proposal.setOwner(assetAllocation.getParentOwner());
 			proposal.setForObjective(assetAllocation.getForObjective());
+//			if(assetAllocation.getQuantity() != null && assetAllocation.getUnitBudget() != null) {
+//				Long amount = assetAllocation.getQuantity() * assetAllocation.getUnitBudget();
+//				proposal.setAmountAllocated(amount);
+//			}
 			budgetProposalRepository.save(proposal);
 			
 			assetAllocation.setProposal(proposal);
 		}
 		
+		
+		
+				
 
 		// we'll update proposal at last
 		Long sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
-		proposal.setAmountAllocated(sumAssetAllocation);
+		if(sumAssetAllocation != null) {
+			proposal.setAmountAllocated(sumAssetAllocation);
+			
+		} else {
+			proposal.setAmountAllocated(0L);
+		}
 		budgetProposalRepository.save(proposal);
+		
+		// then make sure we'get a new Allocation Record
+		AllocationRecord allocationRecord = allocationRecordRepository
+				.findOneByBudgetTypeAndObjectiveAndIndex(
+						assetAllocation.getBudgetType(),
+						assetAllocation.getForObjective(), 0);
+		
+		if(allocationRecord == null) {
+			allocationRecord = new AllocationRecord();
+			allocationRecord.setBudgetType(assetAllocation.getBudgetType());
+			allocationRecord.setForObjective(assetAllocation.getForObjective());
+			allocationRecord.setIndex(0);
+			allocationRecord.setAmountAllocated(0L);
+		}
+		
+		Long sumBudgetProposalAmountAllocated = budgetProposalRepository
+				.findSumByBudgetTypeAndForObjective(
+						assetAllocation.getBudgetType(),
+						assetAllocation.getForObjective());
+		if(sumBudgetProposalAmountAllocated != null) { 
+			allocationRecord.setAmountAllocated(sumBudgetProposalAmountAllocated);
+		} else {
+			allocationRecord.setAmountAllocated(0L);
+		}
+		allocationRecordRepository.save(allocationRecord);
+		
+		
 		
 		return assetAllocation;
 	}

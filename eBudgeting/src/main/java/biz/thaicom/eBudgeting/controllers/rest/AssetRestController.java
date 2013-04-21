@@ -108,7 +108,9 @@ public class AssetRestController {
 		((ObjectNode) rootNode).put("id", assetAllocation.getId());
 		JsonNode proposalNode = mapper.createObjectNode();
 		((ObjectNode) proposalNode).put("id", assetAllocation.getProposal().getId());
+		((ObjectNode) proposalNode).put("amountAllocated", assetAllocation.getProposal().getAmountAllocated());
 		((ObjectNode) rootNode).put("proposal", proposalNode);
+		
 		
 		return rootNode;
 	}
