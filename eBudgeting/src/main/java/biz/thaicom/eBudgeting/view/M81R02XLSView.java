@@ -114,8 +114,10 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		cell315.setCellStyle(styles.get("header"));
 		sheet.createFreezePane( 1, 4 );
 
-		Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
-		Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@www.innova.or.th:1521:xe", "afrpmt", "afrpmt");
+		//Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
+		//Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@www.innova.or.th:1521:xe", "afrpmt", "afrpmt");
+		Connection connection = dataSource.getConnection();
+		
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
 		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space " +
