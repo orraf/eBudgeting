@@ -156,7 +156,14 @@ public class BudgetProposalRestController {
 		
 	}
 	
-
+	@RequestMapping(value="/BudgetProposal/{id}", method=RequestMethod.DELETE)
+	public @ResponseBody BudgetProposal deleteBudgetProposal (
+			@PathVariable Long id){
+		
+		return entityService.deleteBudgetProposal(id);
+		
+	}
+	
 //	@RequestMapping(value="/BudgetProposal1", method=RequestMethod.POST)
 //	public @ResponseBody BudgetProposal saveBudgetProposal1 (
 //			@RequestBody BudgetProposal proposal,

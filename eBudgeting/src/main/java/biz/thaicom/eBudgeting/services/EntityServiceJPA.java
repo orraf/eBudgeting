@@ -4648,9 +4648,58 @@ public class EntityServiceJPA implements EntityService {
 		return assetAllocation;
 	}
 	
+	
+	
+	@Override
+	public BudgetProposal deleteBudgetProposal(Long id) {
+		BudgetProposal proposal = budgetProposalRepository.findOne(id);
+		if(proposal == null) return null;
+		
+		// now get the list of assetsallocation
+		List<AssetAllocation> assetAllocations = assetAllocationRepository
+				.findAllByParentOwner_IdAndForObjective_IdAndBudgetType_Id(
+						proposal.getOwner().getId(), 
+						proposal.getForObjective().getId(),
+						proposal.getBudgetType().getId());
+		
+		if(assetAllocations != null) {
+			assetAllocationRepository.delete(assetAllocations);
+		}
+		
+		budgetProposalRepository.delete(proposal);
+		
+		// and then allocationRecord
+		AllocationRecord allocationRecord = allocationRecordRepository
+				.findOneByBudgetTypeAndObjectiveAndIndex(
+						proposal.getBudgetType(),
+						proposal.getForObjective(), 0);
+		
+		Long sumBudgetProposalAmountAllocated = budgetProposalRepository
+				.findSumByBudgetTypeAndForObjective(
+						allocationRecord.getBudgetType(),
+						allocationRecord.getForObjective());
+
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode allocNode = mapper.createObjectNode();
+				
+		if(sumBudgetProposalAmountAllocated != null) { 
+			((ObjectNode) allocNode).put("amountAllocated", sumBudgetProposalAmountAllocated);
+			//allocationRecord.setAmountAllocated(sumBudgetProposalAmountAllocated);
+		} else {
+			((ObjectNode) allocNode).put("amountAllocated", 0L);
+			//allocationRecord.setAmountAllocated(0L);
+		}
+		allocationRecordRepository.save(allocationRecord);
+		updateAllocationRecord(allocationRecord.getId(), allocNode);
+
+		
+		return proposal;
+	}
+
 	@Override
 	public AssetAllocation deleteAssetAllocation(Long id) {
 		AssetAllocation assetAllocation = assetAllocationRepository.findOne(id);
+		
 		assetAllocationRepository.delete(assetAllocation);
 		
 		// have to update proposal! 

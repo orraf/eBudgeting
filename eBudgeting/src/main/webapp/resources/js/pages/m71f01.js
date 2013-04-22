@@ -48,6 +48,7 @@ var ModalView = Backbone.View.extend({
 		"click #saveAssetAllocationBtn" : "saveAssetAllocation",
 		"change .assetAllocationOnwerSlt" : "changeAssetAllocationOnwerSlt",
 		"click #backToProposalFromAssetBtn" : "backToProposalFromAsset",
+		"click .removeOrganizationAssetProposal" : "removeOrganizationAssetProposal",
 		
 		"click .editAllocationRecord" : "editAllocationRecord",
 		"click #organizationSearchBtn" : "organizationSearch",
@@ -187,7 +188,9 @@ var ModalView = Backbone.View.extend({
 	
 		var y = confirm("คุณต้องการลบการจัดสรรรายการ " + assetAllocation.get('assetBudget').get('name'));
 		if(y==true) {
+			
 			assetAllocation.destroy({
+				url: appUrl('/AssetAllocation/'+assetAllocationId),
 				success: _.bind(function() {
 					$(e.target).parents('tr').remove();
 					this.assetAllocations.remove(assetAllocation);
@@ -294,10 +297,9 @@ var ModalView = Backbone.View.extend({
 		$('#organizationSearchTbl').find('tbody').html(html);
 		
 	},
-	removeOrganizationProposal: function(e) {
+	removeProposalOrganization: function(e) {
 		var organizationId = $(e.target).parents('tr').attr('data-id');
 		var organization = Organization.findOrCreate(organizationId);
-		
 		
 		// now remove this one 
 		for(var i=0; i<this.proposals.length; i++) {
@@ -312,20 +314,51 @@ var ModalView = Backbone.View.extend({
 					this.proposals.remove(p);
 					
 					p.get('owner').set('_inProposalList', false);
-			
-					var html=this.organizationProposalTbodyTemplate(this.proposals.toJSON());
-					$('#organizationProposalTbl').find('tbody').html(html);
 					
-					this.updateSumProposal();
-					
-					//refresh the other list
-					var html=this.organizationSearchTbodyTemplate(this.organizationSearchList.toJSON());
-					$('#organizationSearchTbl').find('tbody').html(html);
+					// now if p is already in the database
+					if(p.get('id') != null) {
+						p.destroy({
+							success: _.bind(function(model, response, options) {
+								var json = this.proposals.toJSON();
+								json.assetAllocation = this.assetAllocation;
+								var html=this.organizationProposalTbodyTemplate(json);
+								$('#organizationProposalTbl').find('tbody').html(html);
+								
+								this.updateSumProposal();
+								
+								//refresh the other list
+								var html=this.organizationSearchTbodyTemplate(this.organizationSearchList.toJSON());
+								$('#organizationSearchTbl').find('tbody').html(html);
+							},this),
+							error: function(model, xhr, options) {
+								alert("Error Status Code: " + xhr.status + " " + xhr.statusText + "\n" + xhr.responseText);
+							}	
+ 						});
+					} else {
+						var json = this.proposals.toJSON();
+						json.assetAllocation = this.assetAllocation;
+						var html=this.organizationProposalTbodyTemplate(json);
+						$('#organizationProposalTbl').find('tbody').html(html);
+						
+						this.updateSumProposal();
+						
+						//refresh the other list
+						var html=this.organizationSearchTbodyTemplate(this.organizationSearchList.toJSON());
+						$('#organizationSearchTbl').find('tbody').html(html);
+					}
 				}
 			}
 		}
 		
+	},
+	removeOrganizationAssetProposal: function(e) {
 		
+		this.assetAllocation = true;
+		this.removeProposalOrganization(e);
+	},
+	removeOrganizationProposal: function(e) {
+		this.assetAllocation = false;
+		this.removeProposalOrganization(e);
 	},
 	removeOrganizationOwner: function(e) {
 		var organizationId = $(e.target).parents('tr').attr('data-id');
@@ -652,6 +685,9 @@ var ModalView = Backbone.View.extend({
 	
 	renderAllocationRecordInput: function() {
 		var json = this.currentAllocationRecord.toJSON();
+		if(this.assetAllocation == true) {
+			json.assetAllocation = true;
+		}
 		this.$el.find('.modal-body').html(this.inputAllocationRecordTemplate(json));
 		
 		// now get the budgetProposal of this objective

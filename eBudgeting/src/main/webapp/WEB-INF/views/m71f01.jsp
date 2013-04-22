@@ -456,9 +456,11 @@
 	</div>
 </div>
 
+{{#unless assetAllocation}}
 <div style="padding-top:5px;">
 <button class="btn btn-mini btn-primary saveProposal">บันทึก</button> <button class="btn btn-mini backToProposal">ย้อนกลับ</button>
 </div>
+{{/unless}}
 
 </script>
 <script id="organizationSearchTbodyTemplate" type="text/x-handler-template">
@@ -564,27 +566,10 @@
 	</div>
 </form>
 </script>
-<script id="organizationAssetProposalTbodyTemplate" type="text/x-handler-template">
-{{#each this}}
-<tr data-id="{{owner.id}}">
-	<td><a href="#" class="removeOrganizationProposal"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
-	<td  style="width:188px; {{#if ../assetAllocation}}text-align:right;{{/if}}">
-		{{#if ../assetAllocation}}
-			<span> {{formatNumber amountAllocated}} บาท <a href="#" class="assetAllocationDetail"><i class="icon icon-plus-sign"></i></a></span>
-		{{else}}
-			<div style="height:35px; float:left" id="totalInputForm">
-				<div class="input-append"><input type="text" class="proposalAllocated disabled" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{amountAllocated}}"><span class="add-on">บาท</span></div>
-
-			</div>
-		{{/if}}
-	</td>
-</tr>
-{{/each}}
-</script>
 <script id="organizationProposalTbodyTemplate" type="text/x-handler-template">
 {{#each this}}
 <tr data-id="{{owner.id}}">
-	<td><a href="#" class="removeOrganizationProposal"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
+	<td><a href="#" {{#if ../assetAllocation}}class="removeOrganizationAssetProposal" {{else}}class="removeOrganizationProposal"{{/if}}><i class="icon icon-trash icon-red"></i></a> {{owner.name}}</td>
 	<td  style="width:188px; {{#if ../assetAllocation}}text-align:right;{{/if}}">
 		{{#if ../assetAllocation}}
 			<span> {{formatNumber amountAllocated}} บาท <a href="#" class="assetAllocationDetail"><i class="icon icon-plus-sign"></i></a></span>

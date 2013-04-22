@@ -192,7 +192,7 @@ public interface EntityService {
 	public BudgetProposal findBudgetProposalById(Long budgetProposalId);
 	public BudgetProposal saveBudgetProposal(JsonNode proposal, ThaicomUserDetail currentUser);
 	public List<BudgetProposal> findBudgetProposalByObjectiveIdAndBudgetTypeId(Long objectiveId, Long budgetTypeId);
-
+	public BudgetProposal deleteBudgetProposal(Long id);
 	
 	//ProposalStrategy
 	public List<ProposalStrategy> findProposalStrategyByBudgetProposal(
@@ -391,6 +391,7 @@ public interface EntityService {
 			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId);
 	public AssetAllocation deleteAssetAllocation(Long id);
 	public void saveAssetAllocationCollection(JsonNode node);
+	
 	
 	
 
