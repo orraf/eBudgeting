@@ -65,7 +65,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		});
 		
 		if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
-			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
+			alert("กรุณาตรวจสอบ แผนการดำเนินงาน รวมแล้วไม่เท่ากับค่าเป้าหมาย");
 			return;
 		}
  		
@@ -183,7 +183,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	render: function() {
 		
 		
-		this.$el.find('.modal-header span').html("จัดสรรเป้าหมาย: " + this.currentActivity.get('name'));
+		this.$el.find('.modal-header span').html("กิจกรรม: " + this.currentActivity.get('name'));
 		
 		var json = this.currentTargetReport.toJSON();
 		e1=json;

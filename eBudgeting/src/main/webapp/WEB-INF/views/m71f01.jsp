@@ -203,7 +203,7 @@
 		<tr>
 			<td></td>
 			<td><strong>รวม{{objective.type.name}}{{objective.name}}</strong></td>
-			<td class="rightAlign"><strong>{{sumAllocationRecords allRecords}}</td>
+			<td class="rightAlign"><strong>{{sumAllocationRecords objective.allocationRecords}}</td>
 			<td style="width:15px;padding:0px;">&nbsp;</td>
 		</tr>
 	</tbody>

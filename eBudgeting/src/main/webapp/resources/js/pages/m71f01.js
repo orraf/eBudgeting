@@ -1184,18 +1184,10 @@ var MainCtrView = Backbone.View.extend({
 					
 					this.collection.add(objectiveCollection.where({parent: this.currentParentObjective}));
 					
-					var allProposal = new ObjectiveBudgetProposalCollection(); 
-					_.each(this.collection.pluck('filterObjectiveBudgetProposals'), function(bpCollection) {
-						if(bpCollection.length > 0) {
-							bpCollection.each(function(bp) {
-								allProposal.add(bp);
-							});
-						}
-					});
+					
 					
 					
 					var json = this.collection.toJSON();
-					json.allProposal = allProposal.toJSON();
 					json.allRecords = {};
 					json.objective = this.currentParentObjective.toJSON();
 					this.$el.find('#mainTbl').html(this.mainTblTpl(json));
