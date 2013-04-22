@@ -1,4 +1,5 @@
 var ModalView = Backbone.View.extend({
+	
 	/**
      *  @memberOf ModalView
      */
@@ -46,6 +47,7 @@ var ModalView = Backbone.View.extend({
 		"change .assetAllocationNumber" : "changeAssetAllocationNumber",
 		"click #saveAssetAllocationBtn" : "saveAssetAllocation",
 		"change .assetAllocationOnwerSlt" : "changeAssetAllocationOnwerSlt",
+		"click #backToProposalFromAssetBtn" : "backToProposalFromAsset",
 		
 		"click .editAllocationRecord" : "editAllocationRecord",
 		"click #organizationSearchBtn" : "organizationSearch",
@@ -149,6 +151,9 @@ var ModalView = Backbone.View.extend({
 		} else {
 			alert('กรุณาเลือกหน่วยงาน');
 		}
+	},
+	backToProposalFromAsset: function(e) {
+		this.renderAllocationRecordInput();
 	},
 	changeAssetAllocationOnwerSlt: function(e) {
 		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
@@ -656,7 +661,7 @@ var ModalView = Backbone.View.extend({
 				'/' + this.currentAllocationRecord.get('budgetType').get('id'));
 		
 		this.proposals.fetch({
-			success: _.bind(function() {
+			success: _.bind(function(model, response, options) {
 				var json = this.proposals.toJSON();
 				if(this.assetAllocation == true) {
 					json.assetAllocation = true;
@@ -1053,6 +1058,7 @@ var MainCtrView = Backbone.View.extend({
 
 	detailModalWithObjectiveId : function(id) {
 		var currentObjective = Objective.findOrCreate({id: id});
+	
 		currentObjective.url = appUrl("/Objective/loadObjectiveAllocationRecord/" + currentObjective.get('id'));
 		currentObjective.fetch({
 			success: _.bind(function(model, xhr, option) {
@@ -1075,9 +1081,11 @@ var MainCtrView = Backbone.View.extend({
 	},
 	
 	updateAllocationForObjective: function(objective) {
-		objective.get('allocationRecords').fetch({
-    		url: appUrl('/AllocationReocrd/sync/Objective/' + objective.get('id')),
+		
+		objective.fetch({
+    		url: appUrl('/Objective/loadObjectiveAllocationRecord/' + objective.get('id')),
     		success: function(model, response, options) {
+    			
     			var records = objective.get('allocationRecords');
     			var sumAllocation = 0;
     			for(var i=0; i<records.length; i++) {

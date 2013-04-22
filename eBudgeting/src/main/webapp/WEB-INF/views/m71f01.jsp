@@ -218,7 +218,7 @@
 <table class="table table-bordered" id="headerTbl" style="margin-bottom:0px; width:875px; table-layout:fixed;">
 	<thead>
 		<tr>
-			<td>รายการ</td>
+			<td style="text-align:right;">.</td>
 		</tr>
 	</thead>
 </table>
@@ -229,14 +229,14 @@
 		<td style="width:20px;"></td>
 		<td style="width:600px;" class="{{#if this.children}}disable{{/if}}">
 			<div class="pull-left" style="margin-left:{{this.padding}}px; width:18px;">
-					{{#if this.children}}
+					{{#unless this._planBudgetLevel}}
 					<input class="checkbox_tree bullet" type="checkbox" id="bullet_{{this.id}}"/>
 					<label class="expand" for="bullet_{{this.id}}"><icon class="label-caret icon-caret-down"></icon></label>
 					{{else}}		
 						<label class="expand">			
 							<icon class="icon-file-alt"></icon>
 						<label>
-					{{/if}}					
+					{{/unless}}					
 			</div>
 			<div class="pull-left" style="width:{{nameWidth}}px;">
 					<input class="checkbox_tree" type="checkbox" id="item_{{this.id}}"/>
@@ -246,7 +246,7 @@
 						{{#if this._planBudgetLevel}}</a>{{/if}}
 					</label>
 			</div>
-{{#unless this.children}}
+{{#unless this._planBudgetLevel}}
 			<div class="clearfix"></div>
 {{/unless}}
 			
@@ -255,7 +255,9 @@
 				<span class="sumAllocationSpan">{{#if this.allocationRecords}}{{{sumAllocationRecords this.allocationRecords}}}{{else}}-{{/if}}</span>
 		</td>
 	</tr>
-	{{{childrenNodeTpl this.children this.level}}}  
+{{#unless this._planBudgetLevel}}
+	{{{childrenNodeTpl this.children this.level}}}
+{{/unless}}  
 </script>
 
 <script id="allocationRecordAssetCellTemplate" type="text/x-handler-template">
@@ -494,7 +496,10 @@
 		<tbody></tbody> 
 	</table>
 </div>
-<div><button class="btn btn-mini" id="saveAssetAllocationBtn">บันทึกข้อมูล</button></div>
+<div>
+<button class="btn btn-mini" id="saveAssetAllocationBtn">บันทึกข้อมูล</button>
+<button class="btn btn-mini" id="backToProposalFromAssetBtn">ย้อนกลับ</button>
+</div> 
 </script>
 
 <script id="assetAllocationTbodyTemplate"  type="text/x-handler-template">
@@ -818,8 +823,11 @@
 	Handlebars.registerHelper('next', function(val, next) {
 		return val + next;
 	});
-
+	
 	$(document).ready(function() {
+		
+		
+
 
 		mainBudgetTypeCollection = new BudgetTypeCollection();
 		mainBudgetTypeCollection.url=appUrl("/BudgetType/fiscalYear/" + fiscalYear +"/mainType");
