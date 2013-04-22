@@ -114,7 +114,7 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"	INNER JOIN FETCH objective.type type " +
 			"	LEFT OUTER JOIN FETCH objective.budgetTypes budgetTypes " +
 			"WHERE objective.parent.id = ?1  " +
-			"ORDER BY objective.id asc ")
+			"ORDER BY objective.code asc ")
 	public List<Objective> findChildrenWithParentAndTypeAndBudgetType(
 			Long id);
 
