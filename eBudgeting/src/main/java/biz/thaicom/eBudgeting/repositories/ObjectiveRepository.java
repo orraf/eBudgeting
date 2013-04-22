@@ -132,7 +132,7 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"	LEFT OUTER JOIN FETCH objective.units unit " +
 			"WHERE objective.fiscalYear=?1 " +
 			"	AND objective.type.id=?2 " +
-			"ORDER BY objective.id asc ")
+			"ORDER BY objective.code asc ")
 	public List<Objective> findAllByFiscalYearAndType_id(Integer fiscalYear,
 			Long typeId);
 	

@@ -17,7 +17,7 @@ public enum ObjectiveTypeId {
 		} else if(id==101){
 			return "แผนงาน";
 		} else if(id==102){
-			return "ยุทศาสตร์";
+			return "ยุทธศาสตร์";
 		} else if(id==103){
 			return "ผลผลิต/โครงการ";
 		} else if(id==104){

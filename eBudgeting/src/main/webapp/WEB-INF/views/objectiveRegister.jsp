@@ -199,11 +199,12 @@
 
 <script id="modalBodyTemplate" type="text/x-handlebars-template">
 <form>
+	<label>ระบุรหัส</label>
+	<input type="text" id="code" value="{{code}}"></input>
+
 	<label>ระบุชื่อ{{type.name}}</label>
 	<textarea rows="2" class="span5" id="nameTxt">{{name}}</textarea>
 
-	<label>ระบุรหัส</label>
-	<input type="text" id="code" value="{{code}}"></input>
 	
 	{{#if hasParent}}
 	<label>เชื่อมโยง{{parentTypeName}}</label>
