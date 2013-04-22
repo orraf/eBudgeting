@@ -135,8 +135,7 @@ var MainCtrView = Backbone.View.extend({
 		
 		// now we're going the report of this target
 		
-		var report = new ActivityTargetReport();
-		report.urlRoot = appUrl('/ActivityTargetReport/' + targetReportId);
+		var report = ActivityTargetReport.findOrCreate({id: targetReportId});
 		
 		report.fetch({
 			success: _.bind(function() {
@@ -163,7 +162,10 @@ var MainCtrView = Backbone.View.extend({
 
 					for(var k=0; k<tgt.length; k++) {
 						var rpt = tgt[k].filterReport;
-						if(rpt.latestResult != null) {
+						if(rpt == null) {
+							//we just return here
+							return this;
+						} else if(rpt.latestResult != null) {
 							rpt.lastSaveTxt = moment.utc(rpt.latestResult.timestamp).fromNow();
 							rpt.lastSaveTxt += " / " + rpt.latestResult.person.firstName + " " + rpt.latestResult.person.lastName;
 						} else {
@@ -177,7 +179,7 @@ var MainCtrView = Backbone.View.extend({
 		}
 		this.$el.html(this.mainCtrTemplate(json));
 		
-
+		return this;
 	}
 	
 });
