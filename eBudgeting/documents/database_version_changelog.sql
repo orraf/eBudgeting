@@ -1014,3 +1014,9 @@
         
     create sequence BGT_ASSETALLOCATION_SEQ;
 
+    
+-- version 13
+-- Modified Date : April 23, 2013
+ 	update app_info set db_version=12;
+	alter table PLN_ACTIVITYTARGET
+		add (PROVINCIALTARGET NUMBER(1));

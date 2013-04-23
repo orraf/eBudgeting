@@ -49,6 +49,9 @@ public class ActivityTarget implements Serializable {
 	@JoinColumn(name="UNIT_PLN_TARGETUNIT_ID", nullable=false)
 	private TargetUnit unit;
 
+	@Basic
+	private Boolean provincialTarget;
+
 	@Transient
 	private ActivityTargetReport filterReport;
 	
@@ -99,7 +102,13 @@ public class ActivityTarget implements Serializable {
 	public void setBudgetAllocated(Long budgetAllocated) {
 		this.budgetAllocated = budgetAllocated;
 	}
-	
-	
+
+	public Boolean getProvincialTarget() {
+		return provincialTarget;
+	}
+
+	public void setProvincialTarget(Boolean provincialTarget) {
+		this.provincialTarget = provincialTarget;
+	}
 	
 }
