@@ -42,4 +42,10 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			"	AND organization.name like ?1 " +
 			"ORDER BY organization.code asc ") 
 	public List<Organization> findAllTopLevelByNameLike(String query);
+
+	@Query("" +
+			"SELECT org " +
+			"FROM Organization org " +
+			"WHERE org.id = ?1 ")
+	public Organization findOneById(Long id);
 }

@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -3981,7 +3983,13 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Override
 	public Organization findOrganizationById(Long id) {
-		return organizationRepository.findOne(id);
+		logger.debug("id" + id.toString());
+		
+		Organization org = organizationRepository.findOneById(id);
+		org.getChildren().size();
+	
+		
+		return org;
 	}
 
 
@@ -4190,7 +4198,7 @@ public class EntityServiceJPA implements EntityService {
 		if(parentOrgId == null ) {
 			oldList = findActivityTargetReportByTargetId(targetId);
 		} else {
-			oldList = findActivityTargetReportByTargetIdAndParentOrgId(targetId, parentOrgId);
+			oldList = findActivityTargetReportByTarget_IdAndParentOrgId(targetId, parentOrgId);
 		}
 		
 		logger.debug("oldList.size() =" + oldList.size());
@@ -4199,6 +4207,7 @@ public class EntityServiceJPA implements EntityService {
 		List<ActivityTargetReport> newList = new ArrayList<ActivityTargetReport>();
 		
 		ActivityTarget target = activityTargetRepository.findOne(targetId);
+		Long sumBudget = 0L;
 		//now for each node 
 		for(JsonNode reportNode : node) {
 			// we'll go through the oldList
@@ -4217,6 +4226,10 @@ public class EntityServiceJPA implements EntityService {
 				report.setTarget(target);	
 			}
 			
+			if(reportNode.get("reportLevel") != null) {
+				report.setReportLevel(reportNode.get("reportLevel").asInt());
+			}
+			
 			// now find performance
 			ActivityPerformance performance = activityPerformanceRepository
 					.findOneByActivityAndOwner(target.getActivity(), report.getOwner());
@@ -4226,15 +4239,23 @@ public class EntityServiceJPA implements EntityService {
 				performance.setActivity(target.getActivity());
 				performance.setOwner(report.getOwner());
 			
-				activityPerformanceRepository.save(performance);
+				
 			} 
 			
+			performance.setBudgetAllocated(reportNode.get("activityPerformance").get("budgetAllocated").asDouble());
+			
+			activityPerformanceRepository.save(performance);
 			
 			report.setActivityPerformance(performance);
 			report.setTargetValue(reportNode.get("targetValue").asLong());
 			
+			sumBudget += performance.getBudgetAllocated().longValue();
+			
 			newList.add(report);
 		}
+		
+		target.setBudgetAllocated(sumBudget);
+		activityTargetRepository.save(target);
 		
 		// we should be able to delete oldList and save newList
 		
@@ -4247,10 +4268,8 @@ public class EntityServiceJPA implements EntityService {
 		List<ActivityPerformance> toDeletePerformance = new ArrayList<ActivityPerformance>();
  		for(ActivityTargetReport oldReport: oldList) {
 			ActivityPerformance oldPerformance = oldReport.getActivityPerformance();
+			toDeletePerformance.add(oldPerformance);
 			
-			if(oldPerformance.getTargetReports().size() == 0) {
-				toDeletePerformance.add(oldPerformance);
-			}
 		}
 		
 		activityTargetReportRepository.delete(oldList);
@@ -4260,15 +4279,75 @@ public class EntityServiceJPA implements EntityService {
 	}
 
 	@Override
-	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
-			Long targetId, Long parentOrgId) {
-		if( parentOrgId == null ) {
-			return activityTargetReportRepository.findAllByTarget_id(targetId);
+	public List<ActivityTargetReport> findActivityTargetReportByTarget_IdAndParentOrgId(
+			Long activityTargetId, Long parentOrgId) {
+		
+			return activityTargetReportRepository.findAllByTarget_IdAndOwner_Parent_id(activityTargetId, parentOrgId);
+		
+	}
+	
+	@Override
+	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
+			Long objectiveId, Long ownerId) {
+		String objectiveIdLike = "%."+objectiveId + ".%";
+		
+		List<Objective> childrenObjective = new ArrayList<Objective>();
+		List<ActivityTargetReport> targetReports = activityTargetReportRepository
+				.findAllByParentObjectiveIdAndReportLevelAndOwnerId(objectiveIdLike, 1, ownerId);
+		
+		logger.debug("targetReports: " + targetReports.size());
+		
+		for(ActivityTargetReport report : targetReports) {
+			Objective child = report.getTarget().getActivity().getForObjective();
+			report.getTarget().setFilterReport(report);
+			report.getActivityPerformance().getId();
+			Activity act = report.getTarget().getActivity();
 			
-		} else {
-			return activityTargetReportRepository.findAllByTarget_idAndOwner_Parent_id(targetId, parentOrgId);
+			// first put the target
+			if(act.getFilterTargets()==null) {
+				act.setFilterTargets(new ArrayList<ActivityTarget>());
+			}
+			if(!act.getFilterTargets().contains(report.getTarget())) {
+				//lazily init TargetUnit here 
+				report.getTarget().getUnit().getId();
+				act.getFilterTargets().add(report.getTarget());
+			}
+			
+			//then check if there is anyparent
+			if(act.getParent() != null) {
+				act = act.getParent();
+			}
+			// then add to กิจกรรมรอง
+			if(child.getFilterActivities()==null) {
+				child.setFilterActivities(new ArrayList<Activity>());
+			}
+			if(!child.getFilterActivities().contains(act)) {
+				child.getFilterActivities().add(act);
+			}
+			
+			if(!childrenObjective.contains(child)) {
+				childrenObjective.add(child);
+			}
 			
 		}
+		//now sort childrenObjective
+		 Collections.sort(childrenObjective,new Comparator<Objective>() {
+			@Override
+			public int compare(Objective arg0, Objective arg1) {
+				return arg0.getCode().compareTo(arg1.getCode());
+			}
+	           
+	 	});
+		
+		
+		return childrenObjective;
+		
+	}
+
+	@Override
+	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndReportLevel(
+			Long targetId, int reportLevel) {
+		return activityTargetReportRepository.findAllByTarget_idAndReportLevel(targetId, reportLevel);
 	}
 
 	@Override
@@ -4293,13 +4372,8 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public ActivityTargetReport findActivityTargetReportById(Long id) {
-		
-		logger.debug("----------------------id: " + id);
-		
 		ActivityTargetReport atr = activityTargetReportRepository.findOneAndFetchReportById(id);
-		
-		logger.debug("----------------------" + atr);
-		
+
 		return atr;
 	}
 
@@ -4660,8 +4734,12 @@ public class EntityServiceJPA implements EntityService {
 		return assetAllocation;
 	}
 	
-	
-	
+	@Override
+	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
+			Integer fiscalYear, Long ownerId) {
+		return budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, ownerId);
+	}
+
 	@Override
 	public BudgetProposal deleteBudgetProposal(Long id) {
 		BudgetProposal proposal = budgetProposalRepository.findOne(id);

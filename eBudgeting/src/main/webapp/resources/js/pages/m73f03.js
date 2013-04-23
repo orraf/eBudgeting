@@ -28,6 +28,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		"click .removeOrganizationTarget" : "removeOrganizationTarget",
 		
 		"change .proposalAllocated" : "changeProposalAllocated",
+		"change .budgetAllocated" : "changeBudgetAllocated",
 		
 		"click #saveAssignTargetBtn" : "saveAssignTarget",
 		"click #cancelBtn" : "cancelAssignTarget"
@@ -60,15 +61,45 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			return;
 		}
  		
+		sum = 0;
+		_.forEach(this.$el.find("input.budgetAllocated"), function(el) {
+			sum += parseInt($(el).val());
+		});
+		
  		this.$el.find('button#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+ 		
+ 		// now set reportLevel to 2
+ 		for(var i=0; this.targetReports.length; i++) {
+ 			this.targetReports.at(i).set('reportLevel', 2);
+ 		}
  		
  		// we should be ready to save the 
  		Backbone.sync('create', this.targetReports, {
  			success: _.bind(function() {
  				alert('บันทึกเรียบร้อยแล้ว');
+ 				
+ 				this.currentTarget.set('budgetAllocated', sum);
+ 				//now update
+ 				
+ 				$('#target_'+ this.currentTarget.get('id') +'-budgetAllocated').html(addCommas(sum));
+ 				
  				this.cancelAssignTarget();
  			},this)
  		});
+	},
+	changeBudgetAllocated: function(e) {
+		// validate this one first
+		if( isNaN( +$(e.target).val() ) ) {
+			$(e.target).parent('div').addClass('control-group error');
+			alert("กรุณาใส่ข้อมูลเป็นตัวเลข");
+		} else {
+			$(e.target).parent('div').removeClass('control-group error'); 
+			var i = $(e.target).parents('tr').prevAll('tr').length;
+			
+			this.targetReports.at(i).get('activityPerformance').set('budgetAllocated', $(e.target).val());
+			this.updateSumTarget();	
+		}
+		
 	},
 	changeProposalAllocated: function(e) {
 		// validate this one first
@@ -91,6 +122,13 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		newTargetReport.set('owner', organization);
 		newTargetReport.set('targetValue', 0);
 		newTargetReport.set('target', this.currentTarget);
+		
+
+		var newPerformance = new ActivityPerformance();
+		newPerformance.set('activity', this.currentActivity);
+		newPerformance.set('owner', organization);
+		
+		newTargetReport.set('activityPerformance', newPerformance);
 		
 		this.targetReports.push(newTargetReport);
 		
@@ -153,8 +191,12 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	organizationSearch: function(e) {
 		var query = this.$el.find('#oraganizationQueryTxt').val();
 		
+		if(query = null) {
+			query ="";
+		}
+		
 		this.organizationSearchList = new OrganizationCollection();
-		this.organizationSearchList.url = appUrl("/Organization/parentId/"+currentOrganizationId+"/findByName");
+		this.organizationSearchList.url = appUrl("/Organization/parentId/"+organizationId+"/findByName");
 		this.organizationSearchList.fetch({
 			data: {
 				query: query
@@ -181,7 +223,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		//now fill in 
 		this.targetReports = new ActivityTargetReportCollection();
 		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id') 
-				+ '/parentOrganization/' + currentOrganizationId);
+				+ '/parentOrganization/' + organizationId);
 		this.targetReports.fetch({
 			success: _.bind(function() {
 				
@@ -336,217 +378,119 @@ var ActivityTargetTableView = Backbone.View.extend({
 	}
 });
 
-
-
-
-var MainSelectionView = Backbone.View.extend({
-	mainSelectionTemplate : Handlebars.compile($("#mainSelectionTemplate").html()),
-	selectionTemplate : Handlebars.compile($("#selectionTemplate").html()),
-	type102DisabledSelectionTemplate : Handlebars.compile($("#type102DisabledSelection").html()),
+var BudgetProposalSelectionView = Backbone.View.extend({
 	/**
-     *  @memberOf MainSelectionView
-     */
-	initialize: function() {
-		
-		this.type102Collection = new ObjectiveCollection();
-		
-		_.bindAll(this, 'renderInitialWith');
-		_.bindAll(this, 'renderType102');
-		this.type102Collection.bind('reset', this.renderType102);
-	},
-	events: {
-		"change select#type101Slt" : "type101SltChange",
-		"change select#type102Slt" : "type102SltChange",
-	},
-	type101SltChange : function(e) {
-		var type101Id = $(e.target).val();
-		if(type101Id != 0) {
-			this.type102Collection.fetch({
-				url: appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityOwner'),
-				success: _.bind(function() {
-					this.type102Collection.trigger('reset');
-				}, this)
+	 * @memberOf BudgetProposalSelectionView
+	 */
+	initialize: function(options) {
+		if(options.organizationId != null) {
+			this.organizationId = options.organizationId;
+			this.organization = Organization.findOrCreate({
+				id: this.organizationId 
 			});
+			
 		}
-		
-		mainCtrView.emptyTbl();
-		
 	},
-	type102SltChange : function(e) {
-		var type102Id = $(e.target).val();
-		if(type102Id != 0) {
-			var obj = Objective.findOrCreate(type102Id);
-			mainCtrView.renderMainTblWithParent(obj);
-		}
-		
+	budgetProposalSelectionTemplate: Handlebars.compile($("#budgetProposalSelectionTemplate").html()),
+	el: "#budgetSlt",
+	events: {
+		"click .budgetProposalSelect" : "budgetProposalSelect"
 	},
-	
-	renderType102: function(e) {
-		var json = this.type102Collection.toJSON();
-		json.type =  {};
-		json.type.name = "กิจกรรมรอง";
-		json.type.id = 102;
-		var html = this.selectionTemplate(json);
+	budgetProposalSelect: function(e) {
+		var propossalId = $(e.target).parents('li').attr('data-id');
+		var proposal = BudgetProposal.findOrCreate(propossalId);
 		
-		// now render 
-		this.$el.find('#type102Div').empty();
-		this.$el.find('#type102Div').html(html);
+		mainTblView.renderWithProposal(proposal);
 	},
-	
 	render: function() {
-		
-		if(this.rootChildrenObjectiveCollection != null) {
-			var json = this.rootChildrenObjectiveCollection.toJSON();
-			
-			var html = this.mainSelectionTemplate(json);
-			this.$el.html(html);
-		}
-	}, 
-	renderInitialWith: function(collection) {
-		this.rootChildrenObjectiveCollection = collection;
-		this.render();
-	}
-	
-});
-
-
-var MainCtrView = Backbone.View.extend({
-	/**
-     *  @memberOf MainCtrView
-     */
-	initialize : function() {
-		//this.collection.bind('reset', this.render, this);
-		this.$el.html(this.loadingTpl());
-		this.assignTargetValueModalView = new AssignTargetValueModalView({parentView: this});
-	},
-
-	el : "#mainCtr",
-	loadingTpl : Handlebars.compile($("#loadingTemplate").html()),
-	mainCtrTemplate : Handlebars.compile($("#mainCtrTemplate").html()),
-	mainTblTemplate : Handlebars.compile($("#mainTblTemplate").html()),
-	mainTblTbodyTemplate : Handlebars.compile($("#mainTblTbodyTemplate").html()),
-	
-	events : {
-		"click .newActivityBtn" : "newActivity",
-		"click .menuDelete" : "deleteActivity",
-		"click .menuEdit" : "editActivity",
-		"click .newActivitityChild" : "newChildActivity",
-		"click .assignTargetLnk" : "assignTarget"
-			
-	},
-	
-	assignTarget: function(e) {
-		var activityPerformanceId = $(e.target).parents('tr').attr('data-id');
-		var activityPerformance = ActivityPerformance.findOrCreate(activityPerformanceId);
-		var activity = activityPerformance.get('activity');
-		
-		var targetId = $(e.target).parents('li').attr('data-id');
-		var activityTargetReport = ActivityTargetReport.findOrCreate(targetId);
-		
-		this.assignTargetValueModalView.setCurrentActivity(activity);
-		this.assignTargetValueModalView.setCurrentTargetReport(activityTargetReport);
-		this.assignTargetValueModalView.render();
-	},
-	
-	editActivity: function(e) {
-		var activityId = $(e.target).parents('tr').attr('data-id');
-		var activity = Activity.findOrCreate(activityId);
-
-		this.modalView.renderWithActivity(activity);
-	},
-	
-	deleteActivity : function(e) {
-		var activityId = $(e.target).parents('tr').attr('data-id');
-		var activity = Activity.findOrCreate(activityId);
-		if(activity != null) {
-			var answer = confirm("คุณต้องการลบกิจกรรมย่อย " + activity.get('name') + " ?" );
-			if(answer == true ) {
-				activity.destroy({
-					success: _.bind(function() {
-						alert("คุณได้ลบข้อมูลเรียบร้อยแล้ว");
-						this.renderMainTblWithParent(this.currentObjective);
-					},this)
-				});
-			} else {
-				// noting happend
-				return false;
-			}
-			
-		}
-		
-	},
-	
-	newChildActivity: function(e) {
-		var parentActivityId = $(e.target).parents('tr').attr('data-id');
-		
-		
-		var newActivity = new Activity();
-		newActivity.set('forObjective', this.currentObjective);
-		newActivity.set('parent', Activity.findOrCreate(parentActivityId));
-		
-		this.modalView.renderWithActivity(newActivity);
-		
-		
-	},
-	
-	newActivity: function() {
-		var newActivity = new Activity();
-		newActivity.set('forObjective', this.currentObjective);
-		newActivity.set('parent', null);
-		
-		this.modalView.renderWithActivity(newActivity);
-	},
-	
-	render: function() {
-		this.$el.html(this.mainCtrTemplate());
-		
-		this.mainSelectionView = new MainSelectionView({el: "#mainCtr #mainSelection"});
-
-		this.rootSelection = new ObjectiveCollection();
-		this.rootSelection.url = appUrl("/Objective/currentActivityOwner/" + fiscalYear);
-		this.rootSelection.fetch({
-			success: _.bind(function() {
-				this.mainSelectionView.renderInitialWith(this.rootSelection);
-			}, this)
-		});
-
-	},
-	
-	emptyTbl: function() {
-		this.$el.find("#mainTbl").empty();
-	},
-	
-	renderMainTblWithParent: function(obj) {
-		this.currentObjective = obj;
-
-		this.$el.find("#mainTbl").html(this.mainTblTemplate({}));
-		
-		// first find the activities
-		// and put them in the table 
-		this.activities = new ActivityPerformanceCollection();
-		this.activities.url = appUrl("/ActivityPerformance/currentOwner/forObjective/" + this.currentObjective.get('id'));
-		this.activities.fetch({
-			success : _.bind(function() {
-			
-				var json = this.activities.toJSON();
-				var html = this.mainTblTbodyTemplate(json);
-				
-				this.$el.find("#mainTbl tbody").html(html);
+		this.organization.fetch({
+			success: _.bind(function(model, response, options) {
+				this.renderSelection();
 			},this)
 		});
 		
+		return this;
 	},
-	
-	addChildrenTo : function(flatCollection, collection) {
-		if(collection == null || collection.length == 0) {
-			return;
-		} 
+	renderSelection: function() {
+		this.budgetProposals = new BudgetProposalCollection();
+		this.budgetProposals.fetch({
+			url: appUrl('/BudgetProposal/findByFiscalyearAndOwner/' + fiscalYear + '/' + organizationId),
+			success: _.bind(function(model, response, options) {
+				var json = this.budgetProposals.toJSON();
+				var html = this.budgetProposalSelectionTemplate(json);
+				this.$el.html(html);
+			},this)
+		});
+	}
+});
+
+var MainTblView = Backbone.View.extend({
+	/**
+     *  @memberOf MainTblView
+     */
+	initialize : function(options) {
+		this.assignTargetValueModalView = new AssignTargetValueModalView({parentView: this});
+	},
+	mainTblTemplate : Handlebars.compile($("#mainTblTemplate").html()),
+	mainTblTbodyActivityTemplate:  Handlebars.compile($("#mainTblTbodyActivityTemplate").html()),
+	mainTblTbodyObjectiveTemplate: Handlebars.compile($("#mainTblTbodyObjectiveTemplate").html()),
+	el : "#mainTbl",
+	events: {
+		"click .assignTargetValueLnk" : "assignTargetValueLnk"
+	},
+	assignTargetValueLnk: function(e) {
+		var targetId = $(e.target).parents('li').attr('data-id');
+		var activityTargetReport = ActivityTargetReport.findOrCreate(targetId);
 		
-		for(var i=0; i<collection.length; i++) {
-			flatCollection.push(collection.at(i));
-			this.addChildrenTo(flatCollection, collection.at(i).get('children'));
-		}
+		this.assignTargetValueModalView.setCurrentActivity(activityTargetReport.get('target').get('activity'));
+		this.assignTargetValueModalView.setCurrentTargetReport(activityTargetReport);
+		this.assignTargetValueModalView.render();
+	},
+	renderWithProposal: function(proposal) {
+		this.proposal = proposal;
 		
-	} 
+		this.childObjectives = new ObjectiveCollection();
+		this.childObjectives.fetch({
+			url: appUrl('/Objective/getChildrenAndloadActivityAndOwnerId/'
+					+proposal.get('forObjective').get('id')+'/' + organizationId),
+			success: _.bind(function(model, response, options) {
+				var json = this.proposal.toJSON();
+				var html = this.mainTblTemplate(json);
+				this.$el.html(html);
+				
+				for(var i=0; i< this.childObjectives.length; i++) {
+					var child = this.childObjectives.at(i);
+					json = child.toJSON();
+					html = this.mainTblTbodyObjectiveTemplate(json);
+					this.$el.find('tbody').append(html);
+					
+					var activities = child.get('filterActivities');
+					for(var j=0; j<activities.length; j++) {
+						var act = activities.at(j);
+						json =act.toJSON();
+						json.padding=30;
+						html=this.mainTblTbodyActivityTemplate(json);
+						this.$el.find('tbody').append(html);
+						
+						if(act.get('children').length>0) {
+							var childrenAct = act.get('children');
+							for(var j=0; j<childrenAct.length; j++) {
+								var childAct = childrenAct.at(j);
+								json = childAct.toJSON();
+								json.padding=60;
+								html=this.mainTblTbodyActivityTemplate(json);
+								this.$el.find('tbody').append(html);
+							}
+						}
+						
+					}
+					
+				}
+				
+			},this)
+		});
+		
+		
+	}
 	
 });

@@ -28,6 +28,7 @@ import biz.thaicom.eBudgeting.models.bgt.RequestColumn;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
+import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetResult;
 import biz.thaicom.eBudgeting.models.pln.Objective;
@@ -193,6 +194,8 @@ public interface EntityService {
 	public BudgetProposal saveBudgetProposal(JsonNode proposal, ThaicomUserDetail currentUser);
 	public List<BudgetProposal> findBudgetProposalByObjectiveIdAndBudgetTypeId(Long objectiveId, Long budgetTypeId);
 	public BudgetProposal deleteBudgetProposal(Long id);
+	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
+			Integer fiscalYear, Long ownerId);
 	
 	//ProposalStrategy
 	public List<ProposalStrategy> findProposalStrategyByBudgetProposal(
@@ -359,11 +362,16 @@ public interface EntityService {
 			Long targetId, JsonNode node, Long parentOrgId);
 	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndOwnerId(
 			Long targetId, Long ownerId);
-	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
-			Long targetId, Long parentOrgId);
+	public List<ActivityTargetReport> findActivityTargetReportByTarget_IdAndParentOrgId(
+			Long activityTargetId, Long parentOrgId);
 	public ActivityTargetReport findActivityTargetReportById(Long id);
-
+	public List<ActivityTargetReport> findActivityTargetReportByTargetIdAndReportLevel(
+			Long targetId, int reportLevel);
 	public ActivityTargetReport saveActivityTargetReportPlan(Long id, JsonNode node);
+	
+	
+	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
+			Long objectiveId, Long ownerId);
 
 	
 	//ActivityTargetResult
@@ -391,6 +399,8 @@ public interface EntityService {
 			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId);
 	public AssetAllocation deleteAssetAllocation(Long id);
 	public void saveAssetAllocationCollection(JsonNode node);
+	
+
 	
 	
 	

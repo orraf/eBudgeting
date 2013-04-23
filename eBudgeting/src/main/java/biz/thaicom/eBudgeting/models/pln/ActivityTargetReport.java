@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -40,7 +41,7 @@ public class ActivityTargetReport implements Serializable {
 	/**
 	 * รายงาน performance
 	 */
-	@ManyToOne(fetch=FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name="PERFORMANCE_PLN_ACTPER_ID")
 	private ActivityPerformance activityPerformance; 
 	

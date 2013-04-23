@@ -2,6 +2,7 @@ package biz.thaicom.eBudgeting.controllers.rest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -113,6 +117,18 @@ public class ObjectiveRestController {
 
 		return  list;
 	}
+	 
+	@RequestMapping(value="/Objective/getChildrenAndloadActivityAndOwnerId/{id}/{ownerId}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> getChildrenAndloadActivity(
+			@PathVariable Long id, @PathVariable Long ownerId) {
+		
+		// now load all activity
+		List<Objective> list = entityService
+				.findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(id, ownerId);
+		
+		return  list;
+	}
+	
 	
 	@RequestMapping(value="/Objective/{id}/availableChildren", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> getAvailableChildrenObjectiveById(@PathVariable Long id) {

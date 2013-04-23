@@ -22,8 +22,8 @@ public interface ActivityPerformanceRepository extends
 			"FROM ActivityPerformance activityPerformance " +
 			"	INNER JOIN FETCH activityPerformance.activity activity " +
 			"	INNER JOIN activity.forObjective objective " +
-			"	INNER JOIN FETCH activityPerformance.targetReports reports " +
-			"	INNER JOIN FETCH reports.target target " +
+			"	INNER JOIN FETCH activityPerformance.targetReport report " +
+			"	INNER JOIN FETCH report.target target " +
 			"	INNER JOIN FETCH target.unit unit " +
 			"WHERE " +
 			"	activityPerformance.owner = ?1 AND" +

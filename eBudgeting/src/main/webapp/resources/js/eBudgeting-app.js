@@ -503,7 +503,12 @@ RequestColumn = Backbone.RelationalModel.extend({
 
 Organization = Backbone.RelationalModel.extend({
 	idAttribute: 'id',
-	urlRoot: appUrl('/Organization')
+	urlRoot: appUrl('/Organization'),
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'parent',
+		relatedModel: 'Organization'
+	}]
 });
 
 ActivityTarget = Backbone.RelationalModel.extend({
@@ -574,8 +579,8 @@ ActivityPerformance = Backbone.RelationalModel.extend({
 		key: 'owner',
 		relatedModel: 'Organization'
 	},{
-		type: Backbone.HasMany,
-		key: 'targetReports',
+		type: Backbone.HasOne,
+		key: 'targetReport',
 		relatedModel: 'ActivityTargetReport'
 	}]
 });

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -45,8 +46,8 @@ public class ActivityPerformance implements Serializable{
 	/**
 	 * แต่ละกิจกรรมมีหลายเป้าหมาย targetReports เก็บค่าแผน/ผลของแต่ละเป้าหมาย
 	 */
-	@OneToMany(mappedBy="activityPerformance" )
-	private List<ActivityTargetReport> targetReports;
+	@OneToOne(mappedBy="activityPerformance")
+	private ActivityTargetReport targetReport;
 	
 	/**
 	 * เก็บข้อมูลแผน/ผลการใช้จ่ายงบประมาณ
@@ -83,12 +84,12 @@ public class ActivityPerformance implements Serializable{
 		this.activity = activity;
 	}
 
-	public List<ActivityTargetReport> getTargetReports() {
-		return targetReports;
+	public ActivityTargetReport getTargetReport() {
+		return targetReport;
 	}
 
-	public void setTargetReports(List<ActivityTargetReport> targetReports) {
-		this.targetReports = targetReports;
+	public void setTargetReport(ActivityTargetReport targetReport) {
+		this.targetReport = targetReport;
 	}
 
 	public List<MonthlyBudgetReport> getMonthlyBudgetReports() {

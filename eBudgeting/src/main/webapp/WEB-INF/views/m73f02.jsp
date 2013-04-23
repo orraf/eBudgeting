@@ -184,7 +184,13 @@
 	</td>
 	<td><ul style="list-style-type: none;margin:0px;padding-right:10px; text-align:right;"">
 		{{#each targets}}
-			<li>{{formatNumber budgetAllocated}}</li>
+			<li>
+				{{#if provincialTarget}}
+					(ส่วนภูมิภาค)
+				{{else}}
+					{{formatNumber budgetAllocated}} บาท
+				{{/if}}
+			</li>
 		{{/each}}
 		</ul>
 	</td>

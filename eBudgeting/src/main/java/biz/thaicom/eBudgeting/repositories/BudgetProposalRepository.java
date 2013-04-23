@@ -86,5 +86,18 @@ public interface BudgetProposalRepository extends
 			"	AND proposal.forObjective = ?2 ")
 	public Long findSumByBudgetTypeAndForObjective(BudgetType budgetType,
 			Objective forObjective);
+
+
+
+	@Query("" +
+			"SELECT proposal " +
+			"FROM BudgetProposal proposal " +
+			"	INNER JOIN FETCH proposal.forObjective objective " +
+			"	INNER JOIN FETCH proposal.budgetType budgetType " +
+			"WHERE proposal.forObjective.fiscalYear =?1 " +
+			"	AND proposal.owner.id = ?2 " +
+			"ORDER BY proposal.forObjective.code asc, proposal.budgetType.id asc")
+	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
+			Integer fiscalYear, Long ownerId);
 	
 }

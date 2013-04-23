@@ -4,29 +4,11 @@
 
 <div class="hero-unit white">
 <div id="headLine">
-	<c:if test='${not empty readOnly}'>
-		<div class="alert">
-    			<strong>Sign Off แล้ว</strong> สามารถเปิดดูข้อมูลได้อย่างเดียว ไม่สามารถแก้ไขเพิ่มเติมได้ 
-    		</div>
-	</c:if>
-	<h4>การจัดทำทะเบียนกิจกรรมย่อย</h4> 
+	<h4>การบันทึกการจัดสรรงบประมาณ ลงสู่ระดับกิจกรรมย่อย</h4> 
 </div>
-
 <div class="row">
 	<div class="span11">
 		
-		<div id="modal" class="modal wideModal hide fade">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<span style="font-weight: bold;"></span>
-			</div>
-			<div class="modal-body"></div>
-			<div class="modal-footer">
-				<a href="#" class="btn btn-primary" id="saveBtn">บันทึกข้อมูล</a>  
-				<a href="#" class="btn" id="cancelBtn">กลับหน้าหลัก</a> 
-			</div>
-		</div>
-
 		<div id="assignTargetValueModal" class="modal wideModal hide fade">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -40,122 +22,44 @@
 		</div>
 
 		<div id="mainCtr">
-			<c:choose>
-				<c:when test="${rootPage}">
-					<table class="table table-bordered" id="mainTbl">
-						<thead>
-							<tr>
-								<td>เลือกปีงบประมาณ</td>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach items="${fiscalYears}" var="fiscalYear">
-							<tr>
-								
-									<td><a href="./${fiscalYear.fiscalYear}/${fiscalYear.id}/"
-										class="nextChildrenLnk">${fiscalYear.fiscalYear} <i
-											class="icon icon-chevron-right nextChildrenLnk"></i>
-									</a></td>
-							
-							</tr>
-							</c:forEach>
-						</tbody>
-					</table>
-				</c:when>
-			</c:choose>
+			<div id="budgetSlt"></div>
+			<div id="mainTbl"></div>
 		</div>
 
 	</div>
 </div>
 </div>
 
-
-<script id="mainSelectionTemplate" type="text/x-handler-template">
-<form class="form-horizontal">
-<div class="control-group" style="margin-bottom:5px;">
-	<label class="control-label">แผนปฏิบัติการ :</label> 
-	<div class="controls">
-		<select id="type101Slt" class="span5">
-			<option>กรุณาเลือก...</option>
-			{{#each this}}<option value={{id}}>[{{code}}] {{name}}</option>{{/each}}
-		</select>
-	</div>
-</div>
-	<div id="type102Div">
-		<div class="control-group"  style="margin-bottom:5px;">
-			<label class="control-label">กิจกรรมรอง :</label>
-			<div class="controls">
-				<select class="span5" disabled="disabled">
-					<option>กรุณาเลือก...</option>
-				</select>
-			</div> 
-		</div>	
-	</div>
-</form>
+<script id="budgetProposalSelectionTemplate" type="text/x-handler-template">
+		<div class="btn-group">
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    			เลือกแผนปฏิบัติการ
+    			<span class="caret"></span>
+    		</a>
+    		<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+    			{{#each this}}
+					<li data-id={{id}}>
+						<a href="javascript:;" class="budgetProposalSelect">
+							[{{forObjective.code}}] {{forObjective.name}} 
+							<br/> <span style="padding-left:50px;"> - {{budgetType.name}}  ({{formatNumber amountAllocated}} บาท)</span>
+						</a>
+					</li>
+				{{/each}}
+    		</ul>
+    	</div>
 </script>
-
-<script id="selectionTemplate" type="text/x-handler-template">
-<div class="control-group"  style="margin-bottom:5px;">
-	<label class="control-label">{{type.name}} :</label>
-	<div class="controls">
-		<select id="type{{type.id}}Slt" class="span5">
-			<option>กรุณาเลือก...</option>
-			{{#each this}}<option value={{id}}>[{{code}}] {{name}}</option>{{/each}}
-		</select>
-	</div> 
-</div>
-</script>
-
-<script id="type102DisabledSelection" type="text/x-handler-template">
-		<div class="control-group"  style="margin-bottom:5px;">
-			<label class="control-label">กิจกรรมรอง :</label>
-			<div class="controls">
-				<select class="span5" disabled="disabled">
-					<option>กรุณาเลือก...</option>
-				</select>
-			</div> 
-		</div>
-</script>
-
-
-<script id="loadingTemplate" type="text/x-handler-template">
-	<div>Loading <img src="<c:url value='/resources/graphics/spinner_bar.gif'/>"/></div>
-</script>
-
-
-
-<script id="mainCtrTemplate" type="text/x-handler-template">
-<div id="mainSelection">
-</div>
-<div id="mainTbl">
-</div>
-</script>
-
 
 <script id="mainTblTemplate" type="text/x-handler-template">
-<div class="controls" style="margin-bottom: 15px;">
-	<div class="pull-left"> 
-		
-	</div>
-	<div class="pull-left" style="margin-left: 20px;">
-	<form class="form-search pull-left" style="margin-bottom:10px;" id="activitySearchFrm">
-		<div class="input-append">
-    		<input type="text" class="span2 search-query" id="activitySearchTxt" value="{{queryTxt}}">
-    			<button class="btn" type="submit" id="activitySearchTxt">Search</button>
-    	</div>
-    </form>
-	</div>
-	
-	<div class="clearfix"></div>
-</div>
+<h4>{{forObjective.name}} / {{budgetType.name}} - {{formatNumber amountAllocated}} บาท</h4>
 <table class="table table-bordered table-striped" id="mainTbl">
 	<thead>
 		<tr>
 			<td style="width:30px;"></td>
-			<td style="width:80px;">รหัส</td>
+			<td style="width:30px;">รหัส</td>
 			<td>ชื่อกิจกรรมย่อย</td>
-			<td style="width:140px;">เป้าหมาย</td>
+			<td style="width:100px;">เป้าหมาย</td>
 			<td style="width:100px;">หน่วยนับ</td>
+			<td style="width:100px;">งบประมาณที่จัดสรร (บาท)</td>
 
 		</tr>
 	</thead>
@@ -163,108 +67,55 @@
 	</tbody>
 </table>
 </script>
-<script id="mainTblTbodyTemplate" type="text/x-handler-template">
-{{#each this}}
+<script id="mainTblTbodyObjectiveTemplate" type="text/x-handler-template">
 <tr data-id="{{id}}">
-	<td><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
-	</td>
-	<td>{{activity.code}}</td>
-	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
-		{{activity.name}}</td>
-	<td><ul>
-		{{#each targetReports}}
-			<li data-id="{{id}}"><a href="#" class="assignTargetLnk">{{formatNumber targetValue}}</a></li>
+	<td></td>
+	<td>{{code}}</td>
+	<td>{{name}}</td>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+</script>
+<script id="mainTblTbodyActivityTemplate" type="text/x-handler-template">
+<tr data-id="{{id}}">
+	<td></td>
+	<td>{{code}}</td>
+	<td><span style="padding-left:{{padding}}px;">{{name}}</span></td>
+	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
+		{{#each filterTargets}}
+			<li data-id="{{filterReport.id}}"><a href="javascript:;" class="assignTargetValueLnk">{{formatNumber filterReport.targetValue}}</a></li>
 		{{/each}}
 		</ul>
 	</td>
-	<td><ul>
-		{{#each targetReports}}
-			<li>{{target.unit.name}}</li>
+	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
+		{{#each filterTargets}}
+			<li>{{unit.name}}</li>
+		{{/each}}
+		</ul>
+	</td>
+	<td>
+		<ul style="list-style-type: none;margin:0px;padding-right:10px; text-align:right;"">
+		{{#each filterTargets}}
+			<li data-id="{{filterReport.id}}">
+				<a href="javascript:;" class="assignTargetValueLnk">	 
+				
+					<span id="target_{{id}}-budgetAllocated">{{formatNumber budgetAllocated}}</span> บาท
+				
+				</a>
+			</li>
 		{{/each}}
 		</ul>
 	</td>
 </tr>
-{{/each}}
 </script>
-
-<script id="activityTargetTemplate" type="text/x-handler-template">
-<div class="alert alert-info">
-	 <h4><u><strong>{{headerString}}</strong></u></h4>
-	<div class="pull-left" style="padding-top:10px;">
-	    <label>ระบุค่าเป้าหมาย</label>
-        <input type="text" class="targetModel" id="targetValue" data-modelname="targetValue" value="{{targetValue}}">
-	</div>
-	<div class="pull-left" style="padding-top:10px; padding-left: 30px;">
-        <label>ระบุหน่วยนับ</label>
-        <select class="span2" id="unitSlt" data-modelName="unit" data-modelType="TargetUnit">
-                <option value="0">กรุณาเลือก</option>
-                {{#each unitSelectionList}}
-                        <option value="{{this.id}}" {{#if this.selected}}selected='selected'{{/if}}>{{this.name}}</option>
-                {{/each}}
-         </select>
-	</div>
-	<div class="clearfix"></div>
-	<div>
-		<a href="#" class="btn btn-mini btn-info addActivityTargetBtn"><i class="icon icon-plus-sign icon-white"></i> บันทึกค่าเป้าหมาย</a>
-		<a href="#" class="btn btn-mini backToActivity"><i class="icon icon-white"></i> ยกเลิก</a>
-	</div>
-
-</div>
-</script>
-
-<script  id="activityTargetTableTemplate" type="text/x-handler-template">
-<div id="activityTargetMenu">
-<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> เพิ่มเป้าหมาย</a>
-</div>
-<div id="activityTargetTblCtr">
-{{#if targets}}
-<table class="table table-bordered table-striped" id="activityTargetTbl" style="width:285px;margin-top:10px;">
-<thead>
-	<tr>
-		<td style="width:45px;"></td>
-		<td style="width:140px;">เป้าหมาย</td>
-		<td style="width:100px;">หน่วยนับ</td>
-	</tr>
-</thead>
-<tbody>
-	{{#each targets}}
-	<tr data-idx="{{idx}}" data-id="{{id}}">
-	<td><a href="#td-{{id}}" class="editObjective editTarget"><i class="icon-edit icon-blue"></i></a>				
-	<a href="#td-{{id}}" class="deleteObjective deleteTarget"><i class="icon-trash icon-red"></i></a></td>
-			<td style="text-align:center;">{{formatNumber targetValue}}</td>
-			<td style="text-align:center;">{{unit.name}}</td>
-	</tr>
-	{{/each}}
-</tbody>
-</table>
-{{/if}}
-</div>
-</script>
-
-<script id="modalTemplate" type="text/x-handler-template">
-<div>
-<form>
-	<label>ระบุรหัส</label>
-	<input type="text" class="model" id="code" value="{{code}}" data-modelName="code"></input>
-
-	<label>ระบุชื่อกิจกรรม</label>
-	<textarea rows="2" class="span5 model" id="nameTxt" data-modelName="name">{{name}}</textarea>
-	
-	<div id="activityTarget">
-		
-	</div>
-</form>
-
-</div>
-</script>
-
 <script id="assignTargetValueModalTemplate" type="text/x-handler-template">
 <div id="inputAll">
 	<div style="padding-top:7px; padding-right: 20px;height:35px; float:left">
     	<strong> ค่าเป้าหมายรวม: </strong>
 	</div>
     <div style="height:35px; float:left" id="totalInputForm">
-		<div class="input-append"><input disabled type="text" id="totalInputTxt" style="width:120px;" value="{{formatNumber targetValue}}"><span class="add-on">{{unit.name}}</span></div>
+		<div class="input-append"><input disabled type="text" id="totalInputTxt" style="width:120px;" value="{{formatNumber targetValue}}"><span class="add-on">{{target.unit.name}}</span></div>
 	</div>
 
 	<div class="clearfix"></div>
@@ -279,8 +130,9 @@
             	    <table class="table table-bordered" style="margin-bottom:0px">
                 	<thead>
                     	<tr>
-                        	<td style="width:237px;">หน่วยงาน</td>
-                        	<td>รวม: <span id="sumTotalAllocated"></span> {{unit.name}}</td>
+                        	<td>หน่วยงาน</td>
+                        	<td style="width:100px;">รวม: <span id="sumTotalAllocated"></span> {{target.unit.name}}</td>
+							<td style="width:160px;">งบประมาณ: <span id="sumTotalBudgetAllocated"></span> บาท</td>
                     	</tr>
                 	</thead>
                 	</table>
@@ -344,195 +196,86 @@
 
 <script id="organizationTargetValueTbodyTemplate" type="text/x-handler-template">
 {{#each this}}
-<tr data-id="{{owner.id}}"><td><a href="#" class="removeOrganizationTarget"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
-	<td  style="width:188px">
-		<div style="height:35px; float:left" id="totalInputForm">
-			<div class="input-append"><input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{targetValue}}"><span class="add-on">{{target.unit.name}}</span></div>
-		</div>
+<tr data-id="{{owner.id}}">
+	<td><a href="#" class="removeOrganizationTarget"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
+	<td style="width:100px;">
+			<input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:50px; text-align:right;" value="{{targetValue}}"/>
+	</td>
+	<td style="width:160px;">
+			<input type="text" class="budgetAllocated" id="budgetAllocated-{{id}}" style="width:140px; text-align:right;" value="{{activityPerformance.budgetAllocated}}"/>
 	</td>
 </tr>
 {{/each}}
+</script>
+
+<script id="activityTargetTemplate" type="text/x-handler-template">
+<div class="alert alert-info">
+	 <h4><u><strong>{{headerString}}</strong></u></h4>
+	<div class="pull-left" style="padding-top:10px;">
+	    <label>ระบุค่าเป้าหมาย</label>
+        <input type="text" class="targetModel" id="targetValue" data-modelname="targetValue" value="{{targetValue}}">
+	</div>
+	<div class="pull-left" style="padding-top:10px; padding-left: 30px;">
+        <label>ระบุหน่วยนับ</label>
+        <select class="span2" id="unitSlt" data-modelName="unit" data-modelType="TargetUnit">
+                <option value="0">กรุณาเลือก</option>
+                {{#each unitSelectionList}}
+                        <option value="{{this.id}}" {{#if this.selected}}selected='selected'{{/if}}>{{this.name}}</option>
+                {{/each}}
+         </select>
+	</div>
+	<div class="clearfix"></div>
+	<div>
+		<a href="#" class="btn btn-mini btn-info addActivityTargetBtn"><i class="icon icon-plus-sign icon-white"></i> บันทึกค่าเป้าหมาย</a>
+		<a href="#" class="btn btn-mini backToActivity"><i class="icon icon-white"></i> ยกเลิก</a>
+	</div>
+
+</div>
+</script>
+
+<script  id="activityTargetTableTemplate" type="text/x-handler-template">
+<div id="activityTargetMenu">
+<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> เพิ่มเป้าหมาย</a>
+</div>
+<div id="activityTargetTblCtr">
+{{#if targets}}
+<table class="table table-bordered table-striped" id="activityTargetTbl" style="width:285px;margin-top:10px;">
+<thead>
+	<tr>
+		<td style="width:45px;"></td>
+		<td style="width:140px;">เป้าหมาย</td>
+		<td style="width:100px;">หน่วยนับ</td>
+	</tr>
+</thead>
+<tbody>
+	{{#each targets}}
+	<tr data-idx="{{idx}}" data-id="{{id}}">
+	<td><a href="#td-{{id}}" class="editObjective editTarget"><i class="icon-edit icon-blue"></i></a>				
+	<a href="#td-{{id}}" class="deleteObjective deleteTarget"><i class="icon-trash icon-red"></i></a></td>
+			<td style="text-align:center;">{{formatNumber targetValue}}</td>
+			<td style="text-align:center;">{{unit.name}}</td>
+	</tr>
+	{{/each}}
+</tbody>
+</table>
+{{/if}}
+</div>
 </script>
 
 
 <script src="<c:url value='/resources/js/pages/m73f03.js'/>"></script>
 
 <script type="text/javascript">
-	var fiscalYear = parseInt("${fiscalYear}");
+var organizationId = "${organizationId}";
+var fiscalYear = "${fiscalYear}";
+var budgetProposalSelectionView = new BudgetProposalSelectionView({
+	organizationId: organizationId
+});
+var mainTblView = new MainTblView();
+
+$(document).ready(function() {
 	
-	var currentOrganizationId = "${workAtId}";
-	var mainCtrView = null;
-	var objectiveCollection = null;
-	var budgetTypeSelectionView = null;
-	var rootCollection;
-	var topBudgetList = ["งบบุคลากร","งบดำเนินงาน","งบลงทุน","งบอุดหนุน","งบรายจ่ายอื่น"];
-	var l = null;
-	var e1;
-	var e2;
+	budgetProposalSelectionView.render();
 	
-	var listTargetUnits = new TargetUnitCollection();
-	listTargetUnits.fetch({
-		url: appUrl('/TargetUnit/')
-	});
-
-	
-	var readOnly = "${readOnly}";
-
-	Handlebars.registerHelper("sumTargetValue", function(unitId, proposals) {
-		// get all targetValue
-		sum=0;
-		if(proposals == null || proposals.length ==0) {
-			return sum;
-		}
-		for(var i=0; i< proposals.length; i++) {
-			if(proposals[i].targets != null) {
-				var targets = proposals[i].targets;
-				for(var j=0; j < targets.length; j++) {
-					if(targets[j].unit.id == unitId) {
-						sum += targets[j].targetValue;
-					}
-				}
-			}
-		}
-		
-		return addCommas(sum);
-	});
-	
-	Handlebars.registerHelper("listProposals", function(proposals) {
-		if(proposals == null || proposals.length == 0) return "";
-		
-		var budgetTypeList = [];
-		
-		for(var i=0; i< proposals.length; i++) {
- 			if(budgetTypeList[proposals[i].budgetType.topParentName] == null) budgetTypeList[proposals[i].budgetType.topParentName] = 0;
-
- 			budgetTypeList[proposals[i].budgetType.topParentName] += proposals[i].amountRequest;
- 		}
- 		
- 		var json=[];
- 		for(var i=0; i< topBudgetList.length; i++) {
- 			if(budgetTypeList[topBudgetList[i]] != null && budgetTypeList[topBudgetList[i]] > 0) {
- 				json.push({name: topBudgetList[i], total: budgetTypeList[topBudgetList[i]]});
- 			}
- 		}
- 		 		
- 		return proposalListTemplate(json);
-		
-	});
-	
-	Handlebars.registerHelper("sumProposal", function(proposals) {
-		var amount = 0;
-		for ( var i = 0; i < proposals.length; i++) {
-			amount += proposals[i].amountRequest;
-		}
-		return addCommas(amount);
-
-	});
-	Handlebars.registerHelper("sumAllocationRecords", function(records) {
-		var amount = 0;
-		for ( var i = 0; i < records.length; i++) {
-			amount += records[i].amountAllocated;
-		}
-		return addCommas(amount);
-
-	});
-	
-	Handlebars.registerHelper("sumProposalNext1Year", function(proposals) {
-		var amount = 0;
-		for ( var i = 0; i < proposals.length; i++) {
-			amount += proposals[i].amountRequestNext1Year;
-		}
-		return addCommas(amount);
-
-	});
-	Handlebars.registerHelper("sumProposalNext2Year", function(proposals) {
-		var amount = 0;
-		for ( var i = 0; i < proposals.length; i++) {
-			amount += proposals[i].amountRequestNext2Year;
-		}
-		return addCommas(amount);
-
-	});
-	Handlebars.registerHelper("sumProposalNext3Year", function(proposals) {
-		var amount = 0;
-		for ( var i = 0; i < proposals.length; i++) {
-			amount += proposals[i].amountRequestNext3Year;
-		}
-		return addCommas(amount);
-
-	});
-
-	Handlebars.registerHelper("formulaLine", function(strategy) {
-		console.log(strategy);
-		var s = addCommas(strategy.formulaStrategy.standardPrice) + " บาท ";
-
-		if (strategy.formulaStrategy != null) {
-			var formulaColumns = strategy.formulaStrategy.formulaColumns;
-			for ( var i = 0; i < formulaColumns.length; i++) {
-				
-				s = s + " &times; ";
-				if (formulaColumns[i].isFixed) {
-					// now we'll go through requestColumns
-					var j;
-					for (j = 0; j < strategy.requestColumns.length; j++) {
-						if (strategy.requestColumns[j].column.id == formulaColumns[i].id) {
-							s = s + addCommas(strategy.requestColumns[j].amount)
-								+ " " + formulaColumns[i].unitName;
-						}
-					}
-
-				} else {
-					s = s +  addCommas(formulaColumns[i].value)
-						+ " " + formulaColumns[i].unitName;
-				}
-
-			}
-		}
-
-		return s;
-	});
-
-	Handlebars.registerHelper('substract', function(a, b) {
-		return a - b;
-	});
-
-	Handlebars.registerHelper('childrenNodeTpl', function(children, level) {
-		var out = '';
-		var childNodeTpl = Handlebars
-				.compile($("#childrenNodeTemplate").html());
-		var childNormalNodeTpl = Handlebars.compile($(
-				"#childrenNormalNodeTemplate").html());
-		if (level == undefined)
-			level = 0;
-		if (children != null && children.length > 0) {
-
-			if (children[0].type.id > 0) {
-				children.forEach(function(child) {
-					child["level"] = level + 1;
-					
-					
-					child["padding"] = parseInt(level) * 20;
-					
-					child["nameWidth"] = 246 - 18 - child["padding"];
-					out = out + childNodeTpl(child);
-				});
-
-			} else {
-				children.forEach(function(child) {
-					out = out + childNormalNodeTpl(child);
-				});
-			}
-		}
-
-		return out;
-	});
-
-	Handlebars.registerHelper('next', function(val, next) {
-		return val + next;
-	});
-
-	$(document).ready(function() {		
-		mainCtrView = new MainCtrView();
-		mainCtrView.render();
-	});
+});
 </script>

@@ -106,14 +106,15 @@ public class ActivityRestController {
 	public @ResponseBody List<ActivityTargetReport> findActivityTargetReportByTargetId(
 			@PathVariable Long targetId,
 			@Activeuser ThaicomUserDetail currentUser) {
-		return entityService.findActivityTargetReportByTargetIdAndParentOrgId(targetId, null);
+		// find top level report (ส่วนจังหวัด/ส่วน)
+		return entityService.findActivityTargetReportByTargetIdAndReportLevel(targetId, 1);
 	}
 
 	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/parentOrganization/{parentOrgId}", method=RequestMethod.GET)
 	public @ResponseBody List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
 			@PathVariable Long targetId,
 			@PathVariable Long parentOrgId) {
-		return entityService.findActivityTargetReportByTargetIdAndParentOrgId(targetId, parentOrgId);
+		return entityService.findActivityTargetReportByTarget_IdAndParentOrgId(targetId, parentOrgId);
 	}
 
 	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/parentOrganization/{parentOrgId}", method=RequestMethod.POST)
