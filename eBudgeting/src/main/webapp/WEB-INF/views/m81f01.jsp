@@ -93,6 +93,11 @@
 				</tr>
 			</thead>
 			<tbody>
+				<tr class="info">
+					<td class="rightAlign"><strong>ไตรมาสที่ 1<strong></td>
+					<td class="rightAlign" id="Q1Plan"></td>
+					<td class="rightAlign" id="Q1Result"></td>
+				</tr>
 				<tr>
 					<td>ตุลาคม</td>
 					<td class="rightAlign">{{formatNumber monthlyReports.0.activityPlan}}</td>
@@ -109,9 +114,9 @@
 					<td class="rightAlign">{{formatNumber monthlyReports.2.activityResult}}</td>
 				</tr>
 				<tr class="info">
-					<td class="rightAlign"><strong>ไตรมาสที่ 1<strong></td>
-					<td class="rightAlign" id="Q1Plan"></td>
-					<td class="rightAlign" id="Q1Result"></td>
+					<td class="rightAlign"><strong>ไตรมาสที่ 2</strong></td>
+					<td class="rightAlign" id="Q2Plan"></td>
+					<td class="rightAlign" id="Q2Result"></td>
 				</tr>
 				<tr>
 					<td>มกราคม</td>
@@ -128,11 +133,7 @@
 					<td class="rightAlign">{{formatNumber monthlyReports.5.activityPlan}}</td>
 					<td class="rightAlign">{{formatNumber monthlyReports.5.activityResult}}</td>
 				</tr>
-				<tr class="info">
-					<td class="rightAlign"><strong>ไตรมาสที่ 2</strong></td>
-					<td class="rightAlign" id="Q2Plan"></td>
-					<td class="rightAlign" id="Q2Result"></td>
-				</tr>
+
 			</tbody>
 		</table>
 		</div>
@@ -146,6 +147,11 @@
 				</tr>
 			</thead>
 			<tbody>
+				<tr class="info">
+					<td class="rightAlign"><strong>ไตรมาสที่ 3</strong></td>
+					<td class="rightAlign" id="Q3Plan"></td>
+					<td class="rightAlign" id="Q3Result"></td>
+				</tr>
 				<tr>
 					<td>เมษายน</td>
 					<td class="rightAlign">{{formatNumber monthlyReports.6.activityPlan}}</td>
@@ -162,9 +168,9 @@
 					<td class="rightAlign">{{formatNumber monthlyReports.8.activityResult}}</td>
 				</tr>
 				<tr class="info">
-					<td class="rightAlign"><strong>ไตรมาสที่ 3</strong></td>
-					<td class="rightAlign" id="Q3Plan"></td>
-					<td class="rightAlign" id="Q3Result"></td>
+					<td class="rightAlign"><strong>ไตรมาสที่ 4<strong></td>
+					<td class="rightAlign" id="Q4Plan"></td>
+					<td class="rightAlign" id="Q4Result"></td>
 				</tr>
 				<tr>
 					<td>กรกฎาคม</td>
@@ -181,11 +187,7 @@
 					<td class="rightAlign">{{formatNumber monthlyReports.11.activityPlan}}</td>
 					<td class="rightAlign">{{formatNumber monthlyReports.11.activityResult}}</td>
 				</tr>
-				<tr class="info">
-					<td class="rightAlign"><strong>ไตรมาสที่ 4<strong></td>
-					<td class="rightAlign" id="Q4Plan"></td>
-					<td class="rightAlign" id="Q4Result"></td>
-				</tr>
+
 			</tbody>
 		</table>
 		</div>
