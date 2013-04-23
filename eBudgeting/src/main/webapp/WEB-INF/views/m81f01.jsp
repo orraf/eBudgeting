@@ -20,6 +20,17 @@
 				<a href="#" class="btn" id="cancelBtn">กลับหน้าหลัก</a> 
 			</div>
 		</div>
+		
+		<div id="historyModal" class="modal wideModal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span style="font-weight: bold;"></span>
+			</div>
+			<div class="modal-body"></div>
+			<div class="modal-footer">
+				<a href="#" class="btn" id="cancelBtn">กลับหน้าหลัก</a> 
+			</div>
+		</div>
 
 		<div id="mainCtr">
 
@@ -330,7 +341,7 @@
 					<td style="text-align:center;"><a href="#" class="showReport">{{sumResult filterReport.monthlyReports}} {{unit.name}}</a></td>
 					<td style="text-align:right;"><a href="#" class="showReport">{{formatNumber filterReport.activityPerformance.budgetAllocated}} บาท</a></td>
 					<td style="text-align:right;"><a href="#" class="showReport">{{sumBudgetResult filterReport.activityPerformance.monthlyBudgetReports}} บาท</a></td>
-					<td>{{filterReport.lastSaveTxt}}
+					<td>{{filterReport.lastSaveTxt}} <a href="javascript:;" class="historyLookup"><i class="icon-search"></i></a>
 					</td>
 				</tr>
 			{{/each}}
