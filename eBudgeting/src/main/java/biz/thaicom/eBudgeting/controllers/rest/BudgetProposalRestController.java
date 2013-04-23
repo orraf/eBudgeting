@@ -69,6 +69,7 @@ public class BudgetProposalRestController {
 		return entityService.findBudgetProposalByObjectiveIdAndBudgetTypeId(objectiveId, budgetTypeId);
 	}
 	
+	
 	@RequestMapping(value="/BudgetProposal/findByFiscalyearAndOwner/{fiscalYear}/{ownerId}")
 	public @ResponseBody List<BudgetProposal> findByFiscalyearAndOwner(
 			@PathVariable Integer fiscalYear,

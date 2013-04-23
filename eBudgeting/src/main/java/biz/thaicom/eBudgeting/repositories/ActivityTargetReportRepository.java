@@ -20,7 +20,7 @@ public interface ActivityTargetReportRepository extends
 	@Query("" +
 			"SELECT report " +
 			"FROM ActivityTargetReport report " +
-			"	INNER JOIN FETCH report.monthlyReports monthlyReports " +
+			"	LEFT JOIN FETCH report.monthlyReports monthlyReports " +
 			"WHERE report.target.id = ?1 and report.owner.id = ?2 ")
 	public List<ActivityTargetReport> findAllByTarget_idAndOwner_Id(
 			Long targetId, Long ownerId);
@@ -29,7 +29,8 @@ public interface ActivityTargetReportRepository extends
 	@Query("" +
 			"SELECT report " +
 			"FROM ActivityTargetReport report " +
-			"	INNER JOIN FETCH report.monthlyReports monthlyReports " +
+			"	LEFT JOIN FETCH report.monthlyReports monthlyReports " +
+			"	INNER JOIN FETCH report.activityPerformance performance " +
 			"WHERE report.id = ?1  ")
 	public ActivityTargetReport findOneAndFetchReportById(Long id);
 	
@@ -51,10 +52,9 @@ public interface ActivityTargetReportRepository extends
 	@Query("" +
 			"SELECT report " +
 			"FROM ActivityTargetReport report " +
-			"WHERE report.owner.id = ?3 " +
-			"	AND report.reportLevel = ?2 " +
+			"WHERE report.owner.id = ?2 " +
 			"	AND report.target.activity.forObjective.parentPath like ?1 " )
-	public List<ActivityTargetReport> findAllByParentObjectiveIdAndReportLevelAndOwnerId(
-			String objectiveIdLike, int reportLevel, Long ownerId);
+	public List<ActivityTargetReport> findAllByParentObjectiveIdAndOwnerId(
+			String objectiveIdLike, Long ownerId);
 
 }

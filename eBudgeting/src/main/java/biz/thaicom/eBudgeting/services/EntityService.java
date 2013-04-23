@@ -197,6 +197,7 @@ public interface EntityService {
 	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
 			Integer fiscalYear, Long ownerId);
 	
+	
 	//ProposalStrategy
 	public List<ProposalStrategy> findProposalStrategyByBudgetProposal(
 			Long budgetProposalId);
@@ -399,7 +400,7 @@ public interface EntityService {
 			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId);
 	public AssetAllocation deleteAssetAllocation(Long id);
 	public void saveAssetAllocationCollection(JsonNode node);
-	
+
 
 	
 	

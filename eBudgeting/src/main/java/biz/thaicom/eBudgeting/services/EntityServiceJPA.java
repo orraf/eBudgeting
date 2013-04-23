@@ -53,6 +53,7 @@ import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetResult;
 import biz.thaicom.eBudgeting.models.pln.MonthlyActivityReport;
+import biz.thaicom.eBudgeting.models.pln.MonthlyBudgetReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -84,6 +85,7 @@ import biz.thaicom.eBudgeting.repositories.FiscalBudgetTypeRepository;
 import biz.thaicom.eBudgeting.repositories.FormulaColumnRepository;
 import biz.thaicom.eBudgeting.repositories.FormulaStrategyRepository;
 import biz.thaicom.eBudgeting.repositories.MonthlyActivityReportRepository;
+import biz.thaicom.eBudgeting.repositories.MonthlyBudgetReportRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveBudgetProposalRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveDetailRepository;
 import biz.thaicom.eBudgeting.repositories.ObjectiveNameRepository;
@@ -199,6 +201,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private MonthlyActivityReportRepository monthlyActivityReportRepository;
+	
+	@Autowired
+	private MonthlyBudgetReportRepository monthlyBudgetReportRepository;
 	
 	@Autowired
 	private AssetGroupRepository assetGroupRepository;
@@ -4293,7 +4298,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		List<Objective> childrenObjective = new ArrayList<Objective>();
 		List<ActivityTargetReport> targetReports = activityTargetReportRepository
-				.findAllByParentObjectiveIdAndReportLevelAndOwnerId(objectiveIdLike, 1, ownerId);
+				.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, ownerId);
 		
 		logger.debug("targetReports: " + targetReports.size());
 		
@@ -4373,7 +4378,7 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public ActivityTargetReport findActivityTargetReportById(Long id) {
 		ActivityTargetReport atr = activityTargetReportRepository.findOneAndFetchReportById(id);
-
+		atr.getActivityPerformance().getMonthlyBudgetReports().size();
 		return atr;
 	}
 
@@ -4404,7 +4409,36 @@ public class EntityServiceJPA implements EntityService {
 			
 		}
 		
+		// now do this with the performance
+		if(report.getActivityPerformance().getMonthlyBudgetReports() == null ||
+				report.getActivityPerformance().getMonthlyBudgetReports().size() != 12) {
+			report.getActivityPerformance().setMonthlyBudgetReports(new ArrayList<MonthlyBudgetReport>());
+			
+			List<MonthlyBudgetReport> monthlyReports = report.getActivityPerformance().getMonthlyBudgetReports();
+			for(Integer i=0; i<12; i++) {
+				MonthlyBudgetReport monthly = new MonthlyBudgetReport();
+				monthly.setFiscalMonth(i);
+				monthly.setOwner(report.getOwner());
+				monthly.setActivityPerformance(report.getActivityPerformance());
+				
+				monthlyReports.add(monthly);
+			}
+		}
+		
+		for(JsonNode monthlyNode : node.get("activityPerformance").get("monthlyBudgetReports")) {
+			Integer month = monthlyNode.get("fiscalMonth").asInt();
+			MonthlyBudgetReport monthly = report.getActivityPerformance().getMonthlyBudgetReports().get(month);
+			if(monthlyNode.get("budgetPlan")!=null) {
+				monthly.setBudgetPlan(monthlyNode.get("budgetPlan").asLong());
+			} else {
+				monthly.setBudgetPlan(0L);
+			}
+			
+		}
+		
 		monthlyActivityReportRepository.save(report.getMonthlyReports());
+		monthlyBudgetReportRepository.save(report.getActivityPerformance().getMonthlyBudgetReports());
+		
 		
 		return report;
 	}
@@ -4739,6 +4773,9 @@ public class EntityServiceJPA implements EntityService {
 			Integer fiscalYear, Long ownerId) {
 		return budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, ownerId);
 	}
+	
+	
+
 
 	@Override
 	public BudgetProposal deleteBudgetProposal(Long id) {

@@ -582,7 +582,12 @@ ActivityPerformance = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'targetReport',
 		relatedModel: 'ActivityTargetReport'
-	}]
+	},{
+		type: Backbone.HasMany,
+		key: 'monthlyBudgetReports',
+		relatedModel: 'MonthlyBudgetReport',
+		collectionType: 'MonthlyBudgetReportCollection'
+	}, ]
 });
 
 
@@ -651,7 +656,17 @@ MonthlyActivityReport = Backbone.RelationalModel.extend({
 });
 
 MonthlyBudgetReport = Backbone.RelationalModel.extend({
-	idAttribute: 'id'
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'activityPerformance',
+		relatedModel: 'ActivityPerformance'
+	}, {
+		type:Backbone.HasOne,
+		key: 'owner',
+		relatedModel: 'Organization'
+	}]
+		
 });
 
 Person = Backbone.RelationalModel.extend({
@@ -997,6 +1012,10 @@ ObjectiveDetailCollection = Backbone.Collection.extend({
 
 MonthlyActivityReportCollection = Backbone.Collection.extend({
 	model: MonthlyActivityReport
+});
+
+MonthlyBudgetReportCollection = Backbone.Collection.extend({
+	model: MonthlyBudgetReport
 });
 
 AssetGroupCollection = Backbone.Collection.extend({
