@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -53,6 +54,7 @@ public class ActivityPerformance implements Serializable{
 	 * เก็บข้อมูลแผน/ผลการใช้จ่ายงบประมาณ
 	 */
 	@OneToMany(mappedBy="activityPerformance")
+	@OrderBy("fiscalMonth asc")
 	private List<MonthlyBudgetReport> monthlyBudgetReports;
 	
 	/**
@@ -115,6 +117,20 @@ public class ActivityPerformance implements Serializable{
 
 	public void setOwner(Organization owner) {
 		this.owner = owner;
+	}
+
+	public MonthlyBudgetReport getFiscalReportOn(Integer budgetFiscalMonth) {
+		if(this.monthlyBudgetReports == null || this.monthlyBudgetReports.size() != 12) { 
+			return null;
+		}
+		
+		for(int i=0; i<12; i++) {
+			if(this.monthlyBudgetReports.get(i).getFiscalMonth().equals(budgetFiscalMonth)) {
+				return this.monthlyBudgetReports.get(i);
+			}
+		}
+		
+		return null;
 	}
 	
 	

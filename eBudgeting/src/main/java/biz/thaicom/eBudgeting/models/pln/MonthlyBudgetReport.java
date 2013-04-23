@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -51,7 +52,7 @@ public class MonthlyBudgetReport implements Serializable {
 	 * ผลการดำเนินงานของเดือน fiscalMonth
 	 */
 	@Basic
-	private Long budgetResult;
+	private Double budgetResult;
 	
 	/**
 	 * มีค่าตั้งแต่ 0 - 11 (0 = เดือนตุลาคม, 11 = เดือนกันยายน)
@@ -97,11 +98,11 @@ public class MonthlyBudgetReport implements Serializable {
 		this.budgetPlan = budgetPlan;
 	}
 
-	public Long getBudgetResult() {
+	public Double getBudgetResult() {
 		return budgetResult;
 	}
 
-	public void setBudgetResult(Long budgetResult) {
+	public void setBudgetResult(Double budgetResult) {
 		this.budgetResult = budgetResult;
 	}
 

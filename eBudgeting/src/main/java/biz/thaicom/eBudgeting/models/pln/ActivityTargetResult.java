@@ -47,6 +47,15 @@ public class ActivityTargetResult implements Serializable{
 	@Basic
 	private Long result;
 	
+	@Basic
+	private  Double budgetResult;
+	
+	@Basic
+	private Integer budgetFiscalMonth;
+	
+	@Basic
+	private Boolean resultBudgetType;
+	
 	@ManyToOne
 	@JoinColumn(name="REPORTPERSON_HRX_PERSON_ID") 
 	private Person person;
@@ -125,6 +134,31 @@ public class ActivityTargetResult implements Serializable{
 	public void setRemoved(Boolean removed) {
 		this.removed = removed;
 	}
+
+	public Double getBudgetResult() {
+		return budgetResult;
+	}
+
+	public void setBudgetResult(Double budgetResult) {
+		this.budgetResult = budgetResult;
+	}
+
+	public Integer getBudgetFiscalMonth() {
+		return budgetFiscalMonth;
+	}
+
+	public void setBudgetFiscalMonth(Integer budgetFiscalMonth) {
+		this.budgetFiscalMonth = budgetFiscalMonth;
+	}
+
+	public Boolean getResultBudgetType() {
+		return resultBudgetType;
+	}
+
+	public void setResultBudgetType(Boolean resultBudgetType) {
+		this.resultBudgetType = resultBudgetType;
+	}
+	
 	
 	
 }

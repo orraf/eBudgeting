@@ -4454,6 +4454,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		// now forEach Report
 		for(ActivityTargetReport report: reports) {
+			report.getActivityPerformance().getMonthlyBudgetReports().size();
 			Objective obj = report.getTarget().getActivity().getForObjective();
 			
 			if(!objectives.contains(obj)) {
@@ -4506,37 +4507,58 @@ public class EntityServiceJPA implements EntityService {
 		result.setTimestamp(new Date());
 		result.setPerson(currentUser.getPerson());
 		result.setRemark(node.get("remark").asText());
-		result.setResult(node.get("result").asLong());
-		SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("TH", "TH"));
-		
-		try {
+		result.setResultBudgetType(node.get("resultBudgetType").asBoolean());
+		if(result.getResultBudgetType() == true) {
+			result.setBudgetResult(node.get("budgetResult").asDouble());
+			result.setBudgetFiscalMonth(node.get("budgetFiscalMonth").asInt());
 			
-			result.setReportedResultDate(df.parse(node.get("reportedResultDate").asText()));
+			 MonthlyBudgetReport monthlyReport = report
+					 .getActivityPerformance()
+					 .getFiscalReportOn(result.getBudgetFiscalMonth());
+			 
+			 monthlyReport.setBudgetResult(result.getBudgetResult());
+			 
 			
-			logger.debug("saving date:" + result.getReportedResultDate());
+		} else {
+			result.setResult(node.get("result").asLong());
+			SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("TH", "TH"));
 			
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
+			try {
+				
+				result.setReportedResultDate(df.parse(node.get("reportedResultDate").asText()));
+				
+				logger.debug("saving date:" + result.getReportedResultDate());
+				
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return null;
+			}
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(result.getReportedResultDate());
+			Integer fiscalMonth = ( calendar.get(Calendar.MONTH) + 3 ) % 12;
+			
+			logger.debug("calendar.get(Calendar.MONTH) = " + calendar.get(Calendar.MONTH));
+			logger.debug("fiscalMonth : " + fiscalMonth); 
+			
+			 MonthlyActivityReport monthlyReport = report.getFiscalReportOn(fiscalMonth);
+			 
+			 logger.debug("monthlyReport.getFiscalMonth(): " + monthlyReport.getFiscalMonth());
+			 
+			if(monthlyReport.getActivityResult() == null ) {
+				monthlyReport.setActivityResult(result.getResult());
+			} else {
+				monthlyReport.setActivityResult(monthlyReport.getActivityResult() + result.getResult());
+			}
+			
+			//report.getMonthlyReports().get(fiscalMonth).setActivityResult(monthlyResult);		
+			monthlyActivityReportRepository.save(monthlyReport);
 		}
 		activityTargetResultRepository.save(result);
 		// now we'll have to update the result month
 		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(result.getReportedResultDate());
-		Integer fiscalMonth = ( calendar.get(Calendar.MONTH) + 3 ) % 12;
-		
-		logger.debug("fiscalMonth : " + fiscalMonth); 
-		
-		Long monthlyResult = report.getMonthlyReports().get(fiscalMonth).getActivityResult();
-		if(monthlyResult == null ) {
-			monthlyResult = result.getResult();
-		} else {
-			monthlyResult += result.getResult();
-		}
-		
-		report.getMonthlyReports().get(fiscalMonth).setActivityResult(monthlyResult);		
-		monthlyActivityReportRepository.save(report.getMonthlyReports().get(fiscalMonth));
+		result.getReport().getMonthlyReports().size();
+		result.getReport().getActivityPerformance().getMonthlyBudgetReports().size();
 		
 		return result;
 	}

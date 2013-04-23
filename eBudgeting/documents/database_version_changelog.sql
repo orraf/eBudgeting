@@ -1020,3 +1020,14 @@
  	update app_info set db_version=12;
 	alter table PLN_ACTIVITYTARGET
 		add (PROVINCIALTARGET NUMBER(1));
+
+		
+	alter table PLN_ACTIVITYTARGETRESULT add (
+	  	RESULTBUDGETTYPE  NUMBER(1),
+	  	BUDGETFISCALMONTH NUMBER(4),
+	  	BUDGETRESULT      FLOAT(126)
+	);
+	
+	alter table PLN_MONTHLYBGTREPORT modify ( 
+   		BUDGETRESULT    float(126)
+	);

@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -57,6 +58,7 @@ public class ActivityTargetReport implements Serializable {
 	 * แผน/ผลของกิจกรรมรายเดือน
 	 */
 	@OneToMany(mappedBy="report")
+	@OrderBy("fiscalMonth asc")
 	private List<MonthlyActivityReport>  monthlyReports;
 	
 	/**
@@ -143,6 +145,20 @@ public class ActivityTargetReport implements Serializable {
 
 	public void setReportLevel(Integer reportLevel) {
 		this.reportLevel = reportLevel;
+	}
+
+	public MonthlyActivityReport getFiscalReportOn(Integer fiscalMonth) {
+		if(this.monthlyReports == null || this.monthlyReports.size() != 12) { 
+			return null;
+		}
+		
+		for(int i=0; i<12; i++) {
+			if(this.monthlyReports.get(i).getFiscalMonth().equals(fiscalMonth)) {
+				return this.monthlyReports.get(i);
+			}
+		}
+		
+		return null;
 	}
 	
 	
