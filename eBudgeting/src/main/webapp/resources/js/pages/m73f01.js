@@ -238,12 +238,27 @@ var ActivityTargetTableView = Backbone.View.extend({
 		"click .addActivityTargetBtn" : "addActivityTarget",
 		"click .backToActivity" : "backToActivity",
 		"click .deleteTarget" : "deleteActivityTarget",
-		"click .editTarget" : "editActivityTarget"
-		
+		"click .editTarget" : "editActivityTarget",
+		"click #provincialTarget" : "provincialTargetToggle"
 	},
 	
 	backToActivity: function(e) {
 		this.render();
+	},
+	
+	provincialTargetToggle: function(e) {
+		var checked = this.$el.find('#provincialTarget').is(":checked");
+		this.currentActivityTarget.set('provincialTarget', checked);
+		
+		// now render properly
+		if(checked) {
+			this.$el.find('#budgetAllocated').attr('disabled',true);
+			this.$el.find('#budgetAllocated').val('(ส่วนภูมิภาค)');
+		} else {
+			this.$el.find('#budgetAllocated').removeAttr('disabled');
+			this.$el.find('#budgetAllocated').val(this.currentActivityTarget.get('budgetAllocated'));
+		}
+		
 	},
 	
 	editActivityTarget : function(e) {
@@ -299,6 +314,10 @@ var ActivityTargetTableView = Backbone.View.extend({
 		if(isNaN(parseInt(this.currentActivityTarget.get('targetValue'))) ) {
 			alert('กรุณาใส่ค่าเป้าหมายเป็นตัวเลข');
 			return;
+		}
+		
+		if(this.currentActivityTarget.get('provincialTarget')) {
+			this.currentActivityTarget.set('budgetAllocated', 0);
 		}
 		
 		if(!this.currentActivity.get('targets').include(this.currentActivityTarget)) {

@@ -4074,16 +4074,23 @@ public class EntityServiceJPA implements EntityService {
 		for(JsonNode targetNode : node.get("targets")) {
 			ActivityTarget target = new ActivityTarget();
 			
+			
+			
 			if(getJsonNodeId(targetNode) != null) {
 				target = activityTargetRepository.findOne(getJsonNodeId(targetNode));
 				oldTargets.remove(target);
 			}
 			
 			target.setActivity(activity);
+			target.setProvincialTarget(targetNode.get("provincialTarget").asBoolean());
 			
 			target.setTargetValue(targetNode.get("targetValue").asLong());
 			if(targetNode.get("budgetAllocated") != null) {
-				target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
+				if(!target.getProvincialTarget()) {
+					target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
+				} else {
+					target.setBudgetAllocated(0L);
+				}
 			}
 				
 			
@@ -4125,10 +4132,15 @@ public class EntityServiceJPA implements EntityService {
 		for(JsonNode targetNode : node.get("targets")) {
 			ActivityTarget target = new ActivityTarget();
 			target.setActivity(activity);
+			target.setProvincialTarget(node.get("provincialTarget").asBoolean());
 			
 			target.setTargetValue(targetNode.get("targetValue").asLong());
 			if(targetNode.get("budgetAllocated") != null) {
-				target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
+				if(!target.getProvincialTarget()) {
+					target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
+				} else {
+					target.setBudgetAllocated(0L);
+				}
 			}
 			TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(targetNode.get("unit")));
 			target.setUnit(unit);

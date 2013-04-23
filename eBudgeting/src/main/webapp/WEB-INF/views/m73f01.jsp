@@ -189,7 +189,13 @@
 	</td>
 	<td><ul style="list-style-type: none;margin:0px;padding-right:10px; text-align:right;"">
 		{{#each targets}}
-			<li>{{formatNumber budgetAllocated}}</li>
+			<li>
+				{{#if provincialTarget}}
+					(ส่วนภูมิภาค)
+				{{else}}
+					{{formatNumber budgetAllocated}} บาท
+				{{/if}}
+			</li>
 		{{/each}}
 		</ul>
 	</td>
@@ -201,6 +207,8 @@
 <script id="activityTargetTemplate" type="text/x-handler-template">
 <div class="alert alert-info">
 	 <h4><u><strong>{{headerString}}</strong></u></h4>
+	<div><div style="padding-top:10px;"> <input style="margin-top:0px;" id="provincialTarget" type="checkbox" {{#if provincialTarget}}checked="checked"{{/if}}> <span>ใช้งบส่วนภูมิภาค</span></div></div>
+
 	<div class="pull-left" style="padding-top:10px;">
 	    <label>ระบุค่าเป้าหมาย</label>
         <input type="text" class="targetModel" id="targetValue" data-modelname="targetValue" value="{{targetValue}}">
@@ -217,8 +225,11 @@
 	<div class="pull-left" style="padding-top:10px; padding-left: 30px;">
 		<label>ระบุงบประมาณ</label>
 		<div class="input-append">
-			<input class="span2 targetModel" id="budgetAllocated" type="text" data-modelName="budgetAllocated" value="{{budgetAllocated}}">
+			<input class="span2 targetModel" id="budgetAllocated" {{#if provincialTarget}}disabled{{/if}} 
+					type="text" data-modelName="budgetAllocated" 
+					value="{{#if provincialTarget}} (ส่วนภูมิภาค){{else}}{{budgetAllocated}}{{/if}}">
 			<span class="add-on">บาท</span>
+			
 		</div>
 	</div>
 
@@ -243,7 +254,7 @@
 		<td style="width:45px;"></td>
 		<td style="width:140px;">เป้าหมาย</td>
 		<td style="width:100px;">หน่วยนับ</td>
-		<td style="width:200px;">งบประมาณ</td>
+		<td style="width:100px;">งบประมาณ</td>
 	</tr>
 </thead>
 <tbody>
@@ -253,7 +264,13 @@
 	<a href="#td-{{id}}" class="deleteObjective deleteTarget"><i class="icon-trash icon-red"></i></a></td>
 			<td style="text-align:center;">{{formatNumber targetValue}}</td>
 			<td style="text-align:center;">{{unit.name}}</td>
-			<td style="text-align:right;">{{formatNumber budgetAllocated}} บาท</td>
+			<td style="text-align:right;">
+				{{#if provincialTarget}}
+					(ส่วนภูมิภาค)
+				{{else}}
+					{{formatNumber budgetAllocated}} บาท
+				{{/if}}
+			</td>
 	</tr>
 	{{/each}}
 </tbody>
