@@ -893,7 +893,7 @@ var MainSelectionView = Backbone.View.extend({
 	},
 	
 	render: function() {
-		
+		// render this view
 		if(this.rootChildrenObjectiveCollection != null) {
 			var json = this.rootChildrenObjectiveCollection.toJSON();
 			
