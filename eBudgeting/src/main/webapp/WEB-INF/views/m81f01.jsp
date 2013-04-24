@@ -157,10 +157,10 @@
 					<td colspan="2">งบประมาณ</td>
 				</tr>
 				<tr>
-					<td style="width:40px;">แผน</td>
-					<td style="width:40px;">ผล</td>
-					<td style="width:100px;">แผน</td>
-					<td style="width:100px;">ผล</td>
+					<td style="width:40px;">แผนงาน</td>
+					<td style="width:40px;">ผลงาน</td>
+					<td style="width:100px;">แผนเงิน</td>
+					<td style="width:100px;">ผลเงิน</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -233,10 +233,10 @@
 					<td colspan="2">งบประมาณ</td>
 				</tr>
 				<tr>
-					<td style="width:40px;">แผน</td>
-					<td style="width:40px;">ผล</td>
-					<td style="width:100px;">แผน</td>
-					<td style="width:100px;">ผล</td>
+					<td style="width:40px;">แผนงาน</td>
+					<td style="width:40px;">ผลงาน</td>
+					<td style="width:100px;">แผนเงิน</td>
+					<td style="width:100px;">ผลเงิน</td>
 				</tr>
 
 			</thead>
@@ -314,10 +314,10 @@
 	<thead>
 		<tr>
 			<td>กิจกรรม</td>
-			<td style="width:60px;">แผน</td>
-			<td style="width:60px;">ผล</td>
-			<td style="width:100px;">แผน</td>
-			<td style="width:100px;">ผล</td>
+			<td style="width:60px;">แผนงาน</td>
+			<td style="width:60px;">ผลงาน</td>
+			<td style="width:100px;">แผนเงิน</td>
+			<td style="width:100px;">ผลเงิน</td>
 			<td style="width:100px;">รายงานครั้งล่าสุด</td>
 		</tr>
 	</thead>
