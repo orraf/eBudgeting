@@ -337,7 +337,7 @@ public interface EntityService {
 	public List<Organization> saveObjectiveOwners(Long id, Long[] ownerIds);
 	public List<Organization> findOrganizationByNameAndParent_Id(String query,
 			Long parentId);
-	public List<Organization> findOrganizationByProvinces();
+	public List<Organization> findOrganizationByProvinces(String query);
 	public Organization findOrganizationById(Long id);
 
 

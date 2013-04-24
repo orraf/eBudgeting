@@ -52,7 +52,7 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 		List<Organization> list = new ArrayList<Organization>();
 		
 		list.add(currentUser.getWorkAt());
-		list.addAll(entityService.findOrganizationByProvinces());
+		list.addAll(entityService.findOrganizationByProvinces(query));
 		
 		
 		return list;
