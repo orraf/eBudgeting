@@ -634,7 +634,9 @@ var ModalView = Backbone.View.extend({
 		
 		this.currentBudgetProposalList = new BudgetProposalCollection();
 		this.renderAllocationRecordInput();
-		this.organizationSearch();		
+		this.organizationSearch();	
+		
+		// update the sum
 	},
 	
 	addAssetAllocationRecord: function(e) {
@@ -720,12 +722,14 @@ var ModalView = Backbone.View.extend({
 	updateSumProposal: function() {
 		var sum=0;
 		// now put the sum up
-		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseInt($(el).val());
+		this.proposals.forEach(function(proposal) {
+			sum += proposal.get('amountAllocated');
 		});
 		
 		$('#sumTotalAllocated').html(addCommas(sum));
-		$('#totalInputTxt').val(sum);
+		if($('#totalInputTxt')  != null) {
+			$('#totalInputTxt').val(sum);
+		}
 	},
 	
 	render : function() {

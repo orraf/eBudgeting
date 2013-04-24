@@ -333,6 +333,7 @@ var ActivityTargetTableView = Backbone.View.extend({
 	newActivityTarget: function() {
 		this.currentActivityTarget = new ActivityTarget();
 		this.currentActivityTarget.set('activity', this.currentActivity);
+		this.currentActivityTarget.set('provincialTarget', false);
 		
 		var json = this.currentActivityTarget.toJSON();
 		

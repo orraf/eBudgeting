@@ -122,7 +122,6 @@ function changeCurrentRootFY(sel) {
 		success: function(response) {
 			alert("success!");
 		}
-	
 	});	
 }
 

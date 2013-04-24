@@ -1034,7 +1034,7 @@ AssetBudgetCollection = Backbone.Collection.extend({
 });
 AssetAllocationCollection = Backbone.Collection.extend({
 	model: AssetAllocation
-})
+});
 //Handlebars Utils
 
 
