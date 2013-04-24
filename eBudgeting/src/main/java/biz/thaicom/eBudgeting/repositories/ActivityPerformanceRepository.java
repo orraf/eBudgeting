@@ -10,12 +10,11 @@ import org.springframework.stereotype.Repository;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 
 @Repository
 public interface ActivityPerformanceRepository extends
 		PagingAndSortingRepository<ActivityPerformance, Long>, JpaSpecificationExecutor<ActivityPerformance> {
-
-	public ActivityPerformance findOneByActivityAndOwner(Activity activity, Organization owner);
 
 	@Query("" +
 			"SELECT activityPerformance " +
@@ -31,5 +30,14 @@ public interface ActivityPerformanceRepository extends
 			"ORDER BY activity.code ASC")
 	public List<ActivityPerformance> findByOwnerAndObjectiveId(
 			Organization workAt, Long objectiveId);
+
+	public List<ActivityPerformance> findAllByActivityAndOwner(
+			Activity activity, Organization owner);
+
+	@Query("" +
+			"SELECT report.activityPerformance " +
+			"FROM ActivityTargetReport report " +
+			"WHERE report = ?1")
+	public ActivityPerformance findOneBytargetReport(ActivityTargetReport report);
 	
 }

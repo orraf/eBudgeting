@@ -4221,34 +4221,42 @@ public class EntityServiceJPA implements EntityService {
 			logger.debug("-----------------------report ID : " + reportId);
 			logger.debug("=======================owner ID  : " + getJsonNodeId(reportNode.get("owner")));
 			ActivityTargetReport report;
+			ActivityPerformance performance;
 			if (reportId != null) {
 				// should be in the oldList
 				report = activityTargetReportRepository.findOne(reportId);
+				performance = report.getActivityPerformance();
 				oldList.remove(report);
 			} else {
 				report = new ActivityTargetReport();
 				Organization owner = organizationRepository.findOne(getJsonNodeId(reportNode.get("owner")));
 				report.setOwner(owner);
-				report.setTarget(target);	
+				report.setTarget(target);
+				
+				performance = new ActivityPerformance();
+				performance.setActivity(target.getActivity());
+				performance.setOwner(report.getOwner());
+			
+				report.setActivityPerformance(performance);
+				
 			}
 			
 			if(reportNode.get("reportLevel") != null) {
 				report.setReportLevel(reportNode.get("reportLevel").asInt());
 			}
 			
-			// now find performance
-			ActivityPerformance performance = activityPerformanceRepository
-					.findOneByActivityAndOwner(target.getActivity(), report.getOwner());
+			logger.debug(">>>>>>" + target.getActivity().getId() );
+			logger.debug(">>>>>" + report.getOwner().getId() );
 			
-			if(performance == null) {
-				performance = new ActivityPerformance();
-				performance.setActivity(target.getActivity());
-				performance.setOwner(report.getOwner());
+			// activityTargetReportRepository.save(report);
 			
-				
-			} 
-			
-			performance.setBudgetAllocated(reportNode.get("activityPerformance").get("budgetAllocated").asDouble());
+			 
+			if(reportNode.get("activityPerformance") != null && 
+					reportNode.get("activityPerformance").get("budgetAllocated") != null) {
+				performance.setBudgetAllocated(reportNode.get("activityPerformance").get("budgetAllocated").asDouble());
+			} else {
+				performance.setBudgetAllocated(0.0);
+			}
 			
 			activityPerformanceRepository.save(performance);
 			
@@ -4273,9 +4281,14 @@ public class EntityServiceJPA implements EntityService {
 		// we iterate to see if we should delete performance
 		List<ActivityPerformance> toDeletePerformance = new ArrayList<ActivityPerformance>();
  		for(ActivityTargetReport oldReport: oldList) {
+ 			
+ 			
+ 			
 			ActivityPerformance oldPerformance = oldReport.getActivityPerformance();
 			toDeletePerformance.add(oldPerformance);
 			
+			monthlyActivityReportRepository.delete(oldReport.getMonthlyReports());
+			monthlyBudgetReportRepository.delete(oldPerformance.getMonthlyBudgetReports());
 		}
 		
 		activityTargetReportRepository.delete(oldList);
