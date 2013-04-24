@@ -4146,11 +4146,13 @@ public class EntityServiceJPA implements EntityService {
 		for(JsonNode targetNode : node.get("targets")) {
 			ActivityTarget target = new ActivityTarget();
 			target.setActivity(activity);
-			target.setProvincialTarget(node.get("provincialTarget").asBoolean());
-			
+			if (node.get("provincialTarget") != null) {
+				target.setProvincialTarget(node.get("provincialTarget").asBoolean());
+			}
 			target.setTargetValue(targetNode.get("targetValue").asLong());
 			if(targetNode.get("budgetAllocated") != null) {
-				if(!target.getProvincialTarget()) {
+//				if(!target.getProvincialTarget()) {
+				if(node.get("provincialTarget") != null) {
 					target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
 				} else {
 					target.setBudgetAllocated(0L);
