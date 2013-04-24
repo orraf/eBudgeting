@@ -723,7 +723,10 @@ var ModalView = Backbone.View.extend({
 		var sum=0;
 		// now put the sum up
 		this.proposals.forEach(function(proposal) {
-			sum += proposal.get('amountAllocated');
+			var amountAllocated = parseInt(proposal.get('amountAllocated'));
+			if(!isNaN(amountAllocated)) {
+				sum += proposal.get('amountAllocated');
+			}
 		});
 		
 		$('#sumTotalAllocated').html(addCommas(sum));
