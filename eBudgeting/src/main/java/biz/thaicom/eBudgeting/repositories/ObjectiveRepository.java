@@ -227,7 +227,9 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"	INNER JOIN owr.owners owner " +
 			"WHERE " +
 			"	owner = ?1 AND " +
-			"	owr.objective.fiscalYear = ?2")
+			"	owr.objective.fiscalYear = ?2 " +
+			"ORDER BY " +
+			"	owr.objective.code asc ")
 	public List<Objective> findAllByOwnerAndfiscalYear(Organization workAt,
 			Integer fiscalYear);
 
