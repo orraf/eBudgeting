@@ -26,6 +26,8 @@
 	<link href="<c:url value='/resources/jslibs/bootstrap-editable-1.1.4/css/bootstrap-editable.css'/>" rel="stylesheet">
 
 	<link href="<c:url value='/resources/css/app.css'/>" rel="stylesheet">
+	
+	<script src="<c:url value='/resources/jslibs/modernizr.custom.16652.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/jqueryui-1.9.2/js/jquery-1.8.3.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/jqueryui-1.9.2/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/underscore-dev-1.4.4.js'/>"></script>
