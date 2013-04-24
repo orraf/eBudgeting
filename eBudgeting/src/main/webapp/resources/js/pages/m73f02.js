@@ -62,7 +62,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
  		this.$el.find('button#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
  		
  		// now set reportLevel to 1
- 		for(var i=0; this.targetReports.length; i++) {
+ 		for(var i=0; i< this.targetReports.length; i++) {
  			this.targetReports.at(i).set('reportLevel', 1);
  		}
  		
