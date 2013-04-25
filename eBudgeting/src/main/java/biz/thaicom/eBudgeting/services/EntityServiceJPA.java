@@ -4822,7 +4822,17 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
 			Integer fiscalYear, Long ownerId) {
-		return budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, ownerId);
+		List<BudgetProposal> proposals = budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, ownerId);
+		
+		Collections.sort(proposals, new Comparator<BudgetProposal>() {
+			@Override
+			public int compare(BudgetProposal o1, BudgetProposal o2) {
+				return o1.getForObjective().getCode()
+						.compareTo(o2.getForObjective().getCode());
+			}
+		});
+		
+		return proposals;
 	}
 	
 	

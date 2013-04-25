@@ -90,13 +90,12 @@ public interface BudgetProposalRepository extends
 
 
 	@Query("" +
-			"SELECT proposal " +
+			"SELECT distinct proposal " +
 			"FROM BudgetProposal proposal " +
 			"	INNER JOIN FETCH proposal.forObjective objective " +
 			"	INNER JOIN FETCH proposal.budgetType budgetType " +
 			"WHERE proposal.forObjective.fiscalYear =?1 " +
-			"	AND proposal.owner.id = ?2 " +
-			"ORDER BY proposal.forObjective.code asc, proposal.budgetType.id asc")
+			"	AND proposal.owner.id = ?2 ")
 	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
 			Integer fiscalYear, Long ownerId);
 	

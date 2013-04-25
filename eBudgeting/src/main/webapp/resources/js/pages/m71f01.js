@@ -1175,8 +1175,10 @@ var MainCtrView = Backbone.View.extend({
 					for (i = 0; i < objectiveCollection.length; i++) {
 						var o = objectiveCollection.at(i);
 						if (o.get('parent') != null) {
+							
 							var parentId = o.get('parent').get('id');
-
+							console.log(o.get('id') + " has parent: " + parentId);
+							
 							var parentObj = objectiveCollection.get(parentId);
 							if (parentObj != null) {
 								parentObj.get('children').add(o);
