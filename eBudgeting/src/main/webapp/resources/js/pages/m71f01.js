@@ -174,7 +174,7 @@ var ModalView = Backbone.View.extend({
 		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
 		
 		if(!isNaN(parseInt(value))) {
-			assetAllocation.set(type,value);
+			assetAllocation.set(type,parseInt(value));
 													 
 			this.$el.find('#totalAssetAllocation-' + assetAllocationId)
 				.html(addCommas(assetAllocation.get('unitBudget') * assetAllocation.get('quantity')) + ' บาท');
