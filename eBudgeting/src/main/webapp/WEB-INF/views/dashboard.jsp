@@ -148,6 +148,10 @@ var menuJson = [{
 		    },{
 		    	name: "m81r02: รายงานสำหรับจังหวัดและอำเภอ", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls"
 		    }]
+	}, {
+		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
+			name: "m82r01: รายงานการตรวจสอบความเชื่อมโยง", code: "m82r01", link: "page/m82r01/"
+		}]
 	}]
 }];
 

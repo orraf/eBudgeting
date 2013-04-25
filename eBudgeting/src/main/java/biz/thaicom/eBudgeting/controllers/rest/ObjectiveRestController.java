@@ -521,6 +521,14 @@ public class ObjectiveRestController {
 		
 	}
 	
+	@RequestMapping(value="/Objective/findAllByFiscalYear/{fiscalYear}") 
+	public @ResponseBody List<Objective> findObjectiveAllByFiscalYear(
+			@PathVariable Integer fiscalYear) {
+		
+		
+		return entityService.findObjectiveAllByFiscalYear(fiscalYear);
+	}
+	
 	@RequestMapping(value="/Objective/{parentId}/addChildObjectiveName/{nameId}", method=RequestMethod.GET)
 	public @ResponseBody Objective addChildObjectiveName( 
 			@PathVariable Long parentId, @PathVariable Long nameId) {

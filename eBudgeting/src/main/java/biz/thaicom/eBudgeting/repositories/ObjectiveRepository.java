@@ -295,6 +295,15 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 	public List<Objective> findByActivityTargetReportOfOrganization(
 			Organization workAt);
 
+	@Query("" +
+			"SELECT obj " +
+			"FROM Objective obj " +
+			"	LEFT JOIN FETCH obj.children " +
+			"	INNER JOIN FETCH obj.type " +
+			"WHERE obj.fiscalYear = ?1 ")
+	public List<Objective> findAllLeftJoinChildrenByFiscalYear(Integer fiscalYear);
+
+	
 
 
 

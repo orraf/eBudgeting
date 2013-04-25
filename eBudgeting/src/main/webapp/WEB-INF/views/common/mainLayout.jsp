@@ -70,6 +70,17 @@
 	<div id="container-footer" class="container">
 		<tiles:insertAttribute name="footer" />
 	</div>
+	
+	
+<script type="text/javascript">
+$(document).ready(function() {
+   // register Global error handling here .. if there isn't one
+   
+	$(document).ajaxError( function(event, jqXHR, ajaxSettings, thrownError){
+		alert("Error Status Code: " + jqXHR.status + " " + jqXHR.statusText + "\n" + jqXHR.responseText);
+	});
+ });
+</script>
 
 </body>
 </html>

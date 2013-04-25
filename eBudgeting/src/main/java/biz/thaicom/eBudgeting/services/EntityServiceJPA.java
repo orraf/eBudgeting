@@ -321,9 +321,23 @@ public class EntityServiceJPA implements EntityService {
 		
 		return objs;
 	}
+	
+	@Override
+	public List<Objective> findObjectiveAllByFiscalYear(Integer fiscalYear) {
+		List<Objective> allObjectives = objectiveRepository
+				.findAllLeftJoinChildrenByFiscalYear(fiscalYear);
+		
+		List<Objective> rootObjectives = new ArrayList<Objective> ();
+		
+		for(Objective obj:  allObjectives) {
+			if(obj.getParent() == null) {
+				rootObjectives.add(obj);
+			}
+		}
+			
+		return rootObjectives;
+	}
 
-	
-	
 	@Override
 	public List<Objective> findRootObjectiveByFiscalyear(Integer fiscalYear, Boolean eagerLoad) {
 		

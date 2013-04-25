@@ -147,7 +147,7 @@ public interface EntityService {
 	
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear);
-	
+	public List<Objective> findObjectiveAllByFiscalYear(Integer fiscalYear);
 
 
 	
