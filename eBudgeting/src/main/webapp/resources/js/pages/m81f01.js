@@ -26,6 +26,7 @@ var ModalView = Backbone.View.extend({
 	},
 	
 	backToModal: function(e) {
+		this.$el.find('.modal-header span').html("บันทึกผลการดำเนินงาน: "+ this.currentTargetReport.get('target').get('activity').get('name'));
 		this.render();
 	},
 	saveResult: function(e) {
@@ -55,6 +56,8 @@ var ModalView = Backbone.View.extend({
 		var json = {};
 		json.unit = this.currentTargetReport.get("target").get("unit").toJSON();
 		var html = this.resultInputTemplate(json);
+		this.$el.find('.modal-header span').html("บันทึกผลการดำเนินงาน: "+ this.currentTargetReport.get('target').get('activity').get('name'));
+
 		this.$el.find('.modal-body').html(html);
 		
 		this.$el.find('#reportedResultDate').datepicker({
@@ -88,6 +91,8 @@ var ModalView = Backbone.View.extend({
 				json.month[report.get('fiscalMonth')].oldValue = report.get('budgetResult');
 			}
 		});
+		
+		this.$el.find('.modal-header span').html("บันทึกผลการใช้จ่ายงบประมาณ: "+ this.currentTargetReport.get('target').get('activity').get('name'));
 		
 		var html = this.resultBudgetInputTemplate(json);
 		this.$el.find('.modal-body').html(html);

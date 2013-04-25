@@ -174,7 +174,7 @@ var ModalView = Backbone.View.extend({
 		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
 		
 		if(!isNaN(parseInt(value))) {
-			assetAllocation.set(type,value);
+			assetAllocation.set(type,parselnt(value));
 													 
 			this.$el.find('#totalAssetAllocation-' + assetAllocationId)
 				.html(addCommas(assetAllocation.get('unitBudget') * assetAllocation.get('quantity')) + ' บาท');
@@ -222,7 +222,7 @@ var ModalView = Backbone.View.extend({
 				this.$el.find('#assetTbl tbody').append(html);	
 				
 				this.currentProposal.set('id', response.proposal.id);
-				this.currentProposal.set('amountAllocated',response.proposal.amountAllocated);
+				this.currentProposal.set('amountAllocated',parselnt(response.proposal.amountAllocated));
 				
 				
 				
@@ -246,7 +246,7 @@ var ModalView = Backbone.View.extend({
 			$(e.target).parent('div').removeClass('control-group error'); 
 			var i = $(e.target).parents('tr').prevAll('tr').length;
 			
-			this.proposals.at(i).set('amountAllocated', $(e.target).val());
+			this.proposals.at(i).set('amountAllocated', parseInt($(e.target).val()));
 			this.updateSumProposal();	
 		}
 		
