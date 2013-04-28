@@ -99,8 +99,7 @@
 		{{#each filterTargets}}
 			<li data-id="{{filterReport.id}}">
 				<a href="javascript:;" class="assignTargetValueLnk">	 
-				
-					<span id="target_{{id}}-budgetAllocated">{{formatNumber budgetAllocated}}</span> บาท
+					<span id="target_{{id}}-budgetAllocated">{{formatNumber filterReport.activityPerformance.budgetAllocated}}</span> บาท
 				
 				</a>
 			</li>
@@ -118,6 +117,13 @@
 		<div class="input-append"><input disabled type="text" id="totalInputTxt" style="width:120px;" value="{{formatNumber targetValue}}"><span class="add-on">{{target.unit.name}}</span></div>
 	</div>
 
+	<div style="padding-top:7px; padding-right: 20px;height:35px; float:left">
+    	<strong> งบประมาณจัดสรรรวม: </strong>
+	</div>
+    <div style="height:35px; float:left" id="totalInputForm">
+		<div class="input-append"><input disabled type="text" id="totalBudgetInputTxt" style="width:120px;" value=""><span class="add-on">บาท</span></div>
+	</div>
+
 	<div class="clearfix"></div>
         
         <div style="padding-bottom:12px;">
@@ -132,7 +138,7 @@
                     	<tr>
                         	<td>หน่วยงาน</td>
                         	<td style="width:100px;">รวม: <span id="sumTotalAllocated"></span> {{target.unit.name}}</td>
-							<td style="width:160px;">งบประมาณ: <span id="sumTotalBudgetAllocated"></span> บาท</td>
+							<td style="width:160px;"><span id="sumTotalBudgetAllocated"></span> บาท</td>
                     	</tr>
                 	</thead>
                 	</table>

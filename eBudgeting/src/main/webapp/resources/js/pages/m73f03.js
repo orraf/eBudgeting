@@ -152,6 +152,19 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		});
 		
 		$('#sumTotalAllocated').html(addCommas(sum));
+		
+		
+		// now sum the budgetAllocated
+		var sumBudgetAllocated = 0;
+		this.targetReports.forEach(function(report) {
+			var budgetAllocated = parseInt(report.get("activityPerformance").get("budgetAllocated"));
+			sumBudgetAllocated += budgetAllocated;
+		});
+		
+		// now update the ui
+		this.$el.find('#totalBudgetInputTxt').val(addCommas(sumBudgetAllocated));
+		$('#sumTotalBudgetAllocated').html(addCommas(sumBudgetAllocated));
+		
 
 	},
 	removeOrganizationTarget: function(e) {
@@ -224,6 +237,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		this.targetReports = new ActivityTargetReportCollection();
 		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id') 
 				+ '/parentOrganization/' + organizationId);
+		
 		this.targetReports.fetch({
 			success: _.bind(function() {
 				

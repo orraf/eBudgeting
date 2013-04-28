@@ -4283,8 +4283,12 @@ public class EntityServiceJPA implements EntityService {
 			newList.add(report);
 		}
 		
-		target.setBudgetAllocated(sumBudget);
-		activityTargetRepository.save(target);
+		
+		// here we'll update the parent!
+		ActivityPerformance performance = 
+				activityPerformanceRepository.findOneByActivityAndOwner_id(target.getActivity(), parentOrgId);
+		performance.setBudgetAllocated(sumBudget.doubleValue());
+		activityPerformanceRepository.save(performance);
 		
 		// we should be able to delete oldList and save newList
 		

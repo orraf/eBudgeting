@@ -39,5 +39,9 @@ public interface ActivityPerformanceRepository extends
 			"FROM ActivityTargetReport report " +
 			"WHERE report = ?1")
 	public ActivityPerformance findOneBytargetReport(ActivityTargetReport report);
+
+	
+	public ActivityPerformance findOneByActivityAndOwner_id(Activity activity,
+			Long parentOrgId);
 	
 }
