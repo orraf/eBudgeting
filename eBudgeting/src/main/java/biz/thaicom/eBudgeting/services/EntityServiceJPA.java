@@ -4222,7 +4222,11 @@ public class EntityServiceJPA implements EntityService {
 			oldList = findActivityTargetReportByTarget_IdAndParentOrgId(targetId, parentOrgId);
 		}
 		
-		logger.debug("oldList.size() =" + oldList.size());
+		logger.debug("oldList.size() =" + oldList.size() + " :");
+		for(ActivityTargetReport r: oldList) {
+			logger.debug("   - id: " + r.getId()); 
+					
+		}
 		
 		
 		List<ActivityTargetReport> newList = new ArrayList<ActivityTargetReport>();
@@ -4287,8 +4291,12 @@ public class EntityServiceJPA implements EntityService {
 		// here we'll update the parent!
 		ActivityPerformance performance = 
 				activityPerformanceRepository.findOneByActivityAndOwner_id(target.getActivity(), parentOrgId);
-		performance.setBudgetAllocated(sumBudget.doubleValue());
-		activityPerformanceRepository.save(performance);
+		
+		if(performance != null) {
+			// if it is null there is no child!
+			performance.setBudgetAllocated(sumBudget.doubleValue());
+			activityPerformanceRepository.save(performance);
+		}
 		
 		// we should be able to delete oldList and save newList
 		
@@ -4310,6 +4318,11 @@ public class EntityServiceJPA implements EntityService {
 			monthlyBudgetReportRepository.delete(oldPerformance.getMonthlyBudgetReports());
 		}
 		
+ 		logger.debug("report oldList Id: " );
+ 		for(ActivityTargetReport deleteReport : oldList) {
+ 			logger.debug("  id: "+ deleteReport.getId() );
+ 		}
+ 		
 		activityTargetReportRepository.delete(oldList);
 		activityPerformanceRepository.delete(toDeletePerformance);
 		
@@ -4340,6 +4353,8 @@ public class EntityServiceJPA implements EntityService {
 			report.getTarget().setFilterReport(report);
 			report.getActivityPerformance().getId();
 			Activity act = report.getTarget().getActivity();
+			logger.debug("activity id: " + act.getId());
+			act.getId();
 			
 			// first put the target
 			if(act.getFilterTargets()==null) {

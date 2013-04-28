@@ -323,6 +323,21 @@
 			      <warName>orrafpm</warName>
 			   </configuration>
 			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.1.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                         </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                	<generateGitPropertiesFile>true</generateGitPropertiesFile>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <version>2.9</version>
