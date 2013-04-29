@@ -50,8 +50,7 @@
 </script>
 
 <script id="mainTblTemplate" type="text/x-handler-template">
-<h4>{{forObjective.name}} / {{budgetType.name}} - {{formatNumber amountAllocated}} บาท</h4>
-<table class="table table-bordered table-striped" id="mainTbl">
+<table class="table table-bordered table-striped" id="mainTbl" style="margin-top: 10px;">
 	<thead>
 		<tr>
 			<td style="width:30px;"></td>
@@ -64,6 +63,18 @@
 		</tr>
 	</thead>
 	<tbody>
+		<tr>
+			<td colspan="5" style="text-align:right;">{{forObjective.name}} / {{budgetType.name}} ได้รับจัดสรร</td>
+			<td style="text-align:right;">{{formatNumber amountAllocated}} บาท</td>
+		</tr>
+		<tr>
+			<td colspan="5" style="text-align:right;">จัดสรรแล้ว</td>
+			<td style="text-align:right;"><span id="totalAllocatedBudget"></span></td>
+		</tr>
+		<tr>
+			<td colspan="5" style="text-align:right;">คงเหลือ</td>
+			<td style="text-align:right;"><span id="totalAllocatedBudgetLeft"></span></td>
+		</tr>
 	</tbody>
 </table>
 </script>
@@ -99,7 +110,7 @@
 		{{#each filterTargets}}
 			<li data-id="{{filterReport.id}}">
 				<a href="javascript:;" class="assignTargetValueLnk">	 
-					<span id="target_{{id}}-budgetAllocated">{{formatNumber filterReport.activityPerformance.budgetAllocated}}</span> บาท
+					<span id="target_{{id}}-budgetAllocated" class="budgetAllocatedSpn" data-value="{{filterReport.activityPerformance.budgetAllocated}}">{{formatNumber filterReport.activityPerformance.budgetAllocated}}</span> บาท
 				
 				</a>
 			</li>

@@ -48,6 +48,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	cancelAssignTarget: function(e) {
 		this.resetProposalsInList();
 		this.$el.modal('hide');
+		mainTblView.updateSumTable();
 	},
 	saveAssignTarget: function(e) {
 		var sum=0;
@@ -82,6 +83,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
  				//now update
  				
  				$('#target_'+ this.currentTarget.get('id') +'-budgetAllocated').html(addCommas(sum));
+ 				$('#target_'+ this.currentTarget.get('id') +'-budgetAllocated').attr('data-value', sum);
  				
  				this.cancelAssignTarget();
  			},this)
@@ -449,6 +451,9 @@ var MainTblView = Backbone.View.extend({
      */
 	initialize : function(options) {
 		this.assignTargetValueModalView = new AssignTargetValueModalView({parentView: this});
+		this.totalAllocatedBudget = 0;
+		this.totalAllocatedBudgetLeft = 0;
+		this.allocatedBudget = 0;
 	},
 	mainTblTemplate : Handlebars.compile($("#mainTblTemplate").html()),
 	mainTblTbodyActivityTemplate:  Handlebars.compile($("#mainTblTbodyActivityTemplate").html()),
@@ -464,6 +469,23 @@ var MainTblView = Backbone.View.extend({
 		this.assignTargetValueModalView.setCurrentActivity(activityTargetReport.get('target').get('activity'));
 		this.assignTargetValueModalView.setCurrentTargetReport(activityTargetReport);
 		this.assignTargetValueModalView.render();
+	},
+	updateSumTable : function() {
+		var tableSum = 0;
+		$('.budgetAllocatedSpn').each(function(index) {
+			var budget = parseInt($(this).attr('data-value'));
+			if(isNaN(budget)) {
+				budget = 0;
+			}
+			tableSum += budget;
+		});
+		
+		this.totalAllocatedBudget=tableSum;
+		this.allocatedBudget = this.proposal.get('amountAllocated');
+		this.totalAllocatedBudgetLeft = this.allocatedBudget - this.totalAllocatedBudget;
+		
+		this.$el.find('#totalAllocatedBudget').html(addCommas(this.totalAllocatedBudget) + " บาท");
+		this.$el.find('#totalAllocatedBudgetLeft').html(addCommas(this.totalAllocatedBudgetLeft) + " บาท");
 	},
 	renderWithProposal: function(proposal) {
 		this.proposal = proposal;
@@ -505,6 +527,9 @@ var MainTblView = Backbone.View.extend({
 					}
 					
 				}
+				
+				// now update value
+				this.updateSumTable();
 				
 			},this)
 		});

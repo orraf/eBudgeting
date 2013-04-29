@@ -335,7 +335,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                	<generateGitPropertiesFile>true</generateGitPropertiesFile>
+                	<generateGitPropertiesFile>false</generateGitPropertiesFile>
                 </configuration>
             </plugin>
             <plugin>
