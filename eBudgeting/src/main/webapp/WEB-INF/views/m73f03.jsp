@@ -205,7 +205,7 @@
 <tr data-id="{{owner.id}}">
 	<td><a href="#" class="removeOrganizationTarget"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
 	<td style="width:100px;">
-			<input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:50px; text-align:right;" value="{{targetValue}}"/>
+			<input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:82px; text-align:right;" value="{{targetValue}}"/>
 	</td>
 	<td style="width:160px;">
 			<input type="text" class="budgetAllocated" id="budgetAllocated-{{id}}" style="width:140px; text-align:right;" value="{{activityPerformance.budgetAllocated}}"/>

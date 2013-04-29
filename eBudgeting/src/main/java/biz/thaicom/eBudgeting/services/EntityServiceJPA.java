@@ -4287,10 +4287,11 @@ public class EntityServiceJPA implements EntityService {
 			newList.add(report);
 		}
 		
-		
+		logger.debug("target.getActivity().getId() : " + target.getActivity().getId());
+		logger.debug("parentOrgId: " + parentOrgId);
 		// here we'll update the parent!
 		ActivityPerformance performance = 
-				activityPerformanceRepository.findOneByActivityAndOwner_id(target.getActivity(), parentOrgId);
+				activityPerformanceRepository.findOneByActivityAndTargetAndOwner_id(target.getActivity(), target, parentOrgId);
 		
 		if(performance != null) {
 			// if it is null there is no child!
@@ -4354,8 +4355,7 @@ public class EntityServiceJPA implements EntityService {
 			report.getActivityPerformance().getId();
 			Activity act = report.getTarget().getActivity();
 			logger.debug("activity id: " + act.getId());
-			act.getId();
-			
+						
 			// first put the target
 			if(act.getFilterTargets()==null) {
 				act.setFilterTargets(new ArrayList<ActivityTarget>());
@@ -4375,6 +4375,7 @@ public class EntityServiceJPA implements EntityService {
 				child.setFilterActivities(new ArrayList<Activity>());
 			}
 			if(!child.getFilterActivities().contains(act)) {
+				logger.debug("adding act.id: " + act.getId());
 				child.getFilterActivities().add(act);
 			}
 			

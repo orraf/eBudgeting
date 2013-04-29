@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
+import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 
 @Repository
@@ -41,7 +42,15 @@ public interface ActivityPerformanceRepository extends
 	public ActivityPerformance findOneBytargetReport(ActivityTargetReport report);
 
 	
-	public ActivityPerformance findOneByActivityAndOwner_id(Activity activity,
+	@Query("" +
+			"SELECT performance " +
+			"FROM ActivityPerformance performance " +
+			"WHERE performance.activity = ?1 " +
+			"	AND performance.targetReport.target = ?2 " +
+			"	AND performance.owner.id = ?3 ")	
+	public ActivityPerformance findOneByActivityAndTargetAndOwner_id(
+			Activity activity,
+			ActivityTarget target,
 			Long parentOrgId);
 	
 }

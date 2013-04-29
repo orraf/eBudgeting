@@ -161,6 +161,11 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			sumBudgetAllocated += budgetAllocated;
 		});
 		
+		if(isNaN(sumBudgetAllocated)) {
+			sumBudgetAllocated = 0;
+		}
+				
+		
 		// now update the ui
 		this.$el.find('#totalBudgetInputTxt').val(addCommas(sumBudgetAllocated));
 		$('#sumTotalBudgetAllocated').html(addCommas(sumBudgetAllocated));
