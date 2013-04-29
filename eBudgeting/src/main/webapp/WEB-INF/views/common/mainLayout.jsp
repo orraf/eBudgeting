@@ -77,7 +77,13 @@ $(document).ready(function() {
    // register Global error handling here .. if there isn't one
    
 	$(document).ajaxError( function(event, jqXHR, ajaxSettings, thrownError){
-		alert("Error Status Code: " + jqXHR.status + " " + jqXHR.statusText + "\n" + jqXHR.responseText);
+		if(jqXHR.status == 403) {
+			alert('Session Timeout,  Please Log in again');
+			window.location.reload();
+		} else {
+			alert("Error Status Code: " + jqXHR.status + " " + jqXHR.statusText + "\n" + jqXHR.responseText);	
+		}
+		
 	});
  });
 </script>
