@@ -515,8 +515,8 @@ var MainTblView = Backbone.View.extend({
 						
 						if(act.get('children').length>0) {
 							var childrenAct = act.get('children');
-							for(var j=0; j<childrenAct.length; j++) {
-								var childAct = childrenAct.at(j);
+							for(var k=0; k<childrenAct.length; k++) {
+								var childAct = childrenAct.at(k);
 								json = childAct.toJSON();
 								json.padding=60;
 								html=this.mainTblTbodyActivityTemplate(json);
