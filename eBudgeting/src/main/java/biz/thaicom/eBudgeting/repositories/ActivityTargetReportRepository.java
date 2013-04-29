@@ -55,7 +55,9 @@ public interface ActivityTargetReportRepository extends
 			"SELECT report " +
 			"FROM ActivityTargetReport report " +
 			"WHERE report.owner.id = ?2 " +
-			"	AND report.target.activity.forObjective.parentPath like ?1 " )
+			"	AND report.target.activity.forObjective.parentPath like ?1 " +
+			"ORDER BY report.target.activity.code asc" +
+			"" )
 	public List<ActivityTargetReport> findAllByParentObjectiveIdAndOwnerId(
 			String objectiveIdLike, Long ownerId);
 

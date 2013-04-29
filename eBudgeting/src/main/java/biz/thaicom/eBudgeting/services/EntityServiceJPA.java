@@ -108,6 +108,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.util.Comparators;
 
 @Service
 @Transactional
@@ -4368,7 +4369,13 @@ public class EntityServiceJPA implements EntityService {
 			
 			//then check if there is anyparent
 			if(act.getParent() != null) {
+				if(act.getParent().getChildren() == null){
+					act.getParent().setChildren(new ArrayList<Activity>());
+				}
+				
+				act.getParent().getChildren().add(act);
 				act = act.getParent();
+				logger.debug("adding children to act.getParent: " + act.getChildren().size());
 			}
 			// then add to กิจกรรมรอง
 			if(child.getFilterActivities()==null) {
@@ -4377,6 +4384,17 @@ public class EntityServiceJPA implements EntityService {
 			if(!child.getFilterActivities().contains(act)) {
 				logger.debug("adding act.id: " + act.getId());
 				child.getFilterActivities().add(act);
+				
+//				Collections.sort(child.getFilterActivities(), new Comparator<Activity>() {
+//
+//					@Override
+//					public int compare(Activity arg0, Activity arg1) {
+//						// TODO Auto-generated method stub
+//						return arg0.getCode().compareTo(arg1.getCode());
+//					}
+//					
+//				});
+				
 			}
 			
 			if(!childrenObjective.contains(child)) {
@@ -4393,7 +4411,7 @@ public class EntityServiceJPA implements EntityService {
 	           
 	 	});
 		
-		
+		logger.debug("returning...");
 		return childrenObjective;
 		
 	}
