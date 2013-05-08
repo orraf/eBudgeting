@@ -1031,3 +1031,10 @@
 	alter table PLN_MONTHLYBGTREPORT modify ( 
    		BUDGETRESULT    float(126)
 	);
+	
+	
+-- version 14
+-- Modified Date : May 8, 2013
+	update app_info set db_version=13;
+	
+	alter table pln_activitytargetresult rename  column "TIMESTAMP" to "RESULTTIMESTAMP";

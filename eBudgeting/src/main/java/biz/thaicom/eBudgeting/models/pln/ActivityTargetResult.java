@@ -42,6 +42,7 @@ public class ActivityTargetResult implements Serializable{
 	private Date reportedResultDate;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="RESULTTIMESTAMP")
 	private Date timestamp;
 	
 	@Basic
