@@ -174,7 +174,7 @@ var ModalView = Backbone.View.extend({
 		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
 		
 		if(!isNaN(parseInt(value))) {
-			assetAllocation.set(type,parselnt(value));										 
+			assetAllocation.set(type,parseInt(value));										 
 			this.$el.find('#totalAssetAllocation-' + assetAllocationId)
 				.html(addCommas(assetAllocation.get('unitBudget') * assetAllocation.get('quantity')) + ' บาท');
 		}
@@ -221,7 +221,7 @@ var ModalView = Backbone.View.extend({
 				this.$el.find('#assetTbl tbody').append(html);	
 				
 				this.currentProposal.set('id', response.proposal.id);
-				this.currentProposal.set('amountAllocated',parselnt(response.proposal.amountAllocated));
+				this.currentProposal.set('amountAllocated',parseInt(response.proposal.amountAllocated));
 				
 				
 				
