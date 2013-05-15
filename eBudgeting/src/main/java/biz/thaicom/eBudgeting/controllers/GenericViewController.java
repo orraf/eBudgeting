@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import biz.thaicom.eBudgeting.models.bgt.BudgetSignOff;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveTypeId;
 import biz.thaicom.eBudgeting.models.pln.TargetUnit;
@@ -1126,9 +1127,12 @@ public class GenericViewController {
 			HttpServletRequest request, HttpSession session,
 			@Activeuser ThaicomUserDetail currentUser) {
 		List<Objective> fiscalYears = entityService.findRootFiscalYear();
+		Organization parentOrg =  entityService.findOrganizationParentOf(currentUser.getWorkAt());
 		Integer fy = setFiscalYearFromSession(model, session);
 		model.addAttribute("rootPage", false);
 		model.addAttribute("fiscalYears", fiscalYears);
+		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
+		model.addAttribute("parentCurrentOrganizationId", parentOrg.getId());
 		
 		//check the budgetSignOff
 		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(

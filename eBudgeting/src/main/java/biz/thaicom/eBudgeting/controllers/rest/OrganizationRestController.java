@@ -90,7 +90,8 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 	@RequestMapping(value="/Organization/currentSession/children")
 	public @ResponseBody List<Organization> findOneByCurrentSession(
 			@Activeuser ThaicomUserDetail currentUser) {
-		return entityService.findOrganizationByNameAndParent_Id("%", currentUser.getWorkAt().getId());
+		
+		return entityService.findOrganizationChildrenOrSiblingOf(currentUser.getWorkAt());
 	}
 	
 	@RequestMapping(value="/Organization/{id}", method=RequestMethod.GET)

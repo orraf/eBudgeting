@@ -339,6 +339,9 @@ public interface EntityService {
 			Long parentId);
 	public List<Organization> findOrganizationByProvinces(String query);
 	public Organization findOrganizationById(Long id);
+	public List<Organization> findOrganizationChildrenOrSiblingOf(
+			Organization workAt);
+	public Organization findOrganizationParentOf(Organization org);
 
 
 
@@ -400,6 +403,8 @@ public interface EntityService {
 			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId);
 	public AssetAllocation deleteAssetAllocation(Long id);
 	public void saveAssetAllocationCollection(JsonNode node);
+	
+	
 
 
 	

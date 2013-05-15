@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
@@ -59,7 +60,15 @@ public class ActivityRestController {
 	public @ResponseBody Activity saveActivity(
 			@RequestBody JsonNode node,
 			@Activeuser ThaicomUserDetail currentUser) {
-		entityService.saveActivity(node, currentUser.getWorkAt());
+		
+		Organization parent = entityService.findOrganizationParentOf(currentUser.getWorkAt());
+		if(parent.getId() == 0L) {
+			entityService.saveActivity(node, currentUser.getWorkAt());	
+		} else {
+			entityService.saveActivity(node, parent);
+		}
+		
+		
 		
 		// we're not updating the model!
 		return null;

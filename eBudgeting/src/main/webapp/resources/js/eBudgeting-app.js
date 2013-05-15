@@ -508,6 +508,11 @@ Organization = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'parent',
 		relatedModel: 'Organization'
+	}, {
+		type: Backbone.HasMany,
+		key: 'children',
+		relatedModel: 'Organization',
+		collectionType: 'OrganizationCollection'
 	}]
 });
 

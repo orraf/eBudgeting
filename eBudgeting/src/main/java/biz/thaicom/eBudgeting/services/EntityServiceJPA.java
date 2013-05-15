@@ -2967,12 +2967,16 @@ public class EntityServiceJPA implements EntityService {
 	 */
 	public List<Objective> findObjectiveByOwnerAndFiscalYear(
 			Organization workAt, Integer fiscalYear){
+		Organization org = organizationRepository.findOne(workAt.getId());
+		if(org.getParent().getId() != 0L) {
+			org = org.getParent();
+		}
 		
-		List<Objective> list = objectiveRepository.findAllByOwnerAndfiscalYear(workAt, fiscalYear);
+		List<Objective> list = objectiveRepository.findAllByOwnerAndfiscalYear(org, fiscalYear);
 		
 		for(Objective obj: list) {
 			List<BudgetProposal> proposals = 
-					budgetProposalRepository.findByForObjectiveAndOwner(obj, workAt);
+					budgetProposalRepository.findByForObjectiveAndOwner(obj, org);
 			
 			obj.setFilterProposals(proposals);
 		}
@@ -3996,6 +4000,24 @@ public class EntityServiceJPA implements EntityService {
 		return organizationRepository.findAllByNameLikeAndParent_IdOrderByNameAsc("%"+query+"%", parentId);
 	}
 	
+	
+	
+	@Override
+	public List<Organization> findOrganizationChildrenOrSiblingOf(
+			Organization workAt) {
+		List<Organization> returnList;
+		Organization org = organizationRepository.findOne(workAt.getId());
+		if(org.getParent().getId() == 0L ) {
+			returnList = org.getChildren();
+			returnList.size();
+		} else {
+			Organization parent = org.getParent();
+			returnList = parent.getChildren();
+			returnList.size();
+		}
+		return returnList;
+	}
+
 	@Override
 	public List<Organization> findOrganizationByProvinces(String query) {
 		query = "%" + query + "%";
@@ -4012,9 +4034,18 @@ public class EntityServiceJPA implements EntityService {
 		
 		return org;
 	}
+	
+	
 
 
 	
+	@Override
+	public Organization findOrganizationParentOf(Organization org) {
+		Organization orgJpa = organizationRepository.findOneById(org.getId());
+		orgJpa.getParent().getId();
+		return orgJpa.getParent();
+	}
+
 	/**
 	 * ค้นหาหน่วยงานจาก Objective ที่ได้รับผิดชอบ
 	 * @param objectiveId id ของ {@link Objective} ที่รับผิดชอบ
@@ -4062,11 +4093,19 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Activity> findActivityByOwnerAndForObjective(
 			Organization workAt, Long objectiveId) {
-		List<Activity> list =  activityRepository.findAllByOwnerAndForObejctive_Id(workAt, objectiveId);
+		
+		Organization org = organizationRepository.findOne(workAt.getId());
+		if(org.getParent().getId() != 0) {
+			org = org.getParent();
+		}
+		
+		List<Activity> list =  activityRepository.findAllByOwnerAndForObejctive_Id(org, objectiveId);
 		
 		for(Activity activity : list) {
 			activity.getTargets().size();
 			activity.getChildren().size();
+			activity.getOwner().getId();
+			activity.getRegulator().getId();
 			if(activity.getChildren().size() > 0) {
 				for(Activity child : activity.getChildren()) {
 					child.getTargets().size();

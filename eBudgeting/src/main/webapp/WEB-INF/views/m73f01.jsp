@@ -154,6 +154,7 @@
 			<td style="width:30px;"></td>
 			<td style="width:30px;">รหัส</td>
 			<td>ชื่อกิจกรรมย่อย</td>
+			<td style="width:40px">ส่วนรับผิดชอบ</td>
 			<td style="width:100px;">เป้าหมาย</td>
 			<td style="width:100px;">หน่วยนับ</td>
 			<td style="width:100px;">งบประมาณที่จัดสรร (บาท)</td>
@@ -175,6 +176,7 @@
 		{{name}} {{#unless parent}}
 			<div class="pull-right"><a href="#" class="btn btn-primary newActivitityChild">เพิ่มกิจกรรมเสริม</a> {{/unless}}</div>
 	</td>
+	<td>{{regulator.abbr}}</td>
 	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each targets}}
 			<li data-id="{{id}}">{{formatNumber targetValue}}</li>
@@ -290,10 +292,15 @@
 
 	<label>ส่วนงานที่รับผิดชอบ</label>
 	<select id="regulatorSlt">
-		<option value="-1">กรุณาเลือก</option>
-		{{#each currentChildrenOraganization}}
-			<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{name}}</option>
-		{{/each}}
+
+		{{#if disabledChldrenOrganizationSlt}} 
+			<option value="{{currentChildrenOraganization.id}}" selected="selected">{{currentChildrenOraganization.name}}</option>	
+		{{else}}
+			<option value="-1">กรุณาเลือก</option>
+			{{#each currentChildrenOraganization}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{name}}</option>
+			{{/each}}
+		{{/if}}
 	</select>
 
 	
@@ -412,6 +419,8 @@
 	var budgetTypeSelectionView = null;
 	var rootCollection;
 	var topBudgetList = ["งบบุคลากร","งบดำเนินงาน","งบลงทุน","งบอุดหนุน","งบรายจ่ายอื่น"];
+	var currentOrganizationId = parseInt("${currentOrganizationId}");
+	var parentCurrentOrganizationId = parseInt("${parentCurrentOrganizationId}");
 	var l = null;
 	var e1;
 	var e2;

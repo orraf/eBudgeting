@@ -433,15 +433,26 @@ var ModalView = Backbone.View.extend({
 		
 		var json = this.currentActivity.toJSON();
 		
-		json.currentChildrenOraganization = this.currentChildrenOrganization.toJSON();
-		var regulator = this.currentActivity.get('regulator');
-		if(regulator != null) {
-			var regulatorId = regulator.get('id');
-			var foundOrgInJson = _.find(json.currentChildrenOraganization, function(o) { return o.id == regulatorId; });
-			if(foundOrgInJson != null) {
-				foundOrgInJson.selected = true;
+		
+		
+		if(parentCurrentOrganizationId == 0) {
+			json.currentChildrenOraganization = this.currentChildrenOrganization.toJSON();
+			var regulator = this.currentActivity.get('regulator');
+			if(regulator != null) {
+				var regulatorId = regulator.get('id');
+				var foundOrgInJson = _.find(json.currentChildrenOraganization, function(o) { return o.id == regulatorId; });
+				if(foundOrgInJson != null) {
+					foundOrgInJson.selected = true;
+				}
 			}
+		} else {
+			var org = this.currentChildrenOrganization.findWhere({id: currentOrganizationId}) ;
+			json.currentChildrenOraganization = org.toJSON();
+			json.disabledChldrenOrganizationSlt = true;
 		}
+		
+		
+		
 		
 		
 		var html = this.modalTemplate(json);
@@ -578,6 +589,12 @@ var MainCtrView = Backbone.View.extend({
 	editActivity: function(e) {
 		var activityId = $(e.target).parents('tr').attr('data-id');
 		var activity = Activity.findOrCreate(activityId);
+		if(parentCurrentOrganizationId != 0){
+			if(currentOrganizationId != activity.get("regulator").get("id")) {
+				alert("คุณไม่สามารถแก้ไขกิจกรรมย่อยที่ส่วนงานของคุณไม่ได้รับผิดชอบได้");
+				return false;
+			}
+		}
 
 		this.modalView.renderWithActivity(activity);
 	},
@@ -586,6 +603,13 @@ var MainCtrView = Backbone.View.extend({
 		var activityId = $(e.target).parents('tr').attr('data-id');
 		var activity = Activity.findOrCreate(activityId);
 		if(activity != null) {
+			if(parentCurrentOrganizationId != 0){
+				if(currentOrganizationId != activity.get("regulator").get("id")) {
+					alert("คุณไม่สามารถลบกิจกรรมย่อยที่ส่วนงานของคุณไม่ได้รับผิดชอบได้");
+					return false;
+				}
+			}
+			
 			var answer = confirm("คุณต้องการลบกิจกรรมย่อย " + activity.get('name') + " ?" );
 			if(answer == true ) {
 				activity.destroy({
@@ -605,11 +629,17 @@ var MainCtrView = Backbone.View.extend({
 	
 	newChildActivity: function(e) {
 		var parentActivityId = $(e.target).parents('tr').attr('data-id');
-		
+		var parentActivity = Activity.findOrCreate(parentActivityId);
+		if(parentCurrentOrganizationId != 0){
+			if(currentOrganizationId != parentActivity.get("regulator").get("id")) {
+				alert("คุณไม่สามารถเพิ่มกิจกรรมเสริมที่ส่วนงานของคุณไม่ได้รับผิดชอบได้");
+				return false;
+			}
+		}
 		
 		var newActivity = new Activity();
 		newActivity.set('forObjective', this.currentObjective);
-		newActivity.set('parent', Activity.findOrCreate(parentActivityId));
+		newActivity.set('parent', parentActivity);
 		
 		this.modalView.renderWithActivity(newActivity);
 		
