@@ -4205,7 +4205,7 @@ public class EntityServiceJPA implements EntityService {
 			target.setTargetValue(targetNode.get("targetValue").asLong());
 			if(targetNode.get("budgetAllocated") != null) {
 //				if(!target.getProvincialTarget()) {
-				if(node.get("provincialTarget") != null) {
+				if(targetNode.get("provincialTarget") != null  && targetNode.get("provincialTarget").asBoolean() == false ) {
 					target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
 				} else {
 					target.setBudgetAllocated(0L);
