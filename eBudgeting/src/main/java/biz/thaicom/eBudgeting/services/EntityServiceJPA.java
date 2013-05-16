@@ -4309,8 +4309,9 @@ public class EntityServiceJPA implements EntityService {
 			
 			// activityTargetReportRepository.save(report);
 			
-			 
-			if(reportNode.get("activityPerformance") != null && 
+			if(report.getTarget().getProvincialTarget() == false) {
+				performance.setBudgetAllocated(report.getTarget().getBudgetAllocated().doubleValue()); 
+			} else if(reportNode.get("activityPerformance") != null && 
 					reportNode.get("activityPerformance").get("budgetAllocated") != null) {
 				performance.setBudgetAllocated(reportNode.get("activityPerformance").get("budgetAllocated").asDouble());
 			} else {
