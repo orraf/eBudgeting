@@ -25,8 +25,8 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 	@Query("" +
 			"SELECT act " +
 			"FROM Activity act " +
-			"	INNER JOIN FETCH act.targets target " +
-			"	INNER JOIN FETCH target.unit " +
+			"	LEFT JOIN FETCH act.targets target " +
+			"	LEFT JOIN FETCH target.unit " +
 			"WHERE act.regulator =?1 AND act.forObjective.id = ?2 " +
 			"ORDER BY act.code ASC ")
 	List<Activity> findAllByRegulatorAndForObejctive_Id(Organization workAt,
