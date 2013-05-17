@@ -148,6 +148,8 @@ public interface EntityService {
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear);
 	public List<Objective> findObjectiveAllByFiscalYear(Integer fiscalYear);
+	public List<Objective> findObjectiveHasBudgetAssetByFiscalYear(
+			Integer fiscalYear);
 
 
 	
@@ -403,6 +405,9 @@ public interface EntityService {
 			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId);
 	public AssetAllocation deleteAssetAllocation(Long id);
 	public void saveAssetAllocationCollection(JsonNode node);
+	public List<AssetAllocation> findAssetAllocationByForObjectiveId(
+			Long objectiveId);
+	
 	
 	
 

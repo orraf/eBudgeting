@@ -19,4 +19,13 @@ public interface AssetAllocationRepository extends JpaRepository<AssetAllocation
 			"WHERE assetAllocation.proposal = ?1 ")
 	Long findSumBudgetOfPropsoal(BudgetProposal proposal);
 
+	@Query("" +
+			"SELECT assetAllocation " +
+			"FROM AssetAllocation assetAllocation " +
+			"	LEFT JOIN FETCH assetAllocation.owner " +
+			"	INNER JOIN FETCH assetAllocation.budgetType " +
+			"	INNER JOIN FETCH assetAllocation.assetBudget " +
+			"WHERE assetAllocation.forObjective.id = ?1 ")
+	List<AssetAllocation> findAllByForObjectiveId(Long objectiveId);
+
 }

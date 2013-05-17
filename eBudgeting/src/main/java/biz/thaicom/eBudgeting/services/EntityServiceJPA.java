@@ -389,6 +389,14 @@ public class EntityServiceJPA implements EntityService {
 	public List<Integer> findObjectiveTypeRootFiscalYear() {
 		return objectiveTypeRepository.findRootFiscalYear();
 	}
+	
+	
+
+	@Override
+	public List<Objective> findObjectiveHasBudgetAssetByFiscalYear(
+			Integer fiscalYear) {
+		return objectiveRepository.findAllHasBudgetAssetByFiscalYear(fiscalYear);
+	}
 
 	@Override
 	public List<ObjectiveType> findObjectiveTypeByFiscalYearEager(
@@ -5085,8 +5093,16 @@ public class EntityServiceJPA implements EntityService {
 			allocationRecordRepository.save(allocationRecord);
 			updateAllocationRecord(allocationRecord.getId(), allocNode);
 		}
-		
 	}
+
+	@Override
+	public List<AssetAllocation> findAssetAllocationByForObjectiveId(
+			Long objectiveId) {
+		
+		return assetAllocationRepository.findAllByForObjectiveId(objectiveId);
+	}
+	
+	
 	
 
 	

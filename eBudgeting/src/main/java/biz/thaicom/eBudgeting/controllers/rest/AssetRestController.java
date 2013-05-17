@@ -136,6 +136,12 @@ public class AssetRestController {
 		entityService.saveAssetAllocationCollection(node);
 		return "OK";
 	}
-
+	
+	@RequestMapping(value="/AssetAllocation/forObjective/{objectiveId}", method=RequestMethod.GET) 
+	public @ResponseBody List<AssetAllocation> findByForObjectiveId(
+			@PathVariable Long objectiveId){
+		return entityService.findAssetAllocationByForObjectiveId(objectiveId);
+	}
+ 
 	
 }

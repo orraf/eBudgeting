@@ -303,9 +303,11 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"WHERE obj.fiscalYear = ?1 ")
 	public List<Objective> findAllLeftJoinChildrenByFiscalYear(Integer fiscalYear);
 
-	
-
-
+	@Query("" +
+			"SELECT assetAllocation.forObjective " +
+			"FROM AssetAllocation assetAllocation " +
+			"WHERE	assetAllocation.fiscalYear = ?1 ")
+	public List<Objective> findAllHasBudgetAssetByFiscalYear(Integer fiscalYear);
 
 
 

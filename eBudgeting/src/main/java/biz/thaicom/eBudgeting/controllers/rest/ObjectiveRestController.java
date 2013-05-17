@@ -228,6 +228,15 @@ public class ObjectiveRestController {
 		return entityService.findObjectiveByOwnerAndFiscalYear(currentUser.getWorkAt(), fiscalYear);
 	}
 	
+	@RequestMapping(value="/Objective/BudgetAsset/ficalYear/{fiscalYear}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> findObjectiveHasBudgetAssetByFiscalYear(
+			@PathVariable Integer fiscalYear,
+			@Activeuser ThaicomUserDetail currentUser
+			){
+		return entityService.findObjectiveHasBudgetAssetByFiscalYear(fiscalYear);
+		
+	}
+	
 	@RequestMapping(value="/Objective/currentActivityOwner/{fiscalYear}", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> findObjectiveByCurrentActivityOwner(
 			@PathVariable Integer fiscalYear,
