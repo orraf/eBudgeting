@@ -1074,14 +1074,14 @@
         references BGT_ASSETMETHOD;
 
    	alter table BGT_ASSETALLOCATION add (
-        BGT_ASSETMETHOD_ID number(19,0)
+        BGT_ASSETMETHOD_ID number(19,0),
+        HRX_OPERATOR_ID number(19,0)
     );
     
     alter table BGT_ASSETALLOCATION 
         add constraint FKB033042044BB6619 
         foreign key (BGT_ASSETMETHOD_ID) 
         references BGT_ASSETMETHOD;
-
         
     create table BGT_ASSETSTEPREPORT (
         id number(19,0) not null,

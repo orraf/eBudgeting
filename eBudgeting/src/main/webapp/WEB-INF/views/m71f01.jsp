@@ -488,8 +488,9 @@
 		<thead>
 			<tr>
 				<td style="width:15px;"></td>
-				<td style="width:260px;">ชื่อรายการ</td>
-				<td style="width:140px;">หน่วยงาน</td>
+				<td style="width:200px;">ชื่อรายการ</td>
+				<td style="width:100px;">เจ้าของ</td>
+				<td style="width:100px;">ผู้จัดซื้อ</td>
 				<td style="width:60px;">จำนวน</td>
 				<td style="width:140px;">งบประมาณต่อหน่วย</td>
 				<td style="width:140px;">รวม</td>
@@ -508,9 +509,15 @@
 <tr data-id="{{id}}">
 	<td><a href="#td-{{id}}" class="deleteAssetAllocation"><i class="icon-trash icon-red"></i></a></td>
 	<td>{{assetBudget.name}}</td>
-	<td><select class="span2 assetAllocationOnwerSlt" id="assetAllocationOwnerOption-{{id}}">
+	<td><select class="assetAllocationOnwerSlt" style="width:90px;" id="assetAllocationOwnerOption-{{id}}">
 			<option value="0">กรุณาเลือก</option>
 			{{#each organizations}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{abbr}}</option>
+			{{/each}}
+		</select>
+	</td>
+	<td><select class="assetAllocationOperatorSlt" style="width:90px;" id="assetAllocationOperatorOption-{{id}}">
+			{{#each operatorOrganizations}}
 				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{abbr}}</option>
 			{{/each}}
 		</select>

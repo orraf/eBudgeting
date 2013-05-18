@@ -4019,8 +4019,22 @@ public class EntityServiceJPA implements EntityService {
 		return organizationRepository.findAllByNameLikeAndParent_IdOrderByNameAsc("%"+query+"%", parentId);
 	}
 	
-	
-	
+	@Override
+	public List<Organization> findOrganizationByNameAndParent_IdWithProcuremnt(
+			String query, Long parentId) {
+		List<Organization> returnList = new ArrayList<Organization>();
+		Organization procurment = organizationRepository.findOne(101170000L);
+		
+		returnList.add(procurment);
+		
+		if(parentId >= 110000000L){
+			List<Organization> l = organizationRepository.findAllByNameLikeAndParent_IdOrderByNameAsc("%"+query+"%", parentId);
+			returnList.addAll(l);
+		}
+		
+		return returnList;
+	}
+
 	@Override
 	public List<Organization> findOrganizationChildrenOrSiblingOf(
 			Organization workAt) {
@@ -5054,6 +5068,9 @@ public class EntityServiceJPA implements EntityService {
 			Organization owner = organizationRepository.findOne(getJsonNodeId(assetAllocNode.get("owner")));
 			assetAlloc.setOwner(owner);
 			
+			Organization operator = organizationRepository.findOne(getJsonNodeId(assetAllocNode.get("operator")));
+			assetAlloc.setOperator(operator);
+			
 			assetAlloc.setQuantity(assetAllocNode.get("quantity").asInt());
 			assetAlloc.setUnitBudget(assetAllocNode.get("unitBudget").asLong());
 			
@@ -5183,14 +5200,6 @@ public class EntityServiceJPA implements EntityService {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-
 	
 
 }

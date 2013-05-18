@@ -346,6 +346,8 @@ public interface EntityService {
 	public List<Organization> findOrganizationChildrenOrSiblingOf(
 			Organization workAt);
 	public Organization findOrganizationParentOf(Organization org);
+	public List<Organization> findOrganizationByNameAndParent_IdWithProcuremnt(
+			String query, Long parentId);
 
 
 

@@ -47,6 +47,7 @@ var ModalView = Backbone.View.extend({
 		"change .assetAllocationNumber" : "changeAssetAllocationNumber",
 		"click #saveAssetAllocationBtn" : "saveAssetAllocation",
 		"change .assetAllocationOnwerSlt" : "changeAssetAllocationOnwerSlt",
+		"change .assetAllocationOperatorSlt" : "changeAssetAllocationOperatorSlt",
 		"click #backToProposalFromAssetBtn" : "backToProposalFromAsset",
 		"click .removeOrganizationAssetProposal" : "removeOrganizationAssetProposal",
 		
@@ -79,6 +80,17 @@ var ModalView = Backbone.View.extend({
 			}
 		});
 		
+		this.childrenOperatorOrganization = new OrganizationCollection();
+		this.childrenOperatorOrganization.fetch({
+			url: appUrl('/Organization/parentId/'+organizationId+'/findByNameWithProcurement'),
+			type: 'POST',
+			data : {
+				query: ""
+			}
+		});
+		
+		
+		
 		for(var i=0; i<this.proposals.length; i++) {
 			if(this.proposals.at(i).get('owner') == organization) {
 				this.currentProposal = this.proposals.at(i);
@@ -110,6 +122,14 @@ var ModalView = Backbone.View.extend({
 					if(record.get('owner') != null) {
 						_.each(json.organizations,function(org) {
 							if(org.id == record.get('owner').get('id')) {
+								org.selected = true;
+							}
+						});
+					}
+					json.operatorOrganizations=this.childrenOperatorOrganization.toJSON();
+					if(record.get('operator') != null) {
+						_.each(json.operatorOrganizations,function(org) {
+							if(org.id == record.get('operator').get('id')) {
 								org.selected = true;
 							}
 						});
@@ -164,6 +184,17 @@ var ModalView = Backbone.View.extend({
 		if(ownerId > 0) {
 			var owner = Organization.findOrCreate(ownerId);
 			assetAllocation.set('owner', owner);
+		}
+		
+	},
+	changeAssetAllocationOperatorSlt: function(e) {
+		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
+		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
+		
+		var operatorId = $(e.target).val();
+		if(operatorId > 0) {
+			var operator = Organization.findOrCreate(operatorId);
+			assetAllocation.set('operator', operator);
 		}
 		
 	},

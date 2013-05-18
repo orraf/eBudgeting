@@ -72,6 +72,17 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 
 		return  list;
 	}
+	
+	@RequestMapping(value="/Organization/parentId/{parentId}/findByNameWithProcurement", method=RequestMethod.POST)
+	public @ResponseBody List<Organization> findOrganizationByParentIdAndNameWithProcurement(
+			@RequestParam String query,
+			@PathVariable Long parentId) {
+		logger.debug("query: " + query);
+		List<Organization> list =entityService.findOrganizationByNameAndParent_IdWithProcuremnt(query, parentId);
+
+		return  list;
+	}
+
 
 	
 	@RequestMapping(value="/Organization/code/{code}/findByName", method=RequestMethod.POST)

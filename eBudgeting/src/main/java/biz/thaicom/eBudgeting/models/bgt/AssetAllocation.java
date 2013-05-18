@@ -58,6 +58,9 @@ public class AssetAllocation implements Serializable{
 	@JoinColumn(name="HRX_PARENTOWNER_ID")
 	private Organization parentOwner;
 
+	@ManyToOne
+	@JoinColumn(name="HRX_OPERATOR_ID")
+	private Organization operator;
 	
 	@ManyToOne
 	@JoinColumn(name="PLN_OBJECTIVE_ID")
@@ -185,6 +188,14 @@ public class AssetAllocation implements Serializable{
 
 	public void setAssetStepReports(List<AssetStepReport> assetStepReports) {
 		this.assetStepReports = assetStepReports;
+	}
+
+	public Organization getOperator() {
+		return operator;
+	}
+
+	public void setOperator(Organization operator) {
+		this.operator = operator;
 	}
 	
 	
