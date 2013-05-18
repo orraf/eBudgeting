@@ -44,99 +44,140 @@ var BudgetProposalSelectionView = Backbone.View.extend({
 	}
 });
 
-var AssignTargetValueModalView = Backbone.View.extend({
+var AssignAssetPlanModal = Backbone.View.extend({
 	/**
-     *  @memberOf AssignTargetValueModalView
+     *  @memberOf AssignAssetPlanModal
      */
 	initialize : function(options) {
 		this.parentView = options.parentView;
+		this.assetMethods = new AssetMethodCollection();
+		this.assetMethods.fetch({
+			url: appUrl('/AssetMethod/all')
+		});
 	},
-	assignTargetValueModalTemplate: Handlebars.compile($("#assignTargetValueModalTemplate").html()),
-	
-	organizationSearchTbodyTemplate: Handlebars.compile($("#organizationSearchTbodyTemplate").html()),
-	organizationTargetValueTbodyTemplate: Handlebars.compile($("#organizationTargetValueTbodyTemplate").html()),
-	
-	
-	el : "#assignTargetValueModal",
-	
-	setCurrentTargetReport: function(targetReport) {
-		this.currentTargetReport = targetReport;
-		this.currentTarget = targetReport.get('target');
-		this.currentPerformance = targetReport.get('activityPerformance');
-	},
-	
-	setCurrentActivity: function(activity){
-		this.currentActivity = activity;
-	},
+	assignAssetPlanModalTemplate: Handlebars.compile($("#assignAssetPlanModalTemplate").html()),
+	assetMethodOptionTemplate: Handlebars.compile($("#assetMethodOptionTemplate").html()),
+	stepInputTemplate: Handlebars.compile($("#stepInputTemplate").html()),
+	el : "#assignAssetPlanModal",
 	
 	events: {
-		
-		"change input.monthlyReportPlan" : "changeMonthlyReportPlan",
-		"change input.monthlyBudgetPlan" : "changeMonthlyBudgetPlan",
-		
-		"click #saveAssignTargetBtn" : "saveAssignTarget",
-		"click #cancelBtn" : "cancelAssignTarget"
+		"change #inputAssetMethod" : "changeAssetMethod",
+		"click #saveAssetPlanBtn" : "saveAssetPlan",
+		"change input.datepickerTxt" : "changeInputDatepicker",
+		"click #cancelBtn" : "cancel"
 	},
-	
-	changeMonthlyReportPlan: function(e) {
-		var idx = $(e.target).attr('data-idx');
-		var planTxt = parseInt($(e.target).val());
-		this.currentTargetReport.get('monthlyReports').at(idx).set('activityPlan', planTxt);
-	},
-	changeMonthlyBudgetPlan: function(e) {
-		var idx = $(e.target).attr('data-idx');
-		var planTxt = parseInt($(e.target).val());
-		this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(idx).set('budgetPlan', planTxt);
-	},
-	
-	cancelAssignTarget: function(e) {
+	cancel:function(e) {
 		this.$el.modal('hide');
 	},
-	saveAssignTarget: function(e) {
-		var sum=0;
-		// now put the sum up
-		_.forEach(this.$el.find("input.monthlyReportPlan"), function(el) {
-			var value = parseInt($(el).val());
-			sum += isNaN(value)?0:value;
+	
+	changeAssetMethod: function(e) {
+		var selectAssetMethodId = $(e.target).val();
+		if(selectAssetMethodId != 0) {
+			this.currentAssetMethod = AssetMethod.findOrCreate(selectAssetMethodId);
+			
+			var json = this.currentAssetMethod.get('steps').toJSON();
+			var html = this.stepInputTemplate(json);
+			this.$el.find('#assetMethodStepDiv').html(html);
+			
+			$('.datepicker').datepicker({
+			    format: 'dd/mm/yyyy'
+			});
+			
+		}
+	},
+	changeInputDatepicker: function(e) {
+		
+		if($(e.target).val().length>0) {
+			$(e.target).parents('div.control-group').removeClass('error');
+		}
+	},
+	saveAssetPlan: function(e) {
+		var isValid = true;
+		// first check!
+		_.forEach(this.$el.find('input[type=text]'),function(input) {
+			var $el = $(input);
+			if($el.val() == null || $el.val().length == 0) {
+				isValid = false;
+				$el.parents('div.control-group').addClass('error');
+			}
 		});
 		
-		if(sum != this.currentTargetReport.get('targetValue')) {
-			alert("กรุณาตรวจสอบ แผนการดำเนินงาน รวมแล้วไม่เท่ากับค่าเป้าหมาย");
+		if(!isValid) {
+			alert('กรุณากรอกข้อมูลให้ครบถ้วน');
 			return;
 		}
 		
-		sum=0;
-		_.forEach(this.$el.find("input.monthlyBudgetPlan"), function(el) {
-			var value = parseInt($(el).val());
-			sum += isNaN(value)?0:value;
-		});
-		if(sum != this.currentTargetReport.get('activityPerformance').get('budgetAllocated')) {
-			alert("กรุณาตรวจสอบ แผนการเบิกจ่ายงบประมาณ รวมแล้วไม่เท่ากับงบที่ได้รับจัดสรร");
-			return;
+		//create stepReport
+		var stepReports = new AssetStepReportCollection();
+		for(var i=0; i<this.currentAssetMethod.get('steps').length; i++) {
+			var stepReport = new AssetStepReport();
+			var stepId =  this.currentAssetMethod.get('steps').at(i).get('id');
+			stepReport.set('step', this.currentAssetMethod.get('steps').at(i));
+			stepReport.set('planBegin', this.$el.find('#planBegin_'+stepId).val());
+			stepReport.set('planEnd', this.$el.find('#planBegin_'+stepId).val());
+			stepReport.set('assetAllocation', this.currentAssetAllocation);
+			stepReport.set('stepOrder', i);
+			stepReports.add(stepReport);
 		}
- 		
- 		this.$el.find('a#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
- 		
- 		// we should be ready to save the 
- 		this.currentTargetReport.save(null, {
- 			url: appUrl('/ActivityTargetReport/saveReportPlan/' + this.currentTargetReport.get('id')),
- 			success : _.bind(function() {
- 				alert('บันทึกเสร็จแล้ว');
- 				this.$el.modal('hide');
- 				this.currentTargetReport.urlRoot = appUrl('/ActivityTargetReport/');
- 				this.$el.find('a#saveAssignTargetBtn').html('บันทึกข้อมูล');
- 			},this)
- 		});
+		this.currentAssetAllocation.set('assetStepReports', stepReports);
+		this.currentAssetAllocation.set('assetMethod', this.currentAssetMethod);
+		console.log(this.currentAssetAllocation.toJSON());
+		
+		$.ajax({
+			type: "POST",
+			url: appUrl('/AssetAllocation/saveAssetPlan/' + this.currentAssetAllocation.get('id')),
+			data: JSON.stringify(this.currentAssetAllocation.toJSON()),
+			success: function() {
+				alert("บันทึกข้อมูลเสร็จแล้ว");
+			},
+			dataType: "json",
+			contentType: "application/json; charset=UTF-8"
+		});
+		
+		
 	},
 	
-	render: function() {
+	render: function(assetAllocation) {
+		this.currentAssetAllocation = assetAllocation;
 		
+		this.$el.find('.modal-header span').html("บันทึกแผนงบลงทุน");
 		
-		this.$el.find('.modal-header span').html("กิจกรรม: " + this.currentActivity.get('name'));
-		
-		var json = this.currentTargetReport.toJSON();
-		var html = this.assignTargetValueModalTemplate(json);
+		var json = this.currentAssetAllocation.toJSON();
+		var html = this.assignAssetPlanModalTemplate(json);
 		this.$el.find('.modal-body').html(html);
+		
+		var reports;
+		
+		// now populate the option!
+		json = this.assetMethods.toJSON();
+		if(this.currentAssetAllocation.get('assetMethod') != null) {
+			for(var i=0; i<json.length; i++) {
+				if(json[i].id == this.currentAssetAllocation.get('assetMethod').get('id')){
+					json[i].selected=true;
+					
+					reports = new AssetStepReportCollection();
+					reports.fetch({
+						url: appUrl('/AssetStepReport/allByAssetAllocation/'+this.currentAssetAllocation.get('id')),
+						success: _.bind(function() {
+							var json = this.currentAssetAllocation.get('assetMethod').get('steps').toJSON();
+							for(var i=0; i<json.length; i++) {
+								
+								json[i].planBegin=moment(reports.at(i).get('planBegin')).format('DD/MM/YYYY');
+								json[i].planEnd=moment(reports.at(i).get('planEnd')).format('DD/MM/YYYY');
+							}
+							var html = this.stepInputTemplate(json);
+							this.$el.find('#assetMethodStepDiv').html(html);
+							
+							$('.datepicker').datepicker({
+							    format: 'dd/mm/yyyy'
+							});
+						},this)
+					});
+					
+				}
+			}
+		}
+		this.$el.find('#inputAssetMethod').append(this.assetMethodOptionTemplate(json));
 		
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		return this;
@@ -154,7 +195,7 @@ var MainTblView = Backbone.View.extend({
 	initialize : function() {
 		//this.collection.bind('reset', this.render, this);
 		
-		this.assignTargetValueModalView = new AssignTargetValueModalView({parentView: this});
+		this.assignAssetPlanModal = new AssignAssetPlanModal({parentView: this});
 	},
 
 	el : "#mainTbl",
@@ -163,9 +204,17 @@ var MainTblView = Backbone.View.extend({
 	mainTblTbodyAssetAllocationTemplate:  Handlebars.compile($("#mainTblTbodyAssetAllocationTemplate").html()),
 	
 	events : {
-		"click .assignTargetLnk" : "assignTarget"
+		"click a.assetPlanLnk" : "assetPlan"
 	},
+	assetPlan: function(e) {
+		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
+		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
 	
+		
+		this.assignAssetPlanModal.render(assetAllocation);
+		return false;
+		
+	},
 	assignTarget: function(e) {
 		var targetId = $(e.target).parents('li').attr('data-id');
 		var activityTargetReport = ActivityTargetReport.findOrCreate(targetId);

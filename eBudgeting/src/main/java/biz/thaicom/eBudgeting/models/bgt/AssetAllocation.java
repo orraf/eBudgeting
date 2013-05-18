@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.models.bgt;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -9,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -71,6 +74,14 @@ public class AssetAllocation implements Serializable{
 	@ManyToOne
 	@JoinColumn(name="BGT_BUDGETTYPE_ID")
 	private BudgetType budgetType;
+	
+	@ManyToOne
+	@JoinColumn(name="BGT_ASSETMETHOD_ID")
+	private AssetMethod assetMethod;
+	
+	@OneToMany(mappedBy="assetAllocation")
+	@OrderColumn(name="STEPORDER")
+	private List<AssetStepReport> assetStepReports;
 
 	public Long getId() {
 		return id;
@@ -79,7 +90,6 @@ public class AssetAllocation implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 
 	public AssetBudget getAssetBudget() {
 		return assetBudget;
@@ -159,6 +169,22 @@ public class AssetAllocation implements Serializable{
 
 	public void setProposal(BudgetProposal proposal) {
 		this.proposal = proposal;
+	}
+
+	public AssetMethod getAssetMethod() {
+		return assetMethod;
+	}
+
+	public void setAssetMethod(AssetMethod assetMethod) {
+		this.assetMethod = assetMethod;
+	}
+
+	public List<AssetStepReport> getAssetStepReports() {
+		return assetStepReports;
+	}
+
+	public void setAssetStepReports(List<AssetStepReport> assetStepReports) {
+		this.assetStepReports = assetStepReports;
 	}
 	
 	

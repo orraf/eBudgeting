@@ -20,6 +20,8 @@ import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
+import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
+import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.bgt.AssetType;
 import biz.thaicom.eBudgeting.services.EntityService;
 
@@ -143,5 +145,22 @@ public class AssetRestController {
 		return entityService.findAssetAllocationByForObjectiveId(objectiveId);
 	}
  
+	@RequestMapping(value="/AssetMethod/all") 
+	public @ResponseBody List<AssetMethod> findAssetMethodAll() {
+		return entityService.findAssetMethodAll();
+	}
+	
+	@RequestMapping(value="/AssetAllocation/saveAssetPlan/{id}", method=RequestMethod.POST)
+	public @ResponseBody String saveAssetAllocationPlan(
+			@RequestBody JsonNode node) {
+		return entityService.saveAssetAllocationPlan(node);
+	}
+	
+	@RequestMapping(value="/AssetStepReport/allByAssetAllocation/{assetAllocationId}")
+	public @ResponseBody List<AssetStepReport> findAssetStepReportByAssetAlloationId(
+			@PathVariable Long assetAllocationId){
+		return entityService.findAssetStepReportByAssetAllocationId(assetAllocationId);
+	}
+	
 	
 }

@@ -704,7 +704,7 @@ AssetKind = Backbone.RelationalModel.extend({
 	}]
 });
 
-AssetBudget = Backbone.RelationalModel.extend({
+AssetBudget =  Backbone.RelationalModel.extend({
 	urlRoot: appUrl('/AssetBudget/'),
 	idAttribute: 'id',
 	relations: [{
@@ -713,6 +713,38 @@ AssetBudget = Backbone.RelationalModel.extend({
 		relatedModel: 'AssetKind'
 	}]
 });
+
+AssetMethodStep =  Backbone.RelationalModel.extend({
+	urlRoot: appUrl('/AssetMethodStep/'),
+	idAttribute: 'id'
+});
+
+AssetStepReport = Backbone.RelationalModel.extend({
+	urlRoot: appUrl('/AssetStepReport/'),
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'step',
+		relatedModel: 'AssetMethodStep'
+	}, {
+		type: Backbone.HasOne,
+		key: 'assetAllocation',
+		relatedModel: 'AssetAllocation'
+	}]	
+});
+
+AssetMethod = Backbone.RelationalModel.extend({
+	urlRoot: appUrl('/AssetMethod/'),
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasMany,
+		key: 'steps',
+		relatedModel: 'AssetMethodStep',
+		collectionType: 'AssetMethodStepCollection'
+	}]
+});
+
+
 
 AssetAllocation = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('/AssetAllocation/'),
@@ -731,12 +763,25 @@ AssetAllocation = Backbone.RelationalModel.extend({
 		relatedModel: 'Objective',
 	}, {
 		type: Backbone.HasOne,
+		key: 'assetMethod',
+		relatedModel: 'AssetMethod',
+	}, {
+		type: Backbone.HasOne,
 		key: 'forActivity',
 		relatedModel: 'Activity'
 	}, {
 		type: Backbone.HasOne,
 		key: 'owner',
 		relatedModel: 'Organization'
+	},{
+		type: Backbone.HasMany,
+		key: 'assetStepReports',
+		relatedModel: 'AssetStepReport',
+		collectionType: 'AssetStepReportCollection',
+		reversRelation: {
+    		type: Backbone.HasOne,
+    		key: 'assetAllocation'
+    	}
 	}]
 });
 
@@ -1039,6 +1084,15 @@ AssetBudgetCollection = Backbone.Collection.extend({
 });
 AssetAllocationCollection = Backbone.Collection.extend({
 	model: AssetAllocation
+});
+AssetMethodCollection = Backbone.Collection.extend({
+	model: AssetMethod
+});
+AssetMethodStepCollection = Backbone.Collection.extend({
+	model: AssetMethodStep
+});
+AssetStepReportCollection = Backbone.Collection.extend({
+	model: AssetStepReport
 });
 //Handlebars Utils
 

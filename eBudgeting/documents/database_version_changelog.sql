@@ -1017,7 +1017,7 @@
     
 -- version 13
 -- Modified Date : April 23, 2013
- 	update app_info set db_version=12;
+ 	update app_info set db_version=13;
 	alter table PLN_ACTIVITYTARGET
 		add (PROVINCIALTARGET NUMBER(1));
 
@@ -1035,6 +1035,148 @@
 	
 -- version 14
 -- Modified Date : May 8, 2013
-	update app_info set db_version=13;
+	update app_info set db_version=14;
 	
 	alter table pln_activitytargetresult rename  column "TIMESTAMP" to "RESULTTIMESTAMP";
+	
+	
+-- version 15
+-- Modifed Date : May 18, 2013
+	update app_info set db_version=15;
+	
+    
+    create table BGT_ASSETMETHOD (
+        id number(19,0) not null,
+        name varchar2(255 char),
+        primary key (id)
+    );
+
+    create table BGT_ASSETMETHODSTEP (
+        id number(19,0) not null,
+        name varchar2(255 char),
+        primary key (id)
+    );
+
+    create table BGT_ASSETMETHODSTEP_JOIN (
+        BGT_ASSETMETHOD_ID number(19,0) not null,
+        BGT_ASSETMETHODSTEP_ID number(19,0) not null,
+        STEPORDER number(10,0) not null,
+        primary key (BGT_ASSETMETHOD_ID, STEPORDER)
+    );
+    alter table BGT_ASSETMETHODSTEP_JOIN 
+        add constraint FK7AE5D7BC43248F39 
+        foreign key (BGT_ASSETMETHODSTEP_ID) 
+        references BGT_ASSETMETHODSTEP;
+
+    alter table BGT_ASSETMETHODSTEP_JOIN 
+        add constraint FK7AE5D7BC44BB6619 
+        foreign key (BGT_ASSETMETHOD_ID) 
+        references BGT_ASSETMETHOD;
+
+   	alter table BGT_ASSETALLOCATION add (
+        BGT_ASSETMETHOD_ID number(19,0)
+    );
+    
+    alter table BGT_ASSETALLOCATION 
+        add constraint FKB033042044BB6619 
+        foreign key (BGT_ASSETMETHOD_ID) 
+        references BGT_ASSETMETHOD;
+
+        
+    create table BGT_ASSETSTEPREPORT (
+        id number(19,0) not null,
+        actualBegin date,
+        actualEnd date,
+        planBegin date,
+        planEnd date,
+        BGT_ASSETALLOCATION_ID number(19,0),
+        BGT_ASSETMETHODSTEP_ID number(19,0),
+        STEPORDER number(10,0),
+        primary key (id)
+    );
+    
+    alter table BGT_ASSETSTEPREPORT 
+        add constraint FKF70DC6402A6DA39 
+        foreign key (BGT_ASSETALLOCATION_ID) 
+        references BGT_ASSETALLOCATION;
+
+    alter table BGT_ASSETSTEPREPORT 
+        add constraint FKF70DC64043248F39 
+        foreign key (BGT_ASSETMETHODSTEP_ID) 
+        references BGT_ASSETMETHODSTEP;
+        
+    create sequence BGT_ASSETMETHOD_SEQ;
+    create sequence BGT_ASSETMETHODSTEP_SEQ;
+    create sequence BGT_ASSETSTEPREPORT_SEQ;
+
+insert into bgt_assetmethod( id, name) values (1, 'วิธีตกลงราคา');
+insert into bgt_assetmethod( id, name) values (2, 'วิธีสอบราคา');
+insert into bgt_assetmethod( id, name) values (3, 'วิธีประกวดราคา');
+insert into bgt_assetmethod( id, name) values (4, 'วิธีพิเศษ');
+insert into bgt_assetmethod( id, name) values (5, 'วิธีกรณีพิเศษ');
+insert into bgt_assetmethod( id, name) values (6, 'วิธีประกวดราคาอิเล็กทรอนิกส์');
+
+insert into bgt_assetmethodstep(id, name) values (1, 'ลงนามใบสั่ง/สัญญา');
+insert into bgt_assetmethodstep(id, name) values (2, 'กำหนดส่งมอบ');
+insert into bgt_assetmethodstep(id, name) values (3, 'ตรวจรับการส่งมอบ');
+insert into bgt_assetmethodstep(id, name) values (4, 'เบิกจ่ายเงิน');
+insert into bgt_assetmethodstep(id, name) values (5, 'ประกาศสอบราคา');
+insert into bgt_assetmethodstep(id, name) values (6, 'ยื่นซองสอบราคา');
+insert into bgt_assetmethodstep(id, name) values (7, 'เปิดซองสอบราคา');
+insert into bgt_assetmethodstep(id, name) values (8, 'ขออนุมัติผลเปิดซองรับราคา');
+insert into bgt_assetmethodstep(id, name) values (9, 'ประกาศประกวดราคา');
+insert into bgt_assetmethodstep(id, name) values (10, 'ยื่นซองประกวดราคา');
+insert into bgt_assetmethodstep(id, name) values (11, 'เปิดซองประกวดราคา');
+insert into bgt_assetmethodstep(id, name) values (12, 'ประกาศร่าง Tor ครั้งที่ 1');
+insert into bgt_assetmethodstep(id, name) values (13, 'ประกาศร่าง Tor ครั้งที่ 2');
+insert into bgt_assetmethodstep(id, name) values (14, 'ประกาศผลการพิจารณาผู้มีสิทธิ์ประกวดราคา');
+insert into bgt_assetmethodstep(id, name) values (15, 'ประมูล ณ ตลาดกลาง');
+insert into bgt_assetmethodstep(id, name) values (16, 'ประกาศผู้ชนะการเสนอราคา');
+
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(1,1,0);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(1,2,1);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(1,3,2);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(1,4,3);
+
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(2,5,0);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(2,6,1);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(2,7,2);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(2,8,3);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(2,1,4);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(2,2,5);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(2,3,6);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(2,4,7);
+
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(3,9,0);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(3,10,1);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(3,11,2);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(3,8,3);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(3,1,4);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(3,2,5);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(3,3,6);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(3,4,7);
+
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(4,1,0);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(4,2,1);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(4,3,2);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(4,4,3);
+
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(5,1,0);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(5,2,1);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(5,3,2);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(5,4,3);
+
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,12,0);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,13,1);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,10,2);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,14,3);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,15,4);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,16,5);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,1,6);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,2,7);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,3,8);
+insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,4,9);
+    
+    
+        
+        

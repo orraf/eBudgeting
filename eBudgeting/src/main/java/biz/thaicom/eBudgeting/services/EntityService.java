@@ -14,6 +14,8 @@ import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
+import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
+import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.bgt.AssetType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetCommonType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
@@ -400,6 +402,7 @@ public interface EntityService {
 	
 	// AssetAllocation
 	public AssetAllocation saveAssetAllocation(JsonNode node);
+	public String saveAssetAllocationPlan(JsonNode node);
 	public AssetAllocation updateAssetAllocation(JsonNode node);
 	public List<AssetAllocation> findAssetAllocationByParentOwnerAndForObjectiveAndBudgetType(
 			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId);
@@ -407,6 +410,14 @@ public interface EntityService {
 	public void saveAssetAllocationCollection(JsonNode node);
 	public List<AssetAllocation> findAssetAllocationByForObjectiveId(
 			Long objectiveId);
+	public List<AssetStepReport> findAssetStepReportByAssetAllocationId(
+			Long assetAllocationId);
+	
+	
+	// AssetMethod
+	public List<AssetMethod> findAssetMethodAll();
+
+
 	
 	
 	

@@ -32,6 +32,9 @@ import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
+import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
+import biz.thaicom.eBudgeting.models.bgt.AssetMethodStep;
+import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.bgt.AssetType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetCommonType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetLevel;
@@ -76,6 +79,8 @@ import biz.thaicom.eBudgeting.repositories.AssetAllocationRepository;
 import biz.thaicom.eBudgeting.repositories.AssetBudgetRepository;
 import biz.thaicom.eBudgeting.repositories.AssetGroupRepository;
 import biz.thaicom.eBudgeting.repositories.AssetKindRepository;
+import biz.thaicom.eBudgeting.repositories.AssetMethodRepository;
+import biz.thaicom.eBudgeting.repositories.AssetStepReportRepository;
 import biz.thaicom.eBudgeting.repositories.AssetTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetCommonTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetProposalRepository;
@@ -220,6 +225,12 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private AssetAllocationRepository assetAllocationRepository;
+	
+	@Autowired
+	private AssetMethodRepository assetMethodRepository;
+
+	@Autowired
+	private AssetStepReportRepository assetStepReportRepository;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -5101,6 +5112,81 @@ public class EntityServiceJPA implements EntityService {
 		
 		return assetAllocationRepository.findAllByForObjectiveId(objectiveId);
 	}
+
+	@Override
+	public List<AssetMethod> findAssetMethodAll() {
+		
+		return assetMethodRepository.findAll();
+	}
+
+	@Override
+	public String saveAssetAllocationPlan(JsonNode node) {
+		AssetAllocation asset = assetAllocationRepository.findOne(getJsonNodeId(node));
+		AssetMethod assetMethod = assetMethodRepository.findOne(getJsonNodeId(node.get("assetMethod")));
+		Boolean newMethod;
+		if(asset.getAssetMethod() != assetMethod){
+			List<AssetStepReport> oldreports = asset.getAssetStepReports();
+			asset.setAssetStepReports(new ArrayList<AssetStepReport>());
+			
+			//we'll have to delete the old one!
+			assetStepReportRepository.delete(oldreports);
+			
+			asset.setAssetMethod(assetMethod);
+			newMethod=true;
+		} else {
+			newMethod = false;
+		}
+		asset.setAssetMethod(assetMethod);
+		Integer stepIndex = 0;
+		
+		for(JsonNode reportNode: node.get("assetStepReports")) {
+			AssetStepReport report;
+			if(newMethod) {
+				report = new AssetStepReport();
+				report.setStepOrder(stepIndex);
+				report.setStep(assetMethod.getSteps().get(stepIndex++));
+				report.setAssetAllocation(asset);
+			} else {
+				report = asset.getAssetStepReports().get(stepIndex);
+			}
+			
+			SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("TH", "TH"));
+			
+			try {
+				
+				report.setPlanBegin(df.parse(reportNode.get("planBegin").asText()));
+				report.setPlanEnd(df.parse(reportNode.get("planEnd").asText()));
+				
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return null;
+			}
+			
+			asset.getAssetStepReports().add(report);
+
+		}
+		
+		//now 
+		assetStepReportRepository.save(asset.getAssetStepReports());
+		
+		return "ok";
+	}
+
+	@Override
+	public List<AssetStepReport> findAssetStepReportByAssetAllocationId(
+			Long assetAllocationId) {
+		AssetAllocation asset = assetAllocationRepository.findOne(assetAllocationId);
+		asset.getAssetStepReports().size();
+		
+		
+		return asset.getAssetStepReports();
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	

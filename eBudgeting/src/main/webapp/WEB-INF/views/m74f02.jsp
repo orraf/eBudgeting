@@ -27,15 +27,15 @@
 			</div>
 		</div>
 
-		<div id="assignTargetValueModal" class="modal wideModal hide fade">
+		<div id="assignAssetPlanModal" class="modal wideModal hide fade">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<span style="font-weight: bold;"></span>
 			</div>
 			<div class="modal-body"></div>
 			<div class="modal-footer">
-				<a href="#" class="btn btn-primary" id="saveAssignTargetBtn">บันทึกข้อมูล</a>  
-				<a href="#" class="btn" id="cancelBtn">ยกเลิก</a>
+				<a href="#" class="btn btn-primary" id="saveAssetPlanBtn">บันทึกข้อมูล</a>  
+				<a href="#" class="btn" id="cancelBtn">กลับหน้าหลัก</a>
 			</div>
 		</div>
 
@@ -68,7 +68,7 @@
 
 <script id="mainTblTemplate" type="text/x-handler-template">
 <h4>{{name}}</h4>
-<table class="table table-bordered table-striped" id="mainTbl">
+<table class="table table-bordered table-striped" id="assetAllocationTbl">
 	<thead>
 		<tr>
 			<td style="width:30px;"></td>
@@ -88,11 +88,11 @@
 {{#each this}}
 <tr data-id="{{id}}">
 	<td></td>
-	<td><a href="#" class="assetPlanLnk ">{{assetBudget.name}}</a></td>
+	<td><a href="#" class="assetPlanLnk">{{assetBudget.name}}</a></td>
 	<td>{{owner.abbr}}</td>
 	<td>{{formatNumber quantity}}</td>
 	<td>{{formatNumber unitBudget}}</td>
-	<td></td>
+	<td>{{formatTotalBudget this}}</td>
 </tr>
 {{/each}}
 </script>
@@ -159,242 +159,67 @@
 </script>
 
 
-<script id="mainTblTemplate" type="text/x-handler-template">
-<div class="controls" style="margin-bottom: 15px;">
-	<div class="pull-left"> 
-		
-	</div>
-	<div class="pull-left" style="margin-left: 20px;">
-	<form class="form-search pull-left" style="margin-bottom:10px;" id="activitySearchFrm">
-		<div class="input-append">
-    		<input type="text" class="span2 search-query" id="activitySearchTxt" value="{{queryTxt}}">
-    			<button class="btn" type="submit" id="activitySearchTxt">Search</button>
-    	</div>
-    </form>
-	</div>
-	
-	<div class="clearfix"></div>
+<script id="assignAssetPlanModalTemplate" type="text/x-handler-template">
+<div id="header">
+	<div><strong>รายการ: </strong>{{this.assetBudget.name}}</div>
+	<div><strong>จัดสรรให้: </strong>{{this.owner.name}}</div>
+	<div><strong>จำนวนหน่วย: </strong> {{this.quantity}} <strong>วงเงินงบประมาณ: </strong> {{formatTotalBudget this}}</div>
 </div>
-<table class="table table-bordered table-striped" id="mainTbl">
+<br/>
+<div id="inputAll">
+	<form class="form-horizontal">
+		<div class="control-group">
+			<label class="control-label" for="inputAssetMethod">วิธีการจัดซื้อจัดจ้าง</label>
+			<div class="controls">
+				<select id="inputAssetMethod">
+					<option value="0">กรุณาเลือกวิธีการ</option>
+				</select>
+			</div>
+		</div>
+		<div id="assetMethodStepDiv" class="span8">
+		</div>
+	</form>
+</div>
+
+</script>
+
+<script id="stepInputTemplate" type="text/x-handler-template">
+<table class="table table-condensed">
 	<thead>
 		<tr>
-			<td style="width:30px;"></td>
-			<td style="width:80px;">รหัส</td>
-			<td>ชื่อกิจกรรมย่อย</td>
-			<td style="width:140px;">เป้าหมาย</td>
-			<td style="width:100px;">หน่วยนับ</td>
-
+			<td></td>
+			<td style="padding-right:50px;"><strong>วันที่เริ่ม</strong></td>
+			<td style="padding-right:50px;"><strong>วันที่สิ้นสุด</strong></td>
 		</tr>
 	</thead>
 	<tbody>
+{{#each this}}
+		<tr data-id="{{id}}">
+			<td style="border-top: none; padding-top:14px; padding-rigth: 40px; text-align: right;"><strong>{{name}}</strong></td>
+			<td style="border-top: none; width:200px;">
+				<div class="control-group" style="margin: 0px;">
+				<div class="input-append date datepicker" data-date-format="dd/mm/yyyy" data-date="">
+					<input type="text" value="{{planBegin}}" data-stepId="{{id}}" data-field="planBegin" id="planBegin_{{id}}" placeholder="..." class="span2 datepickerTxt"><span class="add-on"><i class="icon-calendar"></i></span>
+				</div>
+				</div>
+			</td>
+			<td style="border-top: none;width:200px;">
+				<div class="control-group" style="margin: 0px;">
+				<div class="input-append date datepicker" data-date-format="dd/mm/yyyy" data-date="">
+					<input type="text" value="{{planEnd}}" data-stepId="{{id}}" data-field="planEnd" id="planEnd_{{id}}" placeholder="..." class="span2 datepickerTxt"><span class="add-on"><i class="icon-calendar"></i></span>
+				</div>
+				</div>
+			</td>
+		</tr>
+{{/each}}
 	</tbody>
 </table>
 </script>
-<script id="mainTblTbodyTemplate" type="text/x-handler-template">
+
+
+<script id="assetMethodOptionTemplate" type="text/x-handler-template">
 {{#each this}}
-<tr data-id="{{id}}">
-	<td><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
-	</td>
-	<td>{{activity.code}}</td>
-	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
-		{{activity.name}}</td>
-	<td><ul>
-		{{#each targetReports}}
-			<li data-id="{{id}}"><a href="#" class="assignTargetLnk">{{formatNumber targetValue}}</a></li>
-		{{/each}}
-		</ul>
-	</td>
-	<td><ul>
-		{{#each targetReports}}
-			<li>{{target.unit.name}}</li>
-		{{/each}}
-		</ul>
-	</td>
-</tr>
-{{/each}}
-</script>
-
-<script id="activityTargetTemplate" type="text/x-handler-template">
-<div class="alert alert-info">
-	 <h4><u><strong>{{headerString}}</strong></u></h4>
-	<div class="pull-left" style="padding-top:10px;">
-	    <label>ระบุค่าเป้าหมาย</label>
-        <input type="text" class="targetModel" id="targetValue" data-modelname="targetValue" value="{{targetValue}}">
-	</div>
-	<div class="pull-left" style="padding-top:10px; padding-left: 30px;">
-        <label>ระบุหน่วยนับ</label>
-        <select class="span2" id="unitSlt" data-modelName="unit" data-modelType="TargetUnit">
-                <option value="0">กรุณาเลือก</option>
-                {{#each unitSelectionList}}
-                        <option value="{{this.id}}" {{#if this.selected}}selected='selected'{{/if}}>{{this.name}}</option>
-                {{/each}}
-         </select>
-	</div>
-	<div class="clearfix"></div>
-	<div>
-		<a href="#" class="btn btn-mini btn-info addActivityTargetBtn"><i class="icon icon-plus-sign icon-white"></i> บันทึกค่าเป้าหมาย</a>
-		<a href="#" class="btn btn-mini backToActivity"><i class="icon icon-white"></i> ยกเลิก</a>
-	</div>
-
-</div>
-</script>
-
-<script  id="activityTargetTableTemplate" type="text/x-handler-template">
-<div id="activityTargetMenu">
-<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> เพิ่มเป้าหมาย</a>
-</div>
-<div id="activityTargetTblCtr">
-{{#if targets}}
-<table class="table table-bordered table-striped" id="activityTargetTbl" style="width:285px;margin-top:10px;">
-<thead>
-	<tr>
-		<td style="width:45px;"></td>
-		<td style="width:140px;">เป้าหมาย</td>
-		<td style="width:100px;">หน่วยนับ</td>
-	</tr>
-</thead>
-<tbody>
-	{{#each targets}}
-	<tr data-idx="{{idx}}" data-id="{{id}}">
-	<td><a href="#td-{{id}}" class="editObjective editTarget"><i class="icon-edit icon-blue"></i></a>				
-	<a href="#td-{{id}}" class="deleteObjective deleteTarget"><i class="icon-trash icon-red"></i></a></td>
-			<td style="text-align:center;">{{formatNumber targetValue}}</td>
-			<td style="text-align:center;">{{unit.name}}</td>
-	</tr>
-	{{/each}}
-</tbody>
-</table>
-{{/if}}
-</div>
-</script>
-
-<script id="assignTargetValueModalTemplate" type="text/x-handler-template">
-<div id="inputAll">
-		
-		<div style="padding-bottom:12px;">
-           <strong><u>แผนการดำเนินงาน</u>: {{formatNumber targetValue}} {{target.unit.name}}</strong>
-        </div>
-        <div class="row">
-			<div class="span3">
-				ต.ค. <div class="input-append"><input type="text" data-idx="0" class="monthlyReportPlan" id="monthlyTarget0" style="width:120px;" value="{{monthlyReports.0.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				พ.ย. <div class="input-append"><input type="text" data-idx="1" class="monthlyReportPlan" id="monthlyTarget1" style="width:120px;" value="{{monthlyReports.1.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				ธ.ค. <div class="input-append"><input type="text" data-idx="2" class="monthlyReportPlan" id="monthlyTarget2" style="width:120px;" value="{{monthlyReports.2.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-		</div>
-        <div class="row">
-			<div class="span3">
-				ม.ค. <div class="input-append"><input type="text" data-idx="3" class="monthlyReportPlan" id="monthlyTarget3" style="width:120px;" value="{{monthlyReports.3.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				ก.พ. <div class="input-append"><input type="text" data-idx="4" class="monthlyReportPlan" id="monthlyTarget4" style="width:120px;" value="{{monthlyReports.4.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				มี.ค. <div class="input-append"><input type="text" data-idx="5" class="monthlyReportPlan" id="monthlyTarget5" style="width:120px;" value="{{monthlyReports.5.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-		</div>
-        <div class="row">
-			<div class="span3">
-				เม.ย. <div class="input-append"><input type="text" data-idx="6" class="monthlyReportPlan" id="monthlyTarget6" style="width:120px;" value="{{monthlyReports.6.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				พ.ค. <div class="input-append"><input type="text" data-idx="7" class="monthlyReportPlan" id="monthlyTarget7" style="width:120px;" value="{{monthlyReports.7.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				มิ.ย. <div class="input-append"><input type="text" data-idx="8" class="monthlyReportPlan" id="monthlyTarget8" style="width:120px;" value="{{monthlyReports.8.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-		</div>
-        <div class="row">
-			<div class="span3">
-				ก.ค. <div class="input-append"><input type="text" data-idx="9" class="monthlyReportPlan" id="monthlyTarget9" style="width:120px;" value="{{monthlyReports.9.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				ส.ค. <div class="input-append"><input type="text" data-idx="10" class="monthlyReportPlan" id="monthlyTarget10" style="width:120px;" value="{{monthlyReports.10.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				ก.ย. <div class="input-append"><input type="text" data-idx="11" class="monthlyReportPlan" id="monthlyTarget11" style="width:120px;" value="{{monthlyReports.11.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-		</div>
-
-	<div class="clearfix"></div>
-	
-		<div style="padding-bottom:12px;">
-           <strong><u>แผนเบิกจ่ายงบประมาณ</u>: {{formatNumber activityPerformance.budgetAllocated}} บาท</strong>
-        </div>
-        <div class="row">
-			<div class="span3">
-				ต.ค. <div class="input-append"><input type="text" data-idx="0" class="monthlyBudgetPlan" id="monthlyBudgetTarget0" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.0.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-			<div class="span3">
-				พ.ย. <div class="input-append"><input type="text" data-idx="1" class="monthlyBudgetPlan" id="monthlyBudgetTarget1" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.1.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-			<div class="span3">
-				ธ.ค. <div class="input-append"><input type="text" data-idx="2" class="monthlyBudgetPlan" id="monthlyBudgetTarget2" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.2.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-		</div>
-        <div class="row">
-			<div class="span3">
-				ม.ค. <div class="input-append"><input type="text" data-idx="3" class="monthlyBudgetPlan" id="monthlyBudgetTarget3" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.3.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-			<div class="span3">
-				ก.พ. <div class="input-append"><input type="text" data-idx="4" class="monthlyBudgetPlan" id="monthlyBudgetTarget4" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.4.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-			<div class="span3">
-				มี.ค. <div class="input-append"><input type="text" data-idx="5" class="monthlyBudgetPlan" id="monthlyBudgetTarget5" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.5.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-		</div>
-        <div class="row">
-			<div class="span3">
-				เม.ย. <div class="input-append"><input type="text" data-idx="6" class="monthlyBudgetPlan" id="monthlyBudgetTarget6" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.6.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-			<div class="span3">
-				พ.ค. <div class="input-append"><input type="text" data-idx="7" class="monthlyBudgetPlan" id="monthlyBudgetTarget7" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.7.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-			<div class="span3">
-				มิ.ย. <div class="input-append"><input type="text" data-idx="8" class="monthlyBudgetPlan" id="monthlyBudgetTarget8" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.8.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-		</div>
-        <div class="row">
-			<div class="span3">
-				ก.ค. <div class="input-append"><input type="text" data-idx="9" class="monthlyBudgetPlan" id="monthlyBudgetTarget9" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.9.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-			<div class="span3">
-				ส.ค. <div class="input-append"><input type="text" data-idx="10" class="monthlyBudgetPlan" id="monthlyBudgetTarget10" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.10.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-			<div class="span3">
-				ก.ย. <div class="input-append"><input type="text" data-idx="11" class="monthlyBudgetPlan" id="monthlyBudgetTarget11" style="width:120px;" value="{{activityPerformance.monthlyBudgetReports.11.budgetPlan}}"><span class="add-on">บาท</span></div>
-			</div>
-		</div>
-
-	</div>
-</div>
-</script>
-<script id="organizationSearchTbodyTemplate" type="text/x-handler-template">
-{{#each this}}
-<tr data-id="{{id}}"><td>
-	{{#if this._inProposalList}}
-		<span class="label label-warning">เลือกแล้ว</span>
-	{{else}}
-		<a href="#" class="addOrganization"><i class="icon icon-plus-sign"></i></a>
-	{{/if}}
-
- 	{{name}}</td>
-</tr>
-{{/each}}
-</script>
-
-<script id="organizationTargetValueTbodyTemplate" type="text/x-handler-template">
-{{#each this}}
-<tr data-id="{{owner.id}}"><td><a href="#" class="removeOrganizationTarget"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
-	<td  style="width:188px">
-		<div style="height:35px; float:left" id="totalInputForm">
-			<div class="input-append"><input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:120px; text-align:right;" value="{{targetValue}}"><span class="add-on">{{target.unit.name}}</span></div>
-		</div>
-	</td>
-</tr>
+	<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{name}}</option>
 {{/each}}
 </script>
 
@@ -421,6 +246,13 @@
 
 	
 	var readOnly = "${readOnly}";
+	
+	Handlebars.registerHelper("formatTotalBudget", function(assetAllocation) {
+		if(assetAllocation != null) {
+			return addCommas(assetAllocation.quantity * assetAllocation.unitBudget);
+		} 
+		return "0";
+	});
 	
 	Handlebars.registerHelper("sumTargetValue", function(unitId, proposals) {
 		// get all targetValue
