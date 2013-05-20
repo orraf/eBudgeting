@@ -4138,7 +4138,9 @@ public class EntityServiceJPA implements EntityService {
 			activity.getTargets().size();
 			activity.getChildren().size();
 			activity.getOwner().getId();
-			activity.getRegulator().getId();
+			if(activity.getRegulator() != null) {
+				activity.getRegulator().getId();
+			}
 			if(activity.getChildren().size() > 0) {
 				for(Activity child : activity.getChildren()) {
 					child.getTargets().size();
