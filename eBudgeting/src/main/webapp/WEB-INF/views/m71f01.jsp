@@ -517,6 +517,7 @@
 		</select>
 	</td>
 	<td><select class="assetAllocationOperatorSlt" style="width:90px;" id="assetAllocationOperatorOption-{{id}}">
+			<option value="0">กรุณาเลือก</option>
 			{{#each operatorOrganizations}}
 				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{abbr}}</option>
 			{{/each}}

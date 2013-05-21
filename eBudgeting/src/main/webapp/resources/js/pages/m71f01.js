@@ -153,6 +153,14 @@ var ModalView = Backbone.View.extend({
 			}
 		}
 		
+		allSlt = this.$el.find('.assetAllocationOperatorSlt');
+		
+		for(var i=0; i< allSlt.length; i++) {
+			if($(allSlt[i]).val() == 0) {
+				allSelected = false;
+			}
+		}
+		
 		if(allSelected) {
 			Backbone.sync('update', this.assetAllocations, {
 				url: appUrl('/AssetAllocation/saveCollection'),
