@@ -256,6 +256,14 @@ var ModalView = Backbone.View.extend({
 				
 				var json = record.toJSON();
 				json.organizations = this.childrenOrganization.toJSON();
+				json.operatorOrganizations=this.childrenOperatorOrganization.toJSON();
+				if(record.get('operator') != null) {
+					_.each(json.operatorOrganizations,function(org) {
+						if(org.id == record.get('operator').get('id')) {
+							org.selected = true;
+						}
+					});
+				}
 				var html = this.assetAllocationTbodyTemplate(json);
 				this.$el.find('#assetTbl tbody').append(html);	
 				
