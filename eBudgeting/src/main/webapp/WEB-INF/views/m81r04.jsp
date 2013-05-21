@@ -168,10 +168,9 @@
 	<td></td>
 	<td>{{code}}</td>
 	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
-		{{name}} {{#unless parent}}
-			<div class="pull-right"><a href="#" class="btn btn-primary newActivitityChild">เพิ่มกิจกรรมเสริม</a> {{/unless}}</div>
+		{{name}}
 	</td>
-	<td><a href="#" class="report">รายงาน</a>ฆ
+	<td><a href="#" class="report">รายงาน</a>
 	</td>
 </tr>
 {{/each}}
