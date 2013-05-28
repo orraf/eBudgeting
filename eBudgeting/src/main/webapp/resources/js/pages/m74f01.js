@@ -254,6 +254,18 @@ var MainTblView = Backbone.View.extend({
 								json.padding=60;
 								html=this.mainTblTbodyActivityTemplate(json);
 								this.$el.find('tbody').append(html);
+								
+								if(childrenAct.get('children') !=  null && childrenAct.get('children').lenght >0 ) {
+									var grandChildrenAct = childrenAct.get('children');
+									for(var l=0; l<grandChildrenAct.length; l++) {
+										var grandChildAct = grandChildrenAct.at(l);
+										json = grandChildAct.toJSON();
+										json.padding=90;
+										html=this.mainTblTbodyActivityTemplate(json);
+										this.$el.find('tbody').append(html);
+									}
+									
+								}
 							}
 						}
 						

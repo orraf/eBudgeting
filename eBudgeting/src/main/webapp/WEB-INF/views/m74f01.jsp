@@ -226,7 +226,7 @@
 	<td><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
 	</td>
 	<td>{{activity.code}}</td>
-	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
+	<td {{paddingActivity this}}>
 		{{activity.name}}</td>
 	<td><ul>
 		{{#each targetReports}}
@@ -514,6 +514,12 @@
 
 	});
 
+	Handlebars.registerHelper("paddingActivity", function(activity) {
+		var padding = 8 + (parseInt(activity.activityLevel) * 48);
+		return "padding-left: " + padding + "px;";
+	});
+
+	
 	Handlebars.registerHelper("formulaLine", function(strategy) {
 		console.log(strategy);
 		var s = addCommas(strategy.formulaStrategy.standardPrice) + " บาท ";

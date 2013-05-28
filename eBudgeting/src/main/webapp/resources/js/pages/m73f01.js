@@ -640,6 +640,7 @@ var MainCtrView = Backbone.View.extend({
 		var newActivity = new Activity();
 		newActivity.set('forObjective', this.currentObjective);
 		newActivity.set('parent', parentActivity);
+		newActivity.set('activityLevel', parseInt(parentActivity.get('activityLevel')) + 1);
 		
 		this.modalView.renderWithActivity(newActivity);
 		
@@ -650,6 +651,7 @@ var MainCtrView = Backbone.View.extend({
 		var newActivity = new Activity();
 		newActivity.set('forObjective', this.currentObjective);
 		newActivity.set('parent', null);
+		newActivity.set('activityLevel',0);
 		
 		this.modalView.renderWithActivity(newActivity);
 	},

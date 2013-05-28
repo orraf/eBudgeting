@@ -167,12 +167,12 @@
 {{#each this}}
 <tr data-id="{{id}}">
 	<td>{{code}}</td>
-	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
+	<td style="{{paddingActivity this}}">
 		{{name}} </div>
 	</td>
 	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each targets}}
-			<li data-id="{{id}}"><a href="#" class="assignTargetLnk">{{formatNumber targetValue}}</a></li>
+			<li data-id="{{id}}">{{#if this.id}}<a href="#" class="assignTargetLnk">{{/if}}{{formatNumber targetValue}}{{#if this.id}}</a>{{/if}}	</li>
 		{{/each}}
 		</ul>
 	</td>
@@ -441,6 +441,12 @@
 		return addCommas(amount);
 
 	});
+	
+	Handlebars.registerHelper("paddingActivity", function(activity) {
+		var padding = 8 + (parseInt(activity.activityLevel) * 48);
+		return "padding-left: " + padding + "px;";
+	});
+	
 	Handlebars.registerHelper("sumAllocationRecords", function(records) {
 		var amount = 0;
 		for ( var i = 0; i < records.length; i++) {

@@ -4144,6 +4144,11 @@ public class EntityServiceJPA implements EntityService {
 			if(activity.getChildren().size() > 0) {
 				for(Activity child : activity.getChildren()) {
 					child.getTargets().size();
+					if(child.getChildren() != null && child.getChildren().size() > 0 ) {
+						for(Activity grandChild : child.getChildren()) {
+							grandChild.getTargets().size();
+						}
+					}
 				}
 			}
 		}
@@ -4225,6 +4230,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		activity.setCode(node.get("code").asText());
 		activity.setName(node.get("name").asText());
+		activity.setActivityLevel(node.get("activityLevel").asInt());
 		
 		Organization regulator = organizationRepository.findOne(getJsonNodeId(node.get("regulator")));
 		activity.setRegulator(regulator);
@@ -4443,7 +4449,7 @@ public class EntityServiceJPA implements EntityService {
 			}
 			
 			//then check if there is anyparent
-			if(act.getParent() != null) {
+			while(act.getParent() != null) {
 				if(act.getParent().getChildren() == null){
 					act.getParent().setChildren(new ArrayList<Activity>());
 				}
@@ -4452,6 +4458,7 @@ public class EntityServiceJPA implements EntityService {
 				act = act.getParent();
 				logger.debug("adding children to act.getParent: " + act.getChildren().size());
 			}
+			
 			// then add to กิจกรรมรอง
 			if(child.getFilterActivities()==null) {
 				child.setFilterActivities(new ArrayList<Activity>());
@@ -4508,7 +4515,37 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Activity> findActivityByRegularAndObjectiveId(
 			Organization workAt, Long objectiveId) {
-		return activityRepository.findAllByRegulatorAndForObejctive_Id(workAt, objectiveId);
+		List<Activity> parentList = activityRepository.findAllByRegulatorAndForObejctive_Id(workAt, objectiveId);
+		
+		List<Activity> flatList = new ArrayList<Activity>();
+		
+		
+		for(Activity parent : parentList) {
+			flatList.add(parent);
+			if(parent.getChildren() != null && parent.getChildren().size() > 0 ) {
+				for(Activity child : parent.getChildren()) {
+					child.getTargets().size();
+					child.getOwner().getId();
+					child.getRegulator().getId();
+					flatList.add(child);
+					if(child.getChildren() != null && child.getChildren().size() >0) {
+						for(Activity grandChild : child.getChildren()) {
+							grandChild.getTargets().size();
+							
+							grandChild.getOwner().getId();
+							grandChild.getRegulator().getId();
+							flatList.add(grandChild);
+						}
+						child.sumChildrenTarget();
+					}
+ 				}
+				parent.sumChildrenTarget();
+			}
+		}
+		
+		
+		return flatList;
+		
 	}
 
 	@Override
