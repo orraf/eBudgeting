@@ -4038,14 +4038,15 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Organization> findOrganizationChildrenOrSiblingOf(
 			Organization workAt) {
-		List<Organization> returnList;
+		List<Organization> returnList = new ArrayList<Organization>();
 		Organization org = organizationRepository.findOne(workAt.getId());
+		returnList.add(org);
 		if(org.getParent().getId() == 0L ) {
-			returnList = org.getChildren();
+			returnList.addAll(org.getChildren());
 			returnList.size();
 		} else {
 			Organization parent = org.getParent();
-			returnList = parent.getChildren();
+			returnList.addAll(parent.getChildren());
 			returnList.size();
 		}
 		return returnList;

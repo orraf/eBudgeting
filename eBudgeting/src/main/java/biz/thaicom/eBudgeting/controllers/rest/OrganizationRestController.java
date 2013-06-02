@@ -55,8 +55,12 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 			@RequestParam String query
 			) {
 		List<Organization> list = new ArrayList<Organization>();
+
+		Organization org= entityService.findOrganizationById(currentUser.getWorkAt().getId());
 		
-		list.add(currentUser.getWorkAt());
+		list.add(org);
+		
+		list.addAll(org.getChildren());
 		list.addAll(entityService.findOrganizationByProvinces(query));
 		
 		
