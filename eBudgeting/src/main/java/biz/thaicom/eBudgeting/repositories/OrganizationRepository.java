@@ -32,7 +32,7 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			"SELECT organization " +
 			"FROM Organization organization " +
 			"WHERE organization.parent.id = 0 " +
-			"	AND organization.id > 110000000 " +
+//			"	AND organization.id > 110000000 " +
 			"	AND organization.name like ?1 " +
 			"ORDER BY organization.code asc ")
 	public List<Organization> findAllByProvinces(String query);

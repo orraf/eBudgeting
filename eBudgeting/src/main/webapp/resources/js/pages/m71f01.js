@@ -72,12 +72,16 @@ var ModalView = Backbone.View.extend({
 		
 		// now hold children org
 		this.childrenOrganization = new OrganizationCollection();
+		
 		this.childrenOrganization.fetch({
 			url: appUrl('/Organization/parentId/'+organizationId+'/findByName'),
 			type: 'POST',
 			data : {
 				query: ""
-			}
+			},
+			success : _.bind(function() {
+				this.childrenOrganization.add(organization, {at: 0});
+			},this)
 		});
 		
 		this.childrenOperatorOrganization = new OrganizationCollection();

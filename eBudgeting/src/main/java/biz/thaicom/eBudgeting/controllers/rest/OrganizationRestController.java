@@ -61,6 +61,7 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 		list.add(org);
 		
 		list.addAll(org.getChildren());
+		//list.addAll(entityService.findOrganizationByTop(query));
 		list.addAll(entityService.findOrganizationByProvinces(query));
 		
 		
