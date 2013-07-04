@@ -1,7 +1,6 @@
 package biz.thaicom.eBudgeting.models.pln;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Basic;

@@ -2,8 +2,6 @@ package biz.thaicom.eBudgeting.repositories;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
