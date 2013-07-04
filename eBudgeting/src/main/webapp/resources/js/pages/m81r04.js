@@ -54,17 +54,12 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			sum += parseInt($(el).val());
 		});
 		
-//		if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
-//			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
-//			return;
-//		}
+		if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
+			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
+			return;
+		}
  		
  		this.$el.find('button#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
- 		
- 		// now set reportLevel to 1
- 		for(var i=0; i< this.targetReports.length; i++) {
- 			this.targetReports.at(i).set('reportLevel', 1);
- 		}
  		
  		// we should be ready to save the 
  		Backbone.sync('create', this.targetReports, {
@@ -161,7 +156,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		var query = this.$el.find('#oraganizationQueryTxt').val();
 		
 		this.organizationSearchList = new OrganizationCollection();
-		this.organizationSearchList.url = appUrl("/Organization/findAllProvincesAndSelf");
+		this.organizationSearchList.url = appUrl("/Organization/parentId/0/findByName");
 		this.organizationSearchList.fetch({
 			data: {
 				query: query
@@ -200,9 +195,6 @@ var AssignTargetValueModalView = Backbone.View.extend({
 				$('#organizationProposalTbl').find('tbody').html(html);	
 				
 				this.updateSumTarget();
-				
-				this.organizationSearch();
-				
 			},this)
 		});
 		
@@ -246,12 +238,27 @@ var ActivityTargetTableView = Backbone.View.extend({
 		"click .addActivityTargetBtn" : "addActivityTarget",
 		"click .backToActivity" : "backToActivity",
 		"click .deleteTarget" : "deleteActivityTarget",
-		"click .editTarget" : "editActivityTarget"
-		
+		"click .editTarget" : "editActivityTarget",
+		"click #provincialTarget" : "provincialTargetToggle"
 	},
 	
 	backToActivity: function(e) {
 		this.render();
+	},
+	
+	provincialTargetToggle: function(e) {
+		var checked = this.$el.find('#provincialTarget').is(":checked");
+		this.currentActivityTarget.set('provincialTarget', checked);
+		
+		// now render properly
+		if(checked) {
+			this.$el.find('#budgetAllocated').attr('disabled',true);
+			this.$el.find('#budgetAllocated').val('(ส่วนภูมิภาค)');
+		} else {
+			this.$el.find('#budgetAllocated').removeAttr('disabled');
+			this.$el.find('#budgetAllocated').val(this.currentActivityTarget.get('budgetAllocated'));
+		}
+		
 	},
 	
 	editActivityTarget : function(e) {
@@ -309,6 +316,10 @@ var ActivityTargetTableView = Backbone.View.extend({
 			return;
 		}
 		
+		if(this.currentActivityTarget.get('provincialTarget')) {
+			this.currentActivityTarget.set('budgetAllocated', 0);
+		}
+		
 		if(!this.currentActivity.get('targets').include(this.currentActivityTarget)) {
 			this.currentActivity.get('targets').add(this.currentActivityTarget);
 		}
@@ -322,6 +333,7 @@ var ActivityTargetTableView = Backbone.View.extend({
 	newActivityTarget: function() {
 		this.currentActivityTarget = new ActivityTarget();
 		this.currentActivityTarget.set('activity', this.currentActivity);
+		this.currentActivityTarget.set('provincialTarget', false);
 		
 		var json = this.currentActivityTarget.toJSON();
 		
@@ -344,7 +356,126 @@ var ActivityTargetTableView = Backbone.View.extend({
 });
 
 
+var ModalView = Backbone.View.extend({
+	/**
+     *  @memberOf ModalView
+     */
+	initialize : function(options) {
+		this.parentView = options.parentView;
+		
+		this.currentChildrenOrganization = new OrganizationCollection();
+		this.currentChildrenOrganization.url = appUrl('/Organization/currentSession/children');
+		this.currentChildrenOrganization.fetch();
+		
+	},
+	modalTemplate: Handlebars.compile($("#modalTemplate").html()),
+	el : "#modal",
+	
+	events : {
+		"change .model" : "modelChange",
+		"click #saveBtn" : "saveModel",
+		"click #cancelBtn" : "cancel"
+			
+		
+	},
+	
+	cancel : function(e) {
+		this.$el.modal('hide');
+	},
+	
+	saveModel : function(e) {
+		var regulatorId=this.$el.find('#regulatorSlt').val();
+		
+		if(regulatorId < 0) {
+			alert("กรุณาระบุส่วนงานที่รับผิดชอบ");
+			return;
+		}
+		
+		this.currentActivity.set('regulator', Organization.findOrCreate(regulatorId));
 
+		
+		this.currentActivity.save(null, {
+			success: _.bind(function() {
+				alert('บันทึกข้อมูลเรียบร้อยแล้ว');
+				this.$el.modal('hide');
+				this.parentView.renderMainTblWithParent(this.currentActivity.get('forObjective'));
+				
+			},this)
+		});
+	},
+	
+
+	
+	modelChange: function(e) {
+		var value = $(e.target).val();
+		var modelName = $(e.target).attr('data-modelName');
+		
+		if(this.currentActivity!=null) {
+			this.currentActivity.set(modelName,value);
+		}
+	},
+	
+	render: function() {
+		var string = "";
+		if(this.currentActivity.get('parent') == null) {
+			string = "กิจกรรมย่อย";
+		} else {
+			string = "กิจกรรมเสริม";
+		}
+		
+		if(this.currentActivity.get('id') == null) {
+			
+			this.$el.find('.modal-header span').html("เพิ่ม" + string);
+		} else {
+			this.$el.find('.modal-header span').html(
+					"แก้ไข" + string);
+		}
+		
+		var json = this.currentActivity.toJSON();
+		
+		
+		
+		if(parentCurrentOrganizationId == 0) {
+			json.currentChildrenOraganization = this.currentChildrenOrganization.toJSON();
+			var regulator = this.currentActivity.get('regulator');
+			if(regulator != null) {
+				var regulatorId = regulator.get('id');
+				var foundOrgInJson = _.find(json.currentChildrenOraganization, function(o) { return o.id == regulatorId; });
+				if(foundOrgInJson != null) {
+					foundOrgInJson.selected = true;
+				}
+			}
+		} else {
+			var org = this.currentChildrenOrganization.findWhere({id: currentOrganizationId}) ;
+			json.currentChildrenOraganization = org.toJSON();
+			json.disabledChldrenOrganizationSlt = true;
+		}
+		
+		
+		
+		
+		
+		var html = this.modalTemplate(json);
+		this.$el.find('.modal-body').html(html);
+		
+		// now render the currentActivityTargetTable
+		
+		this.activityTargetTableView = new ActivityTargetTableView({
+			activity: this.currentActivity
+		});
+		
+		this.activityTargetTableView.render();
+		
+		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
+		return this;
+	},
+	
+	renderWithActivity: function(activity) {
+		this.currentActivity = activity;
+		this.render();
+	}
+
+});
 
 var MainSelectionView = Backbone.View.extend({
 	mainSelectionTemplate : Handlebars.compile($("#mainSelectionTemplate").html()),
@@ -369,7 +500,7 @@ var MainSelectionView = Backbone.View.extend({
 		var type101Id = $(e.target).val();
 		if(type101Id != 0) {
 			this.type102Collection.fetch({
-				url: appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityRegulator'),
+				url: appUrl('/Objective/' + type101Id + '/children'),
 				success: _.bind(function() {
 					this.type102Collection.trigger('reset');
 				}, this)
@@ -424,6 +555,7 @@ var MainCtrView = Backbone.View.extend({
 	initialize : function() {
 		//this.collection.bind('reset', this.render, this);
 		this.$el.html(this.loadingTpl());
+		this.modalView = new ModalView({parentView: this});
 		this.assignTargetValueModalView = new AssignTargetValueModalView({parentView: this});
 	},
 
@@ -438,15 +570,23 @@ var MainCtrView = Backbone.View.extend({
 		"click .menuDelete" : "deleteActivity",
 		"click .menuEdit" : "editActivity",
 		"click .newActivitityChild" : "newChildActivity",
-		"click .assignTargetLnk" : "assignTarget"
+		"click .assignTargetLnk" : "assignTarget",
+		"click .report" : "loadReport"
 			
 	},
+	
+	loadReport: function(e) {
+		var activityId = $(e.target).parents('tr').attr('data-id');
+		window.open(appUrl("/m81r04.xls/" + fiscalYear + "/" + activityId +"/file/m81r04.xls"));
+		
+	},
+	
 	
 	assignTarget: function(e) {
 		var activityId = $(e.target).parents('tr').attr('data-id');
 		var activity = Activity.findOrCreate(activityId);
-		var targetId = $(e.target).parents('li').attr('data-id');
 		
+		var targetId = $(e.target).parents('li').attr('data-id');
 		var activityTarget = ActivityTarget.findOrCreate(targetId);
 		
 		this.assignTargetValueModalView.setCurrentActivity(activity);
@@ -457,6 +597,12 @@ var MainCtrView = Backbone.View.extend({
 	editActivity: function(e) {
 		var activityId = $(e.target).parents('tr').attr('data-id');
 		var activity = Activity.findOrCreate(activityId);
+		if(parentCurrentOrganizationId != 0){
+			if(currentOrganizationId != activity.get("regulator").get("id")) {
+				alert("คุณไม่สามารถแก้ไขกิจกรรมย่อยที่ส่วนงานของคุณไม่ได้รับผิดชอบได้");
+				return false;
+			}
+		}
 
 		this.modalView.renderWithActivity(activity);
 	},
@@ -465,6 +611,13 @@ var MainCtrView = Backbone.View.extend({
 		var activityId = $(e.target).parents('tr').attr('data-id');
 		var activity = Activity.findOrCreate(activityId);
 		if(activity != null) {
+			if(parentCurrentOrganizationId != 0){
+				if(currentOrganizationId != activity.get("regulator").get("id")) {
+					alert("คุณไม่สามารถลบกิจกรรมย่อยที่ส่วนงานของคุณไม่ได้รับผิดชอบได้");
+					return false;
+				}
+			}
+			
 			var answer = confirm("คุณต้องการลบกิจกรรมย่อย " + activity.get('name') + " ?" );
 			if(answer == true ) {
 				activity.destroy({
@@ -484,11 +637,17 @@ var MainCtrView = Backbone.View.extend({
 	
 	newChildActivity: function(e) {
 		var parentActivityId = $(e.target).parents('tr').attr('data-id');
-		
+		var parentActivity = Activity.findOrCreate(parentActivityId);
+		if(parentCurrentOrganizationId != 0){
+			if(currentOrganizationId != parentActivity.get("regulator").get("id")) {
+				alert("คุณไม่สามารถเพิ่มกิจกรรมเสริมที่ส่วนงานของคุณไม่ได้รับผิดชอบได้");
+				return false;
+			}
+		}
 		
 		var newActivity = new Activity();
 		newActivity.set('forObjective', this.currentObjective);
-		newActivity.set('parent', Activity.findOrCreate(parentActivityId));
+		newActivity.set('parent', parentActivity);
 		
 		this.modalView.renderWithActivity(newActivity);
 		
@@ -509,7 +668,7 @@ var MainCtrView = Backbone.View.extend({
 		this.mainSelectionView = new MainSelectionView({el: "#mainCtr #mainSelection"});
 
 		this.rootSelection = new ObjectiveCollection();
-		this.rootSelection.url = appUrl("/Objective/currentActivityRegulator/" + fiscalYear);
+		this.rootSelection.url = appUrl("/Objective/currentOwner/" + fiscalYear);
 		this.rootSelection.fetch({
 			success: _.bind(function() {
 				this.mainSelectionView.renderInitialWith(this.rootSelection);
@@ -530,11 +689,17 @@ var MainCtrView = Backbone.View.extend({
 		// first find the activities
 		// and put them in the table 
 		this.activities = new ActivityCollection();
-		this.activities.url = appUrl("/Activity/currentRegulator/forObjective/" + this.currentObjective.get('id'));
+		this.activities.url = appUrl("/Activity/currentOwner/forObjective/" + this.currentObjective.get('id'));
 		this.activities.fetch({
 			success : _.bind(function() {
-			
-				var json = this.activities.toJSON();
+				var flatActivities = new ActivityCollection();
+				
+				for(var i=0; i<this.activities.length; i++) {
+					flatActivities.push(this.activities.at(i));
+					this.addChildrenTo(flatActivities, this.activities.at(i).get('children'));
+				}
+				
+				var json = flatActivities.toJSON();
 				var html = this.mainTblTbodyTemplate(json);
 				
 				this.$el.find("#mainTbl tbody").html(html);

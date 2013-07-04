@@ -53,14 +53,14 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	saveAssignTarget: function(e) {
 		var sum=0;
 		// now put the sum up
-		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseInt($(el).val());
-		});
-		
-		if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
-			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
-			return;
-		}
+//		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
+//			sum += parseInt($(el).val());
+//		});
+//		
+//		if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
+//			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
+//			return;
+//		}
  		
 		sum = 0;
 		_.forEach(this.$el.find("input.budgetAllocated"), function(el) {
@@ -521,6 +521,18 @@ var MainTblView = Backbone.View.extend({
 								json.padding=60;
 								html=this.mainTblTbodyActivityTemplate(json);
 								this.$el.find('tbody').append(html);
+								
+								if(childAct.get('children') !=  null && childAct.get('children').length >0 ) {
+									var grandChildrenAct = childAct.get('children');
+									for(var l=0; l<grandChildrenAct.length; l++) {
+										var grandChildAct = grandChildrenAct.at(l);
+										json = grandChildAct.toJSON();
+										json.padding=90;
+										html=this.mainTblTbodyActivityTemplate(json);
+										this.$el.find('tbody').append(html);
+									}
+									
+								}
 							}
 						}
 						

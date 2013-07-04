@@ -186,22 +186,20 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			ResultSet rs2;
 			if (rs.getString(3).equals("1")) {
 				rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
-										"from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, hrx_organization t4 " +
+										"from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3 " +
 										"where t1.report_pln_acttargetreport_id = t2.id " +
 										"and t2.target_pln_acttarget_id = t3.id " +
-										"and t1.owner_hrx_organization_id = t4.id " +
 										"and t3.activity_pln_activity_id = " + activity.getId() +
 										" and t3.unit_pln_targetunit_id = " + rs.getInt(4) +
-										" and t4.parent_hrx_organization_id = " + rs.getInt(1) +
+										" and t2.owner_hrx_organization_id = " + rs.getInt(1) +
 										" group by t1.fiscalmonth order by t1.fiscalmonth ");
 			}
 			else {
 				rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.budgetplan), sum(t1.budgetresult) " +
-									   "from pln_monthlybgtreport t1, pln_activityperformance t2, hrx_organization t3 " +
+									   "from pln_monthlybgtreport t1, pln_activityperformance t2 " +
 								  	   "where t1.performance_pln_actper_id = t2.id " +
-								  	   "and t1.owner_hrx_organization_id = t3.id " +
 									   "and t2.activity_pln_activity_id = " + activity.getId() + 
-									   " and t3.parent_hrx_organization_id = " + rs.getInt(1) +
+									   " and t2.owner_hrx_organization_id = " + rs.getInt(1) +
 									   " group by t1.fiscalmonth order by t1.fiscalmonth ");
 				
 			}

@@ -16,6 +16,12 @@ var ModalView = Backbone.View.extend({
 		this.currentAssetBudget.set('code', this.$el.find('#codeTxt').val());
 		this.currentAssetBudget.set('description', this.$el.find('#descriptionTxt').val());
 		
+		if(this.currentAssetBudget.get('id') != null) {
+			this.currentAssetBudget.url = appUrl('/AssetBudget/' + this.currentAssetBudget.get('id'));
+		} else {
+			this.currentAssetBudget.url = appUrl('/AssetBudget/');
+		}
+		
 		this.currentAssetBudget.save(null,{
 			success: _.bind(function() {
 				alert('คุณได้ทำการบันทึกข้อมูลเรียบร้อยแล้ว');
@@ -216,9 +222,12 @@ var MainTblView = Backbone.View.extend({
 	addAssetBudget: function(assetBudget) {
 		var assetBudgetEl = this.$el.find('tr[data-id='+ assetBudget.get('id') +']');
 		
-		if(assetBudgetEl == null ){
+		
+		if(assetBudgetEl == null || assetBudgetEl.length == 0){
 			this.collection.push(assetBudget);
 			this.$el.find('tbody').append('<tr data-id='+ assetBudget.get('id')+ '></tr>');
+			this.renderAssetBudget(assetBudget);
+		} else {
 			this.renderAssetBudget(assetBudget);
 		}
 
@@ -228,8 +237,9 @@ var MainTblView = Backbone.View.extend({
 		var trEl = $(e.target).parents('tr');
 		var assetBudgetToDelete = AssetBudget.findOrCreate(assetBudgetId);
 
-			if(confirm("คุณต้องการลบรายการ " + assetBudgetToDelete.get('name')) == true ) {
+		if(confirm("คุณต้องการลบรายการ " + assetBudgetToDelete.get('name')) == true ) {
 
+			assetBudgetToDelete.url = appUrl('/AssetBudget/' + assetBudgetToDelete.get('id'));
 				assetBudgetToDelete.destroy({wait: true,
 					success: _.bind(function() {					
 						this.collection.remove(assetBudgetToDelete);

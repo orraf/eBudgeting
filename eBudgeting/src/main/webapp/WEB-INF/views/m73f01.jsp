@@ -172,9 +172,9 @@
 		<a href="#td-{{id}}" class="deleteObjective menuDelete"><i class="icon-trash icon-red"></i></a>
 	</td>
 	<td>{{code}}</td>
-	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
-		{{name}} {{#unless parent}}
-			<div class="pull-right"><a href="#" class="btn btn-primary newActivitityChild">เพิ่มกิจกรรมเสริม</a> {{/unless}}</div>
+	<td style="{{paddingActivity this}}">
+		{{name}}
+			<div class="pull-right">{{{addActivityBtn this}}}</div>
 	</td>
 	<td>{{regulator.abbr}}</td>
 	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
@@ -453,6 +453,21 @@
 		return addCommas(sum);
 	});
 	
+	Handlebars.registerHelper("paddingActivity", function(activity) {
+		var padding = 8 + (parseInt(activity.activityLevel) * 48);
+		return "padding-left: " + padding + "px;";
+	});
+	
+	Handlebars.registerHelper("addActivityBtn", function(activity) {
+		if(activity.activityLevel == 0 ) {
+			return "<a href='#' class='btn btn-mini btn-primary newActivitityChild'><i class='icon icon-file icon-white'></i> เพิ่มกิจกรรมเสริม</a>";
+		} else if(activity.activityLevel == 1 ){
+			return "<a href='#' class='btn btn-mini btn-primary newActivitityChild'><i class='icon icon-file icon-white'></i> เพิ่มกิจกรรมรายละเอียด</a>";
+		} else {
+			return "";
+		}
+			
+	});
 	
 	Handlebars.registerHelper("sumProposal", function(proposals) {
 		var amount = 0;

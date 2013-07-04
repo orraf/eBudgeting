@@ -1177,6 +1177,11 @@ insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,s
 insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,3,8);
 insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,steporder) values(6,4,9);
     
-    
+-- version 16
+-- Modifed Date : May 28, 2013
+	update app_info set db_version=16;
+	alter table pln_activity add  (activityLevel number(4));
+	
+
         
         

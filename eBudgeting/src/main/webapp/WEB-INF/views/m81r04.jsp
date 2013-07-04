@@ -77,7 +77,7 @@
 	<div class="controls">
 		<select id="type101Slt" class="span5">
 			<option>กรุณาเลือก...</option>
-			{{#each this}}<option value={{id}}>[{{code}}] {{name}}</option>{{/each}}
+			{{#each this}}<option value={{id}}>[{{code}}] {{name}} งบได้รับ {{formatNumber filterProposals.0.amountAllocated}} บาท</option>{{/each}}
 		</select>
 	</div>
 </div>
@@ -135,7 +135,7 @@
 <script id="mainTblTemplate" type="text/x-handler-template">
 <div class="controls" style="margin-bottom: 15px;">
 	<div class="pull-left"> 
-		
+		<a href="#" class="btn btn-info newActivityBtn"><i class="icon icon-file icon-white"></i> เพิ่มกิจกรรมย่อย</a>
 	</div>
 	<div class="pull-left" style="margin-left: 20px;">
 	<form class="form-search pull-left" style="margin-bottom:10px;" id="activitySearchFrm">
@@ -151,11 +151,10 @@
 <table class="table table-bordered table-striped" id="mainTbl">
 	<thead>
 		<tr>
+			<td style="width:30px;"></td>
 			<td style="width:30px;">รหัส</td>
 			<td>ชื่อกิจกรรมย่อย</td>
-			<td style="width:100px;">เป้าหมาย</td>
-			<td style="width:100px;">หน่วยนับ</td>
-			<td style="width:100px;">งบประมาณที่ได้รับจัดสรร (บาท)</td>
+			<td style="width:100px;">รายงาน</td>
 
 		</tr>
 	</thead>
@@ -166,35 +165,13 @@
 <script id="mainTblTbodyTemplate" type="text/x-handler-template">
 {{#each this}}
 <tr data-id="{{id}}">
+	<td></td>
 	<td>{{code}}</td>
-	<td style="{{paddingActivity this}}">
-		{{name}} </div>
+	<td {{#if parent}}style="padding-left:48px;"{{/if}}>
+		{{name}}
 	</td>
-	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
-		{{#each targets}}
-			<li data-id="{{id}}">{{#if this.id}}<a href="#" class="assignTargetLnk">{{/if}}{{formatNumber targetValue}}{{#if this.id}}</a>{{/if}}	</li>
-		{{/each}}
-		</ul>
+	<td><a href="#" class="report">รายงาน</a>
 	</td>
-	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
-		{{#each targets}}
-			<li>{{unit.name}}</li>
-		{{/each}}
-		</ul>
-	</td>
-	<td><ul style="list-style-type: none;margin:0px;padding-right:10px; text-align:right;"">
-		{{#each targets}}
-			<li>
-				{{#if provincialTarget}}
-					(ส่วนภูมิภาค)
-				{{else}}
-					{{formatNumber budgetAllocated}} บาท
-				{{/if}}
-			</li>
-		{{/each}}
-		</ul>
-	</td>
-
 </tr>
 {{/each}}
 </script>
@@ -202,6 +179,8 @@
 <script id="activityTargetTemplate" type="text/x-handler-template">
 <div class="alert alert-info">
 	 <h4><u><strong>{{headerString}}</strong></u></h4>
+	<div><div style="padding-top:10px;"> <input style="margin-top:0px;" id="provincialTarget" type="checkbox" {{#if provincialTarget}}checked="checked"{{/if}}> <span>ใช้งบส่วนภูมิภาค</span></div></div>
+
 	<div class="pull-left" style="padding-top:10px;">
 	    <label>ระบุค่าเป้าหมาย</label>
         <input type="text" class="targetModel" id="targetValue" data-modelname="targetValue" value="{{targetValue}}">
@@ -215,6 +194,17 @@
                 {{/each}}
          </select>
 	</div>
+	<div class="pull-left" style="padding-top:10px; padding-left: 30px;">
+		<label>ระบุงบประมาณ</label>
+		<div class="input-append">
+			<input class="span2 targetModel" id="budgetAllocated" {{#if provincialTarget}}disabled{{/if}} 
+					type="text" data-modelName="budgetAllocated" 
+					value="{{#if provincialTarget}} (ส่วนภูมิภาค){{else}}{{budgetAllocated}}{{/if}}">
+			<span class="add-on">บาท</span>
+			
+		</div>
+	</div>
+
 	<div class="clearfix"></div>
 	<div>
 		<a href="#" class="btn btn-mini btn-info addActivityTargetBtn"><i class="icon icon-plus-sign icon-white"></i> บันทึกค่าเป้าหมาย</a>
@@ -226,16 +216,17 @@
 
 <script  id="activityTargetTableTemplate" type="text/x-handler-template">
 <div id="activityTargetMenu">
-<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> เพิ่มเป้าหมาย</a>
+<a href="#" class="btn btn-info newActivityTargetBtn"><i class="icon icon-file icon-white"></i> เพิ่มค่าเป้าหมาย</a>
 </div>
 <div id="activityTargetTblCtr">
 {{#if targets}}
-<table class="table table-bordered table-striped" id="activityTargetTbl" style="width:285px;margin-top:10px;">
+<table class="table table-bordered table-striped" id="activityTargetTbl" style="width:485px;margin-top:10px;">
 <thead>
 	<tr>
 		<td style="width:45px;"></td>
 		<td style="width:140px;">เป้าหมาย</td>
 		<td style="width:100px;">หน่วยนับ</td>
+		<td style="width:100px;">งบประมาณ</td>
 	</tr>
 </thead>
 <tbody>
@@ -245,6 +236,13 @@
 	<a href="#td-{{id}}" class="deleteObjective deleteTarget"><i class="icon-trash icon-red"></i></a></td>
 			<td style="text-align:center;">{{formatNumber targetValue}}</td>
 			<td style="text-align:center;">{{unit.name}}</td>
+			<td style="text-align:right;">
+				{{#if provincialTarget}}
+					(ส่วนภูมิภาค)
+				{{else}}
+					{{formatNumber budgetAllocated}} บาท
+				{{/if}}
+			</td>
 	</tr>
 	{{/each}}
 </tbody>
@@ -261,6 +259,20 @@
 
 	<label>ระบุชื่อกิจกรรม</label>
 	<textarea rows="2" class="span5 model" id="nameTxt" data-modelName="name">{{name}}</textarea>
+
+	<label>ส่วนงานที่รับผิดชอบ</label>
+	<select id="regulatorSlt">
+
+		{{#if disabledChldrenOrganizationSlt}} 
+			<option value="{{currentChildrenOraganization.id}}" selected="selected">{{currentChildrenOraganization.name}}</option>	
+		{{else}}
+			<option value="-1">กรุณาเลือก</option>
+			{{#each currentChildrenOraganization}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{name}}</option>
+			{{/each}}
+		{{/if}}
+	</select>
+
 	
 	<div id="activityTarget">
 		
@@ -367,18 +379,18 @@
 </script>
 
 
-<script src="<c:url value='/resources/js/pages/m73f02.js'/>"></script>
+<script src="<c:url value='/resources/js/pages/m81r04.js'/>"></script>
 
 <script type="text/javascript">
 	var fiscalYear = parseInt("${fiscalYear}");
 	
-	var currentOrganizationId = "${workAtId}";
-	var currentOrganization = new Organization({id: currentOrganizationId});
 	var mainCtrView = null;
 	var objectiveCollection = null;
 	var budgetTypeSelectionView = null;
 	var rootCollection;
 	var topBudgetList = ["งบบุคลากร","งบดำเนินงาน","งบลงทุน","งบอุดหนุน","งบรายจ่ายอื่น"];
+	var currentOrganizationId = parseInt("${currentOrganizationId}");
+	var parentCurrentOrganizationId = parseInt("${parentCurrentOrganizationId}");
 	var l = null;
 	var e1;
 	var e2;
@@ -390,7 +402,7 @@
 
 	
 	var readOnly = "${readOnly}";
-
+	
 	Handlebars.registerHelper("sumTargetValue", function(unitId, proposals) {
 		// get all targetValue
 		sum=0;
@@ -411,27 +423,6 @@
 		return addCommas(sum);
 	});
 	
-	Handlebars.registerHelper("listProposals", function(proposals) {
-		if(proposals == null || proposals.length == 0) return "";
-		
-		var budgetTypeList = [];
-		
-		for(var i=0; i< proposals.length; i++) {
- 			if(budgetTypeList[proposals[i].budgetType.topParentName] == null) budgetTypeList[proposals[i].budgetType.topParentName] = 0;
-
- 			budgetTypeList[proposals[i].budgetType.topParentName] += proposals[i].amountRequest;
- 		}
- 		
- 		var json=[];
- 		for(var i=0; i< topBudgetList.length; i++) {
- 			if(budgetTypeList[topBudgetList[i]] != null && budgetTypeList[topBudgetList[i]] > 0) {
- 				json.push({name: topBudgetList[i], total: budgetTypeList[topBudgetList[i]]});
- 			}
- 		}
- 		 		
- 		return proposalListTemplate(json);
-		
-	});
 	
 	Handlebars.registerHelper("sumProposal", function(proposals) {
 		var amount = 0;
@@ -441,12 +432,6 @@
 		return addCommas(amount);
 
 	});
-	
-	Handlebars.registerHelper("paddingActivity", function(activity) {
-		var padding = 8 + (parseInt(activity.activityLevel) * 48);
-		return "padding-left: " + padding + "px;";
-	});
-	
 	Handlebars.registerHelper("sumAllocationRecords", function(records) {
 		var amount = 0;
 		for ( var i = 0; i < records.length; i++) {
@@ -553,7 +538,5 @@
 	$(document).ready(function() {		
 		mainCtrView = new MainCtrView();
 		mainCtrView.render();
-		
-		currentOrganization.fetch();
 	});
 </script>

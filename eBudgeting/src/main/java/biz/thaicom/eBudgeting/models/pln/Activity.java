@@ -1,7 +1,10 @@
 package biz.thaicom.eBudgeting.models.pln;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -12,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -64,6 +68,9 @@ public class Activity implements Serializable {
 	@Basic
 	private Integer idx;
 	
+	@Basic
+	private Integer activityLevel;
+	
 	@OneToMany(mappedBy="activity", fetch=FetchType.LAZY)
 	private List<ActivityTarget> targets;
 	
@@ -72,6 +79,7 @@ public class Activity implements Serializable {
 	private Activity parent;
 	
 	@OneToMany(mappedBy="parent")
+	@OrderBy("code asc")
 	private List<Activity> children;
 
 	@Transient
@@ -180,6 +188,37 @@ public class Activity implements Serializable {
 	public void setRegulator(Organization regulator) {
 		this.regulator = regulator;
 	}
+
+	public Integer getActivityLevel() {
+		return activityLevel;
+	}
+
+	public void setActivityLevel(Integer activityLevel) {
+		this.activityLevel = activityLevel;
+	}
 	
+	public void sumChildrenTarget() {
+		Map <TargetUnit, ActivityTarget> grandChildTargets = new HashMap<TargetUnit, ActivityTarget>();
+		for(Activity child : this.getChildren()) {
+			child.getTargets().size();
+			
+			child.getOwner().getId();
+			child.getRegulator().getId();
+			
+			for(ActivityTarget target : child.getTargets()) {
+				if(grandChildTargets.get(target.getUnit()) == null) {
+					ActivityTarget newTarget = new ActivityTarget();
+					newTarget.setUnit(target.getUnit());
+					newTarget.setTargetValue(target.getTargetValue());
+					grandChildTargets.put(target.getUnit(), newTarget);
+				} else {
+					ActivityTarget grandChildTarget = grandChildTargets.get(target.getUnit());
+					grandChildTarget.setTargetValue(grandChildTarget.getTargetValue() + target.getTargetValue());
+				}
+			}
+		}
+		this.setTargets(new ArrayList<ActivityTarget>(grandChildTargets.values()));
+		
+	}
 	
 }
