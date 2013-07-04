@@ -216,8 +216,8 @@ var ModalView = Backbone.View.extend({
 		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
 		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
 		
-		if(!isNaN(parseInt(value))) {
-			assetAllocation.set(type,parseInt(value));										 
+		if(!isNaN(parseFloat(value))) {
+			assetAllocation.set(type,parseFloat(value));										 
 			this.$el.find('#totalAssetAllocation-' + assetAllocationId)
 				.html(addCommas(assetAllocation.get('unitBudget') * assetAllocation.get('quantity')) + ' บาท');
 		}
@@ -272,7 +272,7 @@ var ModalView = Backbone.View.extend({
 				this.$el.find('#assetTbl tbody').append(html);	
 				
 				this.currentProposal.set('id', response.proposal.id);
-				this.currentProposal.set('amountAllocated',parseInt(response.proposal.amountAllocated));
+				this.currentProposal.set('amountAllocated',parseFloat(response.proposal.amountAllocated));
 				
 				
 				
@@ -296,7 +296,7 @@ var ModalView = Backbone.View.extend({
 			$(e.target).parent('div').removeClass('control-group error'); 
 			var i = $(e.target).parents('tr').prevAll('tr').length;
 			
-			this.proposals.at(i).set('amountAllocated', parseInt($(e.target).val()));
+			this.proposals.at(i).set('amountAllocated', parseFloat($(e.target).val()));
 			this.updateSumProposal();	
 		}
 		
@@ -570,10 +570,10 @@ var ModalView = Backbone.View.extend({
  		var sum=0;
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseInt($(el).val());
+			sum += parseFloat($(el).val());
 		});
 		
-		if(sum != parseInt($('#totalInputTxt').val())) {
+		if(sum != parseFloat($('#totalInputTxt').val())) {
 			alert("กรุณาตรวจสอบการจัดสรร งบประมาณที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับงบประมาณที่จัดสรรไว้");
 			return;
 		}
@@ -582,7 +582,7 @@ var ModalView = Backbone.View.extend({
 		
 		var record = this.currentAllocationRecord;
 		
-		record.set('amountAllocated', parseInt($('#totalInputTxt').val()));
+		record.set('amountAllocated', parseFloat($('#totalInputTxt').val()));
 		record.set('index', 0);
 		
 		// put proposal into somewhat better thing
@@ -773,7 +773,7 @@ var ModalView = Backbone.View.extend({
 		var sum=0;
 		// now put the sum up
 		this.proposals.forEach(function(proposal) {
-			var amountAllocated = parseInt(proposal.get('amountAllocated'));
+			var amountAllocated = parseFloat(proposal.get('amountAllocated'));
 			if(!isNaN(amountAllocated)) {
 				sum += proposal.get('amountAllocated');
 			}
@@ -808,13 +808,13 @@ var ModalView = Backbone.View.extend({
 				$('td[data-budgettypeid='+budgetTypeId+']').html(html);
 				
 				if(budgetTypeId==9 || budgetTypeId==8) {
-					sum1 += parseInt(record.get('amountAllocated'));
+					sum1 += parseFloat(record.get('amountAllocated'));
 				} else if(budgetTypeId==10 || budgetTypeId==7) {
-					sum2 += parseInt(record.get('amountAllocated'));
+					sum2 += parseFloat(record.get('amountAllocated'));
 				} else if(budgetTypeId==13 || budgetTypeId==11) {
-					sum3 += parseInt(record.get('amountAllocated'));
+					sum3 += parseFloat(record.get('amountAllocated'));
 				} else if(budgetTypeId==14 || budgetTypeId==12) {
-					sum4 += parseInt(record.get('amountAllocated'));
+					sum4 += parseFloat(record.get('amountAllocated'));
 				} 
 			},this));
 			

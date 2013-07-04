@@ -716,7 +716,8 @@
 
 	});
 	Handlebars.registerHelper("sumAllocationRecords", function(records) {
-		var amount = 0;
+		var amount = 0.0;
+		
 		for ( var i = 0; i < records.length; i++) {
 			amount += records[i].amountAllocated;
 		}

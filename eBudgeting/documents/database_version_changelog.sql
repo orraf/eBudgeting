@@ -1182,6 +1182,28 @@ insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,s
 	update app_info set db_version=16;
 	alter table pln_activity add  (activityLevel number(4));
 	
+-- version 17 
+-- Modified Date : July 7, 2013
+-- change to number(19,2)
+	update app_info set db_version=17;
+	
+	alter table bgt_budgetproposal add (amountallocatedtemp number(19,2) )
+	update bgt_budgetproposal set amountallocatedtemp = amountallocated;
+	update bgt_budgetproposal set  amountallocated = null;
+	
+	alter table bgt_budgetproposal modify ( amountallocated number(19,2));
+	update bgt_budgetproposal set amountallocated = amountallocatedtemp;
+	alter table bgt_budgetproposal drop (amountallocatedtemp);
+	
+
+
+	alter table bgt_allocationrecord add ( amountallocatedtemp number(19,2));
+	update bgt_allocationrecord set amountallocatedtemp=amountallocated;
+	update bgt_allocationrecord set amountallocated=null;
+
+	alter table bgt_allocationrecord modify ( amountallocated number(19,2) );
+	update bgt_allocationrecord set amountallocated=amountallocatedtemp;
+	alter table bgt_allocationrecord drop (amountallocatedtemp);
 
         
         

@@ -84,7 +84,7 @@ public interface BudgetProposalRepository extends
 			"FROM BudgetProposal proposal " +
 			"WHERE proposal.budgetType = ?1  " +
 			"	AND proposal.forObjective = ?2 ")
-	public Long findSumByBudgetTypeAndForObjective(BudgetType budgetType,
+	public Double findSumByBudgetTypeAndForObjective(BudgetType budgetType,
 			Objective forObjective);
 
 

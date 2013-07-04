@@ -1164,12 +1164,12 @@ public class EntityServiceJPA implements EntityService {
 						// now get this on
 						AllocationRecord allocationRecord = allocationRecordRepository.findOneByBudgetTypeAndObjectiveAndIndex(b.getBudgetType(), o ,round-1);  
 						if(allocationRecord != null) {
-							allocationRecord.setAmountAllocated(b.getAmountRequest());
+							allocationRecord.setAmountAllocated(b.getAmountRequest().doubleValue());
 						} else {
 							
 							
 							allocationRecord = new AllocationRecord();
-							allocationRecord.setAmountAllocated(b.getAmountRequest());
+							allocationRecord.setAmountAllocated(b.getAmountRequest().doubleValue());
 							allocationRecord.setBudgetType(b.getBudgetType());
 							allocationRecord.setForObjective(o);
 							allocationRecord.setIndex(round-1);
@@ -2282,7 +2282,7 @@ public class EntityServiceJPA implements EntityService {
 			record.setBudgetType(budgetType);
 			record.setForObjective(objective);
 			record.setIndex(0);
-			record.setAmountAllocated(0L);
+			record.setAmountAllocated(0.0);
 		} else {
 			record = allocationRecordRepository.findOne(getJsonNodeId(allocationRecord));
 		}
@@ -2370,7 +2370,7 @@ public class EntityServiceJPA implements EntityService {
 		AllocationRecord record = new AllocationRecord();
 		record.setBudgetType(budgetType);
 		record.setForObjective(objective);
-		record.setAmountAllocated(0L);
+		record.setAmountAllocated(0.0);
 		record.setIndex(data.get("index").asInt());
 		
 		allocationRecordRepository.save(record);
@@ -2400,12 +2400,12 @@ public class EntityServiceJPA implements EntityService {
 		AllocationRecord record = allocationRecordRepository.findOne(id);
 		
 		// now update the value
-		Long amountUpdate = data.get("amountAllocated").asLong();
-		Long oldAmount = record.getAmountAllocated();
+		Double amountUpdate = data.get("amountAllocated").asDouble();
+		Double oldAmount = record.getAmountAllocated();
 		if(oldAmount == null) {
-			oldAmount = 0L;
+			oldAmount = 0.0;
 		}
-		Long adjustedAmount = oldAmount - amountUpdate;
+		Double adjustedAmount = oldAmount - amountUpdate;
 		
 		Integer index = record.getIndex();
 		BudgetType budgetType = record.getBudgetType();
@@ -2425,7 +2425,7 @@ public class EntityServiceJPA implements EntityService {
 			
 			if(temp == null) {
 				temp = new AllocationRecord();
-				temp.setAmountAllocated(0L);
+				temp.setAmountAllocated(0.0);
 				temp.setBudgetType(budgetType);
 				temp.setForObjective(parent);
 				temp.setIndex(record.getIndex());
@@ -4949,17 +4949,17 @@ public class EntityServiceJPA implements EntityService {
 			allocationRecord.setBudgetType(assetAllocation.getBudgetType());
 			allocationRecord.setForObjective(assetAllocation.getForObjective());
 			allocationRecord.setIndex(0);
-			allocationRecord.setAmountAllocated(0L);
+			allocationRecord.setAmountAllocated(0.0);
 		}
 		
-		Long sumBudgetProposalAmountAllocated = budgetProposalRepository
+		Double sumBudgetProposalAmountAllocated = budgetProposalRepository
 				.findSumByBudgetTypeAndForObjective(
 						assetAllocation.getBudgetType(),
 						assetAllocation.getForObjective());
 		if(sumBudgetProposalAmountAllocated != null) { 
 			allocationRecord.setAmountAllocated(sumBudgetProposalAmountAllocated);
 		} else {
-			allocationRecord.setAmountAllocated(0L);
+			allocationRecord.setAmountAllocated(0.0);
 		}
 		allocationRecordRepository.save(allocationRecord);
 		
@@ -5011,7 +5011,7 @@ public class EntityServiceJPA implements EntityService {
 						proposal.getBudgetType(),
 						proposal.getForObjective(), 0);
 		
-		Long sumBudgetProposalAmountAllocated = budgetProposalRepository
+		Double sumBudgetProposalAmountAllocated = budgetProposalRepository
 				.findSumByBudgetTypeAndForObjective(
 						allocationRecord.getBudgetType(),
 						allocationRecord.getForObjective());
@@ -5057,7 +5057,7 @@ public class EntityServiceJPA implements EntityService {
 						proposal.getBudgetType(),
 						proposal.getForObjective(), 0);
 		
-		Long sumBudgetProposalAmountAllocated = budgetProposalRepository
+		Double sumBudgetProposalAmountAllocated = budgetProposalRepository
 				.findSumByBudgetTypeAndForObjective(
 						allocationRecord.getBudgetType(),
 						allocationRecord.getForObjective());
@@ -5142,7 +5142,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		// and allocation record!
 		for(AllocationRecord allocationRecord : allocationRecordSet) {
-			Long sumBudgetProposalAmountAllocated = budgetProposalRepository
+			Double sumBudgetProposalAmountAllocated = budgetProposalRepository
 					.findSumByBudgetTypeAndForObjective(
 							allocationRecord.getBudgetType(),
 							allocationRecord.getForObjective());

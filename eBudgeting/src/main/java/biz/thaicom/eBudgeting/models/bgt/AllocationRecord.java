@@ -38,7 +38,7 @@ public class AllocationRecord implements Serializable{
 	private Objective forObjective;
 	
 	@Basic
-	private Long amountAllocated;
+	private Double amountAllocated;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="BUDGETTYPE_BGT_ID")
@@ -74,11 +74,11 @@ public class AllocationRecord implements Serializable{
 		this.index = index;
 	}
 
-	public Long getAmountAllocated() {
+	public Double getAmountAllocated() {
 		return amountAllocated;
 	}
 
-	public void setAmountAllocated(Long amountAllocated) {
+	public void setAmountAllocated(Double amountAllocated) {
 		this.amountAllocated = amountAllocated;
 	}
 
@@ -90,7 +90,7 @@ public class AllocationRecord implements Serializable{
 		this.budgetType = budgetType;
 	}
 
-	public void adjustAmountAllocated(Long adjustedAmount) {
+	public void adjustAmountAllocated(Double adjustedAmount) {
 		if(this.amountAllocated == null) {
 			this.amountAllocated = adjustedAmount;
 		} else {
