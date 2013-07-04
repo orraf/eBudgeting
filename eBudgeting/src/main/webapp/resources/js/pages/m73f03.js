@@ -51,7 +51,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		mainTblView.updateSumTable();
 	},
 	saveAssignTarget: function(e) {
-		var sum=0;
+		var sum=0.0;
 		// now put the sum up
 //		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
 //			sum += parseInt($(el).val());
@@ -64,7 +64,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
  		
 		sum = 0;
 		_.forEach(this.$el.find("input.budgetAllocated"), function(el) {
-			sum += parseInt($(el).val());
+			sum += parseFloat($(el).val());
 		});
 		
  		this.$el.find('button#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
@@ -147,19 +147,19 @@ var AssignTargetValueModalView = Backbone.View.extend({
 
 	},
 	updateSumTarget: function() {
-		var sum=0;
+		var sum=0.0;
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseInt($(el).val());
+			sum += parseFloat($(el).val());
 		});
 		
 		$('#sumTotalAllocated').html(addCommas(sum));
 		
 		
 		// now sum the budgetAllocated
-		var sumBudgetAllocated = 0;
+		var sumBudgetAllocated = 0.0;
 		this.targetReports.forEach(function(report) {
-			var budgetAllocated = parseInt(report.get("activityPerformance").get("budgetAllocated"));
+			var budgetAllocated = parseFloat(report.get("activityPerformance").get("budgetAllocated"));
 			sumBudgetAllocated += budgetAllocated;
 		});
 		
@@ -360,7 +360,7 @@ var ActivityTargetTableView = Backbone.View.extend({
 			return;
 		}
 		
-		if(isNaN(parseInt(this.currentActivityTarget.get('targetValue'))) ) {
+		if(isNaN(parseFloat(this.currentActivityTarget.get('targetValue'))) ) {
 			alert('กรุณาใส่ค่าเป้าหมายเป็นตัวเลข');
 			return;
 		}
@@ -471,11 +471,11 @@ var MainTblView = Backbone.View.extend({
 		this.assignTargetValueModalView.render();
 	},
 	updateSumTable : function() {
-		var tableSum = 0;
+		var tableSum = 0.0;
 		$('.budgetAllocatedSpn').each(function(index) {
-			var budget = parseInt($(this).attr('data-value'));
+			var budget = parseFloat($(this).attr('data-value'));
 			if(isNaN(budget)) {
-				budget = 0;
+				budget = 0.0;
 			}
 			tableSum += budget;
 		});

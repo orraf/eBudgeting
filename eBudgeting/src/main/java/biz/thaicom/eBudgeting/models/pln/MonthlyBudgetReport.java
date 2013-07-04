@@ -45,7 +45,7 @@ public class MonthlyBudgetReport implements Serializable {
 	 * เป้าหมายของเดือน fiscalMonth
 	 */
 	@Basic
-	private Long budgetPlan;
+	private Double budgetPlan;
 	
 	/**
 	 * ผลการดำเนินงานของเดือน fiscalMonth
@@ -89,11 +89,11 @@ public class MonthlyBudgetReport implements Serializable {
 		this.activityPerformance = activityPerformance;
 	}
 
-	public Long getBudgetPlan() {
+	public Double getBudgetPlan() {
 		return budgetPlan;
 	}
 
-	public void setBudgetPlan(Long budgetPlan) {
+	public void setBudgetPlan(Double budgetPlan) {
 		this.budgetPlan = budgetPlan;
 	}
 

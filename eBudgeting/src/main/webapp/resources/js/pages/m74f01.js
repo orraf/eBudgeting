@@ -80,12 +80,12 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	
 	changeMonthlyReportPlan: function(e) {
 		var idx = $(e.target).attr('data-idx');
-		var planTxt = parseInt($(e.target).val());
+		var planTxt = parseFloat($(e.target).val());
 		this.currentTargetReport.get('monthlyReports').at(idx).set('activityPlan', planTxt);
 	},
 	changeMonthlyBudgetPlan: function(e) {
 		var idx = $(e.target).attr('data-idx');
-		var planTxt = parseInt($(e.target).val());
+		var planTxt = parseFloat($(e.target).val());
 		this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(idx).set('budgetPlan', planTxt);
 	},
 	
@@ -96,7 +96,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		var sum=0;
 		// now put the sum up
 		_.forEach(this.$el.find("input.monthlyReportPlan"), function(el) {
-			var value = parseInt($(el).val());
+			var value = parseFloat($(el).val());
 			sum += isNaN(value)?0:value;
 		});
 		
@@ -107,8 +107,8 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		
 		sum=0;
 		_.forEach(this.$el.find("input.monthlyBudgetPlan"), function(el) {
-			var value = parseInt($(el).val());
-			sum += isNaN(value)?0:value;
+			var value = parseFloat($(el).val());
+			sum += isNaN(value)?0.0:value;
 		});
 		if(sum != this.currentTargetReport.get('activityPerformance').get('budgetAllocated')) {
 			alert("กรุณาตรวจสอบ แผนการเบิกจ่ายงบประมาณ รวมแล้วไม่เท่ากับงบที่ได้รับจัดสรร");

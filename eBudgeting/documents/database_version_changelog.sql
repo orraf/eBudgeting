@@ -1205,5 +1205,12 @@ insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,s
 	update bgt_allocationrecord set amountallocated=amountallocatedtemp;
 	alter table bgt_allocationrecord drop (amountallocatedtemp);
 
-        
+    alter table pln_monthlyBgtReport add (budgetplan2 number(19,2), budgetresult2 number(19,2) );
+	update pln_monthlyBgtReport set budgetplan2 = budgetplan, budgetresult2 = budgetresult;
+	update pln_monthlyBgtReport set  budgetplan = null, budgetresult=null;
+	
+	alter table pln_monthlyBgtReport modify ( budgetplan number(19,2),  budgetresult number(19,2));
+	update pln_monthlyBgtReport set budgetplan = budgetplan2, budgetresult = budgetresult2;
+	alter table pln_monthlyBgtReport drop (budgetplan2,budgetresult2);
+  
         

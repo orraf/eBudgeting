@@ -4312,7 +4312,7 @@ public class EntityServiceJPA implements EntityService {
 		List<ActivityTargetReport> newList = new ArrayList<ActivityTargetReport>();
 		
 		ActivityTarget target = activityTargetRepository.findOne(targetId);
-		Long sumBudget = 0L;
+		Double sumBudget = 0.0;
 		//now for each node 
 		for(JsonNode reportNode : node) {
 			// we'll go through the oldList
@@ -4349,12 +4349,16 @@ public class EntityServiceJPA implements EntityService {
 			
 			// activityTargetReportRepository.save(report);
 			
-			if(report.getTarget().getProvincialTarget() == false) {
-				performance.setBudgetAllocated(report.getTarget().getBudgetAllocated().doubleValue()); 
-			} else if(reportNode.get("activityPerformance") != null && 
+			if(reportNode.get("activityPerformance") != null && 
 					reportNode.get("activityPerformance").get("budgetAllocated") != null) {
+				logger.debug("reportNode.get(\"activityPerformance\").get(\"budgetAllocated\") ==" + reportNode.get("activityPerformance").get("budgetAllocated").asDouble());
 				performance.setBudgetAllocated(reportNode.get("activityPerformance").get("budgetAllocated").asDouble());
+			} else if(report.getTarget().getProvincialTarget() == false) {
+				logger.debug("report.getTarget().getProvincialTarget() ==" + report.getTarget().getProvincialTarget());
+				logger.debug("report.getTarget().getBudgetAllocated().doubleValue() ==" + report.getTarget().getBudgetAllocated().doubleValue());
+				performance.setBudgetAllocated(report.getTarget().getBudgetAllocated().doubleValue()); 
 			} else {
+				logger.debug("seting BudgetAllocated == 0.0" );
 				performance.setBudgetAllocated(0.0);
 			}
 			
@@ -4363,7 +4367,7 @@ public class EntityServiceJPA implements EntityService {
 			report.setActivityPerformance(performance);
 			report.setTargetValue(reportNode.get("targetValue").asLong());
 			
-			sumBudget += performance.getBudgetAllocated().longValue();
+			sumBudget += performance.getBudgetAllocated();
 			
 			newList.add(report);
 		}
@@ -4607,9 +4611,9 @@ public class EntityServiceJPA implements EntityService {
 			Integer month = monthlyNode.get("fiscalMonth").asInt();
 			MonthlyBudgetReport monthly = report.getActivityPerformance().getMonthlyBudgetReports().get(month);
 			if(monthlyNode.get("budgetPlan")!=null) {
-				monthly.setBudgetPlan(monthlyNode.get("budgetPlan").asLong());
+				monthly.setBudgetPlan(monthlyNode.get("budgetPlan").asDouble());
 			} else {
-				monthly.setBudgetPlan(0L);
+				monthly.setBudgetPlan(0.0);
 			}
 			
 		}
