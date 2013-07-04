@@ -60,7 +60,7 @@ public class BudgetProposal implements Serializable {
 	
 	
 	@Basic
-	private Long amountAllocated;
+	private Double amountAllocated;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ORGANIZATION_ID")
@@ -132,11 +132,11 @@ public class BudgetProposal implements Serializable {
 	
 	
 
-	public Long getAmountAllocated() {
+	public Double getAmountAllocated() {
 		return amountAllocated;
 	}
 
-	public void setAmountAllocated(Long amountAllocated) {
+	public void setAmountAllocated(Double amountAllocated) {
 		this.amountAllocated = amountAllocated;
 	}
 

@@ -2312,7 +2312,7 @@ public class EntityServiceJPA implements EntityService {
 				Long orgJpaId = proposalJpa.getOwner().getId();
 				if(orgJpaId == orgId) {
 					// we update this value
-					proposalJpa.setAmountAllocated(proposal.get("amountAllocated").asLong());
+					proposalJpa.setAmountAllocated(proposal.get("amountAllocated").asDouble());
 					found = true;
 					
 					toSaveProposal.add(proposalJpa);
@@ -2323,7 +2323,7 @@ public class EntityServiceJPA implements EntityService {
 			
 			if(found==false) {
 				BudgetProposal newProposal = new  BudgetProposal();
-				newProposal.setAmountAllocated(proposal.get("amountAllocated").asLong());
+				newProposal.setAmountAllocated(proposal.get("amountAllocated").asDouble());
 				newProposal.setForObjective(objective);
 				newProposal.setBudgetType(budgetType);
 				newProposal.setOwner(owner);
@@ -2496,7 +2496,7 @@ public class EntityServiceJPA implements EntityService {
 		// now we're updating proposals
 		// first get the budgetProposal into Hash
 		Map<Long, JsonNode> budgetProposalMap = new HashMap<Long, JsonNode>();
-		Map<Long, Long> ownerBudgetProposalAdjustedAllocationMap = new HashMap<Long, Long>();
+		Map<Long, Double> ownerBudgetProposalAdjustedAllocationMap = new HashMap<Long, Double>();
 		Map<Long, JsonNode> requestColumnMap = new HashMap<Long, JsonNode>();
 		Map<Long, JsonNode> formulaColumnMap = new HashMap<Long, JsonNode>();
 		Map<Long, JsonNode> proposalStrategyMap = new HashMap<Long, JsonNode>();
@@ -2524,8 +2524,8 @@ public class EntityServiceJPA implements EntityService {
 		// ready to loop through and set the owner..
 		for(BudgetProposal proposal : proposals) {
 			JsonNode node = budgetProposalMap.get(proposal.getId());
-			Long oldAmount = proposal.getAmountAllocated() == null ? 0L : proposal.getAmountAllocated();
-			Long newAmount = node.get("amountAllocated").asLong();
+			Double oldAmount = proposal.getAmountAllocated() == null ? 0.0: proposal.getAmountAllocated();
+			Double newAmount = node.get("amountAllocated").asDouble();
 			proposal.setAmountAllocated(newAmount);
 			
 			ownerBudgetProposalAdjustedAllocationMap.put(proposal.getOwner().getId(), oldAmount-newAmount);
@@ -2537,12 +2537,12 @@ public class EntityServiceJPA implements EntityService {
 		//now update the parents
 		List<BudgetProposal> parentProposals = budgetProposalRepository.findAllByForObjectiveIdsAndBudgetType(parentIds, currentBudgetType);
 		for(BudgetProposal parentProposal:  parentProposals) {
-			Long adjustedAmount = ownerBudgetProposalAdjustedAllocationMap.get(parentProposal.getOwner().getId());
+			Double adjustedAmount = ownerBudgetProposalAdjustedAllocationMap.get(parentProposal.getOwner().getId());
 			
 			if(parentProposal.getAmountAllocated() != null ) {
 				parentProposal.setAmountAllocated(parentProposal.getAmountAllocated() - adjustedAmount);
 			} else {
-				parentProposal.setAmountAllocated(0-adjustedAmount);
+				parentProposal.setAmountAllocated(0.0 - adjustedAmount);
 			}
 			
 			budgetProposalRepository.save(parentProposal);
@@ -4893,12 +4893,12 @@ public class EntityServiceJPA implements EntityService {
 				
 
 		// we'll update proposal at last
-		Long sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
+		Double sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
 		if(sumAssetAllocation != null) {
 			proposal.setAmountAllocated(sumAssetAllocation);
 			
 		} else {
-			proposal.setAmountAllocated(0L);
+			proposal.setAmountAllocated(0.0);
 		}
 		budgetProposalRepository.save(proposal);
 		
@@ -5005,13 +5005,13 @@ public class EntityServiceJPA implements EntityService {
 		
 		// have to update proposal! 
 		BudgetProposal proposal = assetAllocation.getProposal();
-		Long sumAssetAllocation = assetAllocationRepository
+		Double sumAssetAllocation = assetAllocationRepository
 				.findSumBudgetOfPropsoal(proposal);
 		if(sumAssetAllocation != null) {
 			proposal.setAmountAllocated(sumAssetAllocation);
 			
 		} else {
-			proposal.setAmountAllocated(0L);
+			proposal.setAmountAllocated(0.0);
 		}
 		budgetProposalRepository.save(proposal);	
 
@@ -5086,12 +5086,12 @@ public class EntityServiceJPA implements EntityService {
 		
 		// have to update proposal! 
 		for(BudgetProposal proposal : proposalSet) {
-			Long sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
+			Double sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
 			if(sumAssetAllocation != null) {
 				proposal.setAmountAllocated(sumAssetAllocation);
 				
 			} else {
-				proposal.setAmountAllocated(0L);
+				proposal.setAmountAllocated(0.0);
 			}
 			budgetProposalRepository.save(proposal);	
 			
