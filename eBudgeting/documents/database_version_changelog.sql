@@ -1187,7 +1187,7 @@ insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,s
 -- change to number(19,2)
 	update app_info set db_version=17;
 	
-	alter table bgt_budgetproposal add (amountallocatedtemp number(19,2) )
+	alter table bgt_budgetproposal add (amountallocatedtemp number(19,2) );
 	update bgt_budgetproposal set amountallocatedtemp = amountallocated;
 	update bgt_budgetproposal set  amountallocated = null;
 	
