@@ -45,13 +45,13 @@ public class MonthlyActivityReport implements Serializable {
 	 * เป้าหมายของเดือน fiscalMonth
 	 */
 	@Basic
-	private Long activityPlan;
+	private Double activityPlan;
 	
 	/**
 	 * ผลการดำเนินงานของเดือน fiscalMonth
 	 */
 	@Basic
-	private Long activityResult;
+	private Double activityResult;
 	
 	/**
 	 * มีค่าตั้งแต่ 0 - 11 (0 = เดือนตุลาคม, 11 = เดือนกันยายน)
@@ -89,19 +89,19 @@ public class MonthlyActivityReport implements Serializable {
 		this.report = report;
 	}
 
-	public Long getActivityPlan() {
+	public Double getActivityPlan() {
 		return activityPlan;
 	}
 
-	public void setActivityPlan(Long activityPlan) {
+	public void setActivityPlan(Double activityPlan) {
 		this.activityPlan = activityPlan;
 	}
 
-	public Long getActivityResult() {
+	public Double getActivityResult() {
 		return activityResult;
 	}
 
-	public void setActivityResult(Long activityResult) {
+	public void setActivityResult(Double activityResult) {
 		this.activityResult = activityResult;
 	}
 

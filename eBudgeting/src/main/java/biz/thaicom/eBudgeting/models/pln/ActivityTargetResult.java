@@ -45,7 +45,7 @@ public class ActivityTargetResult implements Serializable{
 	private Date timestamp;
 	
 	@Basic
-	private Long result;
+	private Double result;
 	
 	@Basic
 	private  Double budgetResult;
@@ -95,11 +95,11 @@ public class ActivityTargetResult implements Serializable{
 		this.timestamp = timestamp;
 	}
 
-	public Long getResult() {
+	public Double getResult() {
 		return result;
 	}
 
-	public void setResult(Long result) {
+	public void setResult(Double result) {
 		this.result = result;
 	}
 

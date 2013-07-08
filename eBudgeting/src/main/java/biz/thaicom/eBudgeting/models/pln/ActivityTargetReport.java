@@ -64,7 +64,7 @@ public class ActivityTargetReport implements Serializable {
 	 * เป้าหมายในภาพรวม
 	 */
 	@Basic
-	private Long targetValue;
+	private Double targetValue;
 
 	/**
 	 * ผู้รับผิดชอบเป้าหมาย
@@ -114,11 +114,11 @@ public class ActivityTargetReport implements Serializable {
 		this.monthlyReports = monthlyReports;
 	}
 
-	public Long getTargetValue() {
+	public Double getTargetValue() {
 		return targetValue;
 	}
 
-	public void setTargetValue(Long targetValue) {
+	public void setTargetValue(Double targetValue) {
 		this.targetValue = targetValue;
 	}
 

@@ -1213,4 +1213,39 @@ insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,s
 	update pln_monthlyBgtReport set budgetplan = budgetplan2, budgetresult = budgetresult2;
 	alter table pln_monthlyBgtReport drop (budgetplan2,budgetresult2);
   
-        
+-- version 18
+-- Modified Date : July 9, 2013
+	update app_info set db_version=17;
+	
+	alter table PLN_ACTIVITYTARGET add (targetvaluetemp number(19,2), budgetallocatedtemp number(19,2) );
+	update PLN_ACTIVITYTARGET set targetvaluetemp = targetvalue, budgetallocatedtemp=budgetallocated;
+	update PLN_ACTIVITYTARGET set  targetvalue = null,budgetallocated=null;
+	
+	alter table PLN_ACTIVITYTARGET modify ( targetvalue number(19,2), budgetallocated number(19,2));
+	update PLN_ACTIVITYTARGET set targetvalue = targetvaluetemp, budgetallocated=budgetallocatedtemp;
+	alter table PLN_ACTIVITYTARGET drop (targetvaluetemp,budgetallocatedtemp);
+	
+	
+	alter table PLN_ACTIVITYTARGETREPORT add (targetvaluetemp number(19,2) );
+	update PLN_ACTIVITYTARGETREPORT set targetvaluetemp = targetvalue;
+	update PLN_ACTIVITYTARGETREPORT set  targetvalue = null;
+	
+	alter table PLN_ACTIVITYTARGETREPORT modify ( targetvalue number(19,2));
+	update PLN_ACTIVITYTARGETREPORT set targetvalue = targetvaluetemp;
+	alter table PLN_ACTIVITYTARGETREPORT drop (targetvaluetemp);
+	
+	alter table PLN_MONTHLYACTREPORT add (activityplantemp number(19,2), activityresulttemp number(19,2) );
+	update PLN_MONTHLYACTREPORT set activityplantemp = activityplan, activityresulttemp=activityresult;
+	update PLN_MONTHLYACTREPORT set  activityplan = null,activityresult=null;
+	
+	alter table PLN_MONTHLYACTREPORT modify ( activityplan number(19,2), activityresulttemp number(19,2));
+	update PLN_MONTHLYACTREPORT set activityplan = activityplantemp, activityresult=activityresulttemp;
+	alter table PLN_MONTHLYACTREPORT drop (activityplantemp,activityresulttemp);
+	
+	alter table PLN_ACTIVITYTARGETRESULT add (resulttemp number(19,2) );
+	update PLN_ACTIVITYTARGETRESULT set resulttemp = result;
+	update PLN_ACTIVITYTARGETRESULT set  result = null;
+	
+	alter table PLN_ACTIVITYTARGETRESULT modify ( result number(19,2));
+	update PLN_ACTIVITYTARGETRESULT set result = resulttemp;
+	alter table PLN_ACTIVITYTARGETRESULT drop (resulttemp);

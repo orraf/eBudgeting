@@ -48,10 +48,10 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		this.$el.modal('hide');
 	},
 	saveAssignTarget: function(e) {
-		var sum=0;
+		var sum=0.0;
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseInt($(el).val());
+			sum += parseFloat($(el).val());
 		});
 		
 //		if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
@@ -111,11 +111,11 @@ var AssignTargetValueModalView = Backbone.View.extend({
 
 	},
 	updateSumTarget: function() {
-		var sum=0;
+		var sum=0.0;
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			if(!isNaN(parseInt($(el).val()))) {
-				sum += parseInt($(el).val());
+			if(!isNaN(parseFloat($(el).val()))) {
+				sum += parseFloat($(el).val());
 			}
 			
 		});
@@ -304,7 +304,7 @@ var ActivityTargetTableView = Backbone.View.extend({
 			return;
 		}
 		
-		if(isNaN(parseInt(this.currentActivityTarget.get('targetValue'))) ) {
+		if(isNaN(parseFloat(this.currentActivityTarget.get('targetValue'))) ) {
 			alert('กรุณาใส่ค่าเป้าหมายเป็นตัวเลข');
 			return;
 		}

@@ -4191,12 +4191,12 @@ public class EntityServiceJPA implements EntityService {
 			target.setActivity(activity);
 			target.setProvincialTarget(targetNode.get("provincialTarget").asBoolean());
 			
-			target.setTargetValue(targetNode.get("targetValue").asLong());
+			target.setTargetValue(targetNode.get("targetValue").asDouble());
 			if(targetNode.get("budgetAllocated") != null) {
 				if(!target.getProvincialTarget()) {
-					target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
+					target.setBudgetAllocated(targetNode.get("budgetAllocated").asDouble());
 				} else {
-					target.setBudgetAllocated(0L);
+					target.setBudgetAllocated(0.0);
 				}
 			}
 				
@@ -4242,13 +4242,13 @@ public class EntityServiceJPA implements EntityService {
 			target.setActivity(activity);
 			target.setProvincialTarget(targetNode.get("provincialTarget").asBoolean());
 
-			target.setTargetValue(targetNode.get("targetValue").asLong());
+			target.setTargetValue(targetNode.get("targetValue").asDouble());
 			if(targetNode.get("budgetAllocated") != null) {
 //				if(!target.getProvincialTarget()) {
 				if(targetNode.get("provincialTarget") != null  && targetNode.get("provincialTarget").asBoolean() == false ) {
-					target.setBudgetAllocated(targetNode.get("budgetAllocated").asLong());
+					target.setBudgetAllocated(targetNode.get("budgetAllocated").asDouble());
 				} else {
-					target.setBudgetAllocated(0L);
+					target.setBudgetAllocated(0.0);
 				}
 			}
 			TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(targetNode.get("unit")));
@@ -4355,8 +4355,14 @@ public class EntityServiceJPA implements EntityService {
 				performance.setBudgetAllocated(reportNode.get("activityPerformance").get("budgetAllocated").asDouble());
 			} else if(report.getTarget().getProvincialTarget() == false) {
 				logger.debug("report.getTarget().getProvincialTarget() ==" + report.getTarget().getProvincialTarget());
-				logger.debug("report.getTarget().getBudgetAllocated().doubleValue() ==" + report.getTarget().getBudgetAllocated().doubleValue());
-				performance.setBudgetAllocated(report.getTarget().getBudgetAllocated().doubleValue()); 
+				
+				Double targetBudgetAllocated = 0.0;
+				if(report.getTarget().getBudgetAllocated()!=null) {
+					targetBudgetAllocated = report.getTarget().getBudgetAllocated();
+				}
+				
+				logger.debug("report.getTarget().getBudgetAllocated() ==" + targetBudgetAllocated);
+				performance.setBudgetAllocated(targetBudgetAllocated); 
 			} else {
 				logger.debug("seting BudgetAllocated == 0.0" );
 				performance.setBudgetAllocated(0.0);
@@ -4365,7 +4371,7 @@ public class EntityServiceJPA implements EntityService {
 			activityPerformanceRepository.save(performance);
 			
 			report.setActivityPerformance(performance);
-			report.setTargetValue(reportNode.get("targetValue").asLong());
+			report.setTargetValue(reportNode.get("targetValue").asDouble());
 			
 			sumBudget += performance.getBudgetAllocated();
 			
@@ -4584,9 +4590,9 @@ public class EntityServiceJPA implements EntityService {
 			Integer month = monthlyNode.get("fiscalMonth").asInt();
 			MonthlyActivityReport monthly = report.getMonthlyReports().get(month);
 			if(monthlyNode.get("activityPlan")!=null) {
-				monthly.setActivityPlan(monthlyNode.get("activityPlan").asLong());
+				monthly.setActivityPlan(monthlyNode.get("activityPlan").asDouble());
 			} else {
-				monthly.setActivityPlan(0L);
+				monthly.setActivityPlan(0.0);
 			}
 			
 		}
@@ -4702,7 +4708,7 @@ public class EntityServiceJPA implements EntityService {
 			 
 			
 		} else {
-			result.setResult(node.get("result").asLong());
+			result.setResult(node.get("result").asDouble());
 			SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("TH", "TH"));
 			
 			try {
