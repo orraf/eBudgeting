@@ -328,8 +328,8 @@
 				<td></td>
 				<td></td>
 				<td></td>
-				<td></td>
-				<td></td>
+				<td  style="text-align:right;">{{formatNumber filterProposals.0.amountUsed}} บาท</td>
+				<td>จากระบบ G</td>
 			</tr>		
 			{{#each this.filterActivities}}
 				{{#each this.filterTargets}}

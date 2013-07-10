@@ -22,33 +22,6 @@ public class BudgetUsageFromExternal implements Serializable {
 	@EmbeddedId
 	private BudgetUsageId id;
 	
-	@Embeddable
-	public class BudgetUsageId implements Serializable{
-		
-		
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -3944413748773930087L;
-
-		@Basic
-		@Column(name="ORG_ID")
-		private Long organizationId;
-		
-		@Basic
-		@Column(name="GL_TRANS_DOCDATE")
-		private Date date;
-		
-		@Basic
-		@Column(name="GL_TRANS_PLAN")
-		private String planCode;
-		
-		@Basic
-		@Column(name="ACTIVITYCODE")
-		private String activityCode;
-
-	}
-	
 	@Basic
 	@Column(name="NAME")
 	private String activityName;
@@ -58,36 +31,21 @@ public class BudgetUsageFromExternal implements Serializable {
 	private Double amount;
 
 	public Long getOrganizationId() {
-		return id.organizationId;
-	}
-
-	public void setOrganizationId(Long organizationId) {
-		this.id.organizationId = organizationId;
+		return id.getOrganizationId();
 	}
 
 	public Date getDate() {
-		return id.date;
-	}
-
-	public void setDate(Date date) {
-		this.id.date = date;
+		return id.getDate();
 	}
 
 	public String getPlanCode() {
-		return this.id.planCode;
-	}
-
-	public void setPlanCode(String planCode) {
-		this.id.planCode = planCode;
+		return this.id.getPlanCode();
 	}
 
 	public String getActivityCode() {
-		return this.id.activityCode;
+		return this.id.getActivityCode();
 	}
 
-	public void setActivityCode(String activityCode) {
-		this.id.activityCode = activityCode;
-	}
 
 	public String getActivityName() {
 		return activityName;

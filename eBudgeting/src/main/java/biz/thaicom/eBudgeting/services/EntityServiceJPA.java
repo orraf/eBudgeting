@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import biz.thaicom.eBudgeting.controllers.WordReportsController;
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
@@ -85,6 +86,7 @@ import biz.thaicom.eBudgeting.repositories.BudgetCommonTypeRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetProposalRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetSignOffRepository;
 import biz.thaicom.eBudgeting.repositories.BudgetTypeRepository;
+import biz.thaicom.eBudgeting.repositories.BudgetUsageFromExternalRepository;
 import biz.thaicom.eBudgeting.repositories.FiscalBudgetTypeRepository;
 import biz.thaicom.eBudgeting.repositories.FormulaColumnRepository;
 import biz.thaicom.eBudgeting.repositories.FormulaStrategyRepository;
@@ -229,6 +231,9 @@ public class EntityServiceJPA implements EntityService {
 
 	@Autowired
 	private AssetStepReportRepository assetStepReportRepository;
+	
+	@Autowired
+	private BudgetUsageFromExternalRepository budgetUsageFromExternalRepository;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -4664,8 +4669,6 @@ public class EntityServiceJPA implements EntityService {
 			report.getTarget().setFilterReport(report);
 			report.getTarget().getUnit().getId();
 			
-			
-			
 			report.getTarget().getActivity().getFilterTargets().add(report.getTarget());
 			
 			logger.debug("reportId : " + report.getId());
@@ -4680,8 +4683,34 @@ public class EntityServiceJPA implements EntityService {
 			}
 		}
 		
+		for(Objective obj: objectives) {
+			// now we'll find out the current budget usages!
+			Double sumUsage = budgetUsageFromExternalRepository.findBudgetUsageSummaryByCodeAndOwner(
+					obj.getCode(), workAt.getId());
+			
+			List<BudgetProposal> proposals = budgetProposalRepository.findByForObjectiveAndOwner(obj, workAt);
+			
+			
+			if(proposals == null || proposals.size() == 0) {
+				proposals = new ArrayList<BudgetProposal>();
+				BudgetProposal p = new BudgetProposal();
+				p.setAmountUsed(sumUsage);
+				p.setOwner(workAt);
+				p.setForObjective(obj);
+				
+				logger.debug("adding new proposal");
+				
+				proposals.add(p);
+			} 
+			
+			obj.setFilterProposals(proposals);
+			
+			logger.debug("xxxxx :  " + obj.getName() + " (" + obj.getCode() + ") : " + sumUsage );
+		}
 		
-		return objectiveRepository.findByActivityTargetReportOfOrganization(workAt);
+		return objectives;
+		
+		//return objectiveRepository.findByActivityTargetReportOfOrganization(workAt);
 	}
 
 	@Override

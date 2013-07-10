@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
@@ -58,6 +59,8 @@ public class BudgetProposal implements Serializable {
 	@Basic
 	private Long amountRequestNext3Year;
 	
+	@Transient
+	private Double amountUsed;
 	
 	@Basic
 	private Double amountAllocated;
@@ -210,6 +213,14 @@ public class BudgetProposal implements Serializable {
 	public void adjustAmountRequestNext3Year(Long adjustedAmountRequestNext3Year) {
 		this.amountRequestNext3Year = this.amountRequestNext3Year - adjustedAmountRequestNext3Year;
 		
+	}
+
+	public Double getAmountUsed() {
+		return amountUsed;
+	}
+
+	public void setAmountUsed(Double amountUsed) {
+		this.amountUsed = amountUsed;
 	}
 	
 	

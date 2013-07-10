@@ -132,6 +132,10 @@ var ModalView = Backbone.View.extend({
 			for(var i=0; i<12; i++) {
 				var report = monthly.at(i);
 				var budgetReport = budgetMontly.at(i);
+				if(budgetReport == null) {
+					alert("กิจกรรมนี้ยังไม่ได้ทำแผนใช้จ่าย");
+					return;
+				}
 				if(i<3) {
 					q1Plan += report.get("activityPlan");
 					q1Result += report.get("activityResult");
@@ -241,7 +245,9 @@ var MainCtrView = Backbone.View.extend({
 							return this;
 						} else if(rpt.latestResult != null) {
 							rpt.lastSaveTxt = moment.utc(rpt.latestResult.timestamp).fromNow();
-							rpt.lastSaveTxt += " / " + rpt.latestResult.person.firstName + " " + rpt.latestResult.person.lastName;
+							if(pt.latestResult.person != null) {
+								rpt.lastSaveTxt += " / " + rpt.latestResult.person.firstName + " " + rpt.latestResult.person.lastName;
+							} 
 						} else {
 							rpt.lastSaveTxt = 'ยังไม่เคยรายงาน';
 						}
