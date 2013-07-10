@@ -245,7 +245,7 @@ var MainCtrView = Backbone.View.extend({
 							return this;
 						} else if(rpt.latestResult != null) {
 							rpt.lastSaveTxt = moment.utc(rpt.latestResult.timestamp).fromNow();
-							if(pt.latestResult.person != null) {
+							if(rpt.latestResult.person != null) {
 								rpt.lastSaveTxt += " / " + rpt.latestResult.person.firstName + " " + rpt.latestResult.person.lastName;
 							} 
 						} else {
