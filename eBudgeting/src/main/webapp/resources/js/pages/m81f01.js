@@ -8,7 +8,7 @@ var ModalView = Backbone.View.extend({
 		}
 	},
 	el: "#modal",
-	targerReportModalTemplate: Handlebars.compile($("#targerReportModalTemplate").html()),
+	targetReportModalTemplate: Handlebars.compile($("#targetReportModalTemplate").html()),
 	resultInputTemplate: Handlebars.compile($("#resultInputTemplate").html()),
 	resultBudgetInputTemplate: Handlebars.compile($("#resultBudgetInputTemplate").html()),
 	events : {
@@ -16,13 +16,45 @@ var ModalView = Backbone.View.extend({
 		"click #resultInputBtn" : "inputResult",
 		"click #backToModalBtn" : "backToModal",
 		"click #saveResultBtn" : "saveResult",
-		"click #cancelBtn" : "cancelModal"
+		"click #cancelBtn" : "cancelModal",
+		"click .budgetResultLnk" : "showBudgetResult",
+		"click .activityResultLnk" : "showActivityResult"
 	},
 	cancelModal: function(e) {
 		this.$el.modal('hide');
 		if(this.parentView != null) {
 			this.parentView.render();
 		}
+	},
+	
+	showBudgetResult: function(e) {
+		var fiscalMonth = $(e.target).parents('tr').attr('data-fiscalMonth');
+		
+		var latestResult = this.currentTargetReport.get('latestResult');
+		if(latestResult != null && latestResult.get('budgetFiscalMonth') == fiscalMonth && 
+					latestResult.get('resultBudgetType') == true ) {
+			this.currentTargetResult = latestResult;
+			this.renderBudgetResult(fiscalMonth, this.currentTargetResult.get('id'));
+		} else {
+			this.currentTargetResult = new ActivityTargetResult();
+			this.currentTargetResult.fetch({
+				url: appUrl('/ActivityTargetResult/findBgtResultByReport/' + this.currentTargetReport.get('id') + '/fiscalMonth/' + fiscalMonth),
+				success: _.bind(function(model, response, options) {
+					this.renderBudgetResult(fiscalMonth, model.get('id'));
+				}, this)
+			});
+		}
+		
+		
+		
+		
+		
+	},
+	
+	showActivityResult: function(e) {
+		var fiscalMonth = $(e.target).parents('tr').attr('data-fiscalMonth');
+		
+		
 	},
 	
 	backToModal: function(e) {
@@ -39,15 +71,24 @@ var ModalView = Backbone.View.extend({
 		}
 		this.currentTargetResult.set('remark', this.$el.find('#remark').val());
 		
-		
+		console.log(this.currentTargetResult.toJSON());
 		this.currentTargetResult.save(null, {
+			url: appUrl('/ActivityTargetResult/'+ this.currentTargetResult.get('id')),
 			success: _.bind(function() {
 				alert("บันทึกการรายงานผลเรียบร้อยแล้ว");
 				this.currentTargetReport.set('latestResult', this.currentTargetResult);
 				this.currentTargetResult.get('report').get('target').set('filterReport', this.currentTargetReport);
 				this.render();
-			},this)
+			},this),
+			error: function(model, xhr, options) {
+				console.log(xhr);
+				alert(xhr);
+				alert('error: ' + xhr);
+				
+			}
 		});
+		
+		return false;
 	},
 	inputResult: function(e) {
 		this.currentTargetResult = new ActivityTargetResult();
@@ -69,48 +110,67 @@ var ModalView = Backbone.View.extend({
 		
 	},
 	inputBudgetResult: function(e) {
-		this.currentTargetResult = new ActivityTargetResult();
-		this.currentTargetResult.set('report', this.currentTargetReport);
-		this.currentTargetResult.set('resultBudgetType', true);
+		this.renderBudgetResult();
+	},
+	
+	renderBudgetResult: function(fiscalMonth, targetResultId) {
+		if(targetResultId == null) {
+		
+			this.currentTargetResult = new ActivityTargetResult();
+			this.currentTargetResult.set('report', this.currentTargetReport);
+			this.currentTargetResult.set('resultBudgetType', true);
+		
+		} 
 		
 		var monthlyReports = this.currentTargetReport.get("activityPerformance").get("monthlyBudgetReports");
 		
 		var json = {};
-		json.month=[{fiscalMonth: 0, name:'ตุลาคม'},{fiscalMonth: 1, name:'พฤศจิกายน'},{fiscalMonth: 2, name:'ธันวาคม'},
+		var fiscalMonths=[{fiscalMonth: 0, name:'ตุลาคม'},{fiscalMonth: 1, name:'พฤศจิกายน'},{fiscalMonth: 2, name:'ธันวาคม'},
 		            {fiscalMonth: 3, name:'มกราคม'},{fiscalMonth: 4, name:'กุมภาพันธ์'},{fiscalMonth: 5, name:'มีนาคม'},
 		            {fiscalMonth: 6, name:'เมษายน'},{fiscalMonth: 7,name:'พฤษภาคม'},{fiscalMonth: 8,name:'มิถุนายน'},
 		            {fiscalMonth: 9, name:'กรกฎาคม'},{fiscalMonth: 10,name:'สิงหาคม'},{fiscalMonth: 11,name:'กันยายน'}];
 		
 		
-		var monthNumber = (moment().month() + 3) % 12 ;
-		json.month[monthNumber].current = true;
+		if(fiscalMonth == null) {
+			json.month = fiscalMonths;
+			var monthNumber = (moment().month() + 3) % 12 ;
+			json.month[monthNumber].current = true;
+			monthlyReports.forEach(function(report) {
+				if(report.get('bugetResult') != null) {
+					json.month[report.get('fiscalMonth')].hasOldValue = true;
+					json.month[report.get('fiscalMonth')].oldValue = report.get('budgetResult');
+				}
+			});
+		} else {
+			
+			json.month =  [];
+			json.month.push(fiscalMonths[fiscalMonth]);
+			json.result = this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(fiscalMonth).get('budgetResult');
+			json.activityResultId = this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(fiscalMonth).get('id');
 		
-		monthlyReports.forEach(function(report) {
-			if(report.get('bugetResult') != null) {
-				json.month[report.get('fiscalMonth')].hasOldValue = true;
-				json.month[report.get('fiscalMonth')].oldValue = report.get('budgetResult');
-			}
-		});
+		}
+		
 		
 		this.$el.find('.modal-header span').html("บันทึกผลการใช้จ่ายงบประมาณ: "+ this.currentTargetReport.get('target').get('activity').get('name'));
 		
 		var html = this.resultBudgetInputTemplate(json);
 		this.$el.find('.modal-body').html(html);
-		
-		
-		
+
 	},
 	renderWithReport: function(report) {
 		this.currentTargetReport = report;
 		this.render();
 	},
 	render : function() {
+		console.log('xxxx');
+		console.log(this.currentTargetReport);
+		
 		if(this.currentTargetReport != null) {
 			this.$el.find('.modal-header span').html("บันทึกผลการดำเนินงาน: "+ this.currentTargetReport.get('target').get('activity').get('name'));
 
 			
 			var json = this.currentTargetReport.toJSON();
-			var html = this.targerReportModalTemplate(json);
+			var html = this.targetReportModalTemplate(json);
 			this.$el.find('.modal-body').html(html);
 			
 			var monthly = this.currentTargetReport.get("monthlyReports");

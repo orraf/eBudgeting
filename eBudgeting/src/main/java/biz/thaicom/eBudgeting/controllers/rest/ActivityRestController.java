@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -146,10 +147,36 @@ public class ActivityRestController {
 		return entityService.saveActivityTargetReportByTargetId(targetId, node, null);
 	}
 	
+	@RequestMapping(value="/ActivityTargetResult/findBgtResultByReport/{targetReportId}/fiscalMonth/{fiscalMonth}", method=RequestMethod.GET)
+	public @ResponseBody ActivityTargetResult findActivityTargetResultByTargetReportAndFiscalMonth(
+			@PathVariable Long targetReportId,
+			@PathVariable Integer fiscalMonth,
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		return entityService.findActivityTargetResultByReportAndFiscalMonthAndBgtResult(targetReportId, fiscalMonth);
+		
+	}
+	
+	@RequestMapping(value="/ActivityTargetResult/{id}", method=RequestMethod.GET) 
+	public @ResponseBody ActivityTargetResult findActivityTargetResultById(
+			@PathVariable Long id,
+			@Activeuser ThaicomUserDetail currentUser){
+		return entityService.findActivityTargetResultById(id);
+	}
+	
 	@RequestMapping(value="/ActivityTargetResult/", method=RequestMethod.POST) 
 	public @ResponseBody ActivityTargetResult saveActivityTargetResult(
 			@RequestBody JsonNode node,
 			@Activeuser ThaicomUserDetail currentUser){
+		return entityService.saveActivityTargetResult(node, currentUser);
+	}
+	
+	@RequestMapping(value="/ActivityTargetResult/{id}", method=RequestMethod.PUT) 
+	public @ResponseBody ActivityTargetResult updateActivityTargetResult(
+			@RequestBody JsonNode node,
+			@PathVariable Long id,
+			@Activeuser ThaicomUserDetail currentUser){
+		logger.debug("calling PUT");
 		return entityService.saveActivityTargetResult(node, currentUser);
 	}
 	

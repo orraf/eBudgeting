@@ -16,4 +16,13 @@ public interface ActivityTargetResultRepository extends JpaRepository<ActivityTa
 			"		(SELECT max(result1.timestamp) FROM ActivityTargetResult result1 WHERE  result1.report = ?1) ")
 	ActivityTargetResult findByLatestTimeStamp(ActivityTargetReport report);
 
+	@Query(""
+			+ "SELECT result "
+			+ "FROM ActivityTargetResult result "
+			+ "WHERE result.report.id = ?1 AND "
+			+ "		result.budgetFiscalMonth = ?2 AND "
+			+ " 	result.resultBudgetType = TRUE ")
+	ActivityTargetResult findByReportIdAndFiscalMonthAndBgtResult(
+			Long targetReportId, Integer fiscalMonth);
+
 }

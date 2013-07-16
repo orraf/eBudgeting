@@ -385,6 +385,11 @@ public interface EntityService {
 	//ActivityTargetResult
 	public ActivityTargetResult saveActivityTargetResult(JsonNode node,
 			ThaicomUserDetail currentUser);
+	public ActivityTargetResult findActivityTargetResultById(Long id);
+	public ActivityTargetResult findActivityTargetResultByReportAndFiscalMonthAndBgtResult(
+			Long targetReportId, Integer fiscalMonth);
+
+	
 	
 	// Asset
 	public AssetGroup findAssetGroupById(Long id);
@@ -416,6 +421,8 @@ public interface EntityService {
 	
 	// AssetMethod
 	public List<AssetMethod> findAssetMethodAll();
+
+
 
 
 	

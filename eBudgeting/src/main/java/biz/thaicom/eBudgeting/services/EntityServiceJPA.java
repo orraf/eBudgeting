@@ -4572,6 +4572,7 @@ public class EntityServiceJPA implements EntityService {
 	public ActivityTargetReport findActivityTargetReportById(Long id) {
 		ActivityTargetReport atr = activityTargetReportRepository.findOneAndFetchReportById(id);
 		atr.getActivityPerformance().getMonthlyBudgetReports().size();
+		atr.setLatestResult(activityTargetResultRepository.findByLatestTimeStamp(atr));
 		return atr;
 	}
 
@@ -4717,7 +4718,14 @@ public class EntityServiceJPA implements EntityService {
 	public ActivityTargetResult saveActivityTargetResult(JsonNode node,
 			ThaicomUserDetail currentUser) {
 		
-		ActivityTargetResult result = new ActivityTargetResult();
+		ActivityTargetResult result;
+		if(getJsonNodeId(node) != null) {
+			result = activityTargetResultRepository.findOne(getJsonNodeId(node));
+			logger.debug("found result : " + result.getId());
+		} else {
+			result = new ActivityTargetResult();
+			logger.debug("create new result : ");
+		}
 		
 		ActivityTargetReport report = activityTargetReportRepository.findOne(getJsonNodeId(node.get("report")));
 		result.setReport(report);
@@ -4771,6 +4779,8 @@ public class EntityServiceJPA implements EntityService {
 			//report.getMonthlyReports().get(fiscalMonth).setActivityResult(monthlyResult);		
 			monthlyActivityReportRepository.save(monthlyReport);
 		}
+		
+		logger.debug("about to save...");
 		activityTargetResultRepository.save(result);
 		// now we'll have to update the result month
 		
@@ -4781,6 +4791,26 @@ public class EntityServiceJPA implements EntityService {
 	}
 
 	
+	
+	
+	@Override
+	public ActivityTargetResult findActivityTargetResultByReportAndFiscalMonthAndBgtResult(
+			Long targetReportId, Integer fiscalMonth) {
+		ActivityTargetResult atr =activityTargetResultRepository.findByReportIdAndFiscalMonthAndBgtResult(targetReportId,fiscalMonth);
+		
+		atr.getReport().getActivityPerformance().getMonthlyBudgetReports().size();
+		atr.getReport().getMonthlyReports().size();
+		
+		
+		return atr;
+	}
+
+	@Override
+	public ActivityTargetResult findActivityTargetResultById(Long id) {
+		
+		return activityTargetResultRepository.findOne(id);
+	}
+
 	@Override
 	public List<AssetGroup> findAssetGroupAll() {
 		return assetGroupRepository.findAllOrderByIdAsc();
