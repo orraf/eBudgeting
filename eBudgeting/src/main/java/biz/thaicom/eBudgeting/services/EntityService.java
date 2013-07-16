@@ -150,6 +150,8 @@ public interface EntityService {
 	public List<Objective> findObjectiveAllByFiscalYear(Integer fiscalYear);
 	public List<Objective> findObjectiveHasBudgetAssetByFiscalYear(
 			Integer fiscalYear);
+	public List<ActivityTargetResult> findActivityTargetResultByReportAndFiscalMonth(
+			Long targetReportId, Integer fiscalMonth);
 
 
 	
@@ -421,6 +423,7 @@ public interface EntityService {
 	
 	// AssetMethod
 	public List<AssetMethod> findAssetMethodAll();
+
 
 
 

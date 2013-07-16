@@ -1,5 +1,7 @@
 package biz.thaicom.eBudgeting.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,6 +25,15 @@ public interface ActivityTargetResultRepository extends JpaRepository<ActivityTa
 			+ "		result.budgetFiscalMonth = ?2 AND "
 			+ " 	result.resultBudgetType = TRUE ")
 	ActivityTargetResult findByReportIdAndFiscalMonthAndBgtResult(
+			Long targetReportId, Integer fiscalMonth);
+
+	@Query(""
+			+ "SELECT result "
+			+ "FROM ActivityTargetResult result "
+			+ "WHERE result.report.id = ?1 AND "
+			+ "		MONTH(result.reportedResultDate) = ?2 AND "
+			+ " 	result.resultBudgetType = FALSE ")
+	List<ActivityTargetResult> findByReportIdAndFiscalMonthAndNotBgtResult(
 			Long targetReportId, Integer fiscalMonth);
 
 }

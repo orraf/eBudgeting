@@ -148,12 +148,22 @@ public class ActivityRestController {
 	}
 	
 	@RequestMapping(value="/ActivityTargetResult/findBgtResultByReport/{targetReportId}/fiscalMonth/{fiscalMonth}", method=RequestMethod.GET)
-	public @ResponseBody ActivityTargetResult findActivityTargetResultByTargetReportAndFiscalMonth(
+	public @ResponseBody ActivityTargetResult findActivityTargetResultBgtByTargetReportAndFiscalMonth(
 			@PathVariable Long targetReportId,
 			@PathVariable Integer fiscalMonth,
 			@Activeuser ThaicomUserDetail currentUser) {
 		
 		return entityService.findActivityTargetResultByReportAndFiscalMonthAndBgtResult(targetReportId, fiscalMonth);
+		
+	}
+	
+	@RequestMapping(value="/ActivityTargetResult/findResultByReport/{targetReportId}/fiscalMonth/{fiscalMonth}", method=RequestMethod.GET)
+	public @ResponseBody List<ActivityTargetResult> findActivityTargetResultByTargetReportAndFiscalMonth(
+			@PathVariable Long targetReportId,
+			@PathVariable Integer fiscalMonth,
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		return entityService.findActivityTargetResultByReportAndFiscalMonth(targetReportId, fiscalMonth);
 		
 	}
 	

@@ -4794,6 +4794,21 @@ public class EntityServiceJPA implements EntityService {
 	
 	
 	@Override
+	public List<ActivityTargetResult> findActivityTargetResultByReportAndFiscalMonth(
+			Long targetReportId, Integer fiscalMonth) {
+		fiscalMonth = (fiscalMonth + 10) % 12; 
+		
+		List<ActivityTargetResult> atrList =activityTargetResultRepository.findByReportIdAndFiscalMonthAndNotBgtResult(targetReportId,fiscalMonth);
+		
+		for(ActivityTargetResult atr : atrList) {
+			atr.getReport().getActivityPerformance().getMonthlyBudgetReports().size();
+			atr.getReport().getMonthlyReports().size();
+		}
+		
+		return atrList;
+	}
+
+	@Override
 	public ActivityTargetResult findActivityTargetResultByReportAndFiscalMonthAndBgtResult(
 			Long targetReportId, Integer fiscalMonth) {
 		ActivityTargetResult atr =activityTargetResultRepository.findByReportIdAndFiscalMonthAndBgtResult(targetReportId,fiscalMonth);
