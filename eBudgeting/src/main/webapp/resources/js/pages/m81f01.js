@@ -11,6 +11,7 @@ var ModalView = Backbone.View.extend({
 	targetReportModalTemplate: Handlebars.compile($("#targetReportModalTemplate").html()),
 	resultInputTemplate: Handlebars.compile($("#resultInputTemplate").html()),
 	resultBudgetInputTemplate: Handlebars.compile($("#resultBudgetInputTemplate").html()),
+	targetReportByMonthTemplate: Handlebars.compile($("#targetReportByMonthTemplate").html()),
 	events : {
 		"click #resultBudgetInputBtn" : "inputBudgetResult",
 		"click #resultInputBtn" : "inputResult",
@@ -18,6 +19,7 @@ var ModalView = Backbone.View.extend({
 		"click #saveResultBtn" : "saveResult",
 		"click #cancelBtn" : "cancelModal",
 		"click .budgetResultLnk" : "showBudgetResult",
+		"click .editResultLnk" : "editResult",
 		"click .activityResultLnk" : "showActivityResult"
 	},
 	cancelModal: function(e) {
@@ -45,16 +47,31 @@ var ModalView = Backbone.View.extend({
 			});
 		}
 		
-		
-		
-		
-		
+		return false;
 	},
 	
 	showActivityResult: function(e) {
 		var fiscalMonth = $(e.target).parents('tr').attr('data-fiscalMonth');
 		
+		this.currentTargetResultCollection = new ActivityTargetResultCollection();
 		
+		this.currentTargetResultCollection.fetch({
+			url: appUrl('/ActivityTargetResult/findResultByReport/'+ this.currentTargetReport.get('id') +'/fiscalMonth/'+fiscalMonth),
+			success: _.bind(function () {
+				var html = this.targetReportByMonthTemplate(this.currentTargetResultCollection.toJSON());
+				this.$el.find('.modal-body').html(html);
+				
+			},this),
+			error: function(model, xhr, options) {
+				console.log(xhr);
+				alert(xhr);
+				alert('error: ' + xhr);
+				
+			}
+		});
+		
+		
+		return false;
 	},
 	
 	backToModal: function(e) {
@@ -71,9 +88,8 @@ var ModalView = Backbone.View.extend({
 		}
 		this.currentTargetResult.set('remark', this.$el.find('#remark').val());
 		
-		console.log(this.currentTargetResult.toJSON());
+		
 		this.currentTargetResult.save(null, {
-			url: appUrl('/ActivityTargetResult/'+ this.currentTargetResult.get('id')),
 			success: _.bind(function() {
 				alert("บันทึกการรายงานผลเรียบร้อยแล้ว");
 				this.currentTargetReport.set('latestResult', this.currentTargetResult);
@@ -90,6 +106,22 @@ var ModalView = Backbone.View.extend({
 		
 		return false;
 	},
+	
+	editResult: function(e) {
+		var targetResultId = $(e.target).parents('tr').attr('data-id');
+		this.currentTargetResult = ActivityTargetResult.findOrCreate(targetResultId);
+		var json = {};
+		json.unit = this.currentTargetReport.get("target").get("unit").toJSON();
+		json.updateResult = true;
+		json.result = this.currentTargetResult.toJSON();
+		var html = this.resultInputTemplate(json);
+		this.$el.find('.modal-header span').html("บันทึกผลการดำเนินงาน: "+ this.currentTargetReport.get('target').get('activity').get('name'));
+		
+		this.$el.find('.modal-body').html(html);
+		
+		this.currentTargetResult.url = appUrl('/ActivityTargetResult/' + this.currentTargetResult.get('id'));
+	},
+	
 	inputResult: function(e) {
 		this.currentTargetResult = new ActivityTargetResult();
 		this.currentTargetResult.set('report', this.currentTargetReport);
@@ -120,7 +152,9 @@ var ModalView = Backbone.View.extend({
 			this.currentTargetResult.set('report', this.currentTargetReport);
 			this.currentTargetResult.set('resultBudgetType', true);
 		
-		} 
+		} else {
+			this.currentTargetResult = ActivityTargetResult.findOrCreate(targetResultId);
+		}
 		
 		var monthlyReports = this.currentTargetReport.get("activityPerformance").get("monthlyBudgetReports");
 		
@@ -146,6 +180,7 @@ var ModalView = Backbone.View.extend({
 			json.month =  [];
 			json.month.push(fiscalMonths[fiscalMonth]);
 			json.result = this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(fiscalMonth).get('budgetResult');
+			json.remark = this.currentTargetResult.get('remark');
 			json.activityResultId = this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(fiscalMonth).get('id');
 		
 		}
@@ -162,9 +197,6 @@ var ModalView = Backbone.View.extend({
 		this.render();
 	},
 	render : function() {
-		console.log('xxxx');
-		console.log(this.currentTargetReport);
-		
 		if(this.currentTargetReport != null) {
 			this.$el.find('.modal-header span').html("บันทึกผลการดำเนินงาน: "+ this.currentTargetReport.get('target').get('activity').get('name'));
 

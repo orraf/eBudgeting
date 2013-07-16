@@ -41,6 +41,30 @@
 
 </div>
 
+<script id="targetReportByMonthTemplate" type="text/x-handler-template">
+<div>
+	<table class="table table-bordered">
+		<thead>
+		<tr>
+			<td width="120">วันที่รายงาน</td>
+			<td width="100">ค่าที่รายงาน</td>
+			<td>หมายเหตุ</td>
+
+		</tr>
+		</thead>
+		<tbody>
+		{{#each this}}
+			<tr data-id={{id}}>
+				<td>{{formatDate reportedResultDate}}</td>
+				<td style="text-align: right; padding-right: 8px;"><a href="#" class="editResultLnk">{{formatNumber result}}</a></td>
+				<td>{{remark}}</td>
+			</tr>
+		{{/each}}			
+		</tbody>
+	</table>
+	<button id="backToModalBtn" class="btn">กลับหน้ารายงาน</button>
+</div>
+</script>
 
 <script id="resultInputTemplate" type="text/x-handler-template">
 <div id="inputAll">
@@ -48,19 +72,26 @@
     	<div class="control-group">
     		<label class="control-label" for="reportedResultDate">วันที่รายงาน</label>
     		<div class="controls">
-    			<div id="reportedResultDateDiv" class="input-append date datepicker" data-date-format="dd/mm/yyyy" data-date=""><input type="text" id="reportedResultDate" placeholder="..."><span class="add-on"><i class="icon-calendar"></i></span></div>
+				{{#if result}}
+					<div id="reportedResultDateDiv">
+						<input type="hidden" id="reportedResultDate" value="{{formatDateDB result.reportedResultDate}}"/>
+						<input type="text" class="uneditable-input" id="reportedResultDateTxt" value="{{formatDate result.reportedResultDate}}">
+					</div>
+				{{else}}
+    				<div id="reportedResultDateDiv" class="input-append date datepicker" data-date-format="dd/mm/yyyy" data-date=""><input type="text" id="reportedResultDate" placeholder="..." value="{{result.reportedResultDate}}"><span class="add-on"><i class="icon-calendar"></i></span></div>
+				{{/if}}
     		</div>
     	</div>
     	<div class="control-group">
     		<label class="control-label" for="result">ค่ารายงาน</label>
     		<div class="controls">
-				<div class="input-append"><input type="text" id="result" placeholder="..."><span class="add-on">{{unit.name}}</span></div>
+				<div class="input-append"><input type="text" id="result" placeholder="..." value="{{result.result}}"><span class="add-on">{{unit.name}}</span></div>
     		</div>
     	</div>
     	<div class="control-group">
     		<label class="control-label" for="remark">หมายเหตุ</label>
     		<div class="controls">
-    			<input type="text" id="remark" placeholder="...">
+    			<input type="text" id="remark" placeholder="..." value="{{result.remark}}">
     		</div>
     	</div>
 		<div class="control-group">
@@ -98,7 +129,7 @@
     	<div class="control-group">
     		<label class="control-label" for="remark">หมายเหตุ</label>
     		<div class="controls">
-    			<input type="text" id="remark" placeholder="...">
+    			<input type="text" id="remark" placeholder="..." value="{{remark}}">
     		</div>
     	</div>
 		<div class="control-group">
@@ -111,22 +142,7 @@
 </div>
 </script>
 
-<script id="targetReportByMonthTemplate" type="text/x-handler-template">
-<div>
-	<table class="table table-bordered">
-		<thead>
-		<tr>
-			<td>วันที่รายงาน</td>
-			<td>ค่าที่รายงาน</td>
-			<td>หมายเหตุ</td>
-		</tr>
-		</thead>
-		<tbody>
-			
-		</tbody>
-	</table>
-</div>
-</script>
+
 
 <script id="targetReportModalTemplate" type="text/x-handler-template">
 <div id="inputAll">

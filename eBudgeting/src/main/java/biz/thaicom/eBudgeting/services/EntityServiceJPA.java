@@ -4736,13 +4736,18 @@ public class EntityServiceJPA implements EntityService {
 		if(result.getResultBudgetType() == true) {
 			result.setBudgetResult(node.get("budgetResult").asDouble());
 			result.setBudgetFiscalMonth(node.get("budgetFiscalMonth").asInt());
+
+			logger.debug("about to save...");
+			activityTargetResultRepository.save(result);
+
 			
-			 MonthlyBudgetReport monthlyReport = report
-					 .getActivityPerformance()
-					 .getFiscalReportOn(result.getBudgetFiscalMonth());
+			MonthlyBudgetReport monthlyReport = report
+					.getActivityPerformance()
+					.getFiscalReportOn(result.getBudgetFiscalMonth());
 			 
-			 monthlyReport.setBudgetResult(result.getBudgetResult());
-			 
+			monthlyReport.setBudgetResult(result.getBudgetResult());
+			monthlyBudgetReportRepository.save(monthlyReport);
+
 			
 		} else {
 			result.setResult(node.get("result").asDouble());
@@ -4763,26 +4768,31 @@ public class EntityServiceJPA implements EntityService {
 			calendar.setTime(result.getReportedResultDate());
 			Integer fiscalMonth = ( calendar.get(Calendar.MONTH) + 3 ) % 12;
 			
+			result.setBudgetFiscalMonth(fiscalMonth);
+			
 			logger.debug("calendar.get(Calendar.MONTH) = " + calendar.get(Calendar.MONTH));
 			logger.debug("fiscalMonth : " + fiscalMonth); 
+			
+			logger.debug("about to save...");
+			activityTargetResultRepository.save(result);
+
 			
 			 MonthlyActivityReport monthlyReport = report.getFiscalReportOn(fiscalMonth);
 			 
 			 logger.debug("monthlyReport.getFiscalMonth(): " + monthlyReport.getFiscalMonth());
 			 
-			if(monthlyReport.getActivityResult() == null ) {
-				monthlyReport.setActivityResult(result.getResult());
-			} else {
-				monthlyReport.setActivityResult(monthlyReport.getActivityResult() + result.getResult());
-			}
+			 Double sum = activityTargetResultRepository.findSumResultByReportAndFiscalMonth(report, fiscalMonth);
+			 monthlyReport.setActivityResult(sum);
+			 
 			
 			//report.getMonthlyReports().get(fiscalMonth).setActivityResult(monthlyResult);		
 			monthlyActivityReportRepository.save(monthlyReport);
 		}
 		
-		logger.debug("about to save...");
-		activityTargetResultRepository.save(result);
-		// now we'll have to update the result month
+				// now we'll have to update the result month
+		
+		result.getReport();
+		
 		
 		result.getReport().getMonthlyReports().size();
 		result.getReport().getActivityPerformance().getMonthlyBudgetReports().size();

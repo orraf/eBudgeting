@@ -108,6 +108,26 @@ Handlebars.registerHelper('formatTimeDetail', function(timeStamp){
 	}
 });
 
+Handlebars.registerHelper('formatDate', function(date){
+	var m = moment(date);
+	if(m.isValid()){
+		var year = parseInt(m.format('YYYY')) + parseInt('543');
+		return m.format('DD MMMM ') + year; 
+	} else {
+		return "";
+	}
+});
+
+Handlebars.registerHelper('formatDateDB', function(date){
+	var m = moment(date);
+	if(m.isValid()){
+		var year = parseInt(m.format('YYYY')) + parseInt('543');
+		return m.format('DD/MM/') + year; 
+	} else {
+		return "";
+	}
+});
+
 
 function addCommas(nStr)
 {

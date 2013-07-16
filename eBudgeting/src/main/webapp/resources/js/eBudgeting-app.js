@@ -1098,6 +1098,9 @@ AssetMethodStepCollection = Backbone.Collection.extend({
 AssetStepReportCollection = Backbone.Collection.extend({
 	model: AssetStepReport
 });
+ActivityTargetResultCollection = Backbone.Collection.extend({
+	model: ActivityTargetResult
+});
 //Handlebars Utils
 
 
