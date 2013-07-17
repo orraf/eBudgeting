@@ -24,7 +24,6 @@
 </div>
 </div>
 
-
 <script id="alertNoReportTemplate" type="text/x-handlebars-template">
 <div class="alert alert-block">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
