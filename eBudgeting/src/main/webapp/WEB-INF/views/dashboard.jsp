@@ -341,10 +341,12 @@ $(document).ready(function() {
 	noReports.fetch({
 		url: appUrl('/Objective/fiscalYear/' + fiscalYear + '/findByActivityTargetReportOfCurrentUser/NoReportCurrentMonth'),
 		success: function() {
-			var json = noReports.toJSON();
-			var html= alertNoReportTemplate(json);
-			
-			$("#messageBox").html(html);
+			if(noReports.length > 0) {
+				var json = noReports.toJSON();
+				var html= alertNoReportTemplate(json);
+				
+				$("#messageBox").html(html);
+			}
 		}, error: function(model, xhr, options) {
 			alert("Error Status Code: " + xhr.status + " " + xhr.statusText + "\n" + xhr.responseText);
 		}
