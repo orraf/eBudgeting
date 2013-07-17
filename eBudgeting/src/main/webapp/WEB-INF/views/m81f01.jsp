@@ -124,7 +124,9 @@
     		<div class="controls">
     			<select id="budgetFiscalMonth">
 					{{#each month}}
-						<option value="{{fiscalMonth}}" {{#if current}}selected="selected"{{/if}}>{{name}}</option>
+						{{#unless disabled}}
+							<option value="{{fiscalMonth}}" {{#if current}}selected="selected"{{/if}}>{{name}}</option>
+						{{/unless}}
 					{{/each}}
 				</select>
     		</div>

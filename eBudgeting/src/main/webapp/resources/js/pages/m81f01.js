@@ -161,6 +161,17 @@ var ModalView = Backbone.View.extend({
 		            {fiscalMonth: 6, name:'เมษายน'},{fiscalMonth: 7,name:'พฤษภาคม'},{fiscalMonth: 8,name:'มิถุนายน'},
 		            {fiscalMonth: 9, name:'กรกฎาคม'},{fiscalMonth: 10,name:'สิงหาคม'},{fiscalMonth: 11,name:'กันยายน'}];
 		
+		// now remove the month that has already been reported!
+		for(var i=0; i<11; i++) {
+			var result = monthlyReports.at(i).get('budgetResult');
+			if(result != null) {
+				// then we can remove this month!
+				fiscalMonths[i].disabled = true;
+			}
+		}
+		// now 
+		
+		
 		
 		if(fiscalMonth == null) {
 			json.month = fiscalMonths;
