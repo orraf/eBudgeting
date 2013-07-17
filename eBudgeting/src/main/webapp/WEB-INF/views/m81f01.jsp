@@ -56,7 +56,16 @@
 		{{#each this}}
 			<tr data-id={{id}}>
 				<td>{{formatDate reportedResultDate}}</td>
-				<td style="text-align: right; padding-right: 8px;"><a href="#" class="editResultLnk">{{formatNumber result}}</a></td>
+				
+				<td style="text-align: right; padding-right: 8px;">
+					{{#if person}}
+						<a href="#" class="editResultLnk">{{formatNumber result}}</a>
+					{{else}}
+						{{formatNumber result}}
+					{{/if}}
+
+				</td>
+	
 				<td>{{remark}}</td>
 			</tr>
 		{{/each}}			

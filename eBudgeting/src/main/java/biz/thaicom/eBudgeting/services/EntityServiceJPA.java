@@ -4636,6 +4636,57 @@ public class EntityServiceJPA implements EntityService {
 		
 		return report;
 	}
+	
+	
+
+	@Override
+	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYearNoReportCurrentMonth(
+			Organization workAt, Integer fiscalYear) {
+		
+		// getCurrent FiscalMonth
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		Integer fiscalMonth = ( calendar.get(Calendar.MONTH) + 3 ) % 12;
+		
+		List<ActivityTargetReport> noReports = new ArrayList<ActivityTargetReport> ();
+		
+		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(workAt.getId(), fiscalYear);
+		for(ActivityTargetReport report: reports) {
+			// if this has no result in this fiscalBudget 
+			Long numResult = activityTargetResultRepository.countResultByReportIdAndFiscalMonthAndBgtResult(report, fiscalMonth);
+			
+			if(numResult == 0) {
+				noReports.add(report);
+			}
+		}
+		
+		List<Objective> objectives = new ArrayList<Objective>();
+		for(ActivityTargetReport report: noReports){
+			Objective obj = report.getTarget().getActivity().getForObjective();
+			if(!objectives.contains(obj)) {
+				objectives.add(obj);
+			}
+			
+			if(obj.getFilterActivities() == null) {
+				obj.setFilterActivities(new ArrayList<Activity> ());
+			}
+			
+			if(!obj.getFilterActivities().contains(report.getTarget().getActivity())) {
+				obj.getFilterActivities().add(report.getTarget().getActivity());
+			}
+			
+			if(report.getTarget().getActivity().getFilterTargets() == null) {
+				report.getTarget().getActivity().setFilterTargets(new ArrayList<ActivityTarget>());
+			}
+			
+			report.getTarget().setFilterReport(report);
+			report.getTarget().getUnit().getId();
+			
+			report.getTarget().getActivity().getFilterTargets().add(report.getTarget());
+		}
+		
+		return objectives;
+	}
 
 	@Override
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(

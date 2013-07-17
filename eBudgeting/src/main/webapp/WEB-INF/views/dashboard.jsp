@@ -5,6 +5,11 @@
 <div class="hero-unit white">
 
 <div class="row">
+	<div class="span11" id="messageBox">
+
+	</div>
+
+
 	<div class="span3 menu" id="main1" data-id="1">
 		
 	</div>
@@ -18,6 +23,19 @@
 	</div>
 </div>
 </div>
+
+
+<script id="alertNoReportTemplate" type="text/x-handlebars-template">
+<div class="alert alert-block">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4 style="padding-bottom: 10px;">เดือนนี้ยังมีกิจกรรมที่ยังไม่ได้รายงานผล!</h4>
+    	<ul>
+			{{#each this}}
+				<li> {{name}} </li>
+			{{/each}}
+		<ul>
+</div>
+</script>
 
 <script id="menuTemplate" type="text/x-handlebars-template">
 {{#each this}}
@@ -209,7 +227,7 @@ var menuUserJson = [
 }];
 
 var menuTemplate = Handlebars.compile($("#menuTemplate").html());
-
+var alertNoReportTemplate = Handlebars.compile($("#alertNoReportTemplate").html());
 var mainview;
 var e1;
 
@@ -318,6 +336,20 @@ $(document).ready(function() {
 		//$("#menuDiv").html(menuTemplate(menuUserJson));
 		
 	}
+	
+	// now find objective which hasn't report
+	var noReports = new ObjectiveCollection();
+	noReports.fetch({
+		url: appUrl('/Objective/fiscalYear/' + fiscalYear + '/findByActivityTargetReportOfCurrentUser/NoReportCurrentMonth'),
+		success: function() {
+			var json = noReports.toJSON();
+			var html= alertNoReportTemplate(json);
+			
+			$("#messageBox").html(html);
+		}, error: function(model, xhr, options) {
+			alert("Error Status Code: " + xhr.status + " " + xhr.statusText + "\n" + xhr.responseText);
+		}
+	});
 	
 	
 	

@@ -97,10 +97,7 @@ var ModalView = Backbone.View.extend({
 				this.render();
 			},this),
 			error: function(model, xhr, options) {
-				console.log(xhr);
-				alert(xhr);
-				alert('error: ' + xhr);
-				
+				alert("Error Status Code: " + xhr.status + " " + xhr.statusText + "\n" + xhr.responseText);
 			}
 		});
 		

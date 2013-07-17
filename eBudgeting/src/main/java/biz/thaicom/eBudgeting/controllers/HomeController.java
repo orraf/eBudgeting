@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.webui.Breadcrumb;
 import biz.thaicom.eBudgeting.services.EntityService;
+import biz.thaicom.security.controllers.CurrentUserHandlerMethodArgumentResolver;
+import biz.thaicom.security.models.Activeuser;
+import biz.thaicom.security.models.ThaicomUserDetail;
 
 /**
  * Handles requests for the application home page.
@@ -38,9 +41,13 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model, HttpSession session, @RequestParam(required=false) String menuCode,  @RequestParam(required=false) Integer menuLevel  ) {
+	public String home(Locale locale, Model model,
+			HttpSession session, @RequestParam(required=false) String menuCode,  
+			@RequestParam(required=false) Integer menuLevel,  
+			@Activeuser ThaicomUserDetail currentUser) {
 		
 		List<Objective> root = entityService.findRootFiscalYear();
+		Integer currentFY;
 		
 		if(root!= null && root.size() > 0) {
 			session.setAttribute("rootFY", root);
@@ -62,6 +69,10 @@ public class HomeController {
 					break;
 				}
 			}
+			
+			currentFY = year;
+		} else {
+			currentFY = ((Objective) session.getAttribute("currentRootFY")).getFiscalYear();
 		}
 		
 		if(session.getAttribute("navbarBreadcrumb")!= null) {
@@ -93,6 +104,11 @@ public class HomeController {
 		}
 		
 		model.addAttribute("fySltEnable", true);
+		
+		List<Objective> noReportObjectives = 
+				entityService.findObjectiveByActivityTargetReportOfOrganizationAndFiscalYearNoReportCurrentMonth(currentUser.getWorkAt(), currentFY);
+		
+		model.addAttribute("noReportObjectives", noReportObjectives);
 		
 		return "dashboard";
 	}

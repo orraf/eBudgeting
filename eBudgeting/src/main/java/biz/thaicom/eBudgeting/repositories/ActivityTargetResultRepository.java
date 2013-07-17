@@ -45,4 +45,12 @@ public interface ActivityTargetResultRepository extends JpaRepository<ActivityTa
 	Double findSumResultByReportAndFiscalMonth(ActivityTargetReport report,
 			Integer fiscalMonth);
 
+	@Query(""
+			+ "SELECT count(result) "
+			+ "FROM ActivityTargetResult result "
+			+ "WHERE result.report = ?1 AND "
+			+ "		result.budgetFiscalMonth = ?2 ")
+	Long countResultByReportIdAndFiscalMonthAndBgtResult(ActivityTargetReport report,
+			Integer fiscalMonth);
+
 }
