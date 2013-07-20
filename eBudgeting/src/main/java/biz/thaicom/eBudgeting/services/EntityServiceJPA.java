@@ -19,6 +19,7 @@ import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.interceptor.PerformanceMonitorInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -4280,11 +4281,37 @@ public class EntityServiceJPA implements EntityService {
 	public Activity deleteActivity(Long id) {
 		Activity activity = activityRepository.findOne(id);
 		
-		if(activity.getTargets() != null) {
-			activityTargetRepository.delete(activity.getTargets());
+			// now find all children
+		if(activity.getChildren() != null && activity.getChildren().size() > 0) {
+			return null; 
+			
+		} else {
+			if(activity.getTargets() != null) {
+				for(ActivityTarget target : activity.getTargets()) {
+					List<ActivityTargetReport> atrList = activityTargetReportRepository.findAllByTarget_id(target.getId());
+					
+					for(ActivityTargetReport atr : atrList) {
+						ActivityPerformance ap =  atr.getActivityPerformance();
+						ap.getMonthlyBudgetReports();
+						atr.getMonthlyReports();
+						
+						monthlyActivityReportRepository.delete(atr.getMonthlyReports());
+						monthlyBudgetReportRepository.delete(ap.getMonthlyBudgetReports());
+						
+						activityPerformanceRepository.delete(ap);
+						
+					}
+					
+					activityTargetReportRepository.delete(atrList);
+					
+				}
+				
+				activityTargetRepository.delete(activity.getTargets());
+			}
+			
+			activityRepository.delete(activity);
 		}
-		
-		activityRepository.delete(activity);
+		 
 		return activity;
 	}
 

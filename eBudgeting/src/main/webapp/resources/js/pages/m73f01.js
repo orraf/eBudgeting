@@ -610,6 +610,11 @@ var MainCtrView = Backbone.View.extend({
 				}
 			}
 			
+			if(activity.get('children').length > 0) {
+				alert("คุณไม่สามารถลบกิจกรรมโดยที่ยังมีกิจกรรมลูกอยู่ได้");
+				return false;
+			}
+			
 			var answer = confirm("คุณต้องการลบกิจกรรมย่อย " + activity.get('name') + " ?" );
 			if(answer == true ) {
 				activity.destroy({
