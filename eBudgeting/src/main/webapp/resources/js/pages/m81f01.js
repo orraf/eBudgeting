@@ -30,7 +30,7 @@ var ModalView = Backbone.View.extend({
 	},
 	
 	showBudgetResult: function(e) {
-		var fiscalMonth = $(e.target).parents('tr').attr('data-fiscalMonth');
+		var fiscalMonth = $(e.target).parents('tr').attr('data-fiscalmonth');
 		
 		var latestResult = this.currentTargetReport.get('latestResult');
 		if(latestResult != null && latestResult.get('budgetFiscalMonth') == fiscalMonth && 
@@ -147,6 +147,7 @@ var ModalView = Backbone.View.extend({
 	},
 	
 	renderBudgetResult: function(fiscalMonth, targetResultId) {
+		
 		if(targetResultId == null) {
 		
 			this.currentTargetResult = new ActivityTargetResult();
@@ -191,6 +192,9 @@ var ModalView = Backbone.View.extend({
 			
 			json.month =  [];
 			json.month.push(fiscalMonths[fiscalMonth]);
+			
+			json.month[0].disabled = false;
+			
 			json.result = this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(fiscalMonth).get('budgetResult');
 			json.remark = this.currentTargetResult.get('remark');
 			json.activityResultId = this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(fiscalMonth).get('id');
