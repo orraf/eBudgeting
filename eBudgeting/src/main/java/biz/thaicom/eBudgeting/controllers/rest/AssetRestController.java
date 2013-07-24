@@ -28,6 +28,7 @@ import biz.thaicom.eBudgeting.models.bgt.AssetKind;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
 import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.bgt.AssetType;
+import biz.thaicom.eBudgeting.repositories.AssetAllocationRepository;
 import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.security.models.Activeuser;
 import biz.thaicom.security.models.ThaicomUserDetail;
@@ -107,6 +108,12 @@ public class AssetRestController {
 		return "OK";
 	}
 
+	@RequestMapping(value="/AssetAllocation/{id}", method=RequestMethod.GET)
+	public @ResponseBody AssetAllocation findAssetAllocationById(
+			@PathVariable Long id) {
+		return entityService.findAssetAllocationById(id);
+	}
+	
 	@RequestMapping(value="/AssetAllocation/", method=RequestMethod.POST)
 	public @ResponseBody JsonNode saveAssetAllocation(
 			@RequestBody JsonNode node) {
@@ -167,7 +174,13 @@ public class AssetRestController {
 	@RequestMapping(value="/AssetAllocation/saveAssetPlan/{id}", method=RequestMethod.POST)
 	public @ResponseBody String saveAssetAllocationPlan(
 			@RequestBody JsonNode node) {
-		return entityService.saveAssetAllocationPlan(node);
+		return entityService.saveAssetAllocationPlan(node, false);
+	}
+	
+	@RequestMapping(value="/AssetAllocation/saveAssetResult/{id}", method=RequestMethod.POST)
+	public @ResponseBody String saveAssetAllocationResult(
+			@RequestBody JsonNode node) {
+		return entityService.saveAssetAllocationPlan(node, true);
 	}
 	
 	@RequestMapping(value="/AssetStepReport/allByAssetAllocation/{assetAllocationId}")

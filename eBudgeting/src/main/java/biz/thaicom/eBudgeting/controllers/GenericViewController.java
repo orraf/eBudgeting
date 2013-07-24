@@ -1220,6 +1220,18 @@ public class GenericViewController {
 		
 		return "m81f01";
 	}
+	// --------------------------------------------------------------m81f02: การบันทึกผลการดำเนินงานงบลงทุน
+	@RequestMapping("/page/m81f02/")
+	public String render_m81f02(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		model.addAttribute("rootPage", true);
+		setFiscalYearFromSession(model, session);
+		model.addAttribute("workAtId", currentUser.getWorkAt().getId());
+		
+		return "m81f02";
+	}
 	
 	@RequestMapping("/page/m82r01/")
 	public String render_m82r01(

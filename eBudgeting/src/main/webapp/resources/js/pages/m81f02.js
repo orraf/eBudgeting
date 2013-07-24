@@ -65,11 +65,9 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	el : "#assignAssetPlanModal",
 	
 	events: {
-		"change #inputAssetMethod" : "changeAssetMethod",
 		"click #saveAssetPlanBtn" : "saveAssetPlan",
 		"change input.datepickerTxt" : "changeInputDatepicker",
 		"click #cancelBtn" : "cancel",
-		"change input#assetBudgetPlanLengthTxt" : "assetBudgetPlanLength",
 		"change .assetBudgetPlanTxt" : "assetBudgetPlanChange"
 	},
 	cancel:function(e) {
@@ -85,160 +83,34 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		
 		var plan = currentPlans.at(index);
 		
-		if(dataField == "planAmount") {
+		if(dataField == "actualAmount") {
 			plan.set(dataField, parseFloat($(e.target).val()));
-		} else if(dataField == "planDate") {
+		} else if(dataField == "actualDate"){
 			plan.set(dataField, formatThDateToISO($(e.target).val()));	
 		}
 		
-		
-		
-		
 	},
-	assetBudgetPlanLength: function(e) {
-		
-		var length = $(e.target).val();
-		var currentPlans = this.currentAssetAllocation.get('assetBudgetPlans');
-		
-		console.log(currentPlans.toJSON());
-		
-		if(currentPlans.length == length) {
-			//do nothing here
-			return false;
-		} else if(currentPlans.length > length){
-			// we have to reduce 
-			for(var i=currentPlans.length; i>length; i--) {
-				currentPlans.pop();
-			}
-		} else {
-			for(var i=currentPlans.length; i<length; i++) {
-				var newPlan = new AssetBudgetPlan();
-				newPlan.set('assetAllocation', this.currentAssetAllocation);
-				
-				currentPlans.push(newPlan);
-			}
-		}
-		
-		
-		console.log(currentPlans.toJSON());
-		
-		var html=this.budgetPlanTblTemplate(currentPlans.toJSON());
-		this.$el.find('#budgetPlanDiv').html(html);
-		
-		$('.datepickerTxt').datepicker({                
-            isBE: true,
-            autoConversionField: false,
-             beforeShow: function() {
-                setTimeout(function(){
-                	$('.ui-datepicker').css('z-index', 9999);
-                }, 0);
-             }
-		});
-		
-	},
-	
-	
-	changeAssetMethod: function(e) {
-		var selectAssetMethodId = $(e.target).val();
-		if(selectAssetMethodId != 0) {
-			this.currentAssetMethod = AssetMethod.findOrCreate(selectAssetMethodId);
-			this.currentAssetAllocation.set('assetMethod', this.currentAssetMethod);
-			
-			var json = this.currentAssetMethod.get('steps').toJSON();
-			
-			for(var i=0; i<json.length; i++) {
-				
-				json[i].planBegin=null;
-				json[i].planEnd=null;
-			}
-			var html = this.stepInputTemplate(json);
-			this.$el.find('#assetDateTab').html(html);
-			
-			json = {};
-			json.plans = this.currentAssetAllocation.get('assetBudgetPlans');
-			json.length = this.currentAssetAllocation.get('assetBudgetPlans').length;
-			html = this.budgetPlanTemplate(json);
-			this.$el.find('#assetBudgetTab').html(html);
-			
-			if(this.currentAssetAllocation.get('assetBudgetPlans').length > 0) {
-				html=this.budgetPlanTblTemplate(this.currentAssetAllocation.get('assetBudgetPlans').toJSON());
-				this.$el.find('#budgetPlanDiv').html(html);
-			}
-			
-			
-			$('.datepickerTxt').datepicker({
-			    isBE: true,
-                autoConversionField: false,
-                 beforeShow: function() {
-                    setTimeout(function(){
-                    	$('.ui-datepicker').css('z-index', 9999);
-                    }, 0);
-                 }
-			});
-			
-		}
-	},
+
 	changeInputDatepicker: function(e) {
 		
 		if($(e.target).val().length>0) {
 			$(e.target).parents('div.control-group').removeClass('error');
 		}
 	},
-	
 	saveAssetPlan: function(e) {
-		var isValid = true;
-		// first check!
-		_.forEach(this.$el.find('input[type=text]'),function(input) {
-			var $el = $(input);
-			if($el.val() == null || $el.val().length == 0) {
-				isValid = false;
-				$el.parents('div.control-group').addClass('error');
-			}
-		});
-		
-		if(!isValid) {
-			alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-			return;
-		}
 		
 		//create stepReport
-		var stepReports = new AssetStepReportCollection();
-		for(var i=0; i<this.currentAssetMethod.get('steps').length; i++) {
-			var stepReport = new AssetStepReport();
-			
-			stepReport.set('step', this.currentAssetMethod.get('steps').at(i));
-			stepReport.set('planBegin', formatThDateToISO(this.$el.find('#planBegin_'+i).val()));
-			stepReport.set('planEnd', formatThDateToISO(this.$el.find('#planEnd_'+i).val()));
-			stepReport.set('assetAllocation', this.currentAssetAllocation);
-			stepReport.set('stepOrder', i);
-			stepReports.add(stepReport);
-		}
-		this.currentAssetAllocation.set('assetStepReports', stepReports);
-		this.currentAssetAllocation.set('assetMethod', this.currentAssetMethod);
-		//console.log(this.currentAssetAllocation.toJSON());
 		
-		// now reformat planDate
-		var currentPlans = this.currentAssetAllocation.get('assetBudgetPlans');
-		if(currentPlans.length >0) {
+		for(var i=0; i<this.currentAssetAllocation.get('assetStepReports').length; i++) {
+			var stepReport = this.currentAssetAllocation.get('assetStepReports').at(i);
+			stepReport.set('actualBegin', formatThDateToISO(this.$el.find('#actualBegin_'+i).val()));
+			stepReport.set('actualEnd', formatThDateToISO(this.$el.find('#actualEnd_'+i).val()));
 			
-			var sum = 0.0;
-			
-			
-			for(var i=0; i< currentPlans.length; i++) {
-				sum += parseFloat(currentPlans.at(i).get('planAmount'));
-				
-			}
-			
-			if(sum != this.currentAssetAllocation.get('unitBudget') * this.currentAssetAllocation.get('quantity')){
-				alert('กรุณาระบุแผนการเบิกจ่ายให้เท่ากับวงเงินงบประมาณ');
-				return false;
-			}
 		}
-		
 		
 		$.ajax({
 			type: "POST",
-			url: appUrl('/AssetAllocation/saveAssetPlan/' + this.currentAssetAllocation.get('id')),
+			url: appUrl('/AssetAllocation/saveAssetResult/' + this.currentAssetAllocation.get('id')),
 			data: JSON.stringify(this.currentAssetAllocation.toJSON()),
 			success: function() {
 				alert("บันทึกข้อมูลเสร็จแล้ว");
@@ -288,6 +160,8 @@ var AssignAssetPlanModal = Backbone.View.extend({
 								
 								json[i].planBegin=reports.at(i).get('planBegin');
 								json[i].planEnd=reports.at(i).get('planEnd');
+								json[i].actualBegin=reports.at(i).get('actualBegin');
+								json[i].actualEnd=reports.at(i).get('actualEnd');
 							}
 							var html = this.stepInputTemplate(json);
 							this.$el.find('#assetDateTab').html(html);

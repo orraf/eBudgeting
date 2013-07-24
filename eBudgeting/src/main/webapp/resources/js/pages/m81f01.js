@@ -131,9 +131,13 @@ var ModalView = Backbone.View.extend({
 		this.$el.find('.modal-body').html(html);
 		
 		this.$el.find('#reportedResultDate').datepicker({
-			autoclose: true,
-			language: 'th',
-			format: 'dd/mm/yyyy'
+			isBE: true,
+            autoConversionField: false,
+             beforeShow: function() {
+                setTimeout(function(){
+                	$('.ui-datepicker').css('z-index', 9999);
+                }, 0);
+             }
 		});
 		
 		

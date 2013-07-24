@@ -733,6 +733,16 @@ AssetStepReport = Backbone.RelationalModel.extend({
 	}]	
 });
 
+AssetBudgetPlan = Backbone.RelationalModel.extend({
+	urlRoot: appUrl('/AssetBudgetPlan/'),
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'assetAllocation',
+		relatedModel: 'AssetAllocation'
+	}]	
+});
+
 AssetMethod = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('/AssetMethod/'),
 	idAttribute: 'id',
@@ -782,6 +792,15 @@ AssetAllocation = Backbone.RelationalModel.extend({
 		key: 'assetStepReports',
 		relatedModel: 'AssetStepReport',
 		collectionType: 'AssetStepReportCollection',
+		reversRelation: {
+    		type: Backbone.HasOne,
+    		key: 'assetAllocation'
+    	}
+	}, {
+		type: Backbone.HasMany,
+		key: 'assetBudgetPlans',
+		relatedModel: 'AssetBudgetPlan',
+		collectionType: 'AssetBudgetPlanCollection',
 		reversRelation: {
     		type: Backbone.HasOne,
     		key: 'assetAllocation'
@@ -1088,6 +1107,9 @@ AssetBudgetCollection = Backbone.Collection.extend({
 });
 AssetAllocationCollection = Backbone.Collection.extend({
 	model: AssetAllocation
+});
+AssetBudgetPlanCollection = Backbone.Collection.extend({
+	model: AssetBudgetPlan
 });
 AssetMethodCollection = Backbone.Collection.extend({
 	model: AssetMethod

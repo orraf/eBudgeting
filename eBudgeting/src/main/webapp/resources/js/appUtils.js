@@ -112,13 +112,45 @@ Handlebars.registerHelper('formatDate', function(date){
 	var m = moment(date);
 	if(m.isValid()){
 		var year = parseInt(m.format('YYYY')) + parseInt('543');
-		return m.format('DD MMMM ') + year; 
+		return m.format('D MMMM ') + year; 
 	} else {
 		return "";
 	}
 });
 
+Handlebars.registerHelper('formatDateShort', function(date){
+	var m = moment(date);
+	if(m.isValid()){
+		var year = parseInt(m.format('YYYY')) + parseInt('543');
+		return m.format('DD MMM ') + year; 
+	} else {
+		return "";
+	}
+});
+
+function formatThDateToISO(date) {
+	if(date == null || date == '') {
+		return "";
+	}
+	var dateStr = date.toString();
+	var m = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+	if(m) {
+		date = (parseInt(m[3])-543) + "-" + m[2] + "-" + m[1];
+	}
+	
+	return date;
+}
+
 Handlebars.registerHelper('formatDateDB', function(date){
+	if(date == null || date == '') {
+		return "";
+	}
+	var dateStr = date.toString();
+	var m = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+	if(m) {
+		date = (parseInt(m[3])-543) + "-" + m[2] + "-" + m[1];
+	}
+	
 	var m = moment(date);
 	if(m.isValid()){
 		var year = parseInt(m.format('YYYY')) + parseInt('543');

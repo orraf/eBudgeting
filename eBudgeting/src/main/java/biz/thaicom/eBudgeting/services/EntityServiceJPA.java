@@ -32,6 +32,7 @@ import biz.thaicom.eBudgeting.controllers.WordReportsController;
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
+import biz.thaicom.eBudgeting.models.bgt.AssetBudgetPlan;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
@@ -5348,6 +5349,20 @@ public class EntityServiceJPA implements EntityService {
 		// TODO Auto-generated method stub
 		return assetAllocationRepository.findAllByForObjectiveIdAndOperator(objectiveId, operator);
 	}
+	
+	
+
+	@Override
+	public AssetAllocation findAssetAllocationById(Long id) {
+		AssetAllocation assetAlloc = assetAllocationRepository.findOne(id);
+		if(assetAlloc != null) {
+			// load the collection
+			assetAlloc.getAssetBudgetPlans().size();
+			assetAlloc.getAssetStepReports().size();
+		}
+		
+		return assetAlloc;
+	}
 
 	@Override
 	public List<AssetMethod> findAssetMethodAll() {
@@ -5356,7 +5371,10 @@ public class EntityServiceJPA implements EntityService {
 	}
 
 	@Override
-	public String saveAssetAllocationPlan(JsonNode node) {
+	public String saveAssetAllocationPlan(JsonNode node, Boolean saveResult) {
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-M-d", new Locale("en", "US"));
+		
 		AssetAllocation asset = assetAllocationRepository.findOne(getJsonNodeId(node));
 		AssetMethod assetMethod = assetMethodRepository.findOne(getJsonNodeId(node.get("assetMethod")));
 		Boolean newMethod;
@@ -5383,20 +5401,41 @@ public class EntityServiceJPA implements EntityService {
 				report.setStep(assetMethod.getSteps().get(stepIndex++));
 				report.setAssetAllocation(asset);
 			} else {
-				report = asset.getAssetStepReports().get(stepIndex);
+				report = asset.getAssetStepReports().get(stepIndex++);
 			}
 			
-			SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("TH", "TH"));
 			
-			try {
-				
-				report.setPlanBegin(df.parse(reportNode.get("planBegin").asText()));
-				report.setPlanEnd(df.parse(reportNode.get("planEnd").asText()));
-				
-			} catch (ParseException e) {
-				e.printStackTrace();
-				return null;
+			if(!saveResult) {
+				try {
+					
+					report.setPlanBegin(df.parse(reportNode.get("planBegin").asText()));
+					report.setPlanEnd(df.parse(reportNode.get("planEnd").asText()));
+					
+					logger.debug("saving reportID: " + report.getId() +  " +  PlanBegin:" + report.getPlanBegin() + " and PlanEnd: " + report.getPlanEnd());
+					
+				} catch (ParseException e) {
+					
+				}
 			}
+			
+			if(saveResult) {
+			
+				try {
+					logger.debug("saving reportID: " + report.getId() +  " +  ActualBegin:" + reportNode.get("actualBegin").asText() );
+					report.setActualBegin(df.parse(reportNode.get("actualBegin").asText()));
+					
+				} catch (ParseException e) {
+					report.setActualBegin(null);
+				}
+				
+				try {
+					logger.debug("saving reportID: " + report.getId() +  " +  ActualEnd:" + reportNode.get("actualEnd").asText() );
+					report.setActualEnd(df.parse(reportNode.get("actualEnd").asText()));
+				} catch (ParseException e) {
+					report.setActualEnd(null);
+				}
+			}
+			
 			
 			asset.getAssetStepReports().add(report);
 
@@ -5404,6 +5443,84 @@ public class EntityServiceJPA implements EntityService {
 		
 		//now 
 		assetStepReportRepository.save(asset.getAssetStepReports());
+		
+		
+		// then we'll have to deal with assetBudgetPlan!
+		if(node.get("assetBudgetPlans").size() > 0) {
+			int i = 0;
+			
+			if(asset.getAssetBudgetPlans() == null) {
+				asset.setAssetBudgetPlans(new ArrayList<AssetBudgetPlan>());
+			}
+			
+			for(JsonNode planNode : node.get("assetBudgetPlans")) {
+				AssetBudgetPlan plan = null;
+				try{
+					if(asset.getAssetBudgetPlans().get(i) == null) {
+						
+						plan = new AssetBudgetPlan();
+						plan.setAssetAllocation(asset);
+						plan.setBudgetOrder(i);
+						asset.getAssetBudgetPlans().add(plan);
+					} else { 
+						plan = asset.getAssetBudgetPlans().get(i);
+					}
+					
+					logger.debug("" + plan);
+					
+				}catch (IndexOutOfBoundsException e) {
+					plan = new AssetBudgetPlan();
+					plan.setAssetAllocation(asset);
+					plan.setBudgetOrder(i);
+					asset.getAssetBudgetPlans().add(plan);
+					
+					
+					logger.debug("" + plan);
+				} 
+				
+				logger.debug(planNode.toString());
+				
+				plan.setPlanAmount(planNode.get("planAmount").asDouble());
+				
+				
+				try {
+					plan.setPlanDate(df.parse(planNode.get("planDate").asText()));
+				} catch (ParseException e) {
+					plan.setPlanDate(null);
+				}
+			
+				if(saveResult) {
+				
+					if(planNode.get("actualAmount") != null) {
+						plan.setActualAmount(planNode.get("actualAmount").asDouble());
+					}
+					
+					
+					try {
+						plan.setActualDate(df.parse(planNode.get("actualDate").asText()));
+					} catch (ParseException e) {
+						plan.setActualDate(null);
+					}
+					
+				}
+			i++;
+			}
+			
+			Integer planSize = asset.getAssetBudgetPlans().size();
+			
+			
+			
+			while(i < planSize) {
+				// now we must remove the rest
+				AssetBudgetPlan removedPlan = asset.getAssetBudgetPlans().remove(i);
+				planSize = asset.getAssetBudgetPlans().size();
+			}
+			
+			
+			// now we should be able to save 
+			assetAllocationRepository.save(asset);
+			
+		}
 		
 		return "ok";
 	}

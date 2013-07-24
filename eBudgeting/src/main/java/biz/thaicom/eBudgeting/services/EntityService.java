@@ -410,8 +410,9 @@ public interface EntityService {
 	public AssetBudget findOneAssetBudget(Long id);
 	
 	// AssetAllocation
+	public AssetAllocation findAssetAllocationById(Long id);
 	public AssetAllocation saveAssetAllocation(JsonNode node);
-	public String saveAssetAllocationPlan(JsonNode node);
+	public String saveAssetAllocationPlan(JsonNode node, Boolean saveResult);
 	public AssetAllocation updateAssetAllocation(JsonNode node);
 	public List<AssetAllocation> findAssetAllocationByParentOwnerAndForObjectiveAndBudgetType(
 			Long parentOwnerId, Long forObjectiveId, Long budgetTyeId);
@@ -426,6 +427,7 @@ public interface EntityService {
 	
 	// AssetMethod
 	public List<AssetMethod> findAssetMethodAll();
+
 
 
 
