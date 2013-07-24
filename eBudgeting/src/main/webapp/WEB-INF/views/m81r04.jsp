@@ -9,7 +9,7 @@
     			<strong>Sign Off แล้ว</strong> สามารถเปิดดูข้อมูลได้อย่างเดียว ไม่สามารถแก้ไขเพิ่มเติมได้ 
     		</div>
 	</c:if>
-	<h4>การจัดทำทะเบียนกิจกรรมย่อย</h4> 
+	<h4>รายงานตามแผนปฏิบัติการ</h4> 
 </div>
 
 <div class="row">
@@ -134,9 +134,6 @@
 
 <script id="mainTblTemplate" type="text/x-handler-template">
 <div class="controls" style="margin-bottom: 15px;">
-	<div class="pull-left"> 
-		<a href="#" class="btn btn-info newActivityBtn"><i class="icon icon-file icon-white"></i> เพิ่มกิจกรรมย่อย</a>
-	</div>
 	<div class="pull-left" style="margin-left: 20px;">
 	<form class="form-search pull-left" style="margin-bottom:10px;" id="activitySearchFrm">
 		<div class="input-append">
