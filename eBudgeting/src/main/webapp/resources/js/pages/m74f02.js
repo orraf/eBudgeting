@@ -146,6 +146,14 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		var html = this.assignAssetPlanModalTemplate(json);
 		this.$el.find('.modal-body').html(html);
 		
+		console.log(this.currentAssetAllocation.get('operator').get('id'));
+		console.log(currentOrganizationId);
+		if(this.currentAssetAllocation.get('operator').get('id') != currentOrganizationId) {
+			$('#saveAssetPlanBtn').hide();
+		} else {
+			$('#saveAssetPlanBtn').show();
+		}
+		
 		var reports;
 		
 		// now populate the option!
@@ -273,13 +281,14 @@ var MainTblView = Backbone.View.extend({
 		this.objective = obj;
 		this.assetAllocations  = new AssetAllocationCollection();
 		this.assetAllocations.fetch({
-			url: appUrl('/AssetAllocation/forObjective/'+this.objective.get('id')),
+			url: appUrl('/AssetAllocation/currentUser/forObjective/'+this.objective.get('id')),
 			success: _.bind(function(model, response, options) {
 				var json = this.objective.toJSON();
 				var html = this.mainTblTemplate(json);
 				this.$el.html(html);
 				
 				json = this.assetAllocations.toJSON();
+								
 				html = this.mainTblTbodyAssetAllocationTemplate(json);
 				this.$el.find('tbody').append(html);
 				

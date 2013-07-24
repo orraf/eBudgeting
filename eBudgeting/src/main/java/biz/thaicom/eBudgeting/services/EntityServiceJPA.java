@@ -5339,6 +5339,15 @@ public class EntityServiceJPA implements EntityService {
 		
 		return assetAllocationRepository.findAllByForObjectiveId(objectiveId);
 	}
+	
+	
+
+	@Override
+	public List<AssetAllocation> findAssetAllocationByForObjectiveIdAndOperator(
+			Long objectiveId, Organization operator) {
+		// TODO Auto-generated method stub
+		return assetAllocationRepository.findAllByForObjectiveIdAndOperator(objectiveId, operator);
+	}
 
 	@Override
 	public List<AssetMethod> findAssetMethodAll() {

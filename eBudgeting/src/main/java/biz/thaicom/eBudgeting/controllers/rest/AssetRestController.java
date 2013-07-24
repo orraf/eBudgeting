@@ -29,6 +29,8 @@ import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
 import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.bgt.AssetType;
 import biz.thaicom.eBudgeting.services.EntityService;
+import biz.thaicom.security.models.Activeuser;
+import biz.thaicom.security.models.ThaicomUserDetail;
 
 @Controller
 public class AssetRestController {
@@ -148,6 +150,13 @@ public class AssetRestController {
 	public @ResponseBody List<AssetAllocation> findByForObjectiveId(
 			@PathVariable Long objectiveId){
 		return entityService.findAssetAllocationByForObjectiveId(objectiveId);
+	}
+	
+	@RequestMapping(value="/AssetAllocation/currentUser/forObjective/{objectiveId}", method=RequestMethod.GET) 
+	public @ResponseBody List<AssetAllocation> findByForObjectiveIdAndCurrentUser(
+			@PathVariable Long objectiveId,
+			@Activeuser ThaicomUserDetail currentUser){
+		return entityService.findAssetAllocationByForObjectiveIdAndOperator(objectiveId,currentUser.getWorkAt());
 	}
  
 	@RequestMapping(value="/AssetMethod/all") 

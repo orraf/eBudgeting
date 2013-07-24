@@ -73,9 +73,10 @@
 		<tr>
 			<td style="width:30px;"></td>
 			<td>ชื่อรายการ</td>
-			<td style="width:100px;">หน่วยงาน</td>
+			<td style="width:50px;">หน่วยงานเจ้าของ</td>
+			<td style="width:50px;">หน่วยงานเผู้จัดซื้อ</td>
 			<td style="width:50px;">จำนวน</td>
-			<td style="width:100px;">งบต่อหน่วย</td>
+			<td style="width:100px;">งบต่อหน่วย (บาท)</td>
 			<td style="width:100px;">รวมจัดสรร (บาท)</td>
 
 		</tr>
@@ -89,10 +90,11 @@
 <tr data-id="{{id}}">
 	<td></td>
 	<td><a href="#" class="assetPlanLnk">{{assetBudget.name}}</a></td>
-	<td>{{owner.abbr}}</td>
-	<td>{{formatNumber quantity}}</td>
-	<td>{{formatNumber unitBudget}}</td>
-	<td>{{formatTotalBudget this}}</td>
+	<td style="text-align:center">{{owner.abbr}}</td>
+	<td style="text-align:center">{{operator.abbr}}</td>
+	<td style="text-align:center">{{formatNumber quantity}}</td>
+	<td style="text-align:right; padding-right:10px;">{{formatNumber unitBudget}}</td>
+	<td style="text-align:right; padding-right:10px;">{{formatTotalBudget this}}</td>
 </tr>
 {{/each}}
 </script>
@@ -388,7 +390,7 @@
 	var organizationId = "${organizationId}";
 	var fiscalYear = "${fiscalYear}";
 	var budgetProposalSelectionView = new BudgetProposalSelectionView({
-		organizationId: organizationId
+		organizationId: currentOrganizationId
 	});
 	var mainTblView = new MainTblView();
 

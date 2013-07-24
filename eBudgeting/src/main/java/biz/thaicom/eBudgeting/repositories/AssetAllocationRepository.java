@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 
 public interface AssetAllocationRepository extends JpaRepository<AssetAllocation, Long> {
 
@@ -28,5 +29,17 @@ public interface AssetAllocationRepository extends JpaRepository<AssetAllocation
 			"	INNER JOIN FETCH assetAllocation.assetBudget " +
 			"WHERE assetAllocation.forObjective.id = ?1 ")
 	List<AssetAllocation> findAllByForObjectiveId(Long objectiveId);
+
+	@Query("" +
+			"SELECT assetAllocation " +
+			"FROM AssetAllocation assetAllocation " +
+			"	LEFT JOIN FETCH assetAllocation.owner " +
+			"	LEFT JOIN FETCH assetAllocation.operator " +
+			"	INNER JOIN FETCH assetAllocation.budgetType " +
+			"	INNER JOIN FETCH assetAllocation.assetBudget " +
+			"WHERE assetAllocation.forObjective.id = ?1 "
+			+ "	AND (assetAllocation.operator = ?2 or assetAllocation.owner = ?2) ")
+	List<AssetAllocation> findAllByForObjectiveIdAndOperator(Long objectiveId,
+			Organization operator);
 
 }

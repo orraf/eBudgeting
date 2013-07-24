@@ -421,10 +421,12 @@ public interface EntityService {
 			Long objectiveId);
 	public List<AssetStepReport> findAssetStepReportByAssetAllocationId(
 			Long assetAllocationId);
-	
+	public List<AssetAllocation> findAssetAllocationByForObjectiveIdAndOperator(
+			Long objectiveId, Organization workAt);
 	
 	// AssetMethod
 	public List<AssetMethod> findAssetMethodAll();
+
 
 
 

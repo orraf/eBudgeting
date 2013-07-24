@@ -1202,7 +1202,7 @@ public class GenericViewController {
 			@Activeuser ThaicomUserDetail currentUser) {
 		model.addAttribute("rootPage", true);
 		setFiscalYearFromSession(model, session);
-		model.addAttribute("organizationId", currentUser.getWorkAt().getId());
+		model.addAttribute("workAtId", currentUser.getWorkAt().getId());
 		
 		return "m74f02";
 	}
