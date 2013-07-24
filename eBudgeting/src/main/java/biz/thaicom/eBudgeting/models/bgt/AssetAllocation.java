@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -86,6 +87,10 @@ public class AssetAllocation implements Serializable{
 	@OrderColumn(name="STEPORDER")
 	private List<AssetStepReport> assetStepReports;
 
+	@OneToMany(mappedBy="assetAllocation", cascade = CascadeType.ALL)
+	@OrderColumn(name="BUDGETORDER")
+	private List<AssetBudgetPlan> assetBudgetPlans;
+	
 	public Long getId() {
 		return id;
 	}
@@ -197,6 +202,15 @@ public class AssetAllocation implements Serializable{
 	public void setOperator(Organization operator) {
 		this.operator = operator;
 	}
+
+	public List<AssetBudgetPlan> getAssetBudgetPlans() {
+		return assetBudgetPlans;
+	}
+
+	public void setAssetBudgetPlans(List<AssetBudgetPlan> assetBudgetPlans) {
+		this.assetBudgetPlans = assetBudgetPlans;
+	}
+	
 	
 	
 }

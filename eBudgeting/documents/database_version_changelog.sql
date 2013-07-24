@@ -1215,7 +1215,7 @@ insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,s
   
 -- version 18
 -- Modified Date : July 9, 2013
-	update app_info set db_version=17;
+	update app_info set db_version=18;
 	
 	alter table PLN_ACTIVITYTARGET add (targetvaluetemp number(19,2), budgetallocatedtemp number(19,2) );
 	update PLN_ACTIVITYTARGET set targetvaluetemp = targetvalue, budgetallocatedtemp=budgetallocated;
@@ -1249,3 +1249,26 @@ insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,s
 	alter table PLN_ACTIVITYTARGETRESULT modify ( result number(19,2));
 	update PLN_ACTIVITYTARGETRESULT set result = resulttemp;
 	alter table PLN_ACTIVITYTARGETRESULT drop (resulttemp);
+	
+	
+-- version 19
+-- Modified Date: July 24, 2013
+	update app_info set db_version=19;
+	
+    create table BGT_ASSETBUDGETPLAN (
+        id number(19,0) not null,
+        actualAmount double precision,
+        actualDate timestamp,
+        budgetOrder number(10,0),
+        planAmount double precision,
+        planDate timestamp,
+        BGT_ASSETALLOCATION_ID number(19,0),
+        primary key (id)
+    );
+    
+    alter table BGT_ASSETBUDGETPLAN 
+        add constraint FKF91CC32E2A6DA39 
+        foreign key (BGT_ASSETALLOCATION_ID) 
+        references BGT_ASSETALLOCATION;
+        
+    create sequence BGT_ASSETBUDGETPLAN_SEQ; 	

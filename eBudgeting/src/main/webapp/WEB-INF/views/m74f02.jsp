@@ -38,6 +38,7 @@
 				<a href="#" class="btn" id="cancelBtn">กลับหน้าหลัก</a>
 			</div>
 		</div>
+		
 
 		<div id="mainCtr">
 			<div id="budgetSlt"></div>
@@ -165,27 +166,78 @@
 <div id="header">
 	<div><strong>รายการ: </strong>{{this.assetBudget.name}}</div>
 	<div><strong>จัดสรรให้: </strong>{{this.owner.name}}</div>
-	<div><strong>จำนวนหน่วย: </strong> {{this.quantity}} <strong>วงเงินงบประมาณ: </strong> {{formatTotalBudget this}}</div>
+	<div>วงเงินงบประมาณ: </strong> {{formatTotalBudget this}} บาท   (<strong>จำนวน: </strong> {{this.quantity}} หน่วย)</div>
 </div>
 <br/>
 <div id="inputAll">
 	<form class="form-horizontal">
-		<div class="control-group">
-			<label class="control-label" for="inputAssetMethod">วิธีการจัดซื้อจัดจ้าง</label>
+		<label class="control-label" for="inputAssetMethod">วิธีการจัดซื้อจัดจ้าง</label>
 			<div class="controls">
 				<select id="inputAssetMethod">
 					<option value="0">กรุณาเลือกวิธีการ</option>
 				</select>
 			</div>
-		</div>
-		<div id="assetMethodStepDiv" class="span8">
+		<div id="assetMethodStepDiv" class="span10" style="margin-top: 14px;">
+    		<ul class="nav nav-tabs" id="assetTab">
+    			<li class="active"><a href="#assetDateTab" data-toggle="tab">แผนการดำเนินการ</a></li>
+    			<li><a href="#assetBudgetTab" data-toggle="tab">แผนการเบิกจ่ายงบประมาณ</a></li>
+    		</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="assetDateTab"></div>
+				<div class="tab-pane" id="assetBudgetTab"></div>
+			</div>
 		</div>
 	</form>
 </div>
 
 </script>
 
+<script id="budgetPlanTemplate" type="text/x-handler-template">
+	<div>
+	ระบุจำนวนงวดการเบิกจ่าย : 
+		<div class="input-append">
+			<input type="text" value="{{length}}" id="assetBudgetPlanLengthTxt" class="span1"><span class="add-on">งวด</i></span>
+		</div>
+	</div>
+	<div id="budgetPlanDiv" style="margin-top: 14px;">
+	</div>
+</script>
+
+<script id="budgetPlanTblTemplate" type="text/x-handler-template">
+<table class="table table-condensed">
+	<thead>
+		<tr>
+			<td>งวดที่</td>
+			<td>วันที่เบิกจ่าย (แผน)</td>
+			<td>จำนวนเบิกจ่าย (แผน)</td>
+		</tr>
+	</thead>
+	<tbody>
+{{#each this}}
+	<tr data-index={{@index}}>
+		<td style="text-align:center;padding-top: 14px; width:60px;">{{indexHuman @index}}</td>
+		<td style="text-align:center">
+			<div class="control-group" style="margin: 0px;">
+				<div class="input-append">
+					<input type="text" value="{{formatDateDB planDate}}" data-stepId="{{id}}" data-field="planDate" id="planDate_{{@index}}" placeholder="..." class="span2 datepickerTxt assetBudgetPlanTxt"><span class="add-on"><i class="icon-calendar"></i></span>
+				</div>
+			</div>
+		</td>
+		<td style="text-align:center">
+			<div class="control-group" style="margin: 0px;">
+				<div class="input-append">
+					<input type="text" value="{{planAmount}}" placeholder="..." data-field="planAmount" class="span2 assetBudgetPlanTxt" id="planAmount_{{@index}}"><span class="add-on">บาท</span>
+				</div>
+			</div>
+		</td>
+	</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
 <script id="stepInputTemplate" type="text/x-handler-template">
+<div class="span8">
 <table class="table table-condensed">
 	<thead>
 		<tr>
@@ -196,19 +248,20 @@
 	</thead>
 	<tbody>
 {{#each this}}
-		<tr data-id="{{id}}">
+		<tr data-id="{{id}}" data-index="{{@index}}">
 			<td style="border-top: none; padding-top:14px; padding-rigth: 40px; text-align: right;"><strong>{{name}}</strong></td>
 			<td style="border-top: none; width:200px;">
 				<div class="control-group" style="margin: 0px;">
 				<div class="input-append date datepicker" data-date-format="dd/mm/yyyy" data-date="">
-					<input type="text" value="{{planBegin}}" data-stepId="{{id}}" data-field="planBegin" id="planBegin_{{id}}" placeholder="..." class="span2 datepickerTxt"><span class="add-on"><i class="icon-calendar"></i></span>
+					<input type="text" value="{{formatDateDB planBegin}}" data-stepId="{{id}}" data-field="planBegin" id="planBegin_{{@index}}" placeholder="..." class="span2 datepickerTxt"><span class="add-on"><i class="icon-calendar"></i></span>
 				</div>
 				</div>
 			</td>
 			<td style="border-top: none;width:200px;">
+
 				<div class="control-group" style="margin: 0px;">
 				<div class="input-append date datepicker" data-date-format="dd/mm/yyyy" data-date="">
-					<input type="text" value="{{planEnd}}" data-stepId="{{id}}" data-field="planEnd" id="planEnd_{{id}}" placeholder="..." class="span2 datepickerTxt"><span class="add-on"><i class="icon-calendar"></i></span>
+					<input type="text" value="{{formatDateDB planEnd}}" data-stepId="{{id}}" data-field="planEnd" id="planEnd_{{@index}}" placeholder="..." class="span2 datepickerTxt"><span class="add-on"><i class="icon-calendar"></i></span>
 				</div>
 				</div>
 			</td>
@@ -216,6 +269,7 @@
 {{/each}}
 	</tbody>
 </table>
+</div>
 </script>
 
 

@@ -209,6 +209,8 @@ var menuUserJson = [
 	menus: [{
 		name: "การบันทึกผลการดำเนินงาน (m81)",code: "m81",  menus: [{
 		    	name: "m81f01: บันทึกผลการดำเนินงาน", code: "m81f01", link: "page/m81f01/"
+		},{
+			name: "m81f02: บันทึกผลการดำเนินงานงบลงทุน", code: "m81f02", link: "page/m81f02/"
 		}]  
 	}]
 },{
