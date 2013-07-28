@@ -617,6 +617,19 @@ public class ExcelReportsController {
 		return "m81r04.xls";
 	}
 	
+	@RequestMapping("/m81r05.xls/{fiscalYear}/file/m81r05.xls")
+	public String excelM81R05(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		List<Objective> objectives = entityService.findObjectivesByFiscalyearAndTypeIdForM81R05Report(fiscalYear);
+		
+		model.addAttribute("objectives", objectives);
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		
+		return "m81r05.xls";
+	}
+	
 	@RequestMapping("/admin/excel/report1.xls/{id}")
 	public String excelReport1(@PathVariable Long id, Model model) {
 		

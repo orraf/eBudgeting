@@ -168,6 +168,8 @@ var menuJson = [{
 		    	name: "m81r03: รายงานภาพรวมแผนปฏิบัติการประจำปีของ สกย.", link: "m81r03.xls/"+fiscalYear+"/file/m81r03.xls"
 		    }, {
 		    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", link: "page/m81r04/"
+		    }, {
+		    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", link: "m81r05.xls/" + fiscalYear + "/file/m81r05.xls"
 		    }]
 	}, {
 		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{

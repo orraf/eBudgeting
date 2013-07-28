@@ -35,6 +35,7 @@ import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
 import biz.thaicom.eBudgeting.models.bgt.ReservedBudget;
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -146,6 +147,9 @@ public class Objective implements Serializable {
 	
 	@Transient
 	private List<BudgetProposal> sumBudgetTypeProposals;
+	
+	@Transient
+	private List<Organization> owner;
 	
 	
 	//Normal Getter/Setter
@@ -591,6 +595,12 @@ public class Objective implements Serializable {
 	}
 	public void setFilterActivities(List<Activity> filterActivities) {
 		this.filterActivities = filterActivities;
+	}
+	public List<Organization> getOwner() {
+		return owner;
+	}
+	public void setOwner(List<Organization> owner) {
+		this.owner = owner;
 	}
 	
 	

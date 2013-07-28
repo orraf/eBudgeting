@@ -308,7 +308,4 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"WHERE	assetAllocation.fiscalYear = ?1 ")
 	public List<Objective> findAllHasBudgetAssetByFiscalYear(Integer fiscalYear);
 
-
-
-
 }

@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.repositories;
 
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.Objective;
 
 @Repository
 public interface ActivityRepository extends PagingAndSortingRepository<Activity, Long>,
@@ -30,6 +32,8 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"ORDER BY act.code ASC ")
 	List<Activity> findAllByRegulatorAndForObejctive_Id(Organization workAt,
 			Long objectiveId);
+
+	List<Activity> findAllByForObjective(Objective objective);
 
 	
 }

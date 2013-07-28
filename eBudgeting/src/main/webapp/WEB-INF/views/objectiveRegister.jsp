@@ -546,14 +546,9 @@ $(document).ready(function() {
 		selectedObjective: null,
 		currentLineVal: null,
 		
-		newRowTemplate: Handlebars.compile($("#newRowTemplate").html()),
 		mainCtrTemplate: Handlebars.compile($("#mainCtrTemplate").html()),
 		tbodyTemplate: Handlebars.compile($("#tbodyTemplate").html()),
 		objectiveRowTemplate: Handlebars.compile($("#objectiveRowTemplate").html()),
-		unitLinkSltTemplate: Handlebars.compile($("#unitLinkSltTemplate").html()),
-		linkSltTemplate: Handlebars.compile($("#linkSltTemplate").html()),
-		parentLinkSltTemplate: Handlebars.compile($("#parentLinkSltTemplate").html()),
-		
 		
 		modalView : new ModalView(),
 		unitModalView : new UnitModalView(),

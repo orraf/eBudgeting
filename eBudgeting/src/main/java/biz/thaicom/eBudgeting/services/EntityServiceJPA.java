@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.commons.collections.map.ListOrderedMap;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.PerformanceMonitorInterceptor;
@@ -5533,6 +5535,34 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		return asset.getAssetStepReports();
+	}
+
+	@Override
+	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear) {
+		List<Objective> ผลผลิตทั้งหมด = objectiveRepository.findAllByFiscalYearAndType_id(fiscalYear, 103L);
+		for(Objective ผลผลิต : ผลผลิตทั้งหมด) {
+			Hibernate.initialize(ผลผลิต.getParent());
+			Hibernate.initialize(ผลผลิต.getParent().getType());
+			
+			for(Objective กิจกรรมหลัก : ผลผลิต.getChildren()) {
+				for(Objective แผนปฏิบัติการ : กิจกรรมหลัก.getChildren()) {
+					ObjectiveOwnerRelation ownerRelation = objectiveOwnerRelationRepository.findByObjective_Id(แผนปฏิบัติการ.getId());
+					
+					if(ownerRelation != null) {
+						Hibernate.initialize(ownerRelation.getOwners());
+						แผนปฏิบัติการ.setOwner(ownerRelation.getOwners());
+					}
+					for(Objective กิจกรรมรอง : แผนปฏิบัติการ.getChildren()) {
+						Hibernate.initialize(กิจกรรมรอง);
+						List<Activity> activities = activityRepository.findAllByForObjective(กิจกรรมรอง);
+						กิจกรรมรอง.setFilterActivities(activities);
+					}
+				}
+			}
+			
+		}
+		
+		return ผลผลิตทั้งหมด;
 	}
 	
 	
