@@ -4030,7 +4030,7 @@ public class EntityServiceJPA implements EntityService {
 	public List<Organization> findOrganizationByNameAndParent_IdWithProcuremnt(
 			String query, Long parentId) {
 		List<Organization> returnList = new ArrayList<Organization>();
-		Organization procurment = organizationRepository.findOne(101170000L);
+		Organization procurment = organizationRepository.findOne(101170100L);
 		
 		returnList.add(procurment);
 		
