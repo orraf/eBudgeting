@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveType;
@@ -630,6 +631,23 @@ public class ExcelReportsController {
 		return "m81r05.xls";
 	}
 	
+	@RequestMapping("/m81r06.xls/{fiscalYear}/{startMonth}/{endMonth}/{objId}/{orgId}/file/m81r06.xls")
+	public String excelM81R06(@PathVariable Integer fiscalYear, @PathVariable Integer startMonth, @PathVariable Integer endMonth, @PathVariable Integer objId, @PathVariable Integer orgId, Model model, 
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		Objective objective = entityService.findOjectiveById((long) objId);
+		Organization organization = entityService.findOrganizationById((long) orgId);
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		model.addAttribute("startMonth", startMonth);
+		model.addAttribute("endMonth", endMonth);
+		model.addAttribute("objective", objective);
+		model.addAttribute("organization", organization);
+		model.addAttribute("currentUser", currentUser);
+
+		return "m81r06.xls";
+	}
+
 	@RequestMapping("/admin/excel/report1.xls/{id}")
 	public String excelReport1(@PathVariable Long id, Model model) {
 		
