@@ -5378,6 +5378,15 @@ public class EntityServiceJPA implements EntityService {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-M-d", new Locale("en", "US"));
 		
 		AssetAllocation asset = assetAllocationRepository.findOne(getJsonNodeId(node));
+		if(node.get("contractedBudgetActual") != null) {
+			asset.setContractedBudgetActual(node.get("contractedBudgetActual").asDouble());
+		} 
+		
+		if(node.get("contractedBudgetPlan") != null) {
+			asset.setContractedBudgetPlan(node.get("contractedBudgetPlan").asDouble());
+		} 
+		
+		
 		AssetMethod assetMethod = assetMethodRepository.findOne(getJsonNodeId(node.get("assetMethod")));
 		Boolean newMethod;
 		if(asset.getAssetMethod() != assetMethod){

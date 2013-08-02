@@ -44,11 +44,20 @@ public class AssetBudgetPlan implements Serializable{
 	private Double planAmount;
 	private Double actualAmount;
 	
+	private String remark;
+	
 	@Temporal(TemporalType.DATE)
 	private Date planDate;
 	
 	@Temporal(TemporalType.DATE)
 	private Date actualDate;
+	
+	@Temporal(TemporalType.DATE)
+	private Date planInstallmentDate;
+	
+	@Temporal(TemporalType.DATE)
+	private Date actualInstallmentDate;
+	
 	
 	
 	public Long getId() {
@@ -93,8 +102,24 @@ public class AssetBudgetPlan implements Serializable{
 	public void setActualDate(Date actualDate) {
 		this.actualDate = actualDate;
 	}
-	
-	
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	public Date getPlanInstallmentDate() {
+		return planInstallmentDate;
+	}
+	public void setPlanInstallmentDate(Date planInstallmentDate) {
+		this.planInstallmentDate = planInstallmentDate;
+	}
+	public Date getActualInstallmentDate() {
+		return actualInstallmentDate;
+	}
+	public void setActualInstallmentDate(Date actualInstallmentDate) {
+		this.actualInstallmentDate = actualInstallmentDate;
+	}
 	
 	
 }

@@ -1272,3 +1272,28 @@ insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,s
         references BGT_ASSETALLOCATION;
         
     create sequence BGT_ASSETBUDGETPLAN_SEQ; 	
+    
+-- version 20
+-- Modifed Date: August 2, 2013 
+    update app_info set db_version=20;
+    
+    alter table bgt_assetbudgetplan add (planinstallmentdate timestamp(6), actualinstallmentdate timestamp(6), remark varchar2(255));
+	alter table bgt_assetallocation add (contractedBudgetActual number(19,2), contractedBudgetPlan number(19,2));
+	
+	update bgt_assetmethodstep set name ='กำหนดคุณลักษณะ' where id=12;
+	update bgt_assetmethodstep set name ='ประกาศร่าง TOR ' where id=13;
+	update bgt_assetmethodstep set name ='ประกาศผลการพิจารณาเบื้องต้น' where id=14;
+	insert into bgt_assetmethodstep  (id, name) values (17, 'เสนอรับราคา');
+	insert into bgt_assetmethodstep  (id, name) values (18, 'ระยะเวลาดำเนินการ');
+	
+	delete bgt_assetmethodstep_join where bgt_assetmethod_id=2 and bgt_assetmethodstep_id=6 and steporder=1;
+	delete bgt_assetmethodstep_join where bgt_assetmethod_id=2 and bgt_assetmethodstep_id=7 and steporder=2;
+	delete bgt_assetmethodstep_join where bgt_assetmethod_id=2 and bgt_assetmethodstep_id=8 and steporder=3;
+	update bgt_assetmethodstep_join set steporder = steporder - 3 where bgt_assetmethod_id=2 and steporder>0;
+	
+	update bgt_assetmethodstep_join set steporder = steporder +1 where bgt_assetmethod_id=6 and steporder>=5;
+	insert into bgt_assetmethodstep_join (bgt_assetmethod_id, bgt_assetmethodstep_id, steporder) values (6, 17, 5);
+	delete bgt_assetmethodstep_join where bgt_assetmethod_id=6 and steporder >=8;
+	insert into bgt_assetmethodstep_join (bgt_assetmethod_id, bgt_assetmethodstep_id, steporder) values (6, 18, 8);
+    
+    

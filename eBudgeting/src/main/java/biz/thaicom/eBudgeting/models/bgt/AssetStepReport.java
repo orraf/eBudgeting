@@ -57,6 +57,7 @@ public class AssetStepReport implements Serializable {
 
 	private Integer stepOrder;
 	
+	
 	public Long getId() {
 		return id;
 	}

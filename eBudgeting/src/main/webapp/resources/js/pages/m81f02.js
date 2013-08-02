@@ -68,10 +68,16 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		"click #saveAssetPlanBtn" : "saveAssetPlan",
 		"change input.datepickerTxt" : "changeInputDatepicker",
 		"click #cancelBtn" : "cancel",
-		"change .assetBudgetPlanTxt" : "assetBudgetPlanChange"
+		"change .assetBudgetPlanTxt" : "assetBudgetPlanChange",
+		"change .assetBudgetAllocationTxt" : "assetBudgetAllocationChange"
 	},
 	cancel:function(e) {
 		this.$el.modal('hide');
+	},
+	
+	assetBudgetAllocationChange: function(e) {
+		var dataField = $(e.target).attr('data-field');
+		this.set(dataField, parseFloat($(e.target).val()));
 	},
 	
 	assetBudgetPlanChange: function(e) {

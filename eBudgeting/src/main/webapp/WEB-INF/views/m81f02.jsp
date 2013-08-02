@@ -175,6 +175,21 @@
 </div>
 <div id="inputAll">
 	<form class="form-horizontal">
+{{#if assetMethod}}
+		<div id="contractDiv" class="span10" style="margin-bottom: 10px">
+			จำนวนเงินตามสัญญา: 
+				แผน
+				<div class="input-append">
+					<input type="text" value="{{contractedBudgetPlan}}" placeholder="..." data-field="contractedBudgetPlan" class="span2 assetBudgetAllocationTxt" id="contractedBudgetPlan"><span class="add-on">บาท</span>
+				</div> 
+
+				ผล 
+				<div class="input-append">
+					<input type="text" value="{{contractedBudgetActual}}" placeholder="..." data-field="contractedBudgetActual" class="span2 assetBudgetAllocationTxt" id="contractedBudgetActual"><span class="add-on">บาท</span>
+				</div> 
+
+		</div>
+{{/if}}
 		<div id="assetMethodStepDiv" class="span10">
     		<ul class="nav nav-tabs" id="assetTab">
     			<li class="active"><a href="#assetDateTab" data-toggle="tab">ผลการดำเนินการ</a></li>

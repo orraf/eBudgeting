@@ -51,6 +51,12 @@ public class AssetAllocation implements Serializable{
 	@Basic
 	private Long unitBudget;
 	
+	@Basic 
+	private Double contractedBudgetPlan;
+
+	@Basic 
+	private Double contractedBudgetActual;
+	
 	@ManyToOne
 	@JoinColumn(name="HRX_OWNER_ID")
 	private Organization owner;
@@ -209,6 +215,22 @@ public class AssetAllocation implements Serializable{
 
 	public void setAssetBudgetPlans(List<AssetBudgetPlan> assetBudgetPlans) {
 		this.assetBudgetPlans = assetBudgetPlans;
+	}
+
+	public Double getContractedBudgetPlan() {
+		return contractedBudgetPlan;
+	}
+
+	public void setContractedBudgetPlan(Double contractedBudgetPlan) {
+		this.contractedBudgetPlan = contractedBudgetPlan;
+	}
+
+	public Double getContractedBudgetActual() {
+		return contractedBudgetActual;
+	}
+
+	public void setContractedBudgetActual(Double contractedBudgetActual) {
+		this.contractedBudgetActual = contractedBudgetActual;
 	}
 	
 	
