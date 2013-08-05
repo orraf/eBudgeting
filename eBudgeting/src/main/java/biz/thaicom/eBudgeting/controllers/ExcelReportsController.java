@@ -648,6 +648,15 @@ public class ExcelReportsController {
 		return "m81r06.xls";
 	}
 
+	@RequestMapping("/m81r07.xls/{fiscalYear}/file/m81r07.xls")
+	public String excelM81R07(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		
+		return "m81r07.xls";
+	}
+	
 	@RequestMapping("/admin/excel/report1.xls/{id}")
 	public String excelReport1(@PathVariable Long id, Model model) {
 		

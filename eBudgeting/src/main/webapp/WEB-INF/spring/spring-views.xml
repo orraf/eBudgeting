@@ -75,4 +75,8 @@
  		<property name="dataSource" ref="dataSource"></property>
  	</bean>
 
+ 	<bean id="m81r07.xls" class="biz.thaicom.eBudgeting.view.M81R07XLSView"> 	
+ 		<property name="dataSource" ref="dataSource"></property>
+ 	</bean>
+
 </beans>
