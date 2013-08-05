@@ -1296,4 +1296,44 @@ insert into bgt_assetmethodstep_join(bgt_assetmethod_id,bgt_assetmethodstep_id,s
 	delete bgt_assetmethodstep_join where bgt_assetmethod_id=6 and steporder >=8;
 	insert into bgt_assetmethodstep_join (bgt_assetmethod_id, bgt_assetmethodstep_id, steporder) values (6, 18, 8);
     
+	
+-- version 21
+-- Modified Date: August 8, 2013
+update app_info set db_version=21;
+insert into bgt_assetmethod values (7, 'จ้างที่ปรึกษาวิธีตกลง');
+insert into bgt_assetmethod values (8, 'จ้างที่ปรึกษาวิธีคัดเลือก');
+insert into bgt_assetmethod values (9, 'จ้างออกแบบวิธีตกลง');
+insert into bgt_assetmethod values (10, 'จ้างออกแบบวิธีคัดเลือก');
+insert into bgt_assetmethod values (11, 'จ้างออกแบบวิธีคัดเลือกแบบจำกัดข้อกำหนด');
+insert into bgt_assetmethod values (12, 'จ้างออกแบบวิธีพิเศษ');
+
+insert into bgt_assetmethodstep_join values (7, 1, 0);
+insert into bgt_assetmethodstep_join values (7, 2, 1);
+insert into bgt_assetmethodstep_join values (7, 3, 2);
+insert into bgt_assetmethodstep_join values (7, 4, 3);
+
+insert into bgt_assetmethodstep_join values (8, 1, 0);
+insert into bgt_assetmethodstep_join values (8, 2, 1);
+insert into bgt_assetmethodstep_join values (8, 3, 2);
+insert into bgt_assetmethodstep_join values (8, 4, 3);
+
+insert into bgt_assetmethodstep_join values (9, 1, 0);
+insert into bgt_assetmethodstep_join values (9, 2, 1);
+insert into bgt_assetmethodstep_join values (9, 3, 2);
+insert into bgt_assetmethodstep_join values (9, 4, 3);
+
+insert into bgt_assetmethodstep_join values (10, 1, 0);
+insert into bgt_assetmethodstep_join values (10, 2, 1);
+insert into bgt_assetmethodstep_join values (10, 3, 2);
+insert into bgt_assetmethodstep_join values (10, 4, 3);
+
+insert into bgt_assetmethodstep_join values (11, 1, 0);
+insert into bgt_assetmethodstep_join values (11, 2, 1);
+insert into bgt_assetmethodstep_join values (11, 3, 2);
+insert into bgt_assetmethodstep_join values (11, 4, 3);
+
+insert into bgt_assetmethodstep_join values (12, 1, 0);
+insert into bgt_assetmethodstep_join values (12, 2, 1);
+insert into bgt_assetmethodstep_join values (12, 3, 2);
+insert into bgt_assetmethodstep_join values (12, 4, 3);
     
