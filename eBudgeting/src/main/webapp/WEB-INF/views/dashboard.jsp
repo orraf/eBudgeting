@@ -174,6 +174,8 @@ var menuJson = [{
 		    	name: "m81r06: รายงานการใช้จ่ายงบประมาณประจำเดือน", link: "page/m81r06/"
 		    }, {
 		    	name: "m81r07: รายงานสรุปการใช้งบประมาณ", link: "m81r07.xls/" + fiscalYear + "/file/m81r07.xls"
+		    }, {
+		    	name: "m81r08: รายงานการสรุปงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls"
 		    }]
 	}, {
 		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
@@ -231,6 +233,8 @@ var menuUserJson = [
 		    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", link: "page/m81r04/"
 		    }, {
 		    	name: "m81r06: รายงานการใช้จ่ายงบประมาณประจำเดือน", link: "page/m81r06/"
+		    }, {
+		    	name: "m81r08: รายงานการสรุปงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls"
 		    }]
 	}]
 }];

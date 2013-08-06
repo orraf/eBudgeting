@@ -1,8 +1,11 @@
 package biz.thaicom.eBudgeting.view;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +25,8 @@ import org.apache.poi.ss.util.WorkbookUtil;
 
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
+import biz.thaicom.eBudgeting.models.bgt.AssetMethodStep;
+import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.Objective;
@@ -29,6 +34,7 @@ import biz.thaicom.eBudgeting.models.pln.Objective;
 public class M81R08XLSView extends AbstractPOIExcelView {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:sss");
+	private static SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("th", "TH"));
 	
 	@Override
 	protected Workbook createWorkbook() {
@@ -52,57 +58,179 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 		
 		Sheet sheet = workbook.createSheet(sheetName);
 		int rowNum = 0;
+		int colNum=0;
 		Row row;
 		Cell cell;
+		sheet.setColumnWidth(0, 17500);
+		sheet.setColumnWidth(1, 2500);
+		sheet.setColumnWidth(2, 2500);
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(colNum++);
+		cell.setCellValue("ชื่อครุภัณฑ์-สิ่งก่อสร้าง");
+		
+		cell = row.createCell(colNum++);
+		cell.setCellValue("หน่วยงานเจ้าของ");
+		 
+		cell = row.createCell(colNum++);
+		cell.setCellValue("หน่วยงานดำเนินการ");
+		 
+		cell = row.createCell(colNum++);
+		cell.setCellValue("จำนวน");
+		
+		cell = row.createCell(colNum++);
+		cell.setCellValue("งบต่อหน่วย");
+		 
+		cell = row.createCell(colNum++);
+		cell.setCellValue("รวมงบได้รับ");
+		
 		for(AssetAllocation alloc : noMethodAllocs) {
+
+			colNum=0;
 			row = sheet.createRow(rowNum++);
-			cell = row.createCell(0);
+			cell = row.createCell(colNum++);
 			cell.setCellValue(alloc.getAssetBudget().getName());
-			cell = row.createCell(1);
+			cell = row.createCell(colNum++);
 			if(alloc.getOwner() == null) {
 				cell.setCellValue("ยังไม่ได้ระบุ");
 			} else {
 				cell.setCellValue(alloc.getOwner().getAbbr());
 			}
 			
-			cell = row.createCell(2);
+			cell = row.createCell(colNum++);
 			
 			if(alloc.getOperator() == null) {
 				cell.setCellValue("ยังไม่ได้ระบุ");
 			} else {
 				cell.setCellValue(alloc.getOperator().getAbbr());
 			}
+			
+			cell = row.createCell(colNum++);
+			cell.setCellValue(alloc.getQuantity());
+			
+			cell = row.createCell(colNum++);
+			cell.setCellValue(alloc.getUnitBudget());
+			
+			cell = row.createCell(colNum++);
+			cell.setCellValue(alloc.getUnitBudget() * alloc.getQuantity());
+			
 		}
 		
 		for(AssetMethod method: assetMap.keySet()){
-			 sheet = workbook.createSheet(method.getName());
-			 rowNum = 0;
+			sheet = workbook.createSheet(method.getName());
+			sheet.setColumnWidth(0, 17500);
+			sheet.setColumnWidth(1, 2500);
+			sheet.setColumnWidth(2, 2500);
+			rowNum = 0;
+			colNum = 0;
+			 
+			 row = sheet.createRow(rowNum++);
+			 cell = row.createCell(colNum++);
+			 cell.setCellValue("ชื่อครุภัณฑ์-สิ่งก่อสร้าง");
+			
+			 cell = row.createCell(colNum++);
+			 cell.setCellValue("หน่วยงานเจ้าของ");
+			 
+			 cell = row.createCell(colNum++);
+			 cell.setCellValue("หน่วยงานดำเนินการ");
+			 
+			 cell = row.createCell(colNum++);
+			 cell.setCellValue("จำนวน");
+			
+			 cell = row.createCell(colNum++);
+			 cell.setCellValue("งบต่อหน่วย");
+			 
+			 cell = row.createCell(colNum++);
+			 cell.setCellValue("รวมงบได้รับ");
+			 
+			 for(AssetMethodStep step : method.getSteps()) {
+				 cell = row.createCell(colNum++);
+				 cell.setCellValue(step.getName() + "เริ่ม (แผน)");
+				 
+				 cell = row.createCell(colNum++);
+				 cell.setCellValue(step.getName() + "เริ่ม (ผล)");
+				 
+				 cell = row.createCell(colNum++);
+				 cell.setCellValue(step.getName() + "สิ้นสุด (แผน)");
+				 
+				 cell = row.createCell(colNum++);
+				 cell.setCellValue(step.getName() + "สิ้นสุด (ผล)");
+				 
+			 }
+			 
+			 colNum = 0;
 			 
 			 for(AssetAllocation alloc : assetMap.get(method)) {
 					row = sheet.createRow(rowNum++);
-					cell = row.createCell(0);
+					cell = row.createCell(colNum++);
 					cell.setCellValue(alloc.getAssetBudget().getName());
-					cell = row.createCell(1);
+					cell = row.createCell(colNum++);
 					if(alloc.getOwner() == null) {
 						cell.setCellValue("ยังไม่ได้ระบุ");
 					} else {
 						cell.setCellValue(alloc.getOwner().getAbbr());
 					}
 					
-					cell = row.createCell(2);
+					cell = row.createCell(colNum++);
 					
 					if(alloc.getOperator() == null) {
 						cell.setCellValue("ยังไม่ได้ระบุ");
 					} else {
 						cell.setCellValue(alloc.getOperator().getAbbr());
 					}
+					
+					cell = row.createCell(colNum++);
+					cell.setCellValue(alloc.getQuantity());
+					
+					cell = row.createCell(colNum++);
+					cell.setCellValue(alloc.getUnitBudget());
+					
+					cell = row.createCell(colNum++);
+					cell.setCellValue(alloc.getUnitBudget() * alloc.getQuantity());
+					
+					cell = row.createCell(colNum++);
+					if(alloc.getContractedBudgetPlan() != null) {
+						cell.setCellValue(alloc.getContractedBudgetPlan());
+					}
+					
+					cell = row.createCell(colNum++);
+					if(alloc.getContractedBudgetActual() != null) {
+						cell.setCellValue(alloc.getContractedBudgetActual());
+					}
+					
+					int i = 0;
+					for(AssetMethodStep step : method.getSteps()) {
+						
+						cell = row.createCell(colNum++);
+						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getPlanBegin()));
+						
+						cell = row.createCell(colNum++);
+						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualBegin()));
+						
+						cell = row.createCell(colNum++);
+						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getPlanEnd()));
+						
+						cell = row.createCell(colNum++);
+						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualEnd()));
+						
+					}
+					
+					
 				}
 			
 		}
 	}
 	
 	
-    private static Map<String, CellStyle> createStyles(Workbook wb){
+    private String formatDate(Date date) {
+    	
+    	if(date == null) {
+    		return "ไม่ระบุ";
+    	}
+    	
+		return df.format(date);
+	}
+
+	private static Map<String, CellStyle> createStyles(Workbook wb){
         Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
 
         short borderColor = IndexedColors.GREY_50_PERCENT.getIndex();
