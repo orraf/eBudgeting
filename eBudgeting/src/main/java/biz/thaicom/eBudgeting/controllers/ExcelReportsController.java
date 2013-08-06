@@ -631,12 +631,12 @@ public class ExcelReportsController {
 		return "m81r05.xls";
 	}
 	
-	@RequestMapping("/m81r06.xls/{fiscalYear}/{startMonth}/{endMonth}/{objId}/{orgId}/file/m81r06.xls")
-	public String excelM81R06(@PathVariable Integer fiscalYear, @PathVariable Integer startMonth, @PathVariable Integer endMonth, @PathVariable Integer objId, @PathVariable Integer orgId, Model model, 
+	@RequestMapping("/m81r06.xls/{fiscalYear}/{startMonth}/{endMonth}/{objId}/file/m81r06.xls")
+	public String excelM81R06(@PathVariable Integer fiscalYear, @PathVariable Integer startMonth, @PathVariable Integer endMonth, @PathVariable Integer objId, Model model, 
 			@Activeuser ThaicomUserDetail currentUser) {
 		
 		Objective objective = entityService.findOjectiveById((long) objId);
-		Organization organization = entityService.findOrganizationById((long) orgId);
+		Organization organization = entityService.findOrganizationById((long) currentUser.getWorkAt().getId());
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("startMonth", startMonth);

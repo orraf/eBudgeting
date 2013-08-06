@@ -1257,6 +1257,18 @@ public class GenericViewController {
 		return "m81r04";
 	}
 	
+	@RequestMapping("/page/m81r06/")
+	public String render_m81r06(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		model.addAttribute("rootPage", true);
+		setFiscalYearFromSession(model, session);
+		model.addAttribute("organizationId", currentUser.getWorkAt().getId());
+		
+		return "m81r06";
+	}
+	
 }
 
 
