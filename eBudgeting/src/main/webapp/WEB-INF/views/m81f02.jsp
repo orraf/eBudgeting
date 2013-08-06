@@ -178,11 +178,8 @@
 {{#if assetMethod}}
 		<div id="contractDiv" class="span10" style="margin-bottom: 10px">
 			จำนวนเงินตามสัญญา: 
-				แผน
-				<div class="input-append">
-					<input type="text" value="{{contractedBudgetPlan}}" placeholder="..." data-field="contractedBudgetPlan" class="span2 assetBudgetAllocationTxt" id="contractedBudgetPlan"><span class="add-on">บาท</span>
-				</div> 
-
+				แผน {{formatNumber contractedBudgetPlan}} บาท
+				/
 				ผล 
 				<div class="input-append">
 					<input type="text" value="{{contractedBudgetActual}}" placeholder="..." data-field="contractedBudgetActual" class="span2 assetBudgetAllocationTxt" id="contractedBudgetActual"><span class="add-on">บาท</span>
@@ -218,8 +215,8 @@
 	<thead>
 		<tr>
 			<td>งวดที่</td>
-			<td>วันที่เบิกจ่าย (แผน)</td>
-			<td>วันที่เบิกจ่าย (ผล)</td>
+			<td>วันที่ส่งมอบ/<br/>วันที่เบิกจ่าย (แผน)</td>
+			<td>วันที่ส่งมอบ/<br/>วันที่เบิกจ่าย (ผล)</td>
 			<td>จำนวนเบิกจ่าย (แผน)</td>
 			<td>จำนวนเบิกจ่าย (ผล)</td>
 		</tr>
@@ -228,8 +225,14 @@
 {{#each this}}
 	<tr data-index={{@index}}>
 		<td style="text-align:center;padding-top: 14px; width:60px;">{{indexHuman @index}}</td>
-		<td style="text-align:center;padding-top: 14px;">{{formatDate planDate}}</td>
+		<td style="text-align:center;padding-top: 14px;"> {{formatDate planInstallmentDate}} <br/> {{formatDate planDate}} </td>
 		<td style="text-align:center">
+
+			<div class="control-group" style="margin: 0px;">
+				<div class="input-append">
+					<input type="text" value="{{formatDateDB actualInstallmentDate}}" data-stepId="{{id}}" data-field="actualInstallmentDate" id="actualInstallmentDate_{{@index}}" placeholder="..." class="span2 datepickerTxt assetBudgetPlanTxt"><span class="add-on"><i class="icon-calendar"></i></span>
+				</div>
+			</div>
 			<div class="control-group" style="margin: 0px;">
 				<div class="input-append">
 					<input type="text" value="{{formatDateDB actualDate}}" data-stepId="{{id}}" data-field="actualDate" id="actualDate_{{@index}}" placeholder="..." class="span2 datepickerTxt assetBudgetPlanTxt"><span class="add-on"><i class="icon-calendar"></i></span>

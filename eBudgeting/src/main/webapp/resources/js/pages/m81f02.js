@@ -77,7 +77,7 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	
 	assetBudgetAllocationChange: function(e) {
 		var dataField = $(e.target).attr('data-field');
-		this.set(dataField, parseFloat($(e.target).val()));
+		this.currentAssetAllocation.set(dataField, parseFloat($(e.target).val()));
 	},
 	
 	assetBudgetPlanChange: function(e) {
@@ -91,7 +91,7 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		
 		if(dataField == "actualAmount") {
 			plan.set(dataField, parseFloat($(e.target).val()));
-		} else if(dataField == "actualDate"){
+		} else if(dataField == "actualDate" || dataField == "actualInstallmentDate"){
 			plan.set(dataField, formatThDateToISO($(e.target).val()));	
 		}
 		

@@ -5379,6 +5379,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		AssetAllocation asset = assetAllocationRepository.findOne(getJsonNodeId(node));
 		if(node.get("contractedBudgetActual") != null) {
+			
 			asset.setContractedBudgetActual(node.get("contractedBudgetActual").asDouble());
 		} 
 		
@@ -5499,6 +5500,12 @@ public class EntityServiceJPA implements EntityService {
 				} catch (ParseException e) {
 					plan.setPlanDate(null);
 				}
+				
+				try {
+					plan.setPlanInstallmentDate(df.parse(planNode.get("planInstallmentDate").asText()));
+				} catch (ParseException e) {
+					plan.setPlanInstallmentDate(null);
+				}
 			
 				if(saveResult) {
 				
@@ -5511,6 +5518,12 @@ public class EntityServiceJPA implements EntityService {
 						plan.setActualDate(df.parse(planNode.get("actualDate").asText()));
 					} catch (ParseException e) {
 						plan.setActualDate(null);
+					}
+					
+					try {
+						plan.setActualInstallmentDate(df.parse(planNode.get("actualInstallmentDate").asText()));
+					} catch (ParseException e) {
+						plan.setActualInstallmentDate(null);
 					}
 					
 				}

@@ -67,6 +67,7 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	events: {
 		"change #inputAssetMethod" : "changeAssetMethod",
 		"click #saveAssetPlanBtn" : "saveAssetPlan",
+		"change #contractedBudgetPlan" : "changeContractedBudgetPlan",
 		"change input.datepickerTxt" : "changeInputDatepicker",
 		"click #cancelBtn" : "cancel",
 		"change input#assetBudgetPlanLengthTxt" : "assetBudgetPlanLength",
@@ -75,7 +76,10 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	cancel:function(e) {
 		this.$el.modal('hide');
 	},
-	
+	changeContractedBudgetPlan: function(e) {
+		var dataField = $(e.target).attr('data-field');
+		this.currentAssetAllocation.set(dataField, $(e.target).val());
+	},
 	assetBudgetPlanChange: function(e) {
 		var index = $(e.target).parents('tr').attr('data-index');
 		
@@ -85,15 +89,11 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		
 		var plan = currentPlans.at(index);
 		
-		if(dataField == "planAmount") {
+		if(dataField == "planAmount" ) {
 			plan.set(dataField, parseFloat($(e.target).val()));
-		} else if(dataField == "planDate") {
+		} else if(dataField == "planDate" || dataField == "planInstallmentDate") {
 			plan.set(dataField, formatThDateToISO($(e.target).val()));	
 		}
-		
-		
-		
-		
 	},
 	assetBudgetPlanLength: function(e) {
 		

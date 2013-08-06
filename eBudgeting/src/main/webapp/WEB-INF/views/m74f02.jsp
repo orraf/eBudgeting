@@ -171,12 +171,22 @@
 <br/>
 <div id="inputAll">
 	<form class="form-horizontal">
+		<div class="span5">
 		<label class="control-label" for="inputAssetMethod">วิธีการจัดซื้อจัดจ้าง</label>
 			<div class="controls">
 				<select id="inputAssetMethod">
 					<option value="0">กรุณาเลือกวิธีการ</option>
 				</select>
 			</div>
+		</div>
+		<div class="span4">
+		<label class="control-label" for="contractedBudgetPlan">วงเงินที่ทำญญา (แผน) </label>
+			<div class="controls">
+				<div class="input-append">
+					<input type="text" value="{{contractedBudgetPlan}}" placeholder="..." data-field="contractedBudgetPlan" class="span2" id="contractedBudgetPlan"><span class="add-on">บาท</span>
+				</div>
+			</div>
+		</div>
 		<div id="assetMethodStepDiv" class="span10" style="margin-top: 14px;">
     		<ul class="nav nav-tabs" id="assetTab">
     			<li class="active"><a href="#assetDateTab" data-toggle="tab">แผนการดำเนินการ</a></li>
@@ -208,6 +218,7 @@
 	<thead>
 		<tr>
 			<td>งวดที่</td>
+			<td>วันที่ส่งมอบ (แผน)</td>
 			<td>วันที่เบิกจ่าย (แผน)</td>
 			<td>จำนวนเบิกจ่าย (แผน)</td>
 		</tr>
@@ -217,6 +228,13 @@
 	<tr data-index={{@index}}>
 		<td style="text-align:center;padding-top: 14px; width:60px;">{{indexHuman @index}}</td>
 		<td style="text-align:center">
+			<div class="control-group" style="margin: 0px;">
+				<div class="input-append">
+					<input type="text" value="{{formatDateDB planInstallmentDate}}" data-stepId="{{id}}" data-field="planInstallmentDate" id="planInstallmentDate_{{@index}}" placeholder="..." class="span2 datepickerTxt assetBudgetPlanTxt"><span class="add-on"><i class="icon-calendar"></i></span>
+				</div>
+			</div>
+		</td>
+	<td style="text-align:center">
 			<div class="control-group" style="margin: 0px;">
 				<div class="input-append">
 					<input type="text" value="{{formatDateDB planDate}}" data-stepId="{{id}}" data-field="planDate" id="planDate_{{@index}}" placeholder="..." class="span2 datepickerTxt assetBudgetPlanTxt"><span class="add-on"><i class="icon-calendar"></i></span>
