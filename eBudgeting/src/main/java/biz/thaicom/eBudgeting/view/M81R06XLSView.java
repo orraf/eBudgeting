@@ -166,7 +166,8 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 	               "where m.id <> " + obj.getId() + " " +
 				   "and m.fiscalyear = " + fiscalYear + " " +
 				   "connect by prior m.id = m.parent_pln_objective_id " +
-				   "start with m.id = " + obj.getId());
+				   "start with m.id = " + obj.getId() + " " + 
+				   "ORDER BY m.code asc ");
 
 		while (rs.next()) {
 			Row rows = sheet.createRow(i);

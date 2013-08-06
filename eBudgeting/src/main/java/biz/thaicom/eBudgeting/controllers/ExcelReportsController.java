@@ -689,6 +689,8 @@ public class ExcelReportsController {
 		for(AssetAllocation alloc: assetAllocations) {
 			if(alloc.getId() == 452L) {
 				logger.debug("----------------- method: " + alloc.getAssetMethod());
+				List<AssetAllocation> list = assetMap.get(alloc.getAssetMethod());
+				logger.debug("--------------------"   + list.size());
 			}
 			
 			if(alloc.getAssetMethod() != null && assetMap.get(alloc.getAssetMethod()) != null) {

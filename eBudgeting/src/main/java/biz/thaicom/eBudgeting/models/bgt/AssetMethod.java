@@ -80,6 +80,13 @@ public class AssetMethod implements Serializable {
 		return super.equals(obj);
 	}
 
+	@Override
+	public int hashCode() {
+		return this.id.intValue();
+	}
+	
+	
+
 	
 	
 }
