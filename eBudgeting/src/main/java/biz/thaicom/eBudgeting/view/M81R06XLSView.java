@@ -68,7 +68,10 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 */		
 		Row secondRow = sheet.createRow(1);
 		Cell cell21 = secondRow.createCell(0);
-		cell21.setCellValue("หน่วยงาน  " + org.getName());
+		if(org.getId() != 0L) {
+			cell21.setCellValue("หน่วยงาน  " + org.getName());
+		}
+		
 		cell21.setCellStyle(styles.get("title"));
 		
 		Row thirdRow = sheet.createRow(3);
@@ -181,7 +184,7 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 				i = i+1;
 				Statement st1 = connection.createStatement();
 				ResultSet rs1;
-				if (org.getId() == 0) {
+				if (org.getId() == 0L) {
 					rs1 = st1.executeQuery("select t1.code, t1.name, t1.id, t2.id target_id, sum(t3.targetvalue) target, t4.name unit " +
 							 "from pln_activity t1, pln_activitytarget t2, pln_activitytargetreport t3, pln_targetunit t4 " +
 							 "where t1.id = t2.activity_pln_activity_id " +

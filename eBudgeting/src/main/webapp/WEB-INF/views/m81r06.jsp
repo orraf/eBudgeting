@@ -73,7 +73,7 @@
 <script id="mainSelectionTemplate" type="text/x-handler-template">
 <form class="form-horizontal">
 <div class="control-group" style="margin-bottom:5px;">
-	<label class="control-label">แผนปฏิบัติการ :</label> 
+	<label class="control-label">ยุทธศาสตร์ :</label> 
 	<div class="controls">
 		<select id="objId" class="span5">
 			{{#each this}}<option value={{id}}>[{{code}}] {{name}}</option>{{/each}}

@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
+
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
+import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
@@ -637,7 +639,10 @@ public class ExcelReportsController {
 			@Activeuser ThaicomUserDetail currentUser) {
 		
 		Objective objective = entityService.findOjectiveById((long) objId);
-		Organization organization = entityService.findOrganizationById((long) currentUser.getWorkAt().getId());
+		
+		//Organization organization = entityService.findOrganizationById((long) currentUser.getWorkAt().getId());
+		Organization organization = new Organization();
+		organization.setId(0L);
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("startMonth", startMonth);
@@ -662,11 +667,37 @@ public class ExcelReportsController {
 	public String excelM81R08(@PathVariable Integer fiscalYear, Model model, 
 			@Activeuser ThaicomUserDetail currentUser) {
 		
-		List<AssetAllocation> assetAllocation = entityService.findAssetAllocationForReportM81r08(fiscalYear);
+		List<AssetAllocation> assetAllocations = entityService.findAssetAllocationForReportM81r08(fiscalYear);
+		List<AssetAllocation> noMethodAllocs = new ArrayList<AssetAllocation>();
 		
-		model.addAttribute("fiscalYear", fiscalYear);
 		
-		return "m81r07.xls";
+		HashMap<AssetMethod, List<AssetAllocation>> assetMap = new HashMap<AssetMethod, List<AssetAllocation>>();
+		
+		
+		List<AssetMethod> assetMethods = entityService.findAssetMethodAll();
+		for(AssetMethod method : assetMethods) {
+			assetMap.put(method, new ArrayList<AssetAllocation>());
+		}
+		
+		for(AssetAllocation alloc: assetAllocations) {
+			if(alloc.getId() == 452L) {
+				logger.debug("----------------- method: " + alloc.getAssetMethod());
+			}
+			
+			if(alloc.getAssetMethod() != null && assetMap.get(alloc.getAssetMethod()) != null) {
+				
+				assetMap.get(alloc.getAssetMethod()).add(alloc);
+			} else {
+				noMethodAllocs.add(alloc);
+			}
+		}
+		
+		
+		model.addAttribute("assetMap", assetMap);
+		model.addAttribute("noMethodAllocs", noMethodAllocs);
+		
+		
+		return "m81r08.xls";
 	}
 	
 	@RequestMapping("/admin/excel/report1.xls/{id}")

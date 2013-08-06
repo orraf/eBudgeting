@@ -5380,7 +5380,14 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<AssetMethod> findAssetMethodAll() {
 		
-		return assetMethodRepository.findAll();
+		List<AssetMethod> methods =  assetMethodRepository.findAll();
+		
+		methods.size();
+		for(AssetMethod method: methods) {
+			method.getSteps().size();
+		}
+		
+		return methods;
 	}
 
 	@Override

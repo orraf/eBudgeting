@@ -14,6 +14,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
+import org.hamcrest.core.IsInstanceOf;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -68,5 +71,16 @@ public class AssetMethod implements Serializable {
 	public void setSteps(List<AssetMethodStep> steps) {
 		this.steps = steps;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof  AssetMethod ) {
+			return this.id.equals(((AssetMethod) obj).getId());
+		}
+		return super.equals(obj);
+	}
+
+	
 	
 }
+
