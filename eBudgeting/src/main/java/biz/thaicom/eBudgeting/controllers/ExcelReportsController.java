@@ -640,9 +640,16 @@ public class ExcelReportsController {
 		
 		Objective objective = entityService.findOjectiveById((long) objId);
 		
+		
 		//Organization organization = entityService.findOrganizationById((long) currentUser.getWorkAt().getId());
-		Organization organization = new Organization();
-		organization.setId(0L);
+		Organization organization = null;
+		
+		if(currentUser.getWorkAt().getAbbr().equals("กงป.")) {
+			organization = new Organization();
+			organization.setId(0L);
+		} else {
+			organization = entityService.findOrganizationById((long) currentUser.getWorkAt().getId());
+		}
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("startMonth", startMonth);
