@@ -42,4 +42,14 @@ public interface AssetAllocationRepository extends JpaRepository<AssetAllocation
 	List<AssetAllocation> findAllByForObjectiveIdAndOperator(Long objectiveId,
 			Organization operator);
 
+	@Query("" +
+			"SELECT assetAllocation " +
+			"FROM AssetAllocation assetAllocation " +
+			"	LEFT JOIN FETCH assetAllocation.owner " +
+			"	LEFT JOIN FETCH assetAllocation.operator " +
+			"	INNER JOIN FETCH assetAllocation.budgetType " +
+			"	INNER JOIN FETCH assetAllocation.assetBudget " +
+			"WHERE assetAllocation.fiscalYear = ?1 ")
+	List<AssetAllocation> findAlByFiscalyear(Integer fiscalYear);
+
 }

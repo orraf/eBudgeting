@@ -93,6 +93,8 @@ var AssignAssetPlanModal = Backbone.View.extend({
 			plan.set(dataField, parseFloat($(e.target).val()));
 		} else if(dataField == "actualDate" || dataField == "actualInstallmentDate"){
 			plan.set(dataField, formatThDateToISO($(e.target).val()));	
+		} else {
+			plan.set(dataField, $(e.target).val());
 		}
 		
 	},

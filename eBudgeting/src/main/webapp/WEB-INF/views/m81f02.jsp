@@ -239,11 +239,16 @@
 				</div>
 			</div>
 		</td>
-		<td style="text-align:right;padding-right: 14px;padding-top: 14px;">{{formatNumber planAmount}} บาท</td>
+		<td style="text-align:right;padding-right: 14px;padding-top: 14px;">{{formatNumber planAmount}} บาท <br/>หมายเหตุ:</td>
 		<td style="text-align:center">
 			<div class="control-group" style="margin: 0px;">
 				<div class="input-append">
 					<input type="text" value="{{actualAmount}}" placeholder="..." data-field="actualAmount" class="span2 assetBudgetPlanTxt" id="actualAmount_{{@index}}"><span class="add-on">บาท</span>
+				</div>
+			</div>
+			<div class="control-group" style="margin: 0px;">
+				<div>
+					<input type="text" value="{{remark}}" placeholder="..." data-field="remark" class="assetBudgetPlanTxt" style="width:162px;" id="remark_{{@index}}">
 				</div>
 			</div>
 		</td>

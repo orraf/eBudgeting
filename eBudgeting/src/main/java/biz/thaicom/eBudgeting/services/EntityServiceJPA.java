@@ -4902,10 +4902,21 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public ActivityTargetResult findActivityTargetResultByReportAndFiscalMonthAndBgtResult(
 			Long targetReportId, Integer fiscalMonth) {
+		
+		logger.debug("targetReportId:  " + targetReportId );
+		logger.debug("fiscalMonth:  " + fiscalMonth );
+		
+		
 		ActivityTargetResult atr =activityTargetResultRepository.findByReportIdAndFiscalMonthAndBgtResult(targetReportId,fiscalMonth);
 		
-		atr.getReport().getActivityPerformance().getMonthlyBudgetReports().size();
-		atr.getReport().getMonthlyReports().size();
+		if(atr != null) {
+			logger.debug(" atr.getId(): " + atr.getId());
+		
+			atr.getReport().getActivityPerformance().getMonthlyBudgetReports().size();
+			atr.getReport().getMonthlyReports().size();
+		} else {
+			return null;
+		}
 		
 		
 		return atr;
@@ -5526,6 +5537,10 @@ public class EntityServiceJPA implements EntityService {
 						plan.setActualInstallmentDate(null);
 					}
 					
+					if(planNode.get("remark") != null) {
+						plan.setRemark(planNode.get("remark").asText());
+					}
+					
 				}
 			i++;
 			}
@@ -5586,6 +5601,22 @@ public class EntityServiceJPA implements EntityService {
 		
 		return ผลผลิตทั้งหมด;
 	}
+
+	@Override
+	public List<AssetAllocation> findAssetAllocationForReportM81r08(
+			Integer fiscalYear) {
+		List<AssetAllocation> assetAllocations = assetAllocationRepository.findAlByFiscalyear(fiscalYear);
+		
+		for(AssetAllocation alloc : assetAllocations) {
+			alloc.getAssetBudgetPlans().size();
+			alloc.getAssetStepReports().size();
+			alloc.getProposal().getForObjective();
+		}
+		
+		return assetAllocations;
+	}
+	
+	
 	
 	
 	

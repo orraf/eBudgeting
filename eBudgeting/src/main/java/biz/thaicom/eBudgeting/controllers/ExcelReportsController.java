@@ -11,10 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+
+import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
@@ -651,6 +652,17 @@ public class ExcelReportsController {
 	@RequestMapping("/m81r07.xls/{fiscalYear}/file/m81r07.xls")
 	public String excelM81R07(@PathVariable Integer fiscalYear, Model model, 
 			@Activeuser ThaicomUserDetail currentUser) {
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		
+		return "m81r07.xls";
+	}
+	
+	@RequestMapping("/m81r08.xls/{fiscalYear}/file/m81r08.xls")
+	public String excelM81R08(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser) {
+		
+		List<AssetAllocation> assetAllocation = entityService.findAssetAllocationForReportM81r08(fiscalYear);
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		
