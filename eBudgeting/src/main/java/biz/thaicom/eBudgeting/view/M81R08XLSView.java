@@ -157,9 +157,10 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 				 
 			 }
 			 
-			 colNum = 0;
+			
 			 
 			 for(AssetAllocation alloc : assetMap.get(method)) {
+				 colNum = 0;
 					row = sheet.createRow(rowNum++);
 					cell = row.createCell(colNum++);
 					cell.setCellValue(alloc.getAssetBudget().getName());
