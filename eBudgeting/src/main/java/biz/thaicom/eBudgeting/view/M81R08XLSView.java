@@ -153,7 +153,7 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 			 cell.setCellValue("ผล");
 			 
 			 
-			 logger.debug(method.getName() + " :" + method.getSteps().size());
+			 //logger.debug(method.getName() + " :" + method.getSteps().size());
 			 for(AssetMethodStep step : method.getSteps()) {
 				 cell = row.createCell(colNum);
 				 cell.setCellValue(step.getName() + "เริ่ม");
@@ -228,7 +228,7 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 						cell = row.createCell(colNum++);
 						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualEnd()));
 						
-						logger.debug("i: " + i);
+						//logger.debug("i: " + i);
 						i++;
 					}
 					
