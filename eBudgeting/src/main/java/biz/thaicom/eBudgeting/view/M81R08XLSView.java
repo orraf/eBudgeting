@@ -124,6 +124,7 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 			colNum = 0;
 			 
 			 row = sheet.createRow(rowNum++);
+			 Row row2 = sheet.createRow(rowNum++);
 			 cell = row.createCell(colNum++);
 			 cell.setCellValue("ชื่อครุภัณฑ์-สิ่งก่อสร้าง");
 			
@@ -142,18 +143,31 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 			 cell = row.createCell(colNum++);
 			 cell.setCellValue("รวมงบได้รับ");
 			 
+			 cell = row.createCell(colNum);
+			 cell.setCellValue("งบที่ทำสัญญา (แผน)");
+			 
+			 cell = row2.createCell(colNum++);
+			 cell.setCellValue("แผน");
+
+			 cell = row2.createCell(colNum++);
+			 cell.setCellValue("ผล");
+			 
+			 
+			 logger.debug(method.getName() + " :" + method.getSteps().size());
 			 for(AssetMethodStep step : method.getSteps()) {
-				 cell = row.createCell(colNum++);
-				 cell.setCellValue(step.getName() + "เริ่ม (แผน)");
+				 cell = row.createCell(colNum);
+				 cell.setCellValue(step.getName() + "เริ่ม");
+				 cell = row2.createCell(colNum++);
+				 cell.setCellValue("แผน");
+				 cell = row2.createCell(colNum++);
+				 cell.setCellValue("ผล");
 				 
-				 cell = row.createCell(colNum++);
-				 cell.setCellValue(step.getName() + "เริ่ม (ผล)");
-				 
-				 cell = row.createCell(colNum++);
-				 cell.setCellValue(step.getName() + "สิ้นสุด (แผน)");
-				 
-				 cell = row.createCell(colNum++);
-				 cell.setCellValue(step.getName() + "สิ้นสุด (ผล)");
+				 cell = row.createCell(colNum);
+				 cell.setCellValue(step.getName() + "สิ้นสุด");
+				 cell = row2.createCell(colNum++);
+				 cell.setCellValue("แผน");
+				 cell = row2.createCell(colNum++);
+				 cell.setCellValue("ผล");
 				 
 			 }
 			 
@@ -162,6 +176,7 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 			 for(AssetAllocation alloc : assetMap.get(method)) {
 				 colNum = 0;
 					row = sheet.createRow(rowNum++);
+					
 					cell = row.createCell(colNum++);
 					cell.setCellValue(alloc.getAssetBudget().getName());
 					cell = row.createCell(colNum++);
@@ -213,6 +228,8 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 						cell = row.createCell(colNum++);
 						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualEnd()));
 						
+						logger.debug("i: " + i);
+						i++;
 					}
 					
 					
