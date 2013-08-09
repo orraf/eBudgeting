@@ -5600,6 +5600,16 @@ public class EntityServiceJPA implements EntityService {
 						Hibernate.initialize(กิจกรรมรอง);
 						List<Activity> activities = activityRepository.findAllByForObjective(กิจกรรมรอง);
 						กิจกรรมรอง.setFilterActivities(activities);
+						
+						for(Activity กิจกรรมย่อย : activities ) {
+							Hibernate.initialize(กิจกรรมย่อย.getChildren());
+							
+							for(Activity กิจกรรมเสริม : กิจกรรมย่อย.getChildren()) {
+								Hibernate.initialize(กิจกรรมเสริม.getChildren());
+							}
+							
+						}
+						
 					}
 				}
 			}
