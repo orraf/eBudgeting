@@ -105,7 +105,7 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 						row = sheet.createRow(rowNum++);
 						
 						cell = row.createCell(0);
-						cell.setCellValue("                ["+แผนปฏิบัติการ.getCode()+"] " + กิจกรรมรอง.getName());
+						cell.setCellValue("                ["+กิจกรรมรอง.getCode()+"] " + กิจกรรมรอง.getName());
 						
 						if(กิจกรรมรอง.getFilterActivities().size() == 0) {
 							row = sheet.createRow(rowNum++);
@@ -121,7 +121,25 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 								
 								cell = row.createCell(0);
 								cell = row.createCell(1);
-								cell.setCellValue(กิจกรรมย่อย.getName());
+								cell.setCellValue("[" + กิจกรรมย่อย.getCode()+"]" + กิจกรรมย่อย.getName());
+								
+								for(Activity กิจกรรมเสริม : กิจกรรมย่อย.getChildren()) {
+									row = sheet.createRow(rowNum++);
+									
+									cell = row.createCell(0);
+									cell = row.createCell(1);
+									cell.setCellValue("          [" + กิจกรรมเสริม.getCode()+"]" + กิจกรรมเสริม.getName());
+									
+									for(Activity กิจกรรมสนับสนุน : กิจกรรมเสริม.getChildren()) {
+										row = sheet.createRow(rowNum++);
+										
+										cell = row.createCell(0);
+										cell = row.createCell(1);
+										cell.setCellValue("          [" + กิจกรรมสนับสนุน.getCode()+"]" + กิจกรรมสนับสนุน.getName());
+									}
+									
+								}
+								
 							}
 						}
 						

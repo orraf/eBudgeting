@@ -59,30 +59,34 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 		cell14.setCellValue("แผน");
 		cell14.setCellStyle(styles.get("header"));
 		Cell cell15 = firstRow.createCell(4);
-		cell15.setCellValue("ปีงบประมาณ/ผลผลิต/โครงการ/แผนปฏิบัติการ");
+		cell15.setCellValue("กิจกรรม");
 		cell15.setCellStyle(styles.get("header"));
 		Cell cell16 = firstRow.createCell(5);
-		cell16.setCellValue("แผนการใช้เงิน");
+		cell16.setCellValue("ปีงบประมาณ/ผลผลิต/โครงการ/แผนปฏิบัติการ");
 		cell16.setCellStyle(styles.get("header"));
 		Cell cell17 = firstRow.createCell(6);
-		cell17.setCellValue("ผลการใช้เงิน");
+		cell17.setCellValue("แผนการใช้เงิน");
 		cell17.setCellStyle(styles.get("header"));
+		Cell cell18 = firstRow.createCell(7);
+		cell18.setCellValue("ผลการใช้เงิน");
+		cell18.setCellStyle(styles.get("header"));
 		
 		Connection connection = dataSource.getConnection();
 				
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select substr(code,1,2) fyear, substr(code,1,3) fin_type, substr(code,3,1) type, substr(code,1,5) prod_type, code, name, id " +
+		ResultSet rs = st.executeQuery("select substr(code,1,2) fyear, substr(code,1,3) fin_type, substr(code,3,1) type, substr(code,1,5) prod_type, substr(code,1,7) plan_code, code, name, id " +
 									   "from pln_objective " +
 									   "where fiscalyear = " + fiscalYear + " " +
 									   "and substr(code,1,2) = '" + fiscalYear.toString().substring(2, 4) + "' " +
-									   "and length(code) = 7 " +
+									   "and length(code) = 9 " +
 									   "order by code ");
 
 		int i = 1;
 		String fYear = " ";
 		String fType = " ";
 		String pType = " ";
+		String plan = " ";
 		String name = "";
 		
 		while (rs.next()) {
@@ -96,16 +100,18 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 			Cell rsc3 = rows.createCell(3);
 			rsc3.setCellStyle(styles.get("cellcenter"));
 			Cell rsc4 = rows.createCell(4);
-			rsc4.setCellStyle(styles.get("cellleft"));
+			rsc4.setCellStyle(styles.get("cellcenter"));
 			Cell rsc5 = rows.createCell(5);
-			rsc5.setCellStyle(styles.get("cellnumber"));
+			rsc5.setCellStyle(styles.get("cellleft"));
 			Cell rsc6 = rows.createCell(6);
 			rsc6.setCellStyle(styles.get("cellnumber"));
+			Cell rsc7 = rows.createCell(7);
+			rsc7.setCellStyle(styles.get("cellnumber"));
 			
 			if (!fYear.equals(rs.getString(1))) {
 				rsc0.setCellValue(rs.getString(1));
-				rsc4.setCellValue("ปีงบประมาณ " + fiscalYear);
-				rsc4.setCellStyle(styles.get("cellcenter"));
+				rsc5.setCellValue("ปีงบประมาณ " + fiscalYear);
+				rsc5.setCellStyle(styles.get("cellcenter"));
 				fYear = rs.getString(1);
 				i = i + 1;
 				rows = sheet.createRow(i);
@@ -118,18 +124,20 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				rsc3 = rows.createCell(3);
 				rsc3.setCellStyle(styles.get("cellcenter"));
 				rsc4 = rows.createCell(4);
-				rsc4.setCellStyle(styles.get("cellleft"));
+				rsc4.setCellStyle(styles.get("cellcenter"));
 				rsc5 = rows.createCell(5);
-				rsc5.setCellStyle(styles.get("cellnumber"));
+				rsc5.setCellStyle(styles.get("cellleft"));
 				rsc6 = rows.createCell(6);
 				rsc6.setCellStyle(styles.get("cellnumber"));
+				rsc7 = rows.createCell(7);
+				rsc7.setCellStyle(styles.get("cellnumber"));
 			}
 			
 			if (!fType.equals(rs.getString(2))) {
 				rsc1.setCellValue(rs.getString(2));
-				if (rs.getString(3).equals("1")) rsc4.setCellValue("งบบริหาร");
-				else rsc4.setCellValue("งบสงเคราะห์");
-				rsc4.setCellStyle(styles.get("cellcenter"));
+				if (rs.getString(3).equals("1")) rsc5.setCellValue("งบบริหาร");
+				else rsc5.setCellValue("งบสงเคราะห์");
+				rsc5.setCellStyle(styles.get("cellcenter"));
 				fType = rs.getString(2);
 				i = i + 1;
 				rows = sheet.createRow(i);
@@ -142,11 +150,13 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				rsc3 = rows.createCell(3);
 				rsc3.setCellStyle(styles.get("cellcenter"));
 				rsc4 = rows.createCell(4);
-				rsc4.setCellStyle(styles.get("cellleft"));
+				rsc4.setCellStyle(styles.get("cellcenter"));
 				rsc5 = rows.createCell(5);
-				rsc5.setCellStyle(styles.get("cellnumber"));
+				rsc5.setCellStyle(styles.get("cellleft"));
 				rsc6 = rows.createCell(6);
 				rsc6.setCellStyle(styles.get("cellnumber"));
+				rsc7 = rows.createCell(7);
+				rsc7.setCellStyle(styles.get("cellnumber"));
 			}
 			
 			if (!pType.equals(rs.getString(4))) {
@@ -164,7 +174,7 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				while (rs1.next()) {
 					name = name + rs1.getString(1) + "  ";
 				}
-				rsc4.setCellValue(name);
+				rsc5.setCellValue(name);
 				rs1.close();
 				st1.close();
 				i = i + 1;
@@ -178,27 +188,67 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				rsc3 = rows.createCell(3);
 				rsc3.setCellStyle(styles.get("cellcenter"));
 				rsc4 = rows.createCell(4);
-				rsc4.setCellStyle(styles.get("cellleft"));
+				rsc4.setCellStyle(styles.get("cellcenter"));
 				rsc5 = rows.createCell(5);
-				rsc5.setCellStyle(styles.get("cellnumber"));
+				rsc5.setCellStyle(styles.get("cellleft"));
 				rsc6 = rows.createCell(6);
 				rsc6.setCellStyle(styles.get("cellnumber"));
+				rsc7 = rows.createCell(7);
+				rsc7.setCellStyle(styles.get("cellnumber"));
 			}
 	
-			rsc3.setCellValue(rs.getString(5));
+			if (!plan.equals(rs.getString(5))) {
+				rsc3.setCellValue(rs.getString(5));
+				plan = rs.getString(5);
+
+				Statement st1 = connection.createStatement();
+				ResultSet rs1 = st1.executeQuery("select name " +
+											     "from pln_objective " +
+											     "where fiscalyear = " + fiscalYear + " " +
+											     "and code = '" + plan + "' " +
+											     "order by parentlevel ");
+				
+				name = "";
+				while (rs1.next()) {
+					name = name + rs1.getString(1) + "  ";
+				}
+				rsc5.setCellValue(name);
+				rs1.close();
+				st1.close();
+				i = i + 1;
+				rows = sheet.createRow(i);
+				rsc0 = rows.createCell(0);
+				rsc0.setCellStyle(styles.get("cellcenter"));
+				rsc1 = rows.createCell(1);
+				rsc1.setCellStyle(styles.get("cellcenter"));
+				rsc2 = rows.createCell(2);
+				rsc2.setCellStyle(styles.get("cellcenter"));
+				rsc3 = rows.createCell(3);
+				rsc3.setCellStyle(styles.get("cellcenter"));
+				rsc4 = rows.createCell(4);
+				rsc4.setCellStyle(styles.get("cellcenter"));
+				rsc5 = rows.createCell(5);
+				rsc5.setCellStyle(styles.get("cellleft"));
+				rsc6 = rows.createCell(6);
+				rsc6.setCellStyle(styles.get("cellnumber"));
+				rsc7 = rows.createCell(7);
+				rsc7.setCellStyle(styles.get("cellnumber"));
+			}
+	
 			rsc4.setCellValue(rs.getString(6));
+			rsc5.setCellValue(rs.getString(7));
 
 			Statement st2 = connection.createStatement();
 			ResultSet rs2 = st2.executeQuery("select sum(t2.budgetallocated) target " +
 											 "from pln_activity t1, pln_activityperformance t2,  " +
 												 "(select id from pln_objective " +
 								                     "connect by prior id  = PARENT_PLN_OBJECTIVE_ID " +
-								                     "start with id = " + rs.getInt(7) + ") t3 " +			
+								                     "start with id = " + rs.getInt(8) + ") t3 " +			
 											 "where t1.id = t2.activity_pln_activity_id " +
 											 "and t1.obj_pln_objective_id = t3.id ");
 			
 			rs2.next();
-			rsc5.setCellValue(rs2.getDouble(1));
+			rsc6.setCellValue(rs2.getDouble(1));
 			rs2.close();
 			st2.close();
 			
@@ -206,10 +256,10 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 			ResultSet rs3 = st3.executeQuery("select sum(amt) " +
 										     "from v_gl " +
 										     "where fiscal_year = " + fiscalYear + " " +
-										     "and gl_trans_plan = '" + rs.getString(5) + "'");
+										     "and activitycode = '" + rs.getString(6) + "'");
 			
 			rs3.next();
-			rsc6.setCellValue(rs3.getDouble(1));
+			rsc7.setCellValue(rs3.getDouble(1));
 			rs3.close();
 			st3.close();
 			i = i + 1;
@@ -223,10 +273,11 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 		sheet.setColumnWidth(1, 3000);
 		sheet.setColumnWidth(2, 3000);
 		sheet.setColumnWidth(3, 3000);
-		sheet.setColumnWidth(4, 20000);
-		sheet.setColumnWidth(5, 5000);
+		sheet.setColumnWidth(4, 3000);
+		sheet.setColumnWidth(5, 20000);
 		sheet.setColumnWidth(6, 5000);
-		sheet.createFreezePane( 0, 2 );
+		sheet.setColumnWidth(7, 5000);
+		sheet.createFreezePane( 0, 1 );
 	}
 	
 	
@@ -350,12 +401,11 @@ public class M81R07XLSView extends AbstractPOIExcelView {
         style.setRightBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderLeft(CellStyle.BORDER_THIN);
         style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-        style.setWrapText(true);
-/*        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setBorderTop(CellStyle.BORDER_THIN);
         style.setTopBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-*/        styles.put("cellleft", style);
+        styles.put("cellleft", style);
 
         style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_CENTER);
@@ -369,7 +419,6 @@ public class M81R07XLSView extends AbstractPOIExcelView {
         style.setTopBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-        style.setWrapText(true);
         styles.put("cellcenter", style);
 
         style = wb.createCellStyle();

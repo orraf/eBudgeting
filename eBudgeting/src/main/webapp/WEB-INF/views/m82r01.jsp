@@ -4,7 +4,12 @@
 
 <div class="hero-unit white">
 <div id="headLine">
-	<h4>การตรวจสอบความเชื่อมโยง</h4> 
+	<div class="pull-left">
+	<h4>การตรวจสอบความเชื่อมโยง</h4>
+	</div>
+	<div class="pull-right">
+		<a class="btn btn-primary" href=""><i class="icon-download-alt"></i> รายงาน Excel</a>
+	</div> 
 </div>
 <div class="row">
 	<div class="span11">
