@@ -23,6 +23,9 @@
 	</div>
 </div>
 </div>
+<div id="result"> 
+
+</div>
 
 <script id="alertNoReportTemplate" type="text/x-handlebars-template">
 <div class="alert alert-block">
@@ -68,7 +71,7 @@
 					{{#if disabled}} 
 						{{name}}
 					{{else}}
-						<a {{#if link}}href="{{link}}"{{else}}href="#"{{/if}}>{{name}}</a>
+						<a id="{{id}}" data-type="{{type}}" {{#if link}}href="{{link}}"{{else}}href="#"{{/if}}>{{name}}</a>
 					{{/if}}
 
 			</li>
@@ -161,21 +164,21 @@ var menuJson = [{
 	menus: [{
 		name: "รายงานทะเบียน (m81r)", code: "m81", menus: 
 		    [{
-		    	name: "m81r01: รายงานแผนปฏิบัติการสำหรับส่วนกลาง", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls"
+		    	name: "m81r01: รายงานแผนปฏิบัติการสำหรับส่วนกลาง", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download"
 		    },{
-		    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับจังหวัดและอำเภอ", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls"
+		    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับจังหวัดและอำเภอ", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download"
 		    },{
-		    	name: "m81r03: รายงานภาพรวมแผนปฏิบัติการประจำปีของ สกย.", link: "m81r03.xls/"+fiscalYear+"/file/m81r03.xls"
+		    	name: "m81r03: รายงานภาพรวมแผนปฏิบัติการประจำปีของ สกย.", link: "m81r03.xls/"+fiscalYear+"/file/m81r03.xls", type: "download"
 		    }, {
 		    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", link: "page/m81r04/"
 		    }, {
-		    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", link: "m81r05.xls/" + fiscalYear + "/file/m81r05.xls"
+		    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", link: "m81r05.xls/" + fiscalYear + "/file/m81r05.xls", type: "download"
 		    }, {
 		    	name: "m81r06: รายงานการใช้จ่ายงบประมาณประจำเดือน", link: "page/m81r06/"
 		    }, {
-		    	name: "m81r07: รายงานสรุปการใช้งบประมาณ", link: "m81r07.xls/" + fiscalYear + "/file/m81r07.xls"
+		    	name: "m81r07: รายงานสรุปการใช้งบประมาณ", link: "m81r07.xls/" + fiscalYear + "/file/m81r07.xls", type: "download"
 		    }, {
-		    	name: "m81r08: รายงานการสรุปงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls"
+		    	name: "m81r08: รายงานการสรุปงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls", id: 'm81r08', type: "download"
 		    }]
 	}, {
 		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
@@ -226,15 +229,15 @@ var menuUserJson = [
 	menus: [{
 		name: "รายงานทะเบียน (m81r)", code: "m81", menus: 
 		    [{
-		    	name: "m81r01: รายงานสำหรับส่วนกลาง", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls"
+		    	name: "m81r01: รายงานสำหรับส่วนกลาง", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download"
 		    },{
-		    	name: "m81r02: รายงานสำหรับจังหวัดและอำเภอ", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls"
+		    	name: "m81r02: รายงานสำหรับจังหวัดและอำเภอ", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download"
 		    }, {
 		    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", link: "page/m81r04/"
 		    }, {
 		    	name: "m81r06: รายงานการใช้จ่ายงบประมาณประจำเดือน", link: "page/m81r06/"
 		    }, {
-		    	name: "m81r08: รายงานการสรุปงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls"
+		    	name: "m81r08: รายงานการสรุปงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls", id: "m81r08", type:"download"
 		    }]
 	}]
 }];
@@ -267,60 +270,66 @@ $(document).ready(function() {
 		},
 		
 		menuClick: function(e) {
-			e1 = e;
-			
-			var parentDiv = $(e.target).parents('div.menu');
-			var li = $(e.target).parent();
-			
-			//e1=parentDiv;
-			var level = parentDiv.attr('data-id');
-			
-			if(level == 1) {
-				// get this index
-				var i = parentDiv.find('li').index(li);
+			if ( $(e.target).attr('data-type') !=  "download" ) {
 				
-				this.currentFirstLevelIndex  = i;
-				$("#main3").empty();
+				e1 = e;
 				
-				$("#main2").html(this.subMenuTemplate(this.menu[i].menus));
+				var parentDiv = $(e.target).parents('div.menu');
+				var li = $(e.target).parent();
 				
-				$("#navbarBreadcrumb").empty();
-				$("#navbarBreadcrumb").html("<li><a href='#'>" + $(e.target).html() +"</a></li>");
+				//e1=parentDiv;
+				var level = parentDiv.attr('data-id');
 				
-				$.ajax({
-					type: 'POST',
-					data: {
-						level: 0,
-						value: this.menu[i].name,
-						code: this.menu[i].code
-					},
-					url: appUrl('/Session/updateNavbarBreadcrumb')
-				});
-				
-				
-			} else if (level==2) {
-				// get this index
-				var i = parentDiv.find('li').index(li);
-				
-				$("#main3").html(this.subMenuTemplate(this.menu[this.currentFirstLevelIndex].menus[i].menus));
-				
-				
-				$("#navbarBreadcrumb").empty();
-				$("#navbarBreadcrumb").html("<li><a href='#'>" + this.menu[this.currentFirstLevelIndex].name +"</a> <span class='divider'>/</span></li>");
-				$("#navbarBreadcrumb").append("<li><a href='#'>" + $(e.target).html() +"</a></li>");
-				
-				$.ajax({
-					type: 'POST',
-					data: {
-						level: 1,
-						value: this.menu[this.currentFirstLevelIndex].menus[i].name,
-						code: this.menu[this.currentFirstLevelIndex].menus[i].code
-					},
-					url: appUrl('/Session/updateNavbarBreadcrumb')
-				});
-				
-			} else if (level==3) {
-				
+				if(level == 1) {
+					// get this index
+					var i = parentDiv.find('li').index(li);
+					
+					this.currentFirstLevelIndex  = i;
+					$("#main3").empty();
+					
+					$("#main2").html(this.subMenuTemplate(this.menu[i].menus));
+					
+					$("#navbarBreadcrumb").empty();
+					$("#navbarBreadcrumb").html("<li><a href='#'>" + $(e.target).html() +"</a></li>");
+					
+					$.ajax({
+						type: 'POST',
+						data: {
+							level: 0,
+							value: this.menu[i].name,
+							code: this.menu[i].code
+						},
+						url: appUrl('/Session/updateNavbarBreadcrumb')
+					});
+					
+					
+				} else if (level==2) {
+					// get this index
+					var i = parentDiv.find('li').index(li);
+					
+					$("#main3").html(this.subMenuTemplate(this.menu[this.currentFirstLevelIndex].menus[i].menus));
+					
+					
+					$("#navbarBreadcrumb").empty();
+					$("#navbarBreadcrumb").html("<li><a href='#'>" + this.menu[this.currentFirstLevelIndex].name +"</a> <span class='divider'>/</span></li>");
+					$("#navbarBreadcrumb").append("<li><a href='#'>" + $(e.target).html() +"</a></li>");
+					
+					$.ajax({
+						type: 'POST',
+						data: {
+							level: 1,
+							value: this.menu[this.currentFirstLevelIndex].menus[i].name,
+							code: this.menu[this.currentFirstLevelIndex].menus[i].code
+						},
+						url: appUrl('/Session/updateNavbarBreadcrumb')
+					});
+					
+				} else if (level==3) {
+					
+				}
+			} else {
+				loadReport($(e.target).attr('href'));
+				return false;
 			}
 		}
 	});

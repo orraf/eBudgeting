@@ -495,7 +495,8 @@ var MainSelectionView = Backbone.View.extend({
 		var startMonth = this.$el.find('#startMonth').val();
 		var endMonth = this.$el.find('#endMonth').val();
 		var objId = this.$el.find("#objId").val();
-		window.open(appUrl("/m81r06.xls/" + fiscalYear + "/" +  startMonth + "/" + endMonth + "/" + objId +"/file/m81r06.xls"));
+		loadReport(appUrl("/m81r06.xls/" + fiscalYear + "/" +  startMonth + "/" + endMonth + "/" + objId +"/file/m81r06.xls"));
+		
 		return false;
 	},
 	

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+
 
 
 
@@ -530,17 +535,23 @@ public class ExcelReportsController {
 
 	@RequestMapping("/m81r01.xls/{fiscalYear}/file/m81r01.xls")
 	public String excelM81R01(@PathVariable Integer fiscalYear, Model model, 
-			@Activeuser ThaicomUserDetail currentUser) {
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("currentUser", currentUser);
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		
+		
+		response.addCookie(cookie);
 		
 		return "m81r01.xls";
 	}
 	
 	@RequestMapping("/m81r02.xls/{fiscalYear}/file/m81r02.xls")
 	public String excelM81R02(@PathVariable Integer fiscalYear, Model model, 
-			@Activeuser ThaicomUserDetail currentUser) {
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
 		
@@ -569,13 +580,19 @@ public class ExcelReportsController {
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("currentUser", currentUser);
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		
+		
+		response.addCookie(cookie);
 		
 		return "m81r02.xls";
 	}
 	
 	@RequestMapping("/m81r03.xls/{fiscalYear}/file/m81r03.xls")
 	public String excelM81R03(@PathVariable Integer fiscalYear, Model model, 
-			@Activeuser ThaicomUserDetail currentUser) {
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
 		
@@ -605,12 +622,17 @@ public class ExcelReportsController {
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("currentUser", currentUser);
 		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		
+		response.addCookie(cookie);
+		
 		return "m81r03.xls";
 	}
 	
 	@RequestMapping("/m81r04.xls/{fiscalYear}/{id}/file/m81r04.xls")
 	public String excelM81R04(@PathVariable Integer fiscalYear, @PathVariable Integer id, Model model, 
-			@Activeuser ThaicomUserDetail currentUser) {
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		Activity activity = entityService.findOneActivity((long) id);
 		
@@ -618,12 +640,16 @@ public class ExcelReportsController {
 		model.addAttribute("activity", activity);
 		model.addAttribute("currentUser", currentUser);
 		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		
 		return "m81r04.xls";
 	}
 	
 	@RequestMapping("/m81r05.xls/{fiscalYear}/file/m81r05.xls")
 	public String excelM81R05(@PathVariable Integer fiscalYear, Model model, 
-			@Activeuser ThaicomUserDetail currentUser) {
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		List<Objective> objectives = entityService.findObjectivesByFiscalyearAndTypeIdForM81R05Report(fiscalYear);
 		
@@ -631,12 +657,15 @@ public class ExcelReportsController {
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		response.addCookie(cookie);
 		return "m81r05.xls";
 	}
 	
 	@RequestMapping("/m81r06.xls/{fiscalYear}/{startMonth}/{endMonth}/{objId}/file/m81r06.xls")
 	public String excelM81R06(@PathVariable Integer fiscalYear, @PathVariable Integer startMonth, @PathVariable Integer endMonth, @PathVariable Integer objId, Model model, 
-			@Activeuser ThaicomUserDetail currentUser) {
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		Objective objective = entityService.findOjectiveById((long) objId);
 		
@@ -657,22 +686,32 @@ public class ExcelReportsController {
 		model.addAttribute("objective", objective);
 		model.addAttribute("organization", organization);
 		model.addAttribute("currentUser", currentUser);
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		
 
 		return "m81r06.xls";
 	}
 
 	@RequestMapping("/m81r07.xls/{fiscalYear}/file/m81r07.xls")
 	public String excelM81R07(@PathVariable Integer fiscalYear, Model model, 
-			@Activeuser ThaicomUserDetail currentUser) {
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		model.addAttribute("fiscalYear", fiscalYear);
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		
 		
 		return "m81r07.xls";
 	}
 	
 	@RequestMapping("/m81r08.xls/{fiscalYear}/file/m81r08.xls")
 	public String excelM81R08(@PathVariable Integer fiscalYear, Model model, 
-			@Activeuser ThaicomUserDetail currentUser) {
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		List<AssetAllocation> assetAllocations = entityService.findAssetAllocationForReportM81r08(fiscalYear);
 		List<AssetAllocation> noMethodAllocs = new ArrayList<AssetAllocation>();
@@ -698,6 +737,12 @@ public class ExcelReportsController {
 		
 		model.addAttribute("assetMap", assetMap);
 		model.addAttribute("noMethodAllocs", noMethodAllocs);
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		
+		
+		response.addCookie(cookie);
 		
 		
 		return "m81r08.xls";

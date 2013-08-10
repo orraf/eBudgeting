@@ -577,8 +577,8 @@ var MainCtrView = Backbone.View.extend({
 	
 	loadReport: function(e) {
 		var activityId = $(e.target).parents('tr').attr('data-id');
-		window.open(appUrl("/m81r04.xls/" + fiscalYear + "/" + activityId +"/file/m81r04.xls"));
-		
+		loadReport(appUrl("/m81r04.xls/" + fiscalYear + "/" + activityId +"/file/m81r04.xls"));
+		return false;
 	},
 	
 	
