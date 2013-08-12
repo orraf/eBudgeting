@@ -10,8 +10,9 @@
 
   <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-<!--       <pattern>%caller{1}| %-5level|%-40.40logger{0}|%msg%n</pattern> -->
-		<pattern>%5p | %-55logger{55}%-4L{4}| %msg%n</pattern>
+        <pattern>%caller{1}%-5level | %msg%n</pattern>
+<!-- 	<pattern>%5p | %-55logger{55}%-4L{4}| %msg%n</pattern> -->
+<!-- 	<pattern>%d{HH:mm:ss.SSS} %-5level (%file:%line\) - %message%n</pattern> -->
     </encoder>
   </appender>
   

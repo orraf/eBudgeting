@@ -1252,11 +1252,12 @@ public class GenericViewController {
 			@Activeuser ThaicomUserDetail currentUser) {
 		model.addAttribute("rootPage", true);
 		setFiscalYearFromSession(model, session);
-		model.addAttribute("organizationId", currentUser.getWorkAt().getId());
+		logger.debug("currentOrganizationId:" + currentUser.getWorkAt().getId());
+		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
 		
 		return "m81r04";
 	}
-	
+
 	@RequestMapping("/page/m81r06/")
 	public String render_m81r06(
 			Model model,
@@ -1264,7 +1265,8 @@ public class GenericViewController {
 			@Activeuser ThaicomUserDetail currentUser) {
 		model.addAttribute("rootPage", true);
 		setFiscalYearFromSession(model, session);
-		model.addAttribute("organizationId", currentUser.getWorkAt().getId());
+		logger.debug("currentOrganizationId:" + currentUser.getWorkAt().getId());
+		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
 		
 		return "m81r06";
 	}

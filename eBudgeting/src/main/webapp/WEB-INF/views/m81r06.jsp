@@ -122,11 +122,31 @@
 			</div> 
 		</div>	
 	</div>
+	
+	<div id="provinceDiv">
+			
+	</div>
+	<div id="amphurDiv">
+		
+	</div>
+
 </form>
 	<div>
 		<button class="btn btn-primary report">แสดงรายงาน</button>
 	</div>
 </script>
+
+<script id="orgTemplate" type="text/x-handler-template">
+<div class="control-group"  style="margin-bottom:5px;">
+	<label class="control-label">{{label}} :</label>
+	<div class="controls">
+		<select id="id" class="span5">
+			{{#each this}}<option value={{id}}>{{name}}</option>{{/each}}
+		</select>
+	</div> 
+</div>
+</script>
+
 
 <script id="selectionTemplate" type="text/x-handler-template">
 <div class="control-group"  style="margin-bottom:5px;">
