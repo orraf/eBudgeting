@@ -481,6 +481,7 @@ var MainSelectionView = Backbone.View.extend({
 	mainSelectionTemplate : Handlebars.compile($("#mainSelectionTemplate").html()),
 	selectionTemplate : Handlebars.compile($("#selectionTemplate").html()),
 	type102DisabledSelectionTemplate : Handlebars.compile($("#type102DisabledSelection").html()),
+	orgSelectionTemplate: Handlebars.compile($("#orgSelectionTemplate").html()),
 	/**
      *  @memberOf MainSelectionView
      */
@@ -488,14 +489,33 @@ var MainSelectionView = Backbone.View.extend({
 		
 	},
 	events: {
-		"click .report" : "loadReport"
+		"click .report" : "loadReport",
+		"change #provinceSlt" : "provinceChanged"
 	},
 	
 	loadReport: function(e) {
 		var startMonth = this.$el.find('#startMonth').val();
 		var endMonth = this.$el.find('#endMonth').val();
 		var objId = this.$el.find("#objId").val();
-		loadReport(appUrl("/m81r06.xls/" + fiscalYear + "/" +  startMonth + "/" + endMonth + "/" + objId +"/file/m81r06.xls"));
+		
+		var orgId = null;
+		
+		if(this.$el.find('#amphurSlt').val() != null &&
+				this.$el.find('#amphurSlt').val() != 0 ) {
+			orgId = this.$el.find('#amphurSlt').val();
+			
+		} else if(this.$el.find('#provinceSlt').val() != null &&
+				this.$el.find('#provinceSlt').val() != 0){
+			orgId = this.$el.find('#provinceSlt').val();
+			
+		} else if(currentOrganizationId == 101090100){
+			// ถ้าเป็น กงป. ให้ค้นหาจากทุกกอง
+			orgId = 0;
+		} else {
+			orgId = currentOrganizationId;
+		}
+		
+		loadReport(appUrl("/m81r06.xls/" + fiscalYear + "/" +  startMonth + "/" + endMonth + "/" + objId +"/" + orgId +"/file/m81r06.xls"));
 		
 		return false;
 	},
@@ -512,6 +532,48 @@ var MainSelectionView = Backbone.View.extend({
 	renderInitialWith: function(collection) {
 		this.rootChildrenObjectiveCollection = collection;
 		this.render();
+		
+		//now check if this is the province
+		if(currentOrganizationId == 101090100) {
+			var html = {};
+			var provinces = new OrganizationCollection();
+			provinces.fetch({
+				url: appUrl("/Organization/findAllProvinces"),
+				success: _.bind(function() {
+					
+					var json = provinces.toJSON();
+					json.label = "สกย.จ.";
+					json.id="provinceSlt";
+					json.first="กรุณาเลือก สกย.จ.";
+					html = this.orgSelectionTemplate(json); 
+						
+					this.$el.find('#provinceDiv').html(html);
+				},this)
+			});
+			
+		} else {
+			
+		}
+	},
+	provinceChanged: function(e) {
+		e1=e;
+		var provinceId = $(e.target).val();
+		
+		var provinces = new OrganizationCollection();
+		provinces.fetch({
+			url: appUrl("/Organization/"+provinceId+"/children"),
+			success: _.bind(function() {
+				
+				var json = provinces.toJSON();
+				json.label = "สกย.อ.";
+				json.id="amphurSlt";
+				json.first="กรุณาเลือก สกย.อ."
+				html = this.orgSelectionTemplate(json); 
+					
+				this.$el.find('#amphurDiv').html(html);
+			},this)
+		});
+		
 	}
 	
 });

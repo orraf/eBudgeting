@@ -352,6 +352,8 @@ public interface EntityService {
 	public Organization findOrganizationParentOf(Organization org);
 	public List<Organization> findOrganizationByNameAndParent_IdWithProcuremnt(
 			String query, Long parentId);
+	
+	public List<Organization> findOrganizationProvinces();
 
 
 
@@ -432,6 +434,7 @@ public interface EntityService {
 	
 	// AssetMethod
 	public List<AssetMethod> findAssetMethodAll();
+	
 
 
 

@@ -164,9 +164,9 @@ var menuJson = [{
 	menus: [{
 		name: "รายงานทะเบียน (m81r)", code: "m81", menus: 
 		    [{
-		    	name: "m81r01: รายงานแผนปฏิบัติการสำหรับส่วนกลาง", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download"
+		    	name: "m81r01: รายงานแผนปฏิบัติการสำหรับฝ่าย", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download"
 		    },{
-		    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับจังหวัดและอำเภอ", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download"
+		    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับส่วนงาน/สกยจ./สกยอ.", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download"
 		    },{
 		    	name: "m81r03: รายงานภาพรวมแผนปฏิบัติการประจำปีของ สกย.", link: "m81r03.xls/"+fiscalYear+"/file/m81r03.xls", type: "download"
 		    }, {
@@ -174,11 +174,13 @@ var menuJson = [{
 		    }, {
 		    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", link: "m81r05.xls/" + fiscalYear + "/file/m81r05.xls", type: "download"
 		    }, {
-		    	name: "m81r06: รายงานการใช้จ่ายงบประมาณประจำเดือน", link: "page/m81r06/"
+		    	name: "m81r06: รายงานแผนปฏิบัติการรายเดือน - แยกตามยุทธศาสตร์", link: "page/m81r06/"
 		    }, {
 		    	name: "m81r07: รายงานสรุปการใช้งบประมาณ", link: "m81r07.xls/" + fiscalYear + "/file/m81r07.xls", type: "download"
 		    }, {
-		    	name: "m81r08: รายงานการสรุปงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls", id: 'm81r08', type: "download"
+		    	name: "m81r08: รายงานการสรุปการเบิกจ่ายงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls", id: 'm81r08', type: "download"
+		    }, {
+		    	name: "m81r09: รายงานการสรุปรายการครุภัณฑ์", link: "m81r09.xls/"+fiscalYear+"/file/m81r09.xls", id: 'm81r09', type: "download"
 		    }]
 	}, {
 		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
@@ -229,15 +231,17 @@ var menuUserJson = [
 	menus: [{
 		name: "รายงานทะเบียน (m81r)", code: "m81", menus: 
 		    [{
-		    	name: "m81r01: รายงานสำหรับส่วนกลาง", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download"
+		    	name: "m81r01: รายงานสำหรับส่วนฝ่าย", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download"
 		    },{
-		    	name: "m81r02: รายงานสำหรับจังหวัดและอำเภอ", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download"
+		    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับส่วนงาน/สกยจ./สกยอ.", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download"
 		    }, {
 		    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", link: "page/m81r04/"
 		    }, {
-		    	name: "m81r06: รายงานการใช้จ่ายงบประมาณประจำเดือน", link: "page/m81r06/"
+		    	name: "m81r06: รายงานแผนปฏิบัติการรายเดือน - แยกตามยุทธศาสตร์", link: "page/m81r06/"
 		    }, {
-		    	name: "m81r08: รายงานการสรุปงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls", id: "m81r08", type:"download"
+		    	name: "m81r08: รายงานการสรุปการเบิกจ่ายงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls", id: "m81r08", type:"download"
+		    }, {
+		    	name: "m81r09: รายงานการสรุปรายการครุภัณฑ์", link: "m81r09.xls/"+fiscalYear+"/file/m81r09.xls", id: "m81r09", type:"download"
 		    }]
 	}]
 }];

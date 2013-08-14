@@ -4059,6 +4059,14 @@ public class EntityServiceJPA implements EntityService {
 		return returnList;
 	}
 
+	
+	
+	@Override
+	public List<Organization> findOrganizationProvinces() {
+		
+		return organizationRepository.findAllProvinces();
+	}
+
 	@Override
 	public List<Organization> findOrganizationByProvinces(String query) {
 		query = "%" + query + "%";

@@ -34,6 +34,14 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			"	AND organization.name like ?1 " +
 			"ORDER BY organization.code asc ")
 	public List<Organization> findAllByProvinces(String query);
+	
+	@Query(""
+			+ " SELECT org "
+			+ " FROM Organization org "
+			+ " WHERE org.parent.id=0 "
+			+ " 	AND org.id > 110000000 "
+			+ " ORDER BY org.id ")
+	public List<Organization> findAllProvinces();
 
 	@Query("" +
 			"SELECT organization " +
