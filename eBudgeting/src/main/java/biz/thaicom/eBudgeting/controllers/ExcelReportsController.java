@@ -734,7 +734,6 @@ public class ExcelReportsController {
 			}
 		}
 		
-		
 		model.addAttribute("assetMap", assetMap);
 		model.addAttribute("noMethodAllocs", noMethodAllocs);
 		
@@ -746,6 +745,20 @@ public class ExcelReportsController {
 		
 		
 		return "m81r08.xls";
+	}
+	
+	@RequestMapping("/m81r09.xls/{fiscalYear}/file/m81r09.xls")
+	public String excelM81R09(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		
+		
+		return "m81r09.xls";
 	}
 	
 	@RequestMapping("/admin/excel/report1.xls/{id}")
