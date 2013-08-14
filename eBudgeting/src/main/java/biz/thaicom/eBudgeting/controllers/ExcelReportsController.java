@@ -663,6 +663,24 @@ public class ExcelReportsController {
 		return "m81r05.xls";
 	}
 	
+	@RequestMapping("/m82r01.xls/{fiscalYear}/file/m82r01.xls")
+	public String excelM82R01(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
+		
+		// Plase Correct this 
+		
+		//Objective root = entityService.findObjectivesByFiscalyearAndTypeIdForM82R01Report(fiscalYear);
+		
+		//model.addAttribute("objectives", objectives);
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		return "m82r01.xls";
+	}
+	
 	@RequestMapping("/m81r06.xls/{fiscalYear}/{startMonth}/{endMonth}/{objId}/{orgId}/file/m81r06.xls")
 	public String excelM81R06(@PathVariable Integer fiscalYear, @PathVariable Integer startMonth, @PathVariable Integer endMonth, @PathVariable Integer objId,
 			@PathVariable Long orgId,
