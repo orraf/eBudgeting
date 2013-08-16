@@ -155,8 +155,11 @@ public interface EntityService {
 	public List<ActivityTargetResult> findActivityTargetResultByReportAndFiscalMonth(
 			Long targetReportId, Integer fiscalMonth);
 	
-	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear);
+	// Specific for Excel Report!
 	
+	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear);
+	public Objective findObjectivesByFiscalyearAndTypeIdForM82R01Report(
+			Integer fiscalYear);
 
 	
 	//BudgetType
@@ -434,6 +437,7 @@ public interface EntityService {
 	
 	// AssetMethod
 	public List<AssetMethod> findAssetMethodAll();
+
 	
 
 

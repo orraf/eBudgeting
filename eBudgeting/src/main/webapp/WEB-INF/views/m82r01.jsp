@@ -8,7 +8,7 @@
 	<h4>การตรวจสอบความเชื่อมโยง</h4>
 	</div>
 	<div class="pull-right">
-		<a class="btn btn-primary" href=""><i class="icon-download-alt"></i> รายงาน Excel</a>
+		<a class="btn btn-primary" href="#" id="loadReportBtn" onclick="loadReport(appUrl('/m82r01.xls/'+fiscalYear+'/file/m82r01.xls'));return false"><i class="icon-download-alt"></i> รายงาน Excel</a>
 	</div> 
 </div>
 <div class="row">
@@ -39,7 +39,9 @@
 	<thead>
 		<tr>
 			<td>ชื่อกิจกรรม</td>
+			<!--
 			<td style="width:120px;">รหัสของ parent</td>
+			-->
 		</tr>
 	</thead>
 	<tbody>
@@ -49,8 +51,10 @@
 
 <script id="objectiveTbodyTemplate" type="text/x-handler-template">
 <tr>
-	<td><div style="padding-left:{{padding}}px">[({{id}})/{{code}}] {{name}}</div></td>
+	<td><div style="padding-left:{{padding}}px">[{{code}}] {{name}}</div></td>
+	<!--
 	<td style="text-align: right">{{parentPath}}</td>
+	-->
 </tr>
 </script>
 

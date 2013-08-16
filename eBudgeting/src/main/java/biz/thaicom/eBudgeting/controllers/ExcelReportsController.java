@@ -667,13 +667,14 @@ public class ExcelReportsController {
 	public String excelM82R01(@PathVariable Integer fiscalYear, Model model, 
 			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
-		// Plase Correct this 
 		
-		//Objective root = entityService.findObjectivesByFiscalyearAndTypeIdForM82R01Report(fiscalYear);
+		
+		Objective root = entityService.findObjectivesByFiscalyearAndTypeIdForM82R01Report(fiscalYear);
 		
 		//model.addAttribute("objectives", objectives);
 		
-		model.addAttribute("fiscalYear", fiscalYear);
+		model.addAttribute("root", root);
+		
 		
 		Cookie cookie = new Cookie("fileDownload", "true");
 		cookie.setPath("/");

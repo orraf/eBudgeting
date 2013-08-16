@@ -5640,6 +5640,21 @@ public class EntityServiceJPA implements EntityService {
 		
 		return assetAllocations;
 	}
+
+	@Override
+	public Objective findObjectivesByFiscalyearAndTypeIdForM82R01Report(
+			Integer fiscalYear) {
+		
+		
+		// now we'll have to recursively get all children?
+		List<Objective> allObjective = objectiveRepository.findAllLeftJoinChildrenByFiscalYear(fiscalYear);
+		
+		Objective root = objectiveRepository.findRootOfFiscalYear(fiscalYear);
+		
+		return root;
+	}
+	
+	
 	
 	
 	

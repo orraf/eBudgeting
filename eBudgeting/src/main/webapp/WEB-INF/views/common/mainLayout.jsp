@@ -34,11 +34,11 @@
 	<script src="<c:url value='/resources/jslibs/jquery.ui.datepicker.ext.be.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/jquery.fileDownload-1.4.2.js'/>"></script>
 	
-	<script src="<c:url value='/resources/jslibs/underscore-dev-1.4.4.js'/>"></script>
+	<script src="<c:url value='/resources/jslibs/underscore-1.5.1.min.js'/>"></script>
 	
 
 	<script src="<c:url value='/resources/jslibs/backbone-1.0.0.js'/>"></script>
-	<script src="<c:url value='/resources/jslibs/backbone-relational-0.8.5.js'/>"></script>
+	<script src="<c:url value='/resources/jslibs/backbone-relational-0.8.6.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/handlebars-1.0.0.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/moment-2.1/moment-2.1.0.min.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/moment-2.0/lang/th.js'/>"></script>		
