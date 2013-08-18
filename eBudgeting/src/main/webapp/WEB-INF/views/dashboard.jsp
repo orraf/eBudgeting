@@ -185,6 +185,8 @@ var menuJson = [{
 	}, {
 		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
 			name: "m82r01: รายงานการตรวจสอบความเชื่อมโยง", code: "m82r01", link: "page/m82r01/"
+		}, {
+			name: "m82r02: รายงานการผังองค์กร", code: "m82r02", link: "page/m82r02/"
 		}]
 	}]
 }];
@@ -243,6 +245,12 @@ var menuUserJson = [
 		    }, {
 		    	name: "m81r09: รายงานการสรุปรายการครุภัณฑ์", link: "m81r09.xls/"+fiscalYear+"/file/m81r09.xls", id: "m81r09", type:"download"
 		    }]
+	}, {
+		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
+			name: "m82r01: รายงานการตรวจสอบความเชื่อมโยง", code: "m82r01", link: "page/m82r01/"
+		}, {
+			name: "m82r02: รายงานการผังองค์กร", code: "m82r02", link: "page/m82r02/"
+		}]
 	}]
 }];
 

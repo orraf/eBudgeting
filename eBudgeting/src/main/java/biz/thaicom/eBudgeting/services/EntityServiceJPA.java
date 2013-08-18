@@ -5653,6 +5653,23 @@ public class EntityServiceJPA implements EntityService {
 		
 		return root;
 	}
+
+	@Override
+	public List<Organization> findAllOrganization() {
+		List<Organization> organizations = organizationRepository.findAllLeftJoinChildren();
+		
+		return organizations;
+		
+	}
+
+	@Override
+	public Organization findOrganizationRoot() {
+		
+		List<Organization> organizations = organizationRepository.findAllLeftJoinChildren();
+		Organization root = organizationRepository.findRoot();
+		
+		return root;
+	}
 	
 	
 	

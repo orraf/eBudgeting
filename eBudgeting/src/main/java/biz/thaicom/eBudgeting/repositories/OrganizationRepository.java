@@ -56,4 +56,17 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			"FROM Organization org " +
 			"WHERE org.id = ?1 ")
 	public Organization findOneById(Long id);
+
+	@Query(""
+			+ "SELECT org "
+			+ "FROM Organization org "
+			+ "	LEFT JOIN FETCH org.children "
+			+ " ORDER BY org.id asc")
+	public List<Organization> findAllLeftJoinChildren();
+
+	@Query("" +
+			"SELECT org " +
+			"FROM Organization org " +
+			"WHERE org.id = 0 ")
+	public Organization findRoot();
 }

@@ -199,11 +199,11 @@ Activity = Backbone.RelationalModel.extend({
     	key: 'children',
     	relatedModel: 'Activity',
     	collectionType: 'ActivityCollection'	    
-    },,{
+    },{
     	type: Backbone.HasOne,
     	key: 'parent',
     	relatedModel: 'Activity'
-    },],
+    }],
 	urlRoot: appUrl('/Activity/')
 });
 

@@ -358,6 +358,8 @@ public interface EntityService {
 	
 	public List<Organization> findOrganizationProvinces();
 
+	public List<Organization> findAllOrganization();
+	public Organization findOrganizationRoot();
 
 
 	
@@ -437,6 +439,7 @@ public interface EntityService {
 	
 	// AssetMethod
 	public List<AssetMethod> findAssetMethodAll();
+
 
 	
 

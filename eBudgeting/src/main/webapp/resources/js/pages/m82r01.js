@@ -21,7 +21,6 @@ var MainTblView = Backbone.View.extend({
 				this.$el.html(html);
 				for(var i=0; i<this.objectiveCollection.length; i++) {
 					var obj=this.objectiveCollection.at(i);
-					console.log(obj.get('id'));
 					var json = obj.toJSON();
 					json.padding = parseInt(obj.get('parentLevel')) * 25;
 					var html = this.objectiveTbodyTemplate(json);
