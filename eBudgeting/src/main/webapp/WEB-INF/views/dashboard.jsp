@@ -187,7 +187,7 @@ var menuJson = [{
 		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
 			name: "m82r01: รายงานการตรวจสอบความเชื่อมโยง", code: "m82r01", link: "page/m82r01/"
 		}, {
-			name: "m82r02: รายงานการผังองค์กร", code: "m82r02", link: "page/m82r02/"
+			name: "m82r02: รายงานผังองค์กร", code: "m82r02", link: "page/m82r02/"
 		}]
 	}]
 }];
@@ -250,7 +250,7 @@ var menuUserJson = [
 		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
 			name: "m82r01: รายงานการตรวจสอบความเชื่อมโยง", code: "m82r01", link: "page/m82r01/"
 		}, {
-			name: "m82r02: รายงานการผังองค์กร", code: "m82r02", link: "page/m82r02/"
+			name: "m82r02: รายงานผังองค์กร", code: "m82r02", link: "page/m82r02/"
 		}]
 	}]
 }];
