@@ -1336,4 +1336,26 @@ insert into bgt_assetmethodstep_join values (12, 1, 0);
 insert into bgt_assetmethodstep_join values (12, 2, 1);
 insert into bgt_assetmethodstep_join values (12, 3, 2);
 insert into bgt_assetmethodstep_join values (12, 4, 3);
+
+-- version 22
+-- Modified Date: August 18, 2013
+update app_info set db_version=22;
+    
+	create table BGT_ASSETCATEGORY (
+        id number(19,0) not null,
+        name varchar2(255),
+        code varchar2(255),
+        primary key (id)
+    );
+    
+    alter table BGT_ASSETBUDGET add (
+    	ASSETCATEGORY_ID number(19,0)
+    );
+    
+    alter table BGT_ASSETBUDGET     				   
+        add constraint FK32D3493329384AB2 
+        foreign key (ASSETCATEGORY_ID) 
+        references BGT_ASSETCATEGORY;
+
+	create sequence BGT_ASSETCATEGORY_SEQ;
     

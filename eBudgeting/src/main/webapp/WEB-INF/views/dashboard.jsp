@@ -124,7 +124,8 @@ var menuJson = [{
 		         {name: "m51f18: ทะเบียนหน่วยนับ", code: "m51f18", link: "page/m51f18/"}
 		         ]},{
 		        	 name: "ทะเบียนรายการงบลงทุน (m52)", code: "m52", menus: 
-			        	 [{name: "m52f01: ทะเบียนรายการงบลงทุน", code: "m52f01", link: "page/m52f01/"}]
+			        	 [{name: "m52f01: ทะเบียนรายการงบลงทุน", code: "m52f01", link: "page/m52f01/"},
+			        	  {name: "m52f02: ทะเบียนประเภทงบลงทุน", code: "m52f02", link: "page/m52f02/"}]
 		         }
 	         
 	        // ,

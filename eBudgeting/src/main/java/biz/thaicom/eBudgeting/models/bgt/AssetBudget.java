@@ -43,6 +43,10 @@ public class AssetBudget implements Serializable {
 	@JoinColumn(name="ASSETKIND_ID")
 	private AssetKind kind;
 
+	@ManyToOne
+	@JoinColumn(name="ASSETCATEGORY_ID")
+	private AssetCategory category;
+	
 	public Long getId() {
 		return id;
 	}
@@ -82,5 +86,14 @@ public class AssetBudget implements Serializable {
 	public void setKind(AssetKind kind) {
 		this.kind = kind;
 	}
+
+	public AssetCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(AssetCategory category) {
+		this.category = category;
+	}
+
 	
 }

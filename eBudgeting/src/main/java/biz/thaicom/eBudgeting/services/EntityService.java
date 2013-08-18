@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
+import biz.thaicom.eBudgeting.models.bgt.AssetCategory;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
@@ -439,6 +440,15 @@ public interface EntityService {
 	
 	// AssetMethod
 	public List<AssetMethod> findAssetMethodAll();
+	
+	
+	public Page<AssetCategory> findAllAssetCategories(PageRequest pageRequest, String query);
+	public Page<AssetCategory> findAllAssetCategories(PageRequest pageRequest);
+	public AssetCategory findOneAssetCategory(Long id);
+	public AssetCategory updateAssetCategory(JsonNode node);
+	public AssetCategory saveAssetCategory(JsonNode node);
+	public AssetCategory deleteAssetCategory(Long id);
+	public List<AssetCategory> findAssetCategoryAll();
 
 
 	

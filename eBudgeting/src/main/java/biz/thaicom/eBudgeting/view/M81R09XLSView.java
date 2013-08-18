@@ -55,59 +55,62 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		Cell cell17 = firstRow.createCell(7);
 		Cell cell18 = firstRow.createCell(8);
 		Cell cell19 = firstRow.createCell(9);
-		sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 9));
+		sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 8));
 
 		Row secondRow = sheet.createRow(1);
-		Cell cell20 = secondRow.createCell(0);
+		int colNum = 0;
+		Cell cell20 = secondRow.createCell(colNum++);
 		cell20.setCellValue("หน่วยงาน");
 		cell20.setCellStyle(styles.get("header"));
-		Cell cell21 = secondRow.createCell(1);
-		cell21.setCellValue("ลำดับ ที่");
-		cell21.setCellStyle(styles.get("header"));
-		Cell cell22 = secondRow.createCell(2);
+//		Cell cell21 = secondRow.createCell(1);
+//		cell21.setCellValue("ลำดับ ที่");
+//		cell21.setCellStyle(styles.get("header"));
+		Cell cell22 = secondRow.createCell(colNum++);
 		cell22.setCellValue("รหัส");
 		cell22.setCellStyle(styles.get("header"));
-		Cell cell23 = secondRow.createCell(3);
+		Cell cell23 = secondRow.createCell(colNum++);
 		cell23.setCellValue("รายการ");
 		cell23.setCellStyle(styles.get("header"));
-		Cell cell24 = secondRow.createCell(4);
+		Cell cell24 = secondRow.createCell(colNum++);
 		cell24.setCellValue("จำนวน หน่วย");
 		cell24.setCellStyle(styles.get("header"));
-		Cell cell25 = secondRow.createCell(5);
+		Cell cell25 = secondRow.createCell(colNum++);
 		cell25.setCellValue("ราคาต่อหน่วย");
 		cell25.setCellStyle(styles.get("header"));
-		Cell cell26 = secondRow.createCell(6);
+		Cell cell26 = secondRow.createCell(colNum++);
 		cell26.setCellValue("รวมเงิน (บาท)");
 		cell26.setCellStyle(styles.get("header"));
-		Cell cell27 = secondRow.createCell(7);
+		
+		Cell cell27 = secondRow.createCell(colNum++);
 		cell27.setCellValue("รหัสครุภัณฑ์");
 		cell27.setCellStyle(styles.get("header"));
-		Cell cell28 = secondRow.createCell(8);
-		Cell cell29 = secondRow.createCell(9);
-		sheet.addMergedRegion(new CellRangeAddress(1, 1, 7, 9));
+		Cell cell28 = secondRow.createCell(colNum++);
+		Cell cell29 = secondRow.createCell(colNum++);
+		sheet.addMergedRegion(new CellRangeAddress(1, 1, 6, 8));
 
+		colNum = 0;
 		Row thirdRow = sheet.createRow(2);
-		Cell cell30 = thirdRow.createCell(0);
+		Cell cell30 = thirdRow.createCell(colNum++);
 		cell30.setCellStyle(styles.get("header"));
-		Cell cell31 = thirdRow.createCell(1);
-		cell31.setCellStyle(styles.get("header"));
-		Cell cell32 = thirdRow.createCell(2);
+//		Cell cell31 = thirdRow.createCell(colNum++);
+//		cell31.setCellStyle(styles.get("header"));
+		Cell cell32 = thirdRow.createCell(colNum++);
 		cell32.setCellStyle(styles.get("header"));
-		Cell cell33 = thirdRow.createCell(3);
+		Cell cell33 = thirdRow.createCell(colNum++);
 		cell33.setCellStyle(styles.get("header"));
-		Cell cell34 = thirdRow.createCell(4);
+		Cell cell34 = thirdRow.createCell(colNum++);
 		cell34.setCellStyle(styles.get("header"));
-		Cell cell35 = thirdRow.createCell(5);
+		Cell cell35 = thirdRow.createCell(colNum++);
 		cell35.setCellStyle(styles.get("header"));
-		Cell cell36 = thirdRow.createCell(6);
+		Cell cell36 = thirdRow.createCell(colNum++);
 		cell36.setCellStyle(styles.get("header"));
-		Cell cell37 = thirdRow.createCell(7);
+		Cell cell37 = thirdRow.createCell(colNum++);
 		cell37.setCellValue("หมวด");
 		cell37.setCellStyle(styles.get("header"));
-		Cell cell38 = thirdRow.createCell(8);
+		Cell cell38 = thirdRow.createCell(colNum++);
 		cell38.setCellValue("ประเภท");
 		cell38.setCellStyle(styles.get("header"));
-		Cell cell39 = thirdRow.createCell(9);
+		Cell cell39 = thirdRow.createCell(colNum++);
 		cell39.setCellValue("ชนิด");
 		cell39.setCellStyle(styles.get("header"));
 		sheet.addMergedRegion(new CellRangeAddress(1, 2, 0, 0));
@@ -116,58 +119,94 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		sheet.addMergedRegion(new CellRangeAddress(1, 2, 3, 3));
 		sheet.addMergedRegion(new CellRangeAddress(1, 2, 4, 4));
 		sheet.addMergedRegion(new CellRangeAddress(1, 2, 5, 5));
-		sheet.addMergedRegion(new CellRangeAddress(1, 2, 6, 6));
+		
+		//sheet.addMergedRegion(new CellRangeAddress(1, 2, 6, 6));
 		
 		Connection connection = dataSource.getConnection();
 				
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select t6.code, t6.abbr, ' ' seq, t2.code, t2.description, t1.quantity, t1.unitbudget, t1.quantity * t1.unitbudget total, t5.assetgroupcode, t4.assettypecode, t3.assetkindcode " +
-									   "from bgt_assetallocation t1, bgt_assetbudget t2, gla_assetkind t3, gla_assettype t4, gla_assetgroup t5, hrx_organization t6 " +
+		ResultSet rs = st.executeQuery("select t6.code, t6.abbr, ' ' seq, t2.code, t2.description, t1.quantity, t1.unitbudget, t1.quantity * t1.unitbudget total, t5.assetgroupcode, t4.assettypecode, t3.assetkindcode, t7.name categoryName " +
+									   "from bgt_assetallocation t1, bgt_assetbudget t2, gla_assetkind t3, gla_assettype t4, gla_assetgroup t5, hrx_organization t6, bgt_assetcategory t7 " +
 									   "where t1.bgt_assetbudget_id = t2.id " +
 									   "and t2.assetkind_id = t3.id " +
 									   "and t3.typeid = t4.id " +
 									   "and t3.groupid = t5.id " +
 									   "and t1.hrx_owner_id = t6.id " +
 									   "and t1.fiscalyear = " + fiscalYear + " " +
-									   "order by t6.code, t2.code ");
+									   "and t2.ASSETCATEGORY_ID  = t7.id(+) " +
+									   "order by t2.assetcategory_id, t6.code, t2.code ");
 
 		int i = 3;
 		String code = " ";
+		String currentCategoryName = "";
+		String categoryName = "";
 		while (rs.next()) {
+			if(rs.getString("categoryName") == null) {
+				categoryName = "ยังไม่ได้ระบุประเภท";
+			} else {
+				categoryName = rs.getString("categoryName");
+			}
+			if(!currentCategoryName.equals(categoryName) ) {
+				// new Category
+				currentCategoryName = categoryName;
+				
+				Row catRow = sheet.createRow(i);
+				Cell catCell = catRow.createCell(0);
+				catCell.setCellValue(categoryName);
+				catCell.setCellStyle(styles.get("groupleft"));
+				
+				sheet.addMergedRegion(new CellRangeAddress(i, i, 0, 8));
+				
+				i = i+1;
+			}
+			
 			Row rows = sheet.createRow(i);
-			Cell rsc0 = rows.createCell(0);
+			
+			colNum = 0;
+			
+			
+			Cell rsc0 = rows.createCell(colNum++);
 			if (code.equals(rs.getString(1))) rsc0.setCellValue(" ");
 			else {
 				rsc0.setCellValue(rs.getString(2));
 				code = rs.getString(1);
 			}
 			rsc0.setCellStyle(styles.get("cellleft"));
-			Cell rsc1 = rows.createCell(1);
-			rsc1.setCellValue(rs.getString(3));
-			rsc1.setCellStyle(styles.get("cellcenter"));
-			Cell rsc2 = rows.createCell(2);
+			
+			//Cell rsc1 = rows.createCell(colNum++);
+			//rsc1.setCellValue(rs.getString(3));
+			//rsc1.setCellStyle(styles.get("cellcenter"));
+			
+			Cell rsc2 = rows.createCell(colNum++);
 			rsc2.setCellValue(rs.getString(4));
 			rsc2.setCellStyle(styles.get("cellcenter"));
-			Cell rsc3 = rows.createCell(3);
+			
+			Cell rsc3 = rows.createCell(colNum++);
 			rsc3.setCellValue(rs.getString(5));
 			rsc3.setCellStyle(styles.get("cellleft"));
-			Cell rsc4 = rows.createCell(4);
+			
+			Cell rsc4 = rows.createCell(colNum++);
 			rsc4.setCellValue(rs.getInt(6));
 			rsc4.setCellStyle(styles.get("cellcenter"));
-			Cell rsc5 = rows.createCell(5);
+			
+			Cell rsc5 = rows.createCell(colNum++);
 			rsc5.setCellValue(rs.getInt(7));
 			rsc5.setCellStyle(styles.get("cellnumber"));
-			Cell rsc6 = rows.createCell(6);
+			
+			Cell rsc6 = rows.createCell(colNum++);
 			rsc6.setCellValue(rs.getInt(8));
 			rsc6.setCellStyle(styles.get("cellnumber"));
-			Cell rsc7 = rows.createCell(7);
+			
+			Cell rsc7 = rows.createCell(colNum++);
 			rsc7.setCellValue(rs.getString(9));
 			rsc7.setCellStyle(styles.get("cellcenter"));
-			Cell rsc8 = rows.createCell(8);
+			
+			Cell rsc8 = rows.createCell(colNum++);
 			rsc8.setCellValue(rs.getString(10));
 			rsc8.setCellStyle(styles.get("cellcenter"));
-			Cell rsc9 = rows.createCell(9);
+			
+			Cell rsc9 = rows.createCell(colNum++);
 			rsc9.setCellValue(rs.getString(11));
 			rsc9.setCellStyle(styles.get("cellcenter"));
 			
@@ -178,16 +217,17 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		st.close();
 		connection.close();
 
-		sheet.setColumnWidth(0, 5000);
-		sheet.setColumnWidth(1, 2000);
-		sheet.setColumnWidth(2, 3500);
-		sheet.setColumnWidth(3, 14000);
-		sheet.setColumnWidth(4, 2000);
-		sheet.setColumnWidth(5, 5000);
-		sheet.setColumnWidth(6, 5000);
-		sheet.setColumnWidth(7, 3000);
-		sheet.setColumnWidth(8, 3000);
-		sheet.setColumnWidth(9, 3000);
+		colNum = 0;
+		sheet.setColumnWidth(colNum++, 5000);
+		//sheet.setColumnWidth(colNum++, 2000);
+		sheet.setColumnWidth(colNum++, 3500);
+		sheet.setColumnWidth(colNum++, 14000);
+		sheet.setColumnWidth(colNum++, 2000);
+		sheet.setColumnWidth(colNum++, 5000);
+		sheet.setColumnWidth(colNum++, 5000);
+		sheet.setColumnWidth(colNum++, 3000);
+		sheet.setColumnWidth(colNum++, 3000);
+		sheet.setColumnWidth(colNum++, 3000);
 		sheet.createFreezePane( 0, 3 );
 	}
 	

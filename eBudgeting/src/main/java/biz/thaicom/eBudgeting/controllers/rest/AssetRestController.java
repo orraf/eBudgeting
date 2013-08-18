@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -23,11 +27,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
+import biz.thaicom.eBudgeting.models.bgt.AssetCategory;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
 import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.bgt.AssetType;
+import biz.thaicom.eBudgeting.models.pln.TargetUnit;
+import biz.thaicom.eBudgeting.models.webui.PageUI;
 import biz.thaicom.eBudgeting.repositories.AssetAllocationRepository;
 import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.security.models.Activeuser;
@@ -189,6 +196,57 @@ public class AssetRestController {
 		return entityService.findAssetStepReportByAssetAllocationId(assetAllocationId);
 	}
 	
+	
+	@RequestMapping(value="/AssetCategory/all") 
+	public @ResponseBody List<AssetCategory> findAssetCategoryAll() {
+		return entityService.findAssetCategoryAll();
+	}
+	
+	@RequestMapping(value="/AssetCategory/page/{targetPage}", method=RequestMethod.GET)
+	public @ResponseBody Page<AssetCategory> findAllAssetCategory(@PathVariable Integer targetPage) {
+		
+		PageRequest pageRequest =
+	            new PageRequest(targetPage - 1, PageUI.PAGE_SIZE , Sort.Direction.ASC, "code");
+		
+		return entityService.findAllAssetCategories(pageRequest);
+	}
+
+	@RequestMapping(value="/AssetCategory/page/{targetPage}", method=RequestMethod.POST)
+	public @ResponseBody Page<AssetCategory> findAllAssetCategory(@PathVariable Integer targetPage, 
+			@RequestParam String query) {
+		
+		PageRequest pageRequest =
+	            new PageRequest(targetPage - 1, PageUI.PAGE_SIZE , Sort.Direction.ASC, "code");
+		
+		logger.debug(query);
+		
+		return entityService.findAllAssetCategories(pageRequest, query);
+	}
+	
+	@RequestMapping(value="/AssetCategory/{id}", method=RequestMethod.GET)
+	public @ResponseBody AssetCategory findOneAssetCategory(
+			@PathVariable Long id) {
+		return entityService.findOneAssetCategory(id);
+	}
+	
+	@RequestMapping(value="/AssetCategory/{id}", method=RequestMethod.PUT)
+	public @ResponseBody AssetCategory updateAssetCategory(
+			@PathVariable Long id,
+			@RequestBody JsonNode node) {
+		return entityService.updateAssetCategory(node);
+	}
+	
+	@RequestMapping(value="/AssetCategory/", method=RequestMethod.POST)
+	public @ResponseBody AssetCategory saveAssetCategory(
+			@RequestBody JsonNode node) {
+		return entityService.saveAssetCategory(node);
+	}
+	
+	@RequestMapping(value="/AssetCategory/{id}", method=RequestMethod.DELETE)
+	public @ResponseBody AssetCategory deleteAssetCategory(
+			@PathVariable Long id) {
+		return entityService.deleteAssetCategory(id);
+	}
 	
 	@ExceptionHandler(value=Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

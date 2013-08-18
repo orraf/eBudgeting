@@ -60,8 +60,19 @@
 		</div>
 </script>
 
+<script id="categorySltTemplate" type="text/x-handlebars-template">
+{{#each this}}
+<option value="{{id}}" {{#if isSelected}}selected="selected"{{/if}}>{{name}}</option>
+{{/each}}
+</script>
+
 <script id="modalBodyTemplate" type="text/x-handlebars-template">
 <form>
+	<label>ประเภทรายการ</label>
+	<select id="categorySlt">
+		<option value="0">กรุณาเลือกประเภทรายการ</option>
+	</select>
+	
 	<label>ระบุชื่อรายการ</label>
 	<textarea rows="2" class="span5" id="nameTxt">{{name}}</textarea>
 
@@ -141,8 +152,13 @@
 
 <script id="tbodyTemplate" type="text/x-handlebars-template">
 {{#each this}}
+<tr data-catid="{{id}}" class="{{class}}">
+	<td colspan="3">{{name}}<td>
+</tr>
+{{#each assets}}
 <tr data-id="{{id}}">
 </tr>
+{{/each}}
 {{/each}}
 </script>
 
@@ -152,11 +168,13 @@
 
 <script type="text/javascript">
 <!--
+var categories = new AssetCategoryCollection();
+
 var mainTblView;
 var assetSltView;
 
 $(document).ready(function() {
-	mainTblView = new MainTblView();
+	mainTblView = new MainTblView(categories);
 	assetSltView = new AssetSelectionView();
 	assetSltView.render();
 	
