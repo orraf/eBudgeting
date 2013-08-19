@@ -290,7 +290,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 							 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, s_user t4 " +
 							 "where t1.report_pln_acttargetreport_id = t2.id " +
 						     "and t2.target_pln_acttarget_id = t3.id " +
-							 "and t1.owner_hrx_organization_id = t4.id " +
+							 "and t1.owner_hrx_organization_id = t4.dept_id " +
 							 "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
 							 " and t3.id = " + rs1.getInt(6) +
 							 " and t4.login = '" + currentUser.getUsername() + "' " +
