@@ -1,5 +1,7 @@
 package biz.thaicom.eBudgeting.view;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
@@ -20,6 +22,8 @@ public abstract class AbstractPOIExcelView extends AbstractView {
 
     @Autowired
 	protected DataSource dataSource;
+    
+	protected static final SimpleDateFormat printTimeFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss", new Locale("th", "TH"));
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;

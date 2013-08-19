@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +45,11 @@ public class M81R07XLSView extends AbstractPOIExcelView {
   		Integer fiscalYear = (Integer) model.get("fiscalYear");
 		Sheet sheet = workbook.createSheet("sheet1");
 
-
 		Row firstRow = sheet.createRow(0);
+		Cell cell0 = firstRow.createCell(0);
+		cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+
+		firstRow = sheet.createRow(1);
 		Cell cell11 = firstRow.createCell(0);
 		cell11.setCellValue("ปีงบประมาณ");
 		cell11.setCellStyle(styles.get("header"));
@@ -86,7 +90,7 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 									   "group by code " +
 									   "order by code ");
 
-		int i = 1;
+		int i = 2;
 		String fYear = " ";
 		String fType = " ";
 		String pType = " ";

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +49,10 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 		Integer oldYear = fiscalYear - 1;
 
 		Row firstRow = sheet.createRow(0);
+		Cell cell0 = firstRow.createCell(0);
+		cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+		
+		firstRow = sheet.createRow(1);
 		Cell cell11 = firstRow.createCell(0);
 		cell11.setCellValue("ตรวจสอบแผนปฏิบัติการของ" + activity.getName() +" ประจำปีงบประมาณ " + fiscalYear);
 		cell11.setCellStyle(styles.get("title"));

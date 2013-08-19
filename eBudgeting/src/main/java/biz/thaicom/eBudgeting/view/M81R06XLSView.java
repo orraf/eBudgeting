@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,8 +55,11 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 		DecimalFormat df = new DecimalFormat("###,###,###,###.##");
 		DecimalFormat df2 = new DecimalFormat("##0.00");
 
-
 		Row firstRow = sheet.createRow(0);
+		Cell cell0 = firstRow.createCell(0);
+		cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+		
+		firstRow = sheet.createRow(1);
 		Cell cell11 = firstRow.createCell(0);
 		cell11.setCellValue("แผนงาน / โครงการตามแผนวิสาหกิจ  ประจำปีงบประมาณ " + fiscalYear);
 		cell11.setCellStyle(styles.get("title"));
@@ -66,7 +70,7 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 				currentUser.getPerson().getFirstName() + " " +	currentUser.getPerson().getLastName() + 
 				" เวลาที่จัดทำรายงาน " +  sdf.format(new Date()) + "น.");
 */		
-		Row secondRow = sheet.createRow(1);
+		Row secondRow = sheet.createRow(2);
 		Cell cell21 = secondRow.createCell(0);
 		if(org.getId() != 0L) {
 			cell21.setCellValue("หน่วยงาน  " + org.getName());

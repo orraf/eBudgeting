@@ -64,6 +64,11 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 		sheet.setColumnWidth(0, 17500);
 		sheet.setColumnWidth(1, 2500);
 		sheet.setColumnWidth(2, 2500);
+		
+		Row firstRow = sheet.createRow(rowNum++);
+		Cell cell0 = firstRow.createCell(0);
+		cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+		
 		row = sheet.createRow(rowNum++);
 		cell = row.createCell(colNum++);
 		cell.setCellValue("ชื่อครุภัณฑ์-สิ่งก่อสร้าง");
@@ -122,7 +127,12 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 			sheet.setColumnWidth(2, 2500);
 			rowNum = 0;
 			colNum = 0;
+			
+			firstRow = sheet.createRow(rowNum++);
+			cell0 = firstRow.createCell(0);
+			cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
 			 
+			
 			 row = sheet.createRow(rowNum++);
 			 Row row2 = sheet.createRow(rowNum++);
 			 cell = row.createCell(colNum++);

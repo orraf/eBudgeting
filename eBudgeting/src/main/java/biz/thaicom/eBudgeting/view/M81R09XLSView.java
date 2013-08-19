@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +43,14 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		Sheet sheet = workbook.createSheet("sheet1");
 
 
+		
+		
 		Row firstRow = sheet.createRow(0);
+		Cell cell0 = firstRow.createCell(0);
+		cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+		
+		
+		firstRow = sheet.createRow(1);
 		Cell cell10 = firstRow.createCell(0);
 		cell10.setCellValue("ครุภัณฑ์ ประจำปี " + fiscalYear);
 		cell10.setCellStyle(styles.get("title"));
@@ -55,9 +63,9 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		Cell cell17 = firstRow.createCell(7);
 		Cell cell18 = firstRow.createCell(8);
 		Cell cell19 = firstRow.createCell(9);
-		sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 8));
+		sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 8));
 
-		Row secondRow = sheet.createRow(1);
+		Row secondRow = sheet.createRow(2);
 		int colNum = 0;
 		Cell cell20 = secondRow.createCell(colNum++);
 		cell20.setCellValue("หน่วยงาน");
@@ -86,10 +94,10 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		cell27.setCellStyle(styles.get("header"));
 		Cell cell28 = secondRow.createCell(colNum++);
 		Cell cell29 = secondRow.createCell(colNum++);
-		sheet.addMergedRegion(new CellRangeAddress(1, 1, 6, 8));
+		sheet.addMergedRegion(new CellRangeAddress(2, 2, 6, 8));
 
 		colNum = 0;
-		Row thirdRow = sheet.createRow(2);
+		Row thirdRow = sheet.createRow(3);
 		Cell cell30 = thirdRow.createCell(colNum++);
 		cell30.setCellStyle(styles.get("header"));
 //		Cell cell31 = thirdRow.createCell(colNum++);
@@ -113,12 +121,12 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		Cell cell39 = thirdRow.createCell(colNum++);
 		cell39.setCellValue("ชนิด");
 		cell39.setCellStyle(styles.get("header"));
-		sheet.addMergedRegion(new CellRangeAddress(1, 2, 0, 0));
-		sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 1));
-		sheet.addMergedRegion(new CellRangeAddress(1, 2, 2, 2));
-		sheet.addMergedRegion(new CellRangeAddress(1, 2, 3, 3));
-		sheet.addMergedRegion(new CellRangeAddress(1, 2, 4, 4));
-		sheet.addMergedRegion(new CellRangeAddress(1, 2, 5, 5));
+		sheet.addMergedRegion(new CellRangeAddress(2, 3, 0, 0));
+		sheet.addMergedRegion(new CellRangeAddress(2, 3, 1, 1));
+		sheet.addMergedRegion(new CellRangeAddress(2, 3, 2, 2));
+		sheet.addMergedRegion(new CellRangeAddress(2, 3, 3, 3));
+		sheet.addMergedRegion(new CellRangeAddress(2, 3, 4, 4));
+		sheet.addMergedRegion(new CellRangeAddress(2, 3, 5, 5));
 		
 		//sheet.addMergedRegion(new CellRangeAddress(1, 2, 6, 6));
 		
@@ -137,7 +145,7 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 									   "and t2.ASSETCATEGORY_ID  = t7.id(+) " +
 									   "order by t2.assetcategory_id, t6.code, t2.code ");
 
-		int i = 3;
+		int i = 4;
 		String code = " ";
 		String currentCategoryName = "";
 		String categoryName = "";
@@ -228,7 +236,7 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		sheet.setColumnWidth(colNum++, 3000);
 		sheet.setColumnWidth(colNum++, 3000);
 		sheet.setColumnWidth(colNum++, 3000);
-		sheet.createFreezePane( 0, 3 );
+		sheet.createFreezePane( 0, 4 );
 	}
 	
 	

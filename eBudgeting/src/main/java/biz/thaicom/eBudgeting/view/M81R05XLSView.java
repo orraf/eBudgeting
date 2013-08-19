@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.view;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,14 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 			sheet.setDefaultColumnStyle(2, styles.get("cellleft"));
 			
 			int rowNum = 0;
+			
+			Row firstRow = sheet.createRow(rowNum++);
+			Cell cell0 = firstRow.createCell(0);
+			cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+			
+			
 			row = sheet.createRow(rowNum++);
+			
 			
 			sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 0, 1));
 			cell = row.createCell(0);

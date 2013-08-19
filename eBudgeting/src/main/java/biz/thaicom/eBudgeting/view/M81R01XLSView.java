@@ -5,11 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -19,6 +21,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
 import biz.thaicom.security.models.ThaicomUserDetail;
 
 
@@ -45,6 +48,10 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 		Integer oldYear = fiscalYear - 1;
 
 		Row firstRow = sheet.createRow(0);
+		Cell cell0 = firstRow.createCell(0);
+		cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+		
+		firstRow = sheet.createRow(1);
 		Cell cell11 = firstRow.createCell(0);
 		cell11.setCellValue("แผนปฏิบัติการประจำปีงบประมาณ " + fiscalYear);
 		cell11.setCellStyle(styles.get("title"));
@@ -55,7 +62,7 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 				currentUser.getPerson().getFirstName() + " " +	currentUser.getPerson().getLastName() + 
 				" เวลาที่จัดทำรายงาน " +  sdf.format(new Date()) + "น.");
 */		
-		Row secondRow = sheet.createRow(1);
+		Row secondRow = sheet.createRow(2);
 		Cell cell21 = secondRow.createCell(0);
 		cell21.setCellValue("หน่วยงาน  " + currentUser.getWorkAt().getName());
 		cell21.setCellStyle(styles.get("title"));
@@ -114,7 +121,6 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 		
 		Connection connection = dataSource.getConnection();
 				
-		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
 		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
 		                               "from pln_objective m where m.id <> 21 and exists " +
@@ -131,8 +137,6 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 		int j = 0;
 		int s1 = 0;
 		int s2 = 0;
-		int s3 = 0;
-		int s4 = 0;
 		while (rs.next()) {
 			Row rows = sheet.createRow(i);
 			
@@ -346,7 +350,7 @@ public class M81R01XLSView extends AbstractPOIExcelView {
     private static Map<String, CellStyle> createStyles(Workbook wb){
         Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
 
-        short borderColor = IndexedColors.GREY_50_PERCENT.getIndex();
+        IndexedColors.GREY_50_PERCENT.getIndex();
 
         CellStyle style;
         DataFormat format = wb.createDataFormat();

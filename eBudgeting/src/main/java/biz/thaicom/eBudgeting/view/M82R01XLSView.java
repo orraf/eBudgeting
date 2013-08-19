@@ -1,10 +1,8 @@
 package biz.thaicom.eBudgeting.view;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
@@ -21,20 +19,12 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
 
-import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
-import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
-import biz.thaicom.eBudgeting.models.bgt.AssetMethodStep;
-import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
-import biz.thaicom.eBudgeting.models.hrx.Organization;
-import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 
 public class M82R01XLSView extends AbstractPOIExcelView {
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:sss");
 	private static SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("th", "TH"));
 	
 	@Override
@@ -67,6 +57,11 @@ public class M82R01XLSView extends AbstractPOIExcelView {
 		sheet.setColumnWidth(4, 2500);
 		sheet.setColumnWidth(5, 2500);
 		sheet.setColumnWidth(6, 2500);
+		
+		Row firstRow = sheet.createRow(rowNum++);
+		Cell cell0 = firstRow.createCell(0);
+		cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+		
 		
 		row = sheet.createRow(rowNum++);
 		cell = row.createCell(0);
