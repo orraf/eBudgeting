@@ -1,5 +1,6 @@
 package biz.thaicom.eBudgeting.repositories;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -52,5 +53,8 @@ public interface ActivityTargetResultRepository extends JpaRepository<ActivityTa
 			+ "		result.budgetFiscalMonth = ?2 ")
 	Long countResultByReportIdAndFiscalMonthAndBgtResult(ActivityTargetReport report,
 			Integer fiscalMonth);
+
+	Collection<? extends ActivityTargetResult> findByReport(
+			ActivityTargetReport deleteReport);
 
 }

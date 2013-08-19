@@ -4377,6 +4377,18 @@ public class EntityServiceJPA implements EntityService {
 				report = activityTargetReportRepository.findOne(reportId);
 				performance = report.getActivityPerformance();
 				oldList.remove(report);
+				
+				// now we'll have to go to oldList again to remove the level2 report that 
+				// this report is parent?
+				List<ActivityTargetReport> level2Report = new ArrayList<ActivityTargetReport>();
+				for(ActivityTargetReport r : oldList) {
+					if(r.getOwner().getParent().getId() == report.getOwner().getId()) {
+						level2Report.add(r);
+					}
+				}
+				
+				oldList.removeAll(level2Report);
+				
 			} else {
 				report = new ActivityTargetReport();
 				Organization owner = organizationRepository.findOne(getJsonNodeId(reportNode.get("owner")));
@@ -4462,9 +4474,14 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
  		logger.debug("report oldList Id: " );
+ 		List<ActivityTargetResult> results = new ArrayList<ActivityTargetResult>();
  		for(ActivityTargetReport deleteReport : oldList) {
  			logger.debug("  id: "+ deleteReport.getId() );
+ 			results.addAll(activityTargetResultRepository.findByReport(deleteReport));
+ 			
  		}
+ 		
+ 		activityTargetResultRepository.delete(results);
  		
 		activityTargetReportRepository.delete(oldList);
 		activityPerformanceRepository.delete(toDeletePerformance);
