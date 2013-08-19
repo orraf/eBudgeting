@@ -87,170 +87,103 @@ var PMS_BGT_ADMIN = true;
 </sec:authorize>
 
 
+
+
 <script type="text/javascript">
 var menuCode='${menuCode}';
 var menuLevel='${menuLevel}';
 var fiscalYear = parseInt("${currentRootFY.fiscalYear}");
 
+var userGroups = '${userGroups}'.split(",");
+
 var menuJson = [{
-	name: "ข้อมูลพื้นฐานหน่วยงาน (m1)",
-	code: "m1",
-	menus: [{name: "ข้อมูลพื้นฐานงบประมาณ(m11)", code: "m11", menus: [
-				{name: "m1f05: เพิ่มข้อมูลเริ่มต้นปีงบประมาณ", code:"m1f05", link: "page/m1f05/"}
-	        	]}
-	        	]
-},{
-	name: "ระบบทะเบียน (m5)", code: "m5",
-	menus: [  
-	         {name: "ทะเบียนสายยุทธศาสตร์การจัดสรรงบประมาณ (m51)", code: "m51", menus: 
-	        	 [
-	        	  //{name: "m51f01:(1) ทะเบียนยุทธศาสตร์การจัดสรร", code: "m51f01", link: "page/m51f01/"},
-	 	         {name: "m51f01: (1) ทะเบียนแผนงาน", code: "m51f01", link: "page/m51f01/"},
-		        // {name: "m51f03: ทะเบียนเป้าหมายเชิงยุทธศาสตร์", code: "m51f03", link: "page/m51f03/"},
-		        // {name: "m51f04: ทะเบียนเป้าหมายบริการกระทรวง", code: "m51f04", link: "page/m51f04/"},
-		         {name: "m51f02: (2) ทะเบียนยุทธศาสตร์", code: "m51f02", link: "page/m51f02/"},
-		        // {name: "m51f05: ทะเบียนเป้าหมายบริการหน่วยงาน", code: "m51f06", link: "page/m51f05/"},
-		         {name: "m51f03: (3) ทะเบียนผลผลิต/โครงการ", code: "m51f03", link: "page/m51f03/"},
-		         {name: "m51f04: (4) ทะเบียนกิจกรรมหลัก", code: "m51f04", link: "page/m51f04/"},
-		         {name: "m51f05: (5) ทะเบียนแผนปฏิบัติการ", code: "m51f05", link: "page/m51f05/"},
-		         {name: "m51f06: (6) ทะเบียนกิจกรรมรอง", code: "m51f06", link: "page/m51f06/"},
-		        // {name: "m51f10: (7) ทะเบียนกิจกรรมย่อย", code: "m51f10", link: "page/m51f10/"},
-		        // {name: "m51f11: (8) ทะเบียนกิจกรรมเสริม", code: "m51f11", link: "page/m51f11/"},
-		        // {name: "m51f12: (9) ทะเบียนกิจกรรมสนับสนุน", code: "m51f12", link: "page/m51f12/"},
-		        // {name: "m51f13: (10) ทะเบียนกิจกรรมรายละเอียด", code: "m51f13", link: "page/m51f13/"},
-		        //{name: "m51f14: ทะเบียนรายการและรายการย่อย", code: "m51f14", link: "page/m51f14/"},
-		        // {name: "m51f15: ทะเบียนรายการกลาง", code: "m51f15", link: "page/m51f15/"},
-		        // {name: "m51f16: ทะเบียนรายการหลักสำหรับบันทึกงบประมาณกิจกรรม", code: "m51f16", link: "page/m51f16/"},
-		         {name: "m51f18: ทะเบียนหน่วยนับ", code: "m51f18", link: "page/m51f18/"}
-		         ]},{
-		        	 name: "ทะเบียนรายการงบลงทุน (m52)", code: "m52", menus: 
-			        	 [{name: "m52f01: ทะเบียนรายการงบลงทุน", code: "m52f01", link: "page/m52f01/"},
-			        	  {name: "m52f02: ทะเบียนประเภทงบลงทุน", code: "m52f02", link: "page/m52f02/"}]
-		         }
-	         
-	        // ,
-		         
-	        // {name: "ทะเบียนตามแผนปฏิบัติราชการ (m52)", code: "m52",  menus: 
-	        //	 [ {name: "m52f01: ทะเบียนเป้าประสงค์ (เป้าหมาย) เชิงนโยบนาย", code: "m52f01",  link: "page/m52f01/"}]},
-	        	 
-	       //  {name: "ทะเบียนสายยุทธศาสตร์กระทรวง-หน่วยงาน (m53)", code: "m53",  menus: 
-	       // 	 [{name: "m53f01: ทะเบียนยุทธศาสตร์กระทรวง", code: "m53f01",  link: "page/m53f01/"},
-     	    //     {name: "m53f02: ทะเบียนกลยุทธ์หน่วยงาน",code: "m53f02",  link: "page/m53f02/"},
-     	     //    {name: "m53f03: ทะเบียนกลยุทธ์/วิธีการกรมฯ", code: "m53f03",  link: "page/m53f03/"}
-              //   ]},
-                 
-	        // {name: "ทะเบียนสายกลยุทธ์หลัก (m54)", code: "m54",  menus: 
-	        //	 [{name: "m54f01: ทะเบียนแนวทางการจัดสรรงบประมาณ (กลยุทธ์หลัก)", code: "m54f01",  link: "page/m54f01/"}]},
-	        // 
-	         //{name: "ทะเบียนวิสัยทัศน์-พันธกิจ (m55)",code: "m55",  menus: 
-	        //	 [{name: "m55f01: ทะเบียนวิสัยทัศน์หน่วยงาน", code: "m55f01", link: "page/m55f01/"},
-	        //	  {name: "m55f02: ทะเบียนพันธกิจหน่วยงาน", code: "m55f02", link: "page/m55f02/"}]}
-	         
-	         ]
-},{
-	name: "ระบบการจัดสรรงบประมาณ (m7)", code: "m7", 
-	menus: [
-		 {name: "การจัดสรรงบประมาณ (m71)",code: "m71",  menus: 
-		    [ //{name: "m3f04: การประมวลผลก่อนการจัดสรรงบประมาณ", code: "m3f04", link: "page/m4f01/"},
-		     {name: "m71f01: บันทึกการจัดสรรงบประมาณ", code: "m71f01", link: "page/m71f01/"} ]  
-		 }, 
-		 {name: "การบันทึกกิจกรรมย่อย (m73)",code: "m73",  menus: 
-			    [ //{name: "m3f04: การประมวลผลก่อนการจัดสรรงบประมาณ", code: "m3f04", link: "page/m4f01/"},
-			     {name: "m73f01: บันทึกกิจกรรมย่อย", code: "m73f01", link: "page/m73f01/"},
-			     {name: "m73f02: บันทึกกิจกรรมย่อย (ระดับจังหวัด)", code: "m73f02", link: "page/m73f02/"},
-			     {name: "m73f03: บันทึกแผนการดำเนินงานกิจกรรม", code: "m73f03", link: "page/m73f03/"}]  
-		 }]
-},{
-	name: "ระบบรายงาน (r)", code: "m8", 
+	name: "ข้อมูลพื้นฐานหน่วยงาน (m1)", code: "m1",
 	menus: [{
-		name: "รายงานทะเบียน (m81r)", code: "m81", menus: 
-		    [{
-		    	name: "m81r01: รายงานแผนปฏิบัติการสำหรับฝ่าย", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download"
-		    },{
-		    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับส่วนงาน/สกยจ./สกยอ.", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download"
-		    },{
-		    	name: "m81r03: รายงานภาพรวมแผนปฏิบัติการประจำปีของ สกย.", link: "m81r03.xls/"+fiscalYear+"/file/m81r03.xls", type: "download"
-		    }, {
-		    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", link: "page/m81r04/"
-		    }, {
-		    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", link: "m81r05.xls/" + fiscalYear + "/file/m81r05.xls", type: "download"
-		    }, {
-		    	name: "m81r06: รายงานแผนปฏิบัติการรายเดือน - แยกตามยุทธศาสตร์", link: "page/m81r06/"
-		    }, {
-		    	name: "m81r07: รายงานสรุปการใช้งบประมาณ", link: "m81r07.xls/" + fiscalYear + "/file/m81r07.xls", type: "download"
-		    }, {
-		    	name: "m81r08: รายงานการสรุปการเบิกจ่ายงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls", id: 'm81r08', type: "download"
-		    }, {
-		    	name: "m81r09: รายงานการสรุปรายการครุภัณฑ์", link: "m81r09.xls/"+fiscalYear+"/file/m81r09.xls", id: 'm81r09', type: "download"
-		    }]
-	}, {
-		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
-			name: "m82r01: รายงานการตรวจสอบความเชื่อมโยง", code: "m82r01", link: "page/m82r01/"
+		name: "ข้อมูลพื้นฐานงบประมาณ(m11)", code: "m11", parent: 'm1', menus: [{
+			name: "m1f05: เพิ่มข้อมูลเริ่มต้นปีงบประมาณ", code:"m1f05", parent: 'm11', link: "page/m1f05/", group: "PMS_BGT_ADMIN"}
+	  	]}
+]},{
+	name: "ระบบทะเบียน (m5)", code: "m5",
+	menus: [{
+		name: "ทะเบียนสายยุทธศาสตร์การจัดสรรงบประมาณ (m51)", parent: 'm5' ,code: "m51", menus: [{
+			name: "m51f01: (1) ทะเบียนแผนงาน", code: "m51f01", parent: 'm51' , link: "page/m51f01/", group: "PMS_BGT_ADMIN"
+		},{
+			name: "m51f02: (2) ทะเบียนยุทธศาสตร์", code: "m51f02", parent: 'm51', link: "page/m51f02/", group: "PMS_BGT_ADMIN"
+		},{
+			name: "m51f03: (3) ทะเบียนผลผลิต/โครงการ", code: "m51f03", parent: 'm51', link: "page/m51f03/", group: "PMS_BGT_ADMIN"
+		},{	
+			name: "m51f04: (4) ทะเบียนกิจกรรมหลัก", code: "m51f04", parent: 'm51', link: "page/m51f04/", group: "PMS_BGT_ADMIN"
+		},{
+			name: "m51f05: (5) ทะเบียนแผนปฏิบัติการ", code: "m51f05", parent: 'm51', link: "page/m51f05/", group: "PMS_BGT_ADMIN"
+		},{
+			name: "m51f06: (6) ทะเบียนกิจกรรมรอง", code: "m51f06", parent: 'm51', link: "page/m51f06/", group: "PMS_BGT_ADMIN"
+		},{
+			name: "m51f18: ทะเบียนหน่วยนับ", code: "m51f18", parent: 'm51', link: "page/m51f18/", group: "PMS_BGT_ADMIN"
+		}
+	]},{
+		name: "ทะเบียนรายการงบลงทุน (m52)", code: "m52", parent: 'm5', menus: [{
+			name: "m52f01: ทะเบียนรายการงบลงทุน", code: "m52f01", parent: 'm52', link: "page/m52f01/", group: "PMS_BGT_ADMIN"
 		}, {
-			name: "m82r02: รายงานผังองค์กร", code: "m82r02", link: "page/m82r02/"
+			name: "m52f02: ทะเบียนประเภทงบลงทุน", code: "m52f02", parent: 'm52', link: "page/m52f02/", group: "PMS_BGT_ADMIN"
 		}]
 	}]
-}];
-
-var menuUserJson = [
-//{
-//	name: "ระบบการบันทึกเงินคำของบประมาณ (m6)",code: "m6", 
-//	menus: [{
-//		name: "การจัดทำคำของบประมาณ  (m61)", code: "m61", menus: 
-//	         [{name: "m61f03: การบันทึกงบประมาณ ระดับกิจกรรมหลัก",code: "m61f03",  link: "page/m61f03_1/"},
-//		      {name: "m61f04: การบันทึกงบประมาณ ระดับรายการ", code: "m61f04", link: "page/m61f04_1/"},
-//	          {name: "m61f05: การนำส่งคำของบประมาณ (Sign off) / ถอนนำส่ง (Release)", code: "m61f05", link: "page/m61f05/"}
-//	        ]}],
-//	       
-//	         
-//},
-{
+},{
 	name: "ระบบการจัดสรรงบประมาณ (m7)", code: "m7", 
 	menus: [{
-		name: "การบันทึกกิจกรรมย่อย (m73)",code: "m73",  menus: 
-		    [ //{name: "m3f04: การประมวลผลก่อนการจัดสรรงบประมาณ", code: "m3f04", link: "page/m4f01/"},
-		     {name: "m73f01: บันทึกข้อมูลกิจกรรมย่อย", code: "m73f01", link: "page/m73f01/"},
-		     {name: "m73f02: บันทึกกิจกรรมย่อย (ระดับส่วนงาน)", code: "m73f02", link: "page/m73f02/"},
-		     {name: "m73f03: บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับจังหวัด)", code: "m73f03", link: "page/m73f03/"}]  
+		name: "การจัดสรรงบประมาณ (m71)",code: "m71", parent: 'm7',  menus:[{
+			name: "m71f01: บันทึกการจัดสรรงบประมาณ", code: "m71f01", parent: 'm71', link: "page/m71f01/", group: "PMS_USER"
+		}]  
+	},{
+		name: "การบันทึกกิจกรรมย่อย (m73)",code: "m73", parent: 'm7',  menus:[{
+			name: "m73f01: บันทึกกิจกรรมย่อย", code: "m73f01", parent: 'm73', link: "page/m73f01/", group: "PMS_USER"
+		},{
+			name: "m73f02: บันทึกกิจกรรมย่อย (ระดับจังหวัด)", code: "m73f02", parent: 'm73', link: "page/m73f02/", group: "PMS_USER"
+		},{
+			name: "m73f03: บันทึกแผนการดำเนินงานกิจกรรม", code: "m73f03", parent: 'm51', link: "page/m73f03/", group: "PMS_USER"
+		}]  
 	}, {
-			name: "การบันทึกแผนการดำเนินงานกิจกรรมย่อย (m74)",code: "m74",  menus: 
-			    [ //{name: "m3f04: การประมวลผลก่อนการจัดสรรงบประมาณ", code: "m3f04", link: "page/m4f01/"},
-			     {name: "m74f01: บันทึกแผนการดำเนินงานกิจกรรม", code: "m74f01", link: "page/m74f01/"},
-			     {name: "m74f02: บันทึกแผนงบลงทุน", code: "m74f02", link : "page/m74f02/"}]
+		name: "การบันทึกแผนการดำเนินงานกิจกรรมย่อย (m74)",code: "m74", parent: 'm7',  menus: [{
+			name: "m74f01: บันทึกแผนการดำเนินงานกิจกรรม", code: "m74f01", parent: 'm74', link: "page/m74f01/", group: "PMS_USER"
+		}, {
+			name: "m74f02: บันทึกแผนงบลงทุน", code: "m74f02", parent: 'm74', link : "page/m74f02/", group: "PMS_USER"
 		}]
-		   
-		   
+	}]
 },{
 	name: "ระบบรายงานผลการดำเนินงาน (m8)", code: "m8", 
 	menus: [{
-		name: "การบันทึกผลการดำเนินงาน (m81)",code: "m81",  menus: [{
-		    	name: "m81f01: บันทึกผลการดำเนินงาน", code: "m81f01", link: "page/m81f01/"
+		name: "การบันทึกผลการดำเนินงาน (m81)",code: "m81", parent: 'm8',  menus: [{
+		   	name: "m81f01: บันทึกผลการดำเนินงาน", code: "m81f01", parent: 'm81', link: "page/m81f01/", group: "PMS_USER"
 		},{
-			name: "m81f02: บันทึกผลการดำเนินงานงบลงทุน", code: "m81f02", link: "page/m81f02/"
+			name: "m81f02: บันทึกผลการดำเนินงานงบลงทุน", code: "m81f02", parent: 'm81', link: "page/m81f02/", group: "PMS_USER"
 		}]  
 	}]
 },{
-	name: "ระบบรายงาน (r)", code: "m8", 
+	name: "ระบบรายงาน (r)", code: "mr", 
 	menus: [{
-		name: "รายงานทะเบียน (m81r)", code: "m81", menus: 
-		    [{
-		    	name: "m81r01: รายงานสำหรับส่วนฝ่าย", link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download"
-		    },{
-		    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับส่วนงาน/สกยจ./สกยอ.", link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download"
-		    }, {
-		    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", link: "page/m81r04/"
-		    }, {
-		    	name: "m81r06: รายงานแผนปฏิบัติการรายเดือน - แยกตามยุทธศาสตร์", link: "page/m81r06/"
-		    }, {
-		    	name: "m81r08: รายงานการสรุปการเบิกจ่ายงบลงทุน", link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls", id: "m81r08", type:"download"
-		    }, {
-		    	name: "m81r09: รายงานการสรุปรายการครุภัณฑ์", link: "m81r09.xls/"+fiscalYear+"/file/m81r09.xls", id: "m81r09", type:"download"
-		    }]
-	}, {
-		name: "รายงานการตรวจสอบ (m82r)", code: "m82", menus : [{
-			name: "m82r01: รายงานการตรวจสอบความเชื่อมโยง", code: "m82r01", link: "page/m82r01/"
+		name: "รายงานทะเบียน (m81r)", code: "m81r", parent: 'mr', menus: [{
+	    	name: "m81r01: รายงานแผนปฏิบัติการสำหรับฝ่าย", code: "m81r01", parent: 'm81r', link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download", group: "PMS_BGT_ADMIN"
+	    },{
+	    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับส่วนงาน/สกยจ./สกยอ.", code: "m81r02", parent: 'm81r', link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download", group: "PMS_USER"
+	    },{
+	    	name: "m81r03: รายงานภาพรวมแผนปฏิบัติการประจำปีของ สกย.", code: "m81r03", parent: 'm81r', link: "m81r03.xls/"+fiscalYear+"/file/m81r03.xls", type: "download", group: "PMS_BGT_ADMIN"
+	    }, {
+	    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", code: "m81r04", parent: 'm81r', link: "page/m81r04/", group: "PMS_USER", group: "PMS_USER"
+	    }, {
+	    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", code: "m81r05", parent: 'm81r', link: "m81r05.xls/" + fiscalYear + "/file/m81r05.xls", type: "download", group: "PMS_BGT_ADMIN"
+	    }, {
+	    	name: "m81r06: รายงานแผนปฏิบัติการรายเดือน - แยกตามยุทธศาสตร์", code: "m81r06", parent: 'm81r', link: "page/m81r06/", group: "PMS_USER"
+	    }, {
+	    	name: "m81r07: รายงานสรุปการใช้งบประมาณ", code: "m81r07", parent: 'm81r', link: "m81r07.xls/" + fiscalYear + "/file/m81r07.xls", type: "download", group: "PMS_BGT_ADMIN"
+	    }, {
+	    	name: "m81r08: รายงานการสรุปการเบิกจ่ายงบลงทุน", code: "m81r08", parent: 'm81r', link: "m81r08.xls/"+fiscalYear+"/file/m81r08.xls", id: 'm81r08', type: "download", group: "PMS_USER"
+	    }, {
+	    	name: "m81r09: รายงานการสรุปรายการครุภัณฑ์", code: "m81r09", parent: 'm81r', link: "m81r09.xls/"+fiscalYear+"/file/m81r09.xls", id: 'm81r09', type: "download", group: "PMS_USER"
+	    }]
+	},{
+		name: "รายงานการตรวจสอบ (m82r)", code: "m82", parent: 'mr', menus : [{
+			name: "m82r01: รายงานการตรวจสอบความเชื่อมโยง", parent: 'm82r', code: "m82r01", link: "page/m82r01/", group: "PMS_USER"
 		}, {
-			name: "m82r02: รายงานผังองค์กร", code: "m82r02", link: "page/m82r02/"
+			name: "m82r02: รายงานผังองค์กร", parent: 'm82r', code: "m82r02", link: "page/m82r02/", group: "PMS_USER"
 		}]
 	}]
 }];
@@ -260,8 +193,34 @@ var alertNoReportTemplate = Handlebars.compile($("#alertNoReportTemplate").html(
 var mainview;
 var e1;
 
+//	find only the last menu of our right!
+var l2Menu = _.flatten(_.flatten(menuJson, 'menus'), 'menus').filter(function(menu) {
+	return  userGroups.indexOf(menu.group) >= 0;
+});
+
+var l2MenuCode = _.pluck(l2Menu,'code');
 
 $(document).ready(function() {
+	
+	// now prune the menu
+	for(var i=0; i<menuJson.length; i++) {
+		var m1 = menuJson[i];
+		for(var j=0; j<m1.menus.length; j++) {
+			var m2 = m1.menus[j];
+			
+			m2.menus = _.filter(m2.menus, function(menu) {
+				return l2MenuCode.lastIndexOf(menu.code) >= 0;
+			});
+		}
+		
+		m1.menus = _.filter(m1.menus, function(menu) {
+			return menu.menus.length > 0;
+		});
+	}
+	
+	menuJson =_.filter(menuJson, function(menu) {
+		return menu.menus.length > 0;
+	});
 	
 	
 	var MainView = Backbone.View.extend({
@@ -349,28 +308,22 @@ $(document).ready(function() {
 	
 	mainView = new MainView();
 	
-	if (typeof PMS_BGT_ADMIN != "undefined"){
-		mainView.renderWith(menuJson);
-	 	//$("#menuDiv").html(menuTemplate(menuJson));
-	 	
-	 	if(menuLevel == '0') {
-	 		var firstMenu = _.where(menuJson, {code: menuCode})[0];
-	 		$("#main2").html(mainView.subMenuTemplate(firstMenu.menus));
-	 		mainView.currentFirstLevelIndex = _.indexOf(menuJson, firstMenu);
-	 	} else if(menuLevel == '1') {
-	 		var firstMenu = _.find(menuJson, function(menu) { return _.where(menu.menus, {code: menuCode}).length > 0; });
-			mainView.currentFirstLevelIndex = _.indexOf(menuJson, firstMenu);
-			$("#main2").html(mainView.subMenuTemplate(firstMenu.menus));
-			
-			var secondMenu = _.where(firstMenu.menus, {code: menuCode})[0];
-			$("#main3").html(mainView.subMenuTemplate(secondMenu.menus));
-	 	}
-	 	
-	} else {
-		mainView.renderWith(menuUserJson);
-		//$("#menuDiv").html(menuTemplate(menuUserJson));
+	
+	mainView.renderWith(menuJson);
+ 	
+ 	if(menuLevel == '0') {
+ 		var firstMenu = _.where(menuJson, {code: menuCode})[0];
+ 		$("#main2").html(mainView.subMenuTemplate(firstMenu.menus));
+ 		mainView.currentFirstLevelIndex = _.indexOf(menuJson, firstMenu);
+ 	} else if(menuLevel == '1') {
+ 		var firstMenu = _.find(menuJson, function(menu) { return _.where(menu.menus, {code: menuCode}).length > 0; });
+		mainView.currentFirstLevelIndex = _.indexOf(menuJson, firstMenu);
+		$("#main2").html(mainView.subMenuTemplate(firstMenu.menus));
 		
-	}
+		var secondMenu = _.where(firstMenu.menus, {code: menuCode})[0];
+		$("#main3").html(mainView.subMenuTemplate(secondMenu.menus));
+ 	}
+	 	
 	
 	// now find objective which hasn't report
 	var noReports = new ObjectiveCollection();
