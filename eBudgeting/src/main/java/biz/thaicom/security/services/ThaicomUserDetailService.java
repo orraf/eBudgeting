@@ -3,6 +3,8 @@ package biz.thaicom.security.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import biz.thaicom.eBudgeting.repositories.UserRepository;
 import biz.thaicom.security.models.Group;
@@ -61,5 +65,7 @@ public class ThaicomUserDetailService implements UserDetailsService {
 			throw new UsernameNotFoundException(userName);
 		}
 	}
+	
+	
 
 }

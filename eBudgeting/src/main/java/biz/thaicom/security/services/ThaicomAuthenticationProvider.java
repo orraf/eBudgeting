@@ -40,4 +40,6 @@ public class ThaicomAuthenticationProvider implements AuthenticationProvider {
 		return authentication.equals(UsernamePasswordAuthenticationToken.class);
 	}
 
+	
+	
 }

@@ -7,6 +7,12 @@
 	<name>orrafpm</name>
 	<packaging>war</packaging>
 	<version>0.0.1-BUILD-SNAPSHOT</version>
+	
+	<scm>
+    	<connection>scm:git:https://github.com/orraf/eBudgeting.git</connection>
+    	<url>https://github.com/orraf/eBudgeting</url>
+	</scm>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -302,6 +308,7 @@
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>spring.properties</include>
+					<include>messages.properties</include>
 				</includes>
 				<filtering>true</filtering>
 			</resource>
@@ -321,6 +328,23 @@
 			   <version>2.2</version>
 			   <configuration>
 			      <warName>orrafpm</warName>
+			      <webResources>
+                  		<resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/webapp</directory>
+                            <includes>
+                                <include>**/web.xml</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+			      <archive>
+		            <manifest>
+		              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+		            </manifest>
+		            <manifestEntries>
+		              <Implementation-Build>${buildNumber}</Implementation-Build>
+		            </manifestEntries>
+		          </archive>
 			   </configuration>
 			</plugin>
 			<plugin>
@@ -371,7 +395,26 @@
                 <configuration>
                     <mainClass>org.test.int1.Main</mainClass>
                 </configuration>
-            </plugin>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<shortRevisionLength>7</shortRevisionLength>
+					<timestampFormat>{0, date, yyyyMMdd HH:mm:ss}</timestampFormat>
+				</configuration>
+			</plugin>
         </plugins>
     </build>
     <profiles>
