@@ -402,7 +402,7 @@
 				<version>1.2</version>
 				<executions>
 					<execution>
-						<phase>validate</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>create</goal>
 						</goals>
@@ -411,8 +411,9 @@
 				<configuration>
 					<doCheck>false</doCheck>
 					<doUpdate>false</doUpdate>
+					<revisionOnScmFailure>true</revisionOnScmFailure>
 					<shortRevisionLength>7</shortRevisionLength>
-					<timestampFormat>{0, date, yyyyMMdd HH:mm:ss}</timestampFormat>
+					<timestampFormat>{0,date,yyyyMMdd HH:mm:ss}</timestampFormat>
 				</configuration>
 			</plugin>
         </plugins>
