@@ -43,8 +43,9 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 		
         Map<String, CellStyle> styles = createStyles(workbook);
 
+        Objective root = (Objective) model.get("root");
         
-		List<Objective> objectiveList = (List<Objective>) model.get("objectiveList");
+		//List<Objective> objectiveList = (List<Objective>) model.get("objectiveList");
 		Integer fiscalYear = (Integer) model.get("fiscalYear");
 		Sheet sheet = workbook.createSheet("sheet1");
 		Integer oldYear = fiscalYear - 1;
@@ -123,10 +124,11 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 		Statement st = connection.createStatement();
 		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
 		                               "from pln_objective m " +
-		                               "where m.id <> 21 " +
+		                               "where m.id <> " + root.getId() + " " +
 									   "and m.fiscalyear = " + fiscalYear + " " +
 									   "connect by prior m.id = m.parent_pln_objective_id " +
-									   "start with m.id = 21");
+									   "start with m.id = " + root.getId() + " " +
+									   " order siblings by m.code asc ") ;
 
 		int i = 4;
 		int j = 0;

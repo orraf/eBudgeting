@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.repositories.OrganizationRepository;
 import biz.thaicom.eBudgeting.services.EntityService;
+import biz.thaicom.eBudgeting.services.EntityServiceJPA;
 import biz.thaicom.security.models.Activeuser;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
@@ -48,6 +51,34 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 		return  list;
 	}
 
+	
+	@RequestMapping(value="/Organization/findAllProvinces", method=RequestMethod.GET)
+	public @ResponseBody List<Organization> findAllProvinces(
+			@Activeuser ThaicomUserDetail currentUser 
+			) {
+		List<Organization> list = entityService.findOrganizationProvinces();
+		
+		return list;
+	}
+	
+	@RequestMapping(value="/Organization/findRoot", method=RequestMethod.GET)
+	public @ResponseBody Organization findOrganizationRoot() {
+		
+		Organization root = entityService.findOrganizationRoot();
+		
+		return root;
+	}
+	
+	@RequestMapping(value="/Organization/{id}/children", method=RequestMethod.GET)
+	public @ResponseBody List<Organization> findChildrenByParentId(
+			@PathVariable Long id,
+			@Activeuser ThaicomUserDetail currentUser 
+			) {
+		Organization org = entityService.findOrganizationById(id);
+		
+		return org.getChildren();
+	}
+	
 	
 	@RequestMapping(value="/Organization/findAllProvincesAndSelf", method=RequestMethod.POST)
 	public @ResponseBody List<Organization> findAllProvincesAndSelf(
@@ -101,6 +132,8 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 	}
 	
 	
+	
+	
 	@RequestMapping(value="/Organization/ownObjective/{objectiveId}")
 	public @ResponseBody List<Organization> findOrganizationByObjectOwner(
 			@PathVariable Long objectiveId) {
@@ -120,6 +153,9 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 			@PathVariable Long id) {
 		return entityService.findOrganizationById(id);
 	}
+	
+	
+
 	
 	@ExceptionHandler(value=Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

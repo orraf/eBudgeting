@@ -815,7 +815,14 @@ public class GenericViewController {
 				Model model, HttpServletRequest request, HttpSession session) {
 			return "m52f01";
 		}
-	
+
+		
+		// --------------------------------------------------- m52f01: ทะเบียนรายการงบลงทุน
+		@RequestMapping("/page/m52f02/")
+		public String render_m52f02(
+				Model model, HttpServletRequest request, HttpSession session) {
+			return "m52f02";
+		}
 
 	
 	// --------------------------------------------------------------m61f03: การบันทึกงบประมาณ ระดับกิจกรรมหลัก
@@ -1243,6 +1250,18 @@ public class GenericViewController {
 		model.addAttribute("organizationId", currentUser.getWorkAt().getId());
 		
 		return "m82r01";
+	}
+	
+	@RequestMapping("/page/m82r02/")
+	public String render_m82r02(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		model.addAttribute("rootPage", true);
+		setFiscalYearFromSession(model, session);
+		model.addAttribute("organizationId", currentUser.getWorkAt().getId());
+		
+		return "m82r02";
 	}
 	
 	@RequestMapping("/page/m81r04/")

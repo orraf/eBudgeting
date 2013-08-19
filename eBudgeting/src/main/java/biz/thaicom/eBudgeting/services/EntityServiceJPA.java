@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import javax.swing.SortOrder;
+
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -26,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +38,7 @@ import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudgetPlan;
+import biz.thaicom.eBudgeting.models.bgt.AssetCategory;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
@@ -81,6 +85,7 @@ import biz.thaicom.eBudgeting.repositories.ActivityTargetResultRepository;
 import biz.thaicom.eBudgeting.repositories.AllocationRecordRepository;
 import biz.thaicom.eBudgeting.repositories.AssetAllocationRepository;
 import biz.thaicom.eBudgeting.repositories.AssetBudgetRepository;
+import biz.thaicom.eBudgeting.repositories.AssetCategoryRepository;
 import biz.thaicom.eBudgeting.repositories.AssetGroupRepository;
 import biz.thaicom.eBudgeting.repositories.AssetKindRepository;
 import biz.thaicom.eBudgeting.repositories.AssetMethodRepository;
@@ -238,6 +243,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private BudgetUsageFromExternalRepository budgetUsageFromExternalRepository;
+	
+	@Autowired
+	private AssetCategoryRepository assetCategoryRepository;
 	
 	@Autowired
 	private ObjectMapper mapper;
@@ -4059,6 +4067,14 @@ public class EntityServiceJPA implements EntityService {
 		return returnList;
 	}
 
+	
+	
+	@Override
+	public List<Organization> findOrganizationProvinces() {
+		
+		return organizationRepository.findAllProvinces();
+	}
+
 	@Override
 	public List<Organization> findOrganizationByProvinces(String query) {
 		query = "%" + query + "%";
@@ -4970,6 +4986,11 @@ public class EntityServiceJPA implements EntityService {
 			assetBudget.setKind(kind);
 		}
 		
+		if(getJsonNodeId(node.get("category")) != null) {
+			AssetCategory category = assetCategoryRepository.findOne(getJsonNodeId(node.get("category")));
+			assetBudget.setCategory(category);
+		}
+		
 		assetBudgetRepository.save(assetBudget);
 		
 		return assetBudget;
@@ -5000,6 +5021,10 @@ public class EntityServiceJPA implements EntityService {
 			assetBudget.setKind(kind);
 		}
 		
+		if(getJsonNodeId(node.get("category")) != null) {
+			AssetCategory category = assetCategoryRepository.findOne(getJsonNodeId(node.get("category")));
+			assetBudget.setCategory(category);
+		}
 		assetBudgetRepository.save(assetBudget);
 		return assetBudget;
 	}
@@ -5632,6 +5657,102 @@ public class EntityServiceJPA implements EntityService {
 		
 		return assetAllocations;
 	}
+
+	@Override
+	public Objective findObjectivesByFiscalyearAndTypeIdForM82R01Report(
+			Integer fiscalYear) {
+		
+		
+		// now we'll have to recursively get all children?
+		List<Objective> allObjective = objectiveRepository.findAllLeftJoinChildrenByFiscalYear(fiscalYear);
+		
+		Objective root = objectiveRepository.findRootOfFiscalYear(fiscalYear);
+		
+		return root;
+	}
+
+	@Override
+	public List<Organization> findAllOrganization() {
+		List<Organization> organizations = organizationRepository.findAllLeftJoinChildren();
+		
+		return organizations;
+		
+	}
+
+	@Override
+	public Organization findOrganizationRoot() {
+		
+		List<Organization> organizations = organizationRepository.findAllLeftJoinChildren();
+		Organization root = organizationRepository.findRoot();
+		
+		return root;
+	}
+
+	@Override
+	public Page<AssetCategory> findAllAssetCategories(PageRequest pageRequest,
+			String query) {
+		// TODO Auto-generated method stub
+		return (Page<AssetCategory>) assetCategoryRepository.findAll(pageRequest);
+	}
+	
+	
+
+	@Override
+	public Page<AssetCategory> findAllAssetCategories(PageRequest pageRequest) {
+		return this.findAllAssetCategories(pageRequest, "%");
+	}
+
+	@Override
+	public AssetCategory findOneAssetCategory(Long id) {
+		return assetCategoryRepository.findOne(id);
+	}
+
+	@Override
+	public AssetCategory updateAssetCategory(JsonNode node) {
+		AssetCategory category = assetCategoryRepository.findOne(getJsonNodeId(node));
+		if(category != null) {
+			category.setName(node.get("name").asText());
+			category.setCode(node.get("code").asText());
+		}
+		
+		assetCategoryRepository.save(category);
+		
+		return category;
+	}
+
+	@Override
+	public AssetCategory saveAssetCategory(JsonNode node) {
+		AssetCategory category = new AssetCategory();
+		if(category != null) {
+			category.setName(node.get("name").asText());
+			category.setCode(node.get("code").asText());
+		}
+		
+		assetCategoryRepository.save(category);
+		
+		return category;	}
+
+	@Override
+	public AssetCategory deleteAssetCategory(Long id) {
+		AssetCategory category = assetCategoryRepository.findOne(id);
+		if(category != null) {
+			// now find all asset budget assign to this category 
+			// and set them to null
+			
+			assetBudgetRepository.removeCategory(category);
+			
+			assetCategoryRepository.delete(category);
+		}
+		return category;
+	}
+
+	@Override
+	public List<AssetCategory> findAssetCategoryAll() {
+
+		return (List<AssetCategory>) assetCategoryRepository.findAll(new Sort(Sort.Direction.ASC, "code"));
+	}
+	
+	
 	
 	
 	

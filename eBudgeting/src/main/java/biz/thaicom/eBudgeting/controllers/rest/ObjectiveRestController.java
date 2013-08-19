@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
 
 
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
@@ -320,6 +322,38 @@ public class ObjectiveRestController {
 		Boolean cascadeNameDelete = false;
 		
 		return entityService.deleteObjective(id, cascadeNameDelete);
+	}
+	
+	@RequestMapping(value="/Objective/ListAllInFiscalYear/{fiscalYear}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> listAllinFiscalYear(@PathVariable Integer fiscalYear) {
+		Objective root = entityService.findObjectivesByFiscalyearAndTypeIdForM82R01Report(fiscalYear);
+		
+		List<Objective> objectives = new ArrayList<Objective>();
+		
+		objectives.add(root);
+		
+		Stack<Objective> stack = new Stack<Objective>();
+		
+		for(int i=root.getChildren().size(); i>0; i--) {
+			stack.push(root.getChildren().get(i-1));
+		}
+		
+		
+		
+		while(!stack.empty()) {
+			Objective o = stack.pop();
+			
+			objectives.add(o);
+			
+			if(o.getChildren() != null && o.getChildren().size() > 0) {
+				for(int i=o.getChildren().size(); i>0; i--) {
+					stack.push(o.getChildren().get(i-1));
+				}
+			}
+				
+		}
+		
+		return  objectives;
 	}
 	
 

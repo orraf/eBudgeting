@@ -83,6 +83,11 @@
  		
  	</bean>
 
+
+	<bean id="m82r01.xls" class="biz.thaicom.eBudgeting.view.M82R01XLSView"> 	
+ 		
+ 	</bean>
+
  	<bean id="m81r09.xls" class="biz.thaicom.eBudgeting.view.M81R09XLSView"> 	
  		<property name="dataSource" ref="dataSource"></property>
  	</bean>

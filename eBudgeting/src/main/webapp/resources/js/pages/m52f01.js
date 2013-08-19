@@ -2,10 +2,11 @@ var ModalView = Backbone.View.extend({
 	/** 
 	 * @memberOf ModalView
 	 */
-	initialize: function() {
-		
+	initialize: function(categories) {
+		this.categories = categories;
 	},
 	el: '#modal',
+
 	events: {
 		"click #closeBtn" : "close",
 		"click #saveBtn" : "saveForm"
@@ -16,6 +17,10 @@ var ModalView = Backbone.View.extend({
 		this.currentAssetBudget.set('code', this.$el.find('#codeTxt').val());
 		this.currentAssetBudget.set('description', this.$el.find('#descriptionTxt').val());
 		
+		var cat = AssetCategory.findOrCreate({id: this.$el.find('#categorySlt').val()});
+		
+		this.currentAssetBudget.set('category', cat);
+		
 		if(this.currentAssetBudget.get('id') != null) {
 			this.currentAssetBudget.url = appUrl('/AssetBudget/' + this.currentAssetBudget.get('id'));
 		} else {
@@ -25,7 +30,7 @@ var ModalView = Backbone.View.extend({
 		this.currentAssetBudget.save(null,{
 			success: _.bind(function() {
 				alert('คุณได้ทำการบันทึกข้อมูลเรียบร้อยแล้ว');
-				mainTblView.addAssetBudget(this.currentAssetBudget);
+				mainTblView.reRender();
 				this.close();
 			},this)
 		});
@@ -35,12 +40,33 @@ var ModalView = Backbone.View.extend({
 	},
 	
 	modalBodyTemplate : Handlebars.compile($("#modalBodyTemplate").html()),
+	categorySltTemplate : Handlebars.compile($("#categorySltTemplate").html()),
 	
 	renderWithAssetBudget : function(assetBudget) {
 		this.currentAssetBudget = assetBudget;
 		var json = this.currentAssetBudget.toJSON();
 		var html = this.modalBodyTemplate(json);
+		
+		if(this.currentAssetBudget.get('id') == null) {
+			this.$el.find('.modal-header span').html("เพิ่มรายการใหม่");
+		} else {
+			
+			this.$el.find('.modal-header span').html("แก้ไขรายการ");
+		}
+		
 		this.$el.find('.modal-body').html(html);
+		
+		json = this.categories.toJSON();
+		for(var i=0; i< this.categories.length; i++) {
+			var cat = this.categories.at(i);
+			var currentCat = this.currentAssetBudget.get('category');
+			if(currentCat != null && cat.get('id') == currentCat.get('id')) {
+				json[i].isSelected = true;
+			}
+		}
+		
+		html = this.categorySltTemplate(json);
+		this.$el.find('#categorySlt').append(html);
 		
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		return this;
@@ -155,8 +181,14 @@ var MainTblView = Backbone.View.extend({
 	/**
 	 * @memberOf MainTblView
 	 */
-	initialize : function() {
-		
+	initialize : function(categories) {
+		categories.fetch({
+			url: appUrl('/AssetCategory/all'),
+			success: _.bind(function() {
+				this.categories = categories;
+				this.modalView = new ModalView(this.categories);
+			}, this)
+		});
 	},
 	el : '#mainTbl',
 	events: {
@@ -167,7 +199,7 @@ var MainTblView = Backbone.View.extend({
 	mainTblTemplate: Handlebars.compile($("#mainTblTemplate").html()), 
 	assetBudgetRowTemplate: Handlebars.compile($("#assetBudgetRowTemplate").html()),
 	tbodyTemplate: Handlebars.compile($("#tbodyTemplate").html()),
-	modalView: new ModalView(),
+	
 	
 	newForm : function() {
 		this.currentAssetBudget = new AssetBudget();
@@ -183,6 +215,10 @@ var MainTblView = Backbone.View.extend({
 
 		
 	},	
+	reRender: function() {
+		this.renderWithAssetKind(this.assetKind);
+	},
+	
 	renderWithAssetKind: function(assetKind) {
 		this.assetKind = assetKind;
 		this.collection = new AssetBudgetCollection();
@@ -190,11 +226,37 @@ var MainTblView = Backbone.View.extend({
 			url: appUrl("/AssetBudget/byKindId/" + this.assetKind.get('id')),
 			success: _.bind(function() {
 				var html = this.mainTblTemplate();
+				var categories = new AssetCategoryCollection();
+				
 				this.$el.html(html);
 				
 				if(this.collection.length>0) {
+					// OK we'll group into category...
+					for(var i=0; i<this.collection.length; i++) {
+						var asset = this.collection.at(i);
+						var cat = asset.get('category');
+						if(cat == null) {
+							cat = AssetCategory.findOrCreate({id:0});
+							cat.set('name', "ยังไม่ระบุประเภท");
+							cat.set('class', 'error');
+						} else {
+							cat.set('class', 'info');
+						}
+						
+						categories.add(cat);
+						
+						if(cat.get('assets') == null) {
+							cat.set('assets', new AssetBudgetCollection());
+						}
+						cat.get('assets').add(asset);
+					}
+					
+					
 					// then the inside row
-					var json=this.collection.toJSON();
+					//var json=this.collection.toJSON();
+					var json = categories.toJSON();
+					
+					
 					
 					html = this.tbodyTemplate(json);
 					this.$el.find('tbody').html(html);

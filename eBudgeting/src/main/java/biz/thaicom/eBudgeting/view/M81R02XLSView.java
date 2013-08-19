@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
@@ -43,6 +44,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
         Map<String, CellStyle> styles = createStyles(workbook);
 
         
+		@SuppressWarnings("unchecked")
 		List<Objective> objectiveList = (List<Objective>) model.get("objectiveList");
 		Integer fiscalYear = (Integer) model.get("fiscalYear");
 		Sheet sheet = workbook.createSheet("sheet1");

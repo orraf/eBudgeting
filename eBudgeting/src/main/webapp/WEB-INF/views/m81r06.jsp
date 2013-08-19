@@ -136,11 +136,12 @@
 	</div>
 </script>
 
-<script id="orgTemplate" type="text/x-handler-template">
+<script id="orgSelectionTemplate" type="text/x-handler-template">
 <div class="control-group"  style="margin-bottom:5px;">
 	<label class="control-label">{{label}} :</label>
 	<div class="controls">
-		<select id="id" class="span5">
+		<select id="{{id}}" class="span5">
+			<option value="0">{{first}}</option>
 			{{#each this}}<option value={{id}}>{{name}}</option>{{/each}}
 		</select>
 	</div> 

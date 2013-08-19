@@ -19,7 +19,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"SELECT act " +
 			"FROM Activity act " +
 			"WHERE act.owner =?1 AND act.forObjective.id = ?2 AND act.parent is null " +
-			"ORDER BY act.code ASC ")
+			"ORDER BY act.regulator.id ASC, act.code ASC ")
 	List<Activity> findAllByOwnerAndForObejctive_Id(Organization org, Long objectiveId);
 
 	@Query("" +

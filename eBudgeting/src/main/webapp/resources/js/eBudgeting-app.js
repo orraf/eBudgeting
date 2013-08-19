@@ -199,11 +199,11 @@ Activity = Backbone.RelationalModel.extend({
     	key: 'children',
     	relatedModel: 'Activity',
     	collectionType: 'ActivityCollection'	    
-    },,{
+    },{
     	type: Backbone.HasOne,
     	key: 'parent',
     	relatedModel: 'Activity'
-    },],
+    }],
 	urlRoot: appUrl('/Activity/')
 });
 
@@ -704,6 +704,17 @@ AssetKind = Backbone.RelationalModel.extend({
 	}]
 });
 
+AssetCategory = Backbone.RelationalModel.extend({
+	idAttribute: 'id',
+	relations: [{
+		type: Backbone.HasMany,
+		key: 'assets',
+		relatedModel: 'AssetBudget',
+		collectionType: 'AssetBudgetCollection'		
+	}],
+	urlRoot: appUrl('/AssetCategory/')
+});
+
 AssetBudget =  Backbone.RelationalModel.extend({
 	urlRoot: appUrl('/AssetBudget/'),
 	idAttribute: 'id',
@@ -711,6 +722,10 @@ AssetBudget =  Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'kind',
 		relatedModel: 'AssetKind'
+	}, {
+		type: Backbone.HasOne,
+		key: 'category',
+		relatedModel: 'AssetCategory'
 	}]
 });
 
@@ -1040,6 +1055,9 @@ ObjectiveTargetCollection = Backbone.Collection.extend({
 TargetUnitCollection = Backbone.Collection.extend({
 	model: TargetUnit
 });
+AssetCategoryCollection = Backbone.Collection.extend({
+	model: AssetCategory
+});
 OrganizationCollection = Backbone.Collection.extend({
 	model: Organization
 });
@@ -1062,6 +1080,19 @@ TargetUnitPagableCollection = PagableCollection.extend({
 	    return appUrl('/TargetUnit/page/'+this.targetPage);
 	}
 });
+
+AssetCategoryPagableCollection = PagableCollection.extend({
+	initialize: function(models, options) {
+	    this.targetPage = options.targetPage;
+	},
+	
+	model: AssetCategory,
+	
+	url: function() {
+	    return appUrl('/AssetCategory/page/'+this.targetPage);
+	}
+});
+
 
 TargetValueCollection = Backbone.Collection.extend({
 	model: TargetValue

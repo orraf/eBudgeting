@@ -594,29 +594,32 @@ public class ExcelReportsController {
 	public String excelM81R03(@PathVariable Integer fiscalYear, Model model, 
 			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
-		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
+//		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
+//		
+//		List<Objective> objList = new ArrayList<Objective>();
+// 		List<Objective> allList = returnList.get(0);
+//		HashMap<Long, Objective> objMap = new HashMap<Long, Objective>();		
+//		for(Objective o : allList) {
+//			o.setChildren(new ArrayList<Objective>());
+//			objMap.put(o.getId(), o);
+//			logger.debug("put " + o.getFilterObjectiveBudgetProposals().size());
+//		}
+//		// now connect the children
+//		for(Objective obj : allList) {
+//			Objective parent = objMap.get(obj.getParent().getId());
+//			if(parent != null) {
+//				parent.getChildren().add(obj);
+//			} else {
+//				if(obj.getType().getId() == 101L) 
+//					objList.add(obj);
+//			}
+//			
+//		}
 		
-		List<Objective> objList = new ArrayList<Objective>();
- 		List<Objective> allList = returnList.get(0);
-		HashMap<Long, Objective> objMap = new HashMap<Long, Objective>();		
-		for(Objective o : allList) {
-			o.setChildren(new ArrayList<Objective>());
-			objMap.put(o.getId(), o);
-			logger.debug("put " + o.getFilterObjectiveBudgetProposals().size());
-		}
-		// now connect the children
-		for(Objective obj : allList) {
-			Objective parent = objMap.get(obj.getParent().getId());
-			if(parent != null) {
-				parent.getChildren().add(obj);
-			} else {
-				if(obj.getType().getId() == 101L) 
-					objList.add(obj);
-			}
-			
-		}
+		Objective root = entityService.findOneRootObjectiveByFiscalyear(fiscalYear);
 		
-		model.addAttribute("objectiveList", objList);
+				
+		model.addAttribute("root", root);
 		
 		
 		model.addAttribute("fiscalYear", fiscalYear);
@@ -663,8 +666,29 @@ public class ExcelReportsController {
 		return "m81r05.xls";
 	}
 	
-	@RequestMapping("/m81r06.xls/{fiscalYear}/{startMonth}/{endMonth}/{objId}/file/m81r06.xls")
-	public String excelM81R06(@PathVariable Integer fiscalYear, @PathVariable Integer startMonth, @PathVariable Integer endMonth, @PathVariable Integer objId, Model model, 
+	@RequestMapping("/m82r01.xls/{fiscalYear}/file/m82r01.xls")
+	public String excelM82R01(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
+		
+		
+		
+		Objective root = entityService.findObjectivesByFiscalyearAndTypeIdForM82R01Report(fiscalYear);
+		
+		//model.addAttribute("objectives", objectives);
+		
+		model.addAttribute("root", root);
+		
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		return "m82r01.xls";
+	}
+	
+	@RequestMapping("/m81r06.xls/{fiscalYear}/{startMonth}/{endMonth}/{objId}/{orgId}/file/m81r06.xls")
+	public String excelM81R06(@PathVariable Integer fiscalYear, @PathVariable Integer startMonth, @PathVariable Integer endMonth, @PathVariable Integer objId,
+			@PathVariable Long orgId,
+			Model model,
 			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		Objective objective = entityService.findOjectiveById((long) objId);
@@ -673,12 +697,9 @@ public class ExcelReportsController {
 		//Organization organization = entityService.findOrganizationById((long) currentUser.getWorkAt().getId());
 		Organization organization = null;
 		
-		if(currentUser.getWorkAt().getAbbr().equals("กงป.")) {
-			organization = new Organization();
-			organization.setId(0L);
-		} else {
-			organization = entityService.findOrganizationById((long) currentUser.getWorkAt().getId());
-		}
+		
+		organization = entityService.findOrganizationById(orgId);
+		
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("startMonth", startMonth);

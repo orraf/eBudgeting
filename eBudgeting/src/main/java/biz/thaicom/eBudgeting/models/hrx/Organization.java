@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -53,6 +54,7 @@ public class Organization implements Serializable {
 	private Organization parent;
 	
 	@OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
+	@OrderBy("id asc")
 	private List<Organization> children;
 
 	public Long getId() {

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
+import biz.thaicom.eBudgeting.models.bgt.AssetCategory;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
@@ -155,8 +156,11 @@ public interface EntityService {
 	public List<ActivityTargetResult> findActivityTargetResultByReportAndFiscalMonth(
 			Long targetReportId, Integer fiscalMonth);
 	
-	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear);
+	// Specific for Excel Report!
 	
+	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear);
+	public Objective findObjectivesByFiscalyearAndTypeIdForM82R01Report(
+			Integer fiscalYear);
 
 	
 	//BudgetType
@@ -352,7 +356,11 @@ public interface EntityService {
 	public Organization findOrganizationParentOf(Organization org);
 	public List<Organization> findOrganizationByNameAndParent_IdWithProcuremnt(
 			String query, Long parentId);
+	
+	public List<Organization> findOrganizationProvinces();
 
+	public List<Organization> findAllOrganization();
+	public Organization findOrganizationRoot();
 
 
 	
@@ -432,6 +440,18 @@ public interface EntityService {
 	
 	// AssetMethod
 	public List<AssetMethod> findAssetMethodAll();
+	
+	
+	public Page<AssetCategory> findAllAssetCategories(PageRequest pageRequest, String query);
+	public Page<AssetCategory> findAllAssetCategories(PageRequest pageRequest);
+	public AssetCategory findOneAssetCategory(Long id);
+	public AssetCategory updateAssetCategory(JsonNode node);
+	public AssetCategory saveAssetCategory(JsonNode node);
+	public AssetCategory deleteAssetCategory(Long id);
+	public List<AssetCategory> findAssetCategoryAll();
+
+
+	
 
 
 

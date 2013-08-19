@@ -133,7 +133,7 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	render: function(assetAllocation) {
 		this.currentAssetAllocation = assetAllocation;
 		
-		this.$el.find('.modal-header span').html("บันทึกแผนงบลงทุน");
+		this.$el.find('.modal-header span').html("บันทึกผลงบลงทุน");
 		
 		var json = this.currentAssetAllocation.toJSON();
 		var html = this.assignAssetPlanModalTemplate(json);
