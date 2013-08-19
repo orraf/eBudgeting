@@ -11,11 +11,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import biz.thaicom.eBudgeting.repositories.UserRepository;
+import biz.thaicom.security.models.Group;
 import biz.thaicom.security.models.ThaicomUserDetail;
 import biz.thaicom.security.models.User;
 
+@Transactional
 public class ThaicomUserDetailService implements UserDetailsService {
 	private static final Logger logger = LoggerFactory.getLogger(ThaicomUserDetailService.class);
 	
@@ -30,20 +33,29 @@ public class ThaicomUserDetailService implements UserDetailsService {
 		
 		User user = userRepository.findByUsername(userName);
 		
+		
+		
+		
 		if(user != null) {
+			List<Group> groups = userRepository.findGroupsByUser(user);
+			
+			user.setGroups(groups);
+			
 			List<GrantedAuthority> AUTHORITIES = new ArrayList<GrantedAuthority>();
-	        AUTHORITIES.add(new SimpleGrantedAuthority("ROLE_USER"));
-	        AUTHORITIES.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-	        
-			ThaicomUserDetail userDetail = new ThaicomUserDetail(
+			
+			logger.debug("user.groups size: " + user.getGroups().size());
+			for(Group g : user.getGroups()) {
+				logger.debug(g.getName());
+				AUTHORITIES.add(new SimpleGrantedAuthority(g.getName()));	
+			}
+			
+			
+	        ThaicomUserDetail userDetail = new ThaicomUserDetail(
 					user.getUsername(), user.getPassword(), AUTHORITIES);
 			
 			userDetail.setWorkAt(user.getPerson().getWorkAt());
 			userDetail.setPerson(user.getPerson());
-			if(user.getPerson().getWorkAt().getId() == 101090100) {
-				AUTHORITIES.add(new SimpleGrantedAuthority("ROLE_USER_PLAN"));
-			}
-			
+						
 			return userDetail;
 		} else {
 			throw new UsernameNotFoundException(userName);

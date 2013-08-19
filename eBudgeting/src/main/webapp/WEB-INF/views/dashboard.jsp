@@ -80,9 +80,9 @@
 {{/each}}
 </script>
 
-<sec:authorize access="hasRole('ROLE_USER_PLAN')">
+<sec:authorize access="hasRole('PMS_BGT_ADMIN')">
 <script type="text/javascript">
-var ROLE_USER_PLAN = true;
+var PMS_BGT_ADMIN = true;
 </script>
 </sec:authorize>
 
@@ -349,7 +349,7 @@ $(document).ready(function() {
 	
 	mainView = new MainView();
 	
-	if (typeof ROLE_USER_PLAN != "undefined"){
+	if (typeof PMS_BGT_ADMIN != "undefined"){
 		mainView.renderWith(menuJson);
 	 	//$("#menuDiv").html(menuTemplate(menuJson));
 	 	
