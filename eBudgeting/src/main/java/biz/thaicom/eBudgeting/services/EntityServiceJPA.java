@@ -5157,7 +5157,7 @@ public class EntityServiceJPA implements EntityService {
 				
 
 		// we'll update proposal at last
-		Double sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
+		Double sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal).doubleValue();
 		if(sumAssetAllocation != null) {
 			proposal.setAmountAllocated(sumAssetAllocation);
 			
@@ -5270,7 +5270,7 @@ public class EntityServiceJPA implements EntityService {
 		// have to update proposal! 
 		BudgetProposal proposal = assetAllocation.getProposal();
 		Double sumAssetAllocation = assetAllocationRepository
-				.findSumBudgetOfPropsoal(proposal);
+				.findSumBudgetOfPropsoal(proposal).doubleValue();
 		if(sumAssetAllocation != null) {
 			proposal.setAmountAllocated(sumAssetAllocation);
 			
@@ -5350,7 +5350,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		// have to update proposal! 
 		for(BudgetProposal proposal : proposalSet) {
-			Double sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
+			Double sumAssetAllocation = assetAllocationRepository.findSumBudgetOfPropsoal(proposal).doubleValue();
 			if(sumAssetAllocation != null) {
 				proposal.setAmountAllocated(sumAssetAllocation);
 				

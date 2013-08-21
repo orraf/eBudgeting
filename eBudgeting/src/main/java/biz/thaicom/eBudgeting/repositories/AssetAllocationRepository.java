@@ -18,7 +18,7 @@ public interface AssetAllocationRepository extends JpaRepository<AssetAllocation
 			"SELECT sum(assetAllocation.quantity * assetAllocation.unitBudget) " +
 			"FROM AssetAllocation assetAllocation " +
 			"WHERE assetAllocation.proposal = ?1 ")
-	Double findSumBudgetOfPropsoal(BudgetProposal proposal);
+	Long findSumBudgetOfPropsoal(BudgetProposal proposal);
 
 	@Query("" +
 			"SELECT assetAllocation " +

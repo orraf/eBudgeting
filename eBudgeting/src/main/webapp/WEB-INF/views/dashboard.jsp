@@ -135,11 +135,11 @@ var menuJson = [{
 		}]  
 	},{
 		name: "การบันทึกกิจกรรมย่อย (m73)",code: "m73", parent: 'm7',  menus:[{
-			name: "บันทึกกิจกรรมย่อย (ระดับฝ่าย/ส่วนงาน)", code: "m73f01", parent: 'm73', link: "page/m73f01/", group: "PMS_USER"
+			name: "m73f01: บันทึกกิจกรรมย่อย (ระดับฝ่าย/ส่วนงาน)", code: "m73f01", parent: 'm73', link: "page/m73f01/", group: "PMS_USER"
 		},{
 			name: "m73f02: การจัดสรรกิจกรรมย่อย (ระดับส่วนงาน)", code: "m73f02", parent: 'm73', link: "page/m73f02/", group: "PMS_USER"
 		},{
-			name: "บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับจังหวัด)", code: "m73f03", parent: 'm51', link: "page/m73f03/", group: "PMS_USER"
+			name: "m73f03: บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับจังหวัด)", code: "m73f03", parent: 'm51', link: "page/m73f03/", group: "PMS_USER"
 		}]  
 	}, {
 		name: "การบันทึกแผนการดำเนินงานกิจกรรมย่อย (m74)",code: "m74", parent: 'm7',  menus: [{
