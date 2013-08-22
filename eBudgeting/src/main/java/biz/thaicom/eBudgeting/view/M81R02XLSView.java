@@ -294,19 +294,19 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 					Statement st2 = connection.createStatement();
 					ResultSet rs2;
 					rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
-							 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, s_user t4, hrx_organization org " +
-							 "where t1.report_pln_acttargetreport_id = t2.id and t1.owner_hrx_organization_id = org.id " +
+
+							 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
+							     "(select id from hrx_organization " +
+							        "connect by prior id = parent_hrx_organization_id " +
+							        "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t4 " +
+							 "where t1.report_pln_acttargetreport_id = t2.id " +
 						     "and t2.target_pln_acttarget_id = t3.id " +
-							 "and (t1.owner_hrx_organization_id = t4.dept_id or org.parent_hrx_organization_id = t4.dept_id) " +
+							 "and t1.owner_hrx_organization_id = t4.id " +
 							 "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
 							 " and t3.id = " + rs1.getInt(6) +
-							 " and t4.login = '" + currentUser.getUsername() + "' " +
 							 " group by t1.fiscalmonth order by t1.fiscalmonth ");
 
-/*				     "(select id from hrx_organization " +
-				        "connect by prior id = parent_hrx_organization_id " +
-				        "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t4 " +
-*/					
+					
 					
 					j = 3;
 					s1 = 0;

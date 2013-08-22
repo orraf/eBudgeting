@@ -71,7 +71,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 		
 		Row thirdRow = sheet.createRow(2);
 		Cell cell301 = thirdRow.createCell(0);
-		cell301.setCellValue("สกย.จ.");
+		cell301.setCellValue("หน่วยงาน");
 		cell301.setCellStyle(styles.get("header"));
 		Cell cell302 = thirdRow.createCell(1);
 		cell302.setCellValue("เป้าหมาย");
