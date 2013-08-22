@@ -187,6 +187,14 @@
 				</div>
 			</div>
 		</div>
+		<div class="span5" style="margin-top: 7px;">
+		<label class="control-label" for="estimatedCost">ราคากลาง </label>
+			<div class="controls">
+				<div class="input-append">
+					<input type="text" value="{{estimatedCost}}" placeholder="..." data-field="estimatedCost" class="span2" id="estimatedCost"><span class="add-on">บาท</span>
+				</div>
+			</div>
+		</div>
 		<div id="assetMethodStepDiv" class="span10" style="margin-top: 14px;">
     		<ul class="nav nav-tabs" id="assetTab">
     			<li class="active"><a href="#assetDateTab" data-toggle="tab">แผนการดำเนินการ</a></li>

@@ -170,8 +170,11 @@
 {{#if assetMethod}}
 	<div><strong>วิธีการจัดซื้อจัดจ้าง: </strong> {{assetMethod.name}}</div>
 {{else}}
-	<div>ยังไม่ได้บันทึกแผนการจัดซื้อจัดจ้าง</div>
+	<div><strong>วิธีการจัดซื้อจัดจ้าง: </strong> ยังไม่ได้บันทึกแผนการจัดซื้อจัดจ้าง</div>
 {{/if}}
+
+	<div><strong>ราคากลาง : </strong> {{#if estimatedCost}}{{formatNumber estimatedCost}} บาท{{else}} ยังไม่ได้ระบุ {{/if}}</div>
+
 </div>
 <div id="inputAll">
 	<form class="form-horizontal">

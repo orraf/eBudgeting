@@ -51,11 +51,23 @@ public class AssetAllocation implements Serializable{
 	@Basic
 	private Long unitBudget;
 	
+	/**
+	 * วันที่เริ่มสัญญา (แผน)
+	 */
 	@Basic 
 	private Double contractedBudgetPlan;
 
+	/**
+	 * วันที่สิ้นสุดสัญญา (ผล)
+	 */
 	@Basic 
 	private Double contractedBudgetActual;
+	
+	/**
+	 * ราคากลาง
+	 */
+	@Basic
+	private Double estimatedCost;
 	
 	@ManyToOne
 	@JoinColumn(name="HRX_OWNER_ID")
@@ -232,6 +244,15 @@ public class AssetAllocation implements Serializable{
 	public void setContractedBudgetActual(Double contractedBudgetActual) {
 		this.contractedBudgetActual = contractedBudgetActual;
 	}
+
+	public Double getEstimatedCost() {
+		return estimatedCost;
+	}
+
+	public void setEstimatedCost(Double estimatedCost) {
+		this.estimatedCost = estimatedCost;
+	}
+	
 	
 	
 	

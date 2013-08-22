@@ -68,6 +68,8 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		"change #inputAssetMethod" : "changeAssetMethod",
 		"click #saveAssetPlanBtn" : "saveAssetPlan",
 		"change #contractedBudgetPlan" : "changeContractedBudgetPlan",
+		"change #estimatedCost" : "changeEstimatedCost",
+		
 		"change input.datepickerTxt" : "changeInputDatepicker",
 		"click #cancelBtn" : "cancel",
 		"change input#assetBudgetPlanLengthTxt" : "assetBudgetPlanLength",
@@ -79,6 +81,11 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	changeContractedBudgetPlan: function(e) {
 		var dataField = $(e.target).attr('data-field');
 		this.currentAssetAllocation.set(dataField, $(e.target).val());
+	},
+	changeEstimatedCost: function(e) {
+		var dataField = $(e.target).attr('data-field');
+		this.currentAssetAllocation.set(dataField, $(e.target).val());
+		
 	},
 	assetBudgetPlanChange: function(e) {
 		var index = $(e.target).parents('tr').attr('data-index');

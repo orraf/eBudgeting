@@ -5441,12 +5441,17 @@ public class EntityServiceJPA implements EntityService {
 		if(node.get("contractedBudgetActual") != null) {
 			
 			asset.setContractedBudgetActual(node.get("contractedBudgetActual").asDouble());
-		} 
+		}
+		
+		 
 		
 		if(node.get("contractedBudgetPlan") != null) {
 			asset.setContractedBudgetPlan(node.get("contractedBudgetPlan").asDouble());
 		} 
 		
+		if(node.get("estimatedCost") != null) {
+			asset.setEstimatedCost(node.get("estimatedCost").asDouble());
+		}
 		
 		AssetMethod assetMethod = assetMethodRepository.findOne(getJsonNodeId(node.get("assetMethod")));
 		Boolean newMethod;
