@@ -210,7 +210,11 @@ function loadReport(url) {
 		$.fileDownload(url,{
 			successCallback: function (url) {
 				hideLoadingReportModal();
-			}
+			},
+			failCallback: function (responseHtml, url) {
+				$("#showLoadingReportModal .modal-body").html("<div class='alert alert-error'>ERROR! : ไม่สามารถสร้างรายงานได้ </div>");
+				$("#showLoadingReportModal .modal-body").append(responseHtml);
+	        }
 	    });
 	}, 1500);
 	

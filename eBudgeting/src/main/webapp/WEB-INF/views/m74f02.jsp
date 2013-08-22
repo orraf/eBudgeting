@@ -180,7 +180,7 @@
 			</div>
 		</div>
 		<div class="span4">
-		<label class="control-label" for="contractedBudgetPlan">วงเงินที่ทำญญา (แผน) </label>
+		<label class="control-label" for="contractedBudgetPlan">วงเงินที่ทำสัญา (แผน) </label>
 			<div class="controls">
 				<div class="input-append">
 					<input type="text" value="{{contractedBudgetPlan}}" placeholder="..." data-field="contractedBudgetPlan" class="span2" id="contractedBudgetPlan"><span class="add-on">บาท</span>

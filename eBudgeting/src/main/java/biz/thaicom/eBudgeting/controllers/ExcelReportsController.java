@@ -539,6 +539,11 @@ public class ExcelReportsController {
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("currentUser", currentUser);
+		Objective root = entityService.findOneRootObjectiveByFiscalyear(fiscalYear);
+		
+		model.addAttribute("root", root);
+		
+		
 		
 		Cookie cookie = new Cookie("fileDownload", "true");
 		cookie.setPath("/");
@@ -553,29 +558,33 @@ public class ExcelReportsController {
 	public String excelM81R02(@PathVariable Integer fiscalYear, Model model, 
 			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
-		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
+//		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
+//		
+//		List<Objective> objList = new ArrayList<Objective>();
+// 		List<Objective> allList = returnList.get(0);
+//		HashMap<Long, Objective> objMap = new HashMap<Long, Objective>();		
+//		for(Objective o : allList) {
+//			o.setChildren(new ArrayList<Objective>());
+//			objMap.put(o.getId(), o);
+//			logger.debug("put " + o.getFilterObjectiveBudgetProposals().size());
+//		}
+//		// now connect the children
+//		for(Objective obj : allList) {
+//			Objective parent = objMap.get(obj.getParent().getId());
+//			if(parent != null) {
+//				parent.getChildren().add(obj);
+//			} else {
+//				if(obj.getType().getId() == 101L) 
+//					objList.add(obj);
+//			}
+//			
+//		}
+//		
+		Objective root = entityService.findOneRootObjectiveByFiscalyear(fiscalYear);
 		
-		List<Objective> objList = new ArrayList<Objective>();
- 		List<Objective> allList = returnList.get(0);
-		HashMap<Long, Objective> objMap = new HashMap<Long, Objective>();		
-		for(Objective o : allList) {
-			o.setChildren(new ArrayList<Objective>());
-			objMap.put(o.getId(), o);
-			logger.debug("put " + o.getFilterObjectiveBudgetProposals().size());
-		}
-		// now connect the children
-		for(Objective obj : allList) {
-			Objective parent = objMap.get(obj.getParent().getId());
-			if(parent != null) {
-				parent.getChildren().add(obj);
-			} else {
-				if(obj.getType().getId() == 101L) 
-					objList.add(obj);
-			}
-			
-		}
+		model.addAttribute("root", root);
 		
-		model.addAttribute("objectiveList", objList);
+		//model.addAttribute("objectiveList", objList);
 		
 		
 		model.addAttribute("fiscalYear", fiscalYear);

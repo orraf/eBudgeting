@@ -46,7 +46,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 
         
 		@SuppressWarnings("unchecked")
-		List<Objective> objectiveList = (List<Objective>) model.get("objectiveList");
+		Objective root = (Objective) model.get("root");
 		Integer fiscalYear = (Integer) model.get("fiscalYear");
 		Sheet sheet = workbook.createSheet("sheet1");
 		Integer oldYear = fiscalYear - 1;
@@ -129,7 +129,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
 		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
-									   "from pln_objective m where m.id <> 21 and exists " +
+									   "from pln_objective m where m.id <> " + root.getId() + " and exists " +
 									   "(select 1 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, " +
 					                       "(select id from hrx_organization " +
 					                           "connect by prior id = parent_hrx_organization_id " +
@@ -294,10 +294,10 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 					Statement st2 = connection.createStatement();
 					ResultSet rs2;
 					rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
-							 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, s_user t4 " +
-							 "where t1.report_pln_acttargetreport_id = t2.id " +
+							 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, s_user t4, hrx_organization org " +
+							 "where t1.report_pln_acttargetreport_id = t2.id and t1.owner_hrx_organization_id = org.id " +
 						     "and t2.target_pln_acttarget_id = t3.id " +
-							 "and t1.owner_hrx_organization_id = t4.dept_id " +
+							 "and (t1.owner_hrx_organization_id = t4.dept_id or org.parent_hrx_organization_id = t4.dept_id) " +
 							 "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
 							 " and t3.id = " + rs1.getInt(6) +
 							 " and t4.login = '" + currentUser.getUsername() + "' " +

@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
 
@@ -44,6 +45,11 @@ public class M81R01XLSView extends AbstractPOIExcelView {
         Map<String, CellStyle> styles = createStyles(workbook);
 
   		Integer fiscalYear = (Integer) model.get("fiscalYear");
+  		
+  		@SuppressWarnings("unchecked")
+		Objective root = (Objective) model.get("root");
+  		
+  		
 		Sheet sheet = workbook.createSheet("sheet1");
 		Integer oldYear = fiscalYear - 1;
 
@@ -123,7 +129,7 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 				
 		Statement st = connection.createStatement();
 		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
-		                               "from pln_objective m where m.id <> 21 and exists " +
+		                               "from pln_objective m where m.id <> "+ root.getId() + " 21 and exists " +
 									   "(select 1 from pln_activity t1, pln_objective t2, s_user t3 " +
 		                               "where t1.obj_pln_objective_id = t2.id " +
 									   "and t1.owner_hrx_organization = t3.dept_id " +
