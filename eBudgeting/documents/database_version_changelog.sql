@@ -1365,8 +1365,9 @@ update app_info set db_version=23;
 
 update bgt_assetmethodstep set name='สนองรับราคา' where id=17;
 update bgt_assetmethodstep set name='แจ้งผล' where id=16;
-INSERT INTO bgt_assetmethodstep_join VALUES (6,9,2);
 update bgt_assetmethodstep_join set steporder = steporder+1 where bgt_assetmethod_id=6 and steporder>1;
+INSERT INTO bgt_assetmethodstep_join VALUES (6,9,2);
+
 
 alter table bgt_assetallocation add (estimatedcost number(19,2));
     
