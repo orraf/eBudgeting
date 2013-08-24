@@ -226,18 +226,35 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 					int i = 0;
 					for(AssetMethodStep step : method.getSteps()) {
 						
-						cell = row.createCell(colNum++);
-						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getPlanBegin()));
+						if(alloc.getAssetStepReports().size() <= i) {
 						
-						cell = row.createCell(colNum++);
-						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualBegin()));
+							cell = row.createCell(colNum++);
+							cell.setCellValue("ไม่ระบุ");
+							
+							cell = row.createCell(colNum++);
+							cell.setCellValue("ไม่ระบุ");
+							
+							cell = row.createCell(colNum++);
+							cell.setCellValue("ไม่ระบุ");
+							
+							cell = row.createCell(colNum++);
+							cell.setCellValue("ไม่ระบุ");
+							
+						} else {
 						
-						cell = row.createCell(colNum++);
-						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getPlanEnd()));
-						
-						cell = row.createCell(colNum++);
-						cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualEnd()));
-						
+							cell = row.createCell(colNum++);
+							cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getPlanBegin()));
+							
+							cell = row.createCell(colNum++);
+							cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualBegin()));
+							
+							cell = row.createCell(colNum++);
+							cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getPlanEnd()));
+							
+							cell = row.createCell(colNum++);
+							cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualEnd()));
+							
+						}
 						//logger.debug("i: " + i);
 						i++;
 					}

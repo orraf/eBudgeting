@@ -129,7 +129,7 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 				
 		Statement st = connection.createStatement();
 		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
-		                               "from pln_objective m where m.id <> "+ root.getId() + " 21 and exists " +
+		                               "from pln_objective m where m.id <> "+ root.getId() + " and exists " +
 									   "(select 1 from pln_activity t1, pln_objective t2, s_user t3 " +
 		                               "where t1.obj_pln_objective_id = t2.id " +
 									   "and t1.owner_hrx_organization = t3.dept_id " +
