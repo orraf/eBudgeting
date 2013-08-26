@@ -17,7 +17,7 @@
   </appender>
   
   <appender name="fileout" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${project.name}.log</file>
+    <file>logs/${project.name}.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- daily rollover -->
       <fileNamePattern>${project.name}.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -27,7 +27,8 @@
     </rollingPolicy>
 
     <encoder>
-      <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+    		<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level (%file:%line\) - %message%n</pattern>
+      <!--  <pattern>%-4relative  %-5level %logger{35} - %msg%n</pattern> -->
     </encoder>
   </appender> 
 
