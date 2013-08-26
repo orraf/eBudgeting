@@ -17,10 +17,10 @@
   </appender>
   
   <appender name="fileout" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>eBudgeting.log</file>
+    <file>${project.name}.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- daily rollover -->
-      <fileNamePattern>eBudgeting.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <fileNamePattern>${project.name}.%d{yyyy-MM-dd}.log</fileNamePattern>
 
       <!-- keep 30 days' worth of history -->
       <maxHistory>30</maxHistory>
@@ -31,9 +31,9 @@
     </encoder>
   </appender> 
 
-  <logger name="biz.thaicom" level="debug" />
+  <logger name="biz.thaicom" level="${config.logback.level}" />
  
   <root level="info">
-    <appender-ref ref="console" />
+    <appender-ref ref="${config.logback.appender}" />
   </root>
 </configuration>
