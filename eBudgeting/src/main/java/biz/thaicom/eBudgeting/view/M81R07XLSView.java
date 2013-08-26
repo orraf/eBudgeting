@@ -191,6 +191,46 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				rsc5.setCellValue(name);
 				rs1.close();
 				st1.close();
+
+				Statement st2 = connection.createStatement();
+				ResultSet rs2 = st2.executeQuery("select sum(amountallocated) " +
+												 "from bgt_allocationrecord t1, pln_objective t2 " +
+												 "where t1.objective_pln_objective_id = t2.id " +
+												 "and t2.code = '" + pType + "' " );
+				
+				rs2.next();
+				rsc6.setCellValue(rs2.getDouble(1));
+				rsc6.setCellStyle(styles.get("summarynumber"));
+				rs2.close();
+				st2.close();
+				
+				Statement st3 = connection.createStatement();
+				ResultSet rs3 = st3.executeQuery("select sum(t2.budgetallocated) target " +
+												 "from pln_activity t1, pln_activityperformance t2,  " +
+													 "(select id from pln_objective " +
+									                     "connect by prior id  = PARENT_PLN_OBJECTIVE_ID " +
+									                     "start with code = '" + pType + "') t3 " +			
+												 "where t1.id = t2.activity_pln_activity_id " +
+												 "and t1.obj_pln_objective_id = t3.id ");
+				
+				rs3.next();
+				rsc7.setCellValue(rs3.getDouble(1));
+				rsc7.setCellStyle(styles.get("summarynumber"));
+				rs3.close();
+				st3.close();
+				
+				Statement st4 = connection.createStatement();
+				ResultSet rs4 = st4.executeQuery("select sum(amt) " +
+											     "from v_gl " +
+											     "where fiscal_year = " + fiscalYear + " " +
+											     "and substr(gl_trans_plan,1,5) = '" + pType + "'");
+				
+				rs4.next();
+				rsc8.setCellValue(rs4.getDouble(1));
+				rsc8.setCellStyle(styles.get("summarynumber"));
+				rs4.close();
+				st4.close();
+
 				i = i + 1;
 				rows = sheet.createRow(i);
 				rsc0 = rows.createCell(0);

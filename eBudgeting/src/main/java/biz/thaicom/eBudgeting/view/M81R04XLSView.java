@@ -131,14 +131,16 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 										"and t2.unit_pln_targetunit_id = t3.id " +
 										"and t2.activity_pln_activity_id = " + activity.getId() +
 										" and t4.parent_hrx_organization_id = 0 " +
-										"union all " +
+				"order by 1, 3 ");
+
+										
+/*										"union all " +
 										"select t6.id, t6.name, '2' type, null, '   (จัดสรรเงิน '||nvl(ltrim(to_char(budgetallocated,'999,999,999,999')), '...')||' บาท)' " +
 										"from pln_activityperformance t5, hrx_organization t6 " +
 										"where t5.owner_hrx_organization_id = t6.id " +
 										"and t5.activity_pln_activity_id = " + activity.getId() +
 										" and t6.parent_hrx_organization_id = 0 " +
-										"order by 1, 3 ");
-
+*/
 		int i = 3;
 		int j = 0;
 		int s1 = 0;
@@ -189,12 +191,15 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			ResultSet rs2;
 			if (rs.getString(3).equals("1")) {
 				rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
-										"from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3 " +
+										"from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
+										"(select id from hrx_organization " +
+										   "connect by prior id = parent_hrx_organization_id " +
+										   "start with id = " + rs.getInt(1) + ") t4 " +
 										"where t1.report_pln_acttargetreport_id = t2.id " +
 										"and t2.target_pln_acttarget_id = t3.id " +
+										"and t2.owner_hrx_organization_id = t4.id " + 
 										"and t3.activity_pln_activity_id = " + activity.getId() +
 										" and t3.unit_pln_targetunit_id = " + rs.getInt(4) +
-										" and t2.owner_hrx_organization_id = " + rs.getInt(1) +
 										" group by t1.fiscalmonth order by t1.fiscalmonth ");
 			}
 			else {
