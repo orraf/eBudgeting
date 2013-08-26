@@ -131,14 +131,16 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 										"and t2.unit_pln_targetunit_id = t3.id " +
 										"and t2.activity_pln_activity_id = " + activity.getId() +
 										" and t4.parent_hrx_organization_id = 0 " +
-										"union all " +
+				"order by 1, 3 ");
+
+										
+/*										"union all " +
 										"select t6.id, t6.name, '2' type, null, '   (จัดสรรเงิน '||nvl(ltrim(to_char(budgetallocated,'999,999,999,999')), '...')||' บาท)' " +
 										"from pln_activityperformance t5, hrx_organization t6 " +
 										"where t5.owner_hrx_organization_id = t6.id " +
 										"and t5.activity_pln_activity_id = " + activity.getId() +
 										" and t6.parent_hrx_organization_id = 0 " +
-										"order by 1, 3 ");
-
+*/
 		int i = 3;
 		int j = 0;
 		int s1 = 0;
