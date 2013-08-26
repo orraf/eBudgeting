@@ -141,7 +141,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 					                        "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
 					                        "and t2.fiscalyear = " + fiscalYear + ") " +
 									   "connect by prior m.id = m.parent_pln_objective_id " +
-					                   "start with m.id = 21 ");
+					                   "start with m.id = 21 "
+					                   + "order by m.code asc");
 
 		int i = 4;
 		int j = 0;
@@ -161,7 +162,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 												 "where t1.owner_hrx_organization = t2.dept_id " +
 												 "and t1.id = t3.activity_pln_activity_id " +
 												 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
-												 "and t2.login = '" + currentUser.getUsername() + "' ");
+												 "and t2.login = '" + currentUser.getUsername() + "' "
+												 		+ "order by t1.code asc ");
 				
 				Cell rsc1 = rows.createCell(1);
 				if (rs0.next()) {
