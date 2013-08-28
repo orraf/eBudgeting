@@ -19,6 +19,8 @@ import java.util.Stack;
 
 import javax.swing.SortOrder;
 
+import net.bull.javamelody.MonitoredWithSpring;
+
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -126,6 +128,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service
 @Transactional
+@MonitoredWithSpring
 public class EntityServiceJPA implements EntityService {
 	private static final Logger logger = LoggerFactory.getLogger(EntityServiceJPA.class);
 	
