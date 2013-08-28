@@ -138,7 +138,7 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 									   " and t3.login = '" + currentUser.getUsername() + "') " +
 									   "connect by prior m.id = m.parent_pln_objective_id " +
 									   "start with m.id = 21 "
-									   + "order by m.code asc ");
+									   + "order siblings by m.code asc ");
 
 		int i = 4;
 		int j = 0;

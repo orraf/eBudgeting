@@ -142,7 +142,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 					                        "and t2.fiscalyear = " + fiscalYear + ") " +
 									   "connect by prior m.id = m.parent_pln_objective_id " +
 					                   "start with m.id = 21 "
-					                   + "order by m.code asc");
+					                   + "order siblings by m.code asc");
 
 		int i = 4;
 		int j = 0;
