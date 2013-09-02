@@ -5682,6 +5682,21 @@ public class EntityServiceJPA implements EntityService {
 		
 		return assetAllocations;
 	}
+	
+	@Override
+	public List<AssetAllocation> findAssetAllocationForReportM81r11(
+			Integer fiscalYear, ThaicomUserDetail currentUser) {
+		
+		List<AssetAllocation> assetAllocations = assetAllocationRepository.findAlByFiscalyearAndOwner(fiscalYear, currentUser.getWorkAt());
+		
+		for(AssetAllocation alloc : assetAllocations) {
+			alloc.getAssetBudgetPlans().size();
+			alloc.getAssetStepReports().size();
+			alloc.getProposal().getForObjective();
+		}
+		
+		return assetAllocations;
+	}
 
 	@Override
 	public Objective findObjectivesByFiscalyearAndTypeIdForM82R01Report(

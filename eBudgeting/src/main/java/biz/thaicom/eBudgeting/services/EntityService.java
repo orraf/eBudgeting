@@ -439,6 +439,8 @@ public interface EntityService {
 			Long objectiveId, Organization workAt);
 	public List<AssetAllocation> findAssetAllocationForReportM81r08(
 			Integer fiscalYear);
+	public List<AssetAllocation> findAssetAllocationForReportM81r11(
+			Integer fiscalYear, ThaicomUserDetail currentUser);
 	
 	
 	// AssetMethod
@@ -452,6 +454,7 @@ public interface EntityService {
 	public AssetCategory saveAssetCategory(JsonNode node);
 	public AssetCategory deleteAssetCategory(Long id);
 	public List<AssetCategory> findAssetCategoryAll();
+
 
 
 	

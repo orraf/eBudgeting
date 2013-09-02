@@ -777,11 +777,51 @@ public class ExcelReportsController {
 		return "m81r08.xls";
 	}
 	
+	@RequestMapping("/m81r11.xls/{fiscalYear}/file/m81r11.xls")
+	public String excelM81R11(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
+		
+		List<AssetAllocation> assetAllocations = entityService.findAssetAllocationForReportM81r11(fiscalYear, currentUser);
+		List<AssetAllocation> noMethodAllocs = new ArrayList<AssetAllocation>();
+		
+		
+		HashMap<AssetMethod, List<AssetAllocation>> assetMap = new HashMap<AssetMethod, List<AssetAllocation>>();
+		
+		
+		List<AssetMethod> assetMethods = entityService.findAssetMethodAll();
+		for(AssetMethod method : assetMethods) {
+			assetMap.put(method, new ArrayList<AssetAllocation>());
+		}
+		
+		for(AssetAllocation alloc: assetAllocations) {
+			if(alloc.getAssetMethod() != null && assetMap.get(alloc.getAssetMethod()) != null) {
+				
+				assetMap.get(alloc.getAssetMethod()).add(alloc);
+			} else {
+				noMethodAllocs.add(alloc);
+			}
+		}
+		
+		model.addAttribute("assetMap", assetMap);
+		model.addAttribute("noMethodAllocs", noMethodAllocs);
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		
+		
+		response.addCookie(cookie);
+		
+		
+		return "m81r08.xls";
+	}
+	
+	
 	@RequestMapping("/m81r09.xls/{fiscalYear}/file/m81r09.xls")
 	public String excelM81R09(@PathVariable Integer fiscalYear, Model model, 
 			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		model.addAttribute("fiscalYear", fiscalYear);
+		model.addAttribute("currentUser", currentUser);
 		
 		Cookie cookie = new Cookie("fileDownload", "true");
 		cookie.setPath("/");
@@ -789,6 +829,22 @@ public class ExcelReportsController {
 		
 		
 		return "m81r09.xls";
+	}
+	
+	
+	@RequestMapping("/m81r10.xls/{fiscalYear}/file/m81r10.xls")
+	public String excelM81R10(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		model.addAttribute("currentUser", currentUser);
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		
+		
+		return "m81r10.xls";
 	}
 	
 	@RequestMapping("/admin/excel/report1.xls/{id}")

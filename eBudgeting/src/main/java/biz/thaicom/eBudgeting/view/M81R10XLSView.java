@@ -24,7 +24,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import biz.thaicom.security.models.ThaicomUserDetail;
 
-public class M81R09XLSView extends AbstractPOIExcelView {
+public class M81R10XLSView extends AbstractPOIExcelView {
 
 	@Override
 	protected Workbook createWorkbook() {
@@ -159,8 +159,12 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 			    + "	and t6.parent_hrx_organization_id = t8.id "
 				+ "	and t1.fiscalyear = " + fiscalYear + " " 
 			    + "	and t2.ASSETCATEGORY_ID  = t7.id(+) "
+			    + "	and ("
+			    + "	t6.id = " + currentUser.getWorkAt().getId() 
+				+ " 	or t6.parent_hrx_organization_id = " + currentUser.getWorkAt().getId() 
+			    + " ) "
 				+ "ORDER BY t2.assetcategory_id, t8.code, t6.code, t2.code ");
-
+		
 		int i = 4;
 		String code = " ";
 		String currentCategoryName = "";

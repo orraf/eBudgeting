@@ -91,5 +91,10 @@
  	<bean id="m81r09.xls" class="biz.thaicom.eBudgeting.view.M81R09XLSView"> 	
  		<property name="dataSource" ref="dataSource"></property>
  	</bean>
+	
+	<bean id="m81r10.xls" class="biz.thaicom.eBudgeting.view.M81R10XLSView"> 	
+ 		<property name="dataSource" ref="dataSource"></property>
+ 	</bean>
 
+	
 </beans>
