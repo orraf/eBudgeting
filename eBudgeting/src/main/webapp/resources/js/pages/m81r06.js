@@ -508,7 +508,7 @@ var MainSelectionView = Backbone.View.extend({
 				this.$el.find('#provinceSlt').val() != 0){
 			orgId = this.$el.find('#provinceSlt').val();
 			
-		} else if(currentOrganizationId == 101090100){
+		} else if(userGroups.indexOf("PMS_PLAN") >= 0){
 			// ถ้าเป็น กงป. ให้ค้นหาจากทุกกอง
 			orgId = 0;
 		} else {
@@ -534,7 +534,7 @@ var MainSelectionView = Backbone.View.extend({
 		this.render();
 		
 		//now check if this is the province
-		if(currentOrganizationId == 101090100) {
+		if((userGroups.indexOf("PMS_PLAN") >= 0)) {
 			var html = {};
 			var provinces = new OrganizationCollection();
 			provinces.fetch({

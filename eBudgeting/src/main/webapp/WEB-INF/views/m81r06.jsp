@@ -435,6 +435,8 @@
 <script type="text/javascript">
 	var fiscalYear = parseInt("${fiscalYear}");
 	
+	var userGroups = '${userGroups}'.split(",");
+	
 	var mainCtrView = null;
 	var objectiveCollection = null;
 	var budgetTypeSelectionView = null;
