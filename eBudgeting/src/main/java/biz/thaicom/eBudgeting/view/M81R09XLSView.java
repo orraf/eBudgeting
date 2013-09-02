@@ -63,16 +63,16 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		Cell cell17 = firstRow.createCell(7);
 		Cell cell18 = firstRow.createCell(8);
 		Cell cell19 = firstRow.createCell(9);
-		sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 8));
+		sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 9));
 
 		Row secondRow = sheet.createRow(2);
 		int colNum = 0;
 		Cell cell20 = secondRow.createCell(colNum++);
-		cell20.setCellValue("หน่วยงาน");
+		cell20.setCellValue("สังกัด");
 		cell20.setCellStyle(styles.get("header"));
-//		Cell cell21 = secondRow.createCell(1);
-//		cell21.setCellValue("ลำดับ ที่");
-//		cell21.setCellStyle(styles.get("header"));
+		Cell cell21 = secondRow.createCell(colNum++);
+		cell21.setCellValue("หน่วยงาน");
+		cell21.setCellStyle(styles.get("header"));
 		Cell cell22 = secondRow.createCell(colNum++);
 		cell22.setCellValue("รหัส");
 		cell22.setCellStyle(styles.get("header"));
@@ -94,14 +94,14 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		cell27.setCellStyle(styles.get("header"));
 		Cell cell28 = secondRow.createCell(colNum++);
 		Cell cell29 = secondRow.createCell(colNum++);
-		sheet.addMergedRegion(new CellRangeAddress(2, 2, 6, 8));
+		sheet.addMergedRegion(new CellRangeAddress(2, 2, 7, 9));
 
 		colNum = 0;
 		Row thirdRow = sheet.createRow(3);
 		Cell cell30 = thirdRow.createCell(colNum++);
 		cell30.setCellStyle(styles.get("header"));
-//		Cell cell31 = thirdRow.createCell(colNum++);
-//		cell31.setCellStyle(styles.get("header"));
+		Cell cell31 = thirdRow.createCell(colNum++);
+		cell31.setCellStyle(styles.get("header"));
 		Cell cell32 = thirdRow.createCell(colNum++);
 		cell32.setCellStyle(styles.get("header"));
 		Cell cell33 = thirdRow.createCell(colNum++);
@@ -127,8 +127,7 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 		sheet.addMergedRegion(new CellRangeAddress(2, 3, 3, 3));
 		sheet.addMergedRegion(new CellRangeAddress(2, 3, 4, 4));
 		sheet.addMergedRegion(new CellRangeAddress(2, 3, 5, 5));
-		
-		//sheet.addMergedRegion(new CellRangeAddress(1, 2, 6, 6));
+		sheet.addMergedRegion(new CellRangeAddress(2, 3, 6, 6));
 		
 		Connection connection = dataSource.getConnection();
 				
@@ -162,6 +161,7 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 				+ "ORDER BY t2.assetcategory_id, t8.code, t6.code, t2.code ");
 
 		int i = 4;
+		String main = " ";
 		String code = " ";
 		String currentCategoryName = "";
 		String categoryName = "";
@@ -180,7 +180,7 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 				catCell.setCellValue(categoryName);
 				catCell.setCellStyle(styles.get("groupleft"));
 				
-				sheet.addMergedRegion(new CellRangeAddress(i, i, 0, 8));
+				sheet.addMergedRegion(new CellRangeAddress(i, i, 0, 9));
 				
 				i = i+1;
 			}
@@ -191,7 +191,7 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 			
 			
 			Cell rsc0 = rows.createCell(colNum++);
-			if (code.equals(rs.getString(1))) rsc0.setCellValue(" ");
+			if (code.equals(rs.getString(13))) rsc0.setCellValue(" ");
 			else {
 				if(rs.getString(2).equals("สบท.")) {
 					rsc0.setCellValue(rs.getString(13) + " / สบท.");
@@ -199,12 +199,17 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 					rsc0.setCellValue(rs.getString(2));
 				}
 				code = rs.getString(1);
+
 			}
 			rsc0.setCellStyle(styles.get("cellleft"));
 			
-			//Cell rsc1 = rows.createCell(colNum++);
-			//rsc1.setCellValue(rs.getString(3));
-			//rsc1.setCellStyle(styles.get("cellcenter"));
+			Cell rsc1 = rows.createCell(colNum++);
+			if (main.equals(rs.getString(1))) rsc1.setCellValue(" ");
+			else {
+				rsc1.setCellValue(rs.getString(2));
+				main = rs.getString(1);
+			}
+			rsc1.setCellStyle(styles.get("cellcenter"));
 			
 			Cell rsc2 = rows.createCell(colNum++);
 			rsc2.setCellValue(rs.getString(4));
@@ -247,7 +252,7 @@ public class M81R09XLSView extends AbstractPOIExcelView {
 
 		colNum = 0;
 		sheet.setColumnWidth(colNum++, 5000);
-		//sheet.setColumnWidth(colNum++, 2000);
+		sheet.setColumnWidth(colNum++, 5000);
 		sheet.setColumnWidth(colNum++, 3500);
 		sheet.setColumnWidth(colNum++, 14000);
 		sheet.setColumnWidth(colNum++, 2000);
