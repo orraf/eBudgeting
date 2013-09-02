@@ -201,7 +201,7 @@ var e1;
 //	find only the last menu of our right!
 var l2Menu = _.flatten(_.flatten(menuJson, 'menus'), 'menus').filter(function(menu) {
 	for(var i=0; i<userGroups.length; i++) {
-		if(userGroups[i].indexOf(menu.group) >= 0) {
+		if(userGroups.indexOf(menu.group[i]) >= 0) {
 			return true;
 		}
 	 }
