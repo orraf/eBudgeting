@@ -200,15 +200,18 @@ var e1;
 
 //	find only the last menu of our right!
 var l2Menu = _.flatten(_.flatten(menuJson, 'menus'), 'menus').filter(function(menu) {
-	if(userGroups.indexOf("PMS_ADMIN")) {
+	if(userGroups.indexOf("PMS_ADMIN") >= 0) {
 		return true;
 	}
 	
 	for(var i=0; i<userGroups.length; i++) {
-		if(userGroups.indexOf(menu.group[i]) >= 0) {
-			return true;
+		for(var j=0; j<menu.group.length; j++) {
+			if(userGroups.indexOf(menu.group[j]) >= 0) {
+				return true;
+			}
 		}
 	 }
+	
 	return  false;
 });
 
