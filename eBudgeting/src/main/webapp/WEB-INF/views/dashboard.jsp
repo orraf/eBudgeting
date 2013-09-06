@@ -144,7 +144,7 @@ var menuJson = [{
 		}]  
 	}, {
 		name: "การบันทึกแผนการดำเนินงานกิจกรรมย่อย (m74)",code: "m74", parent: 'm7',  menus: [{
-			name: "m74f01: บันทึกแผนการดำเนินงานกิจกรรม", code: "m74f01", parent: 'm74', link: "page/m74f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER2", "PMS_USER3"]
+			name: "m74f01: บันทึกแผนการดำเนินงานกิจกรรม", code: "m74f01", parent: 'm74', link: "page/m74f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER3"]
 		}, {
 			name: "m74f02: บันทึกแผนงบลงทุน", code: "m74f02", parent: 'm74', link : "page/m74f02/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER2", "PMS_USER3"]
 		}]
