@@ -48,6 +48,9 @@ public class M81R06XLSView extends AbstractPOIExcelView {
   		Integer endMonth = (Integer) model.get("endMonth");
 		Objective obj = (Objective) model.get("objective");
 		Organization org = (Organization) model.get("organization");
+		
+		logger.debug("orgID: " + org.getId() + " orgName: " + org.getName());
+		
 		Sheet sheet = workbook.createSheet("sheet1");
 		Integer oldYear = fiscalYear - 1;
 		int i = 7;
@@ -200,7 +203,7 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 							 "order by t1.code");
 				}
 				else {
-					rs1 = st1.executeQuery("select t1.code, t1.name, t1.id, t2.id target_id, sum(t3.targetvalue) target, t4.name unit " +
+					String sql = "select t1.code, t1.name, t1.id, t2.id target_id, sum(t3.targetvalue) target, t4.name unit " +
 							 "from pln_activity t1, pln_activitytarget t2, pln_activitytargetreport t3, pln_targetunit t4 " +
 							 "where t1.id = t2.activity_pln_activity_id " +
 							 "and t2.id = t3.target_pln_acttarget_id " +
@@ -208,7 +211,9 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 							 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
 							 "and t3.owner_hrx_organization_id = " + org.getId() +
 							 " group by t1.code, t1.name, t1.id, t2.id, t4.name " +
-							 "order by t1.code");
+							 "order by t1.code";
+					
+					rs1 = st1.executeQuery(sql);
 				}
 				
 				int actId = 0;	 
@@ -239,13 +244,17 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 								   " and t3.id = " + rs1.getInt(4) );
 					}
 					else {
-						rs2 = st2.executeQuery("select sum(t1.activityplan), sum(t1.activityresult) " +
-								   "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3 " +
-								   "where t1.report_pln_acttargetreport_id = t2.id " +
-								   "and t2.target_pln_acttarget_id = t3.id " +
-								   "and t2.owner_hrx_organization_id = " + org.getId() +
-								   "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
-								   " and t3.id = " + rs1.getInt(4) );
+						String sql = "select sum(t1.activityplan), sum(t1.activityresult) "
+									+ "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3,"
+									+ "	hrx_organization o1 "
+									+ "where t1.report_pln_acttargetreport_id = t2.id "
+									+ " and t1.owner_hrx_organization_id = o1.id "
+									+ " and t2.target_pln_acttarget_id = t3.id "
+									+ " and (t2.owner_hrx_organization_id = " + org.getId() + "or o1.parent_hrx_organization_id = " + org.getId() + ") " 
+									+ " and t3.activity_pln_activity_id = " + rs1.getInt(3)
+									+ " and t3.id = " + rs1.getInt(4);
+						
+						rs2 = st2.executeQuery(sql);
 					}
 
 					while (rs2.next()) {
