@@ -22,6 +22,8 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
@@ -29,6 +31,8 @@ import biz.thaicom.security.models.ThaicomUserDetail;
 
 public class M81R06XLSView extends AbstractPOIExcelView {
 
+	public static Logger logger = LoggerFactory.getLogger(M81R06XLSView.class);
+	
 	@Override
 	protected Workbook createWorkbook() {
 		return new HSSFWorkbook();
@@ -49,7 +53,6 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 		Objective obj = (Objective) model.get("objective");
 		Organization org = (Organization) model.get("organization");
 		
-		logger.debug("orgID: " + org.getId() + " orgName: " + org.getName());
 		
 		Sheet sheet = workbook.createSheet("sheet1");
 		Integer oldYear = fiscalYear - 1;
