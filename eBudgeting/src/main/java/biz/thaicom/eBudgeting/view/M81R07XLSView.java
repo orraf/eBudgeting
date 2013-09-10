@@ -22,6 +22,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
@@ -29,6 +31,8 @@ import biz.thaicom.security.models.ThaicomUserDetail;
 
 public class M81R07XLSView extends AbstractPOIExcelView {
 
+	public static Logger logger = LoggerFactory.getLogger(M81R07XLSView.class);
+	
 	@Override
 	protected Workbook createWorkbook() {
 		return new HSSFWorkbook();
@@ -82,13 +86,18 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select substr(code,1,2) fyear, substr(code,1,3) fin_type, substr(code,3,1) type, substr(code,1,5) prod_type, substr(code,1,7) plan_code, code, min(name) name " +
-									   "from pln_objective " +
-									   "where fiscalyear = " + fiscalYear + " " +
-									   "and substr(code,1,2) = '" + fiscalYear.toString().substring(2, 4) + "' " +
-									   "and length(code) = 9 " +
-									   "group by code " +
-									   "order by code ");
+		String rsSQL = "select substr(code,1,2) fyear, substr(code,1,3) fin_type, substr(code,3,1) type, substr(code,1,5) prod_type, substr(code,1,7) plan_code, code, name name, parent_pln_objective_id parentId " +
+				   "from pln_objective " +
+				   "where fiscalyear = " + fiscalYear + " " +
+				  // "and substr(code,1,2) = '" + fiscalYear.toString().substring(2, 4) + "' " +
+				   " and type_pln_objectivetype_id = 106 " + 
+				   // "and length(code) = 9 " +
+				   // "group by code " +
+				   "order by code ";
+		
+		logger.debug(rsSQL);
+		ResultSet rs = st.executeQuery(rsSQL);
+		
 
 		int i = 2;
 		String fYear = " ";
@@ -178,25 +187,34 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				pType = rs.getString(4);
 
 				Statement st1 = connection.createStatement();
-				ResultSet rs1 = st1.executeQuery("select name " +
-											     "from pln_objective " +
-											     "where fiscalyear = " + fiscalYear + " " +
-											     "and code = '" + pType + "' " +
-											     "order by parentlevel ");
+				String rs1SQL = "select name, id " +
+					     "from pln_objective " +
+					     "where fiscalyear = " + fiscalYear + " " +
+					     "and code = '" + pType + "' " +
+					     "order by parentlevel ";
+				
+				logger.debug(rs1SQL);
+				ResultSet rs1 = st1.executeQuery(rs1SQL);
+				Long id = null;
 				
 				name = "";
 				while (rs1.next()) {
 					name = name + rs1.getString(1) + "  ";
+					id=rs1.getLong(2);
 				}
 				rsc5.setCellValue(name);
 				rs1.close();
 				st1.close();
 
 				Statement st2 = connection.createStatement();
-				ResultSet rs2 = st2.executeQuery("select sum(amountallocated) " +
-												 "from bgt_allocationrecord t1, pln_objective t2 " +
-												 "where t1.objective_pln_objective_id = t2.id " +
-												 "and t2.code = '" + pType + "' " );
+				String st2SQL = "select sum(amountallocated) " +
+						 "from bgt_allocationrecord t1, pln_objective t2 " +
+						 "where t1.objective_pln_objective_id = t2.id " +
+						 //"and t2.code = '" + pType + "' ";
+						 " and t2.id = " + id;
+				logger.debug(st2SQL);
+				ResultSet rs2 = st2.executeQuery(st2SQL );
+				
 				
 				rs2.next();
 				rsc6.setCellValue(rs2.getDouble(1));
