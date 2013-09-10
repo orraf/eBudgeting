@@ -3029,6 +3029,15 @@ public class EntityServiceJPA implements EntityService {
 			}
 		}
 		
+		Collections.sort(returnList, new Comparator<Objective>() {
+
+			@Override
+			public int compare(Objective o1, Objective o2) {
+				return o1.getCode().compareTo(o2.getCode());
+			}
+			
+		});
+		
 		for(Objective obj: returnList) {
 			List<BudgetProposal> proposals = 
 					budgetProposalRepository.findByForObjectiveAndOwner(obj, org);
