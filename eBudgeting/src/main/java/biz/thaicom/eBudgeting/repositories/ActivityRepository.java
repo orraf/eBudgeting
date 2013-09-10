@@ -16,10 +16,14 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 		JpaSpecificationExecutor<Long> {
 
 	@Query("" +
-			"SELECT act " +
-			"FROM Activity act " +
-			"WHERE act.owner =?1 AND act.forObjective.id = ?2 AND act.parent is null " +
-			"ORDER BY act.regulator.id ASC, act.code ASC ")
+			"SELECT activity " +
+			"FROM ActivityPerformance activityPerformance " +
+			"	INNER JOIN activityPerformance.activity activity " +
+			"	INNER JOIN activity.forObjective objective " +
+			"	INNER JOIN objective.parent parentObjective " +
+			"WHERE " +
+			"	(activityPerformance.owner  = ?1 OR activity.owner = ?1 ) AND " +
+			"	objective.id = ?2")
 	List<Activity> findAllByOwnerAndForObejctive_Id(Organization org, Long objectiveId);
 
 	@Query("" +

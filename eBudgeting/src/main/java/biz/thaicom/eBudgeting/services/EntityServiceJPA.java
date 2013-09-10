@@ -3005,20 +3005,38 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveByOwnerAndFiscalYear(
 			Organization workAt, Integer fiscalYear){
 		Organization org = organizationRepository.findOne(workAt.getId());
+		
 		if(org.getParent().getId() != 0L) {
 			org = org.getParent();
 		}
 		
-		List<Objective> list = objectiveRepository.findAllByOwnerAndfiscalYear(org, fiscalYear);
+		logger.debug(org.getAbbr());
 		
-		for(Objective obj: list) {
+		
+		List<Objective> list = objectiveRepository.findAllByOwnerAndfiscalYear(org, fiscalYear);
+		List<Objective> list2 = objectiveRepository.findAllByActivityOwnerAndFiscalYear(org, fiscalYear);
+		List<Objective> returnList = new ArrayList<Objective>();
+		
+		for(Objective obj : list) {
+			if(!returnList.contains(obj)) {
+				 returnList.add(obj);
+			}
+		}
+
+		for(Objective obj : list2) {
+			if(!returnList.contains(obj)) {
+				 returnList.add(obj);
+			}
+		}
+		
+		for(Objective obj: returnList) {
 			List<BudgetProposal> proposals = 
 					budgetProposalRepository.findByForObjectiveAndOwner(obj, org);
 			
 			obj.setFilterProposals(proposals);
 		}
 		
-		return list;
+		return returnList;
 		
 	}
 	
@@ -4189,6 +4207,8 @@ public class EntityServiceJPA implements EntityService {
 	public Activity findOneActivity(Long id) {
 		Activity activity =  activityRepository.findOne(id);
 		activity.getTargets().size();
+		activity.getOwner().getId();
+		activity.getRegulator().getId();
 		return activity;
 	}
 
