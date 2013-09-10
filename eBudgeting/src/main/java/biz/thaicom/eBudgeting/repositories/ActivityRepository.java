@@ -23,7 +23,8 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"	INNER JOIN objective.parent parentObjective " +
 			"WHERE " +
 			"	(activityPerformance.owner  = ?1 OR activity.owner = ?1 ) AND " +
-			"	objective.id = ?2")
+			"	objective.id = ?2 "
+			+ "ORDER BY activity.code ASC ")
 	List<Activity> findAllByOwnerAndForObejctive_Id(Organization org, Long objectiveId);
 
 	@Query("" +
