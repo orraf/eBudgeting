@@ -331,6 +331,7 @@ var ActivityTargetTableView = Backbone.View.extend({
 	unitChange : function(e) {
 		var unitId = $(e.target).val();
 		this.currentActivityTarget.set('unit', TargetUnit.findOrCreate(unitId));
+		
 		console.log(this.currentActivityTarget.get('unit').toJSON());
 	},
 	newActivityTarget: function() {

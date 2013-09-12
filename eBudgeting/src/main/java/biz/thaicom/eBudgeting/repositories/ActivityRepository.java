@@ -19,7 +19,9 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"SELECT activity " +
 			"FROM Activity activity " +
 			"	INNER JOIN activity.forObjective objective " +
-			"	INNER JOIN objective.parent parentObjective " +
+			"	INNER JOIN objective.parent parentObjective "
+			+ " LEFT JOIN FETCH activity.targets target "
+			+ " LEFT JOIN FETCH target.unit " +
 			"WHERE " +
 			"	(activity.owner = ?1 OR activity.regulator = ?1) AND " +
 			"	objective.id = ?2 "

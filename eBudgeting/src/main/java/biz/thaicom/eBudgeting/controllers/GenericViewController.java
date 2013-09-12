@@ -1139,7 +1139,9 @@ public class GenericViewController {
 		Organization parentOrg =  entityService.findOrganizationParentOf(currentUser.getWorkAt());
 		Integer fy = setFiscalYearFromSession(model, session);
 		model.addAttribute("rootPage", false);
-		model.addAttribute("fiscalYears", fiscalYears);
+		
+		logger.debug("fiscalYear :" + session.getAttribute("fiscalYear"));
+		
 		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
 		model.addAttribute("parentCurrentOrganizationId", parentOrg.getId());
 		

@@ -4198,6 +4198,7 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		for(Activity activity : list) {
+			activity.getForObjective().getId();
 			activity.getTargets().size();
 			activity.getChildren().size();
 			activity.getOwner().getId();
@@ -4214,6 +4215,7 @@ public class EntityServiceJPA implements EntityService {
 					}
 				}
 			}
+			
 		}
 		
 		logger.debug("list size: " + list1.size());
@@ -4249,8 +4251,6 @@ public class EntityServiceJPA implements EntityService {
 		for(JsonNode targetNode : node.get("targets")) {
 			ActivityTarget target = new ActivityTarget();
 			
-			
-			
 			if(getJsonNodeId(targetNode) != null) {
 				target = activityTargetRepository.findOne(getJsonNodeId(targetNode));
 				oldTargets.remove(target);
@@ -4272,7 +4272,11 @@ public class EntityServiceJPA implements EntityService {
 			TargetUnit unit = targetUnitRepository.findOne(getJsonNodeId(targetNode.get("unit")));
 			target.setUnit(unit);
 			
+			logger.debug("setting unit!");
+
 			activityTargetRepository.save(target);
+			
+			logger.debug("save target?!");
 			
 			activity.getTargets().add(target);
 		}
