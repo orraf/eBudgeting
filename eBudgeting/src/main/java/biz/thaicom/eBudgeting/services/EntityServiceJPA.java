@@ -4186,7 +4186,16 @@ public class EntityServiceJPA implements EntityService {
 			org = org.getParent();
 		}
 		
-		List<Activity> list =  activityRepository.findAllByOwnerAndForObejctive_Id(org, objectiveId);
+		List<Activity> list1 =  activityRepository.findAllByOwnerAndForObejctive_Id(org, objectiveId);
+		List<Activity> list2 = activityRepository.findAllByRegulatorAndForObejctive_Id(org, objectiveId);
+		
+		List<Activity> list = new ArrayList<Activity>();
+		list.addAll(list1);
+		for(Activity act : list2) {
+			if(!list.contains(act)) {
+				list.add(act);
+			}
+		}
 		
 		for(Activity activity : list) {
 			activity.getTargets().size();
@@ -4207,6 +4216,8 @@ public class EntityServiceJPA implements EntityService {
 			}
 		}
 		
+		logger.debug("list size: " + list1.size());
+		logger.debug("list size: " + list2.size());
 		logger.debug("list size: " + list.size());
 		
 		return list;

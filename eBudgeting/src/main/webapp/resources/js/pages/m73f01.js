@@ -306,6 +306,8 @@ var ActivityTargetTableView = Backbone.View.extend({
 		}
 	},
 	addActivityTarget : function() {
+		console.log(this.currentActivityTarget.get('unit').toJSON());
+		
 		if(this.currentActivityTarget.get('unit') ==  null) {
 			alert('กรุณาระบุหน่วยนับ');
 			return;
@@ -329,6 +331,7 @@ var ActivityTargetTableView = Backbone.View.extend({
 	unitChange : function(e) {
 		var unitId = $(e.target).val();
 		this.currentActivityTarget.set('unit', TargetUnit.findOrCreate(unitId));
+		console.log(this.currentActivityTarget.get('unit').toJSON());
 	},
 	newActivityTarget: function() {
 		this.currentActivityTarget = new ActivityTarget();
@@ -393,6 +396,7 @@ var ModalView = Backbone.View.extend({
 		
 		this.currentActivity.set('regulator', Organization.findOrCreate(regulatorId));
 
+		
 		
 		this.currentActivity.save(null, {
 			success: _.bind(function() {
