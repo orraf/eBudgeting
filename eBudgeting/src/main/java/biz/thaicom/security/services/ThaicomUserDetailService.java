@@ -36,6 +36,11 @@ public class ThaicomUserDetailService implements UserDetailsService {
 		logger.debug("loading information userName: " + userName);
 		
 		User user = userRepository.findByUsername(userName);
+		if(user != null) {
+			if(user.getPerson().getWorkAt().getParent() != null) {
+				user.getPerson().getWorkAt().getParent().getId();
+			}
+		}
 		
 		
 		
