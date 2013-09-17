@@ -140,22 +140,22 @@ var menuJson = [{
 		},{
 			name: "m73f02: การจัดสรรกิจกรรมย่อย (ระดับส่วนงาน)", code: "m73f02", parent: 'm73', link: "page/m73f02/", group: ["PMS_USER", "PMS_USER1"]
 		},{
-			name: "m73f03: บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับจังหวัด)", code: "m73f03", parent: 'm51', link: "page/m73f03/", group: ["PMS_USER", "PMS_USER2"]
+			name: "m73f03: บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับจังหวัด)", code: "m73f03", parent: 'm51', link: "page/m73f03/", group: ["PMS_USER", "PMS_USER2", "PMS_USER4"]
 		}]  
 	}, {
 		name: "การบันทึกแผนการดำเนินงานกิจกรรมย่อย (m74)",code: "m74", parent: 'm7',  menus: [{
-			name: "m74f01: บันทึกแผนการดำเนินงานกิจกรรม", code: "m74f01", parent: 'm74', link: "page/m74f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER3"]
+			name: "m74f01: บันทึกแผนการดำเนินงานกิจกรรม", code: "m74f01", parent: 'm74', link: "page/m74f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER3", "PMS_USER4"]
 		}, {
-			name: "m74f02: บันทึกแผนงบลงทุน", code: "m74f02", parent: 'm74', link : "page/m74f02/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER2", "PMS_USER3"]
+			name: "m74f02: บันทึกแผนงบลงทุน", code: "m74f02", parent: 'm74', link : "page/m74f02/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER2", "PMS_USER3", "PMS_USER4"]
 		}]
 	}]
 },{
 	name: "ระบบรายงานผลการดำเนินงาน (m8)", code: "m8", 
 	menus: [{
 		name: "การบันทึกผลการดำเนินงาน (m81)",code: "m81", parent: 'm8',  menus: [{
-		   	name: "m81f01: บันทึกผลการดำเนินงาน", code: "m81f01", parent: 'm81', link: "page/m81f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER3"]
+		   	name: "m81f01: บันทึกผลการดำเนินงาน", code: "m81f01", parent: 'm81', link: "page/m81f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER3", "PMS_USER4"]
 		},{
-			name: "m81f02: บันทึกผลการดำเนินงานงบลงทุน", code: "m81f02", parent: 'm81', link: "page/m81f02/", group: ["PMS_USER", "PMS_USER3"]
+			name: "m81f02: บันทึกผลการดำเนินงานงบลงทุน", code: "m81f02", parent: 'm81', link: "page/m81f02/", group: ["PMS_USER", "PMS_USER3", "PMS_USER4"]
 		}]  
 	}]
 },{
@@ -164,11 +164,11 @@ var menuJson = [{
 		name: "รายงานทะเบียน (m81r)", code: "m81r", parent: 'mr', menus: [{
 	    	name: "m81r01: รายงานแผนปฏิบัติการสำหรับฝ่าย", code: "m81r01", parent: 'm81r', link: "m81r01.xls/"+fiscalYear+"/file/m81r01.xls", type: "download", group: ["PMS_BGT_ADMIN", "PMS_USER1"]
 	    },{
-	    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับส่วนงาน/สกยจ./สกยอ.", code: "m81r02", parent: 'm81r', link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download", group: ["PMS_USER", "PMS_USER1", "PMS_USER2", "PMS_USER3"]
+	    	name: "m81r02: รายงานแผนปฏิบัติการสำหรับส่วนงาน/สกยจ./สกยอ.", code: "m81r02", parent: 'm81r', link: "m81r02.xls/"+fiscalYear+"/file/m81r02.xls", type: "download", group: ["PMS_USER", "PMS_USER1", "PMS_USER2", "PMS_USER3", "PMS_USER4"]
 	    },{
 	    	name: "m81r03: รายงานภาพรวมแผนปฏิบัติการประจำปีของ สกย.", code: "m81r03", parent: 'm81r', link: "m81r03.xls/"+fiscalYear+"/file/m81r03.xls", type: "download", group: ["PMS_BGT_ADMIN", "PMS_PLAN", "PMS_BGT"]
 	    }, {
-	    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", code: "m81r04", parent: 'm81r', link: "page/m81r04/", group: ["PMS_USER", "PMS_USER1", "PMS_USER2", "PMS_USER3"]
+	    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", code: "m81r04", parent: 'm81r', link: "page/m81r04/", group: ["PMS_USER", "PMS_USER1", "PMS_USER2", "PMS_USER3", "PMS_USER4"]
 	    }, {
 	    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", code: "m81r05", parent: 'm81r', link: "m81r05.xls/" + fiscalYear + "/file/m81r05.xls", type: "download", group: ["PMS_BGT_ADMIN", "PMS_PLAN", "PMS_BGT"]
 	    }, {

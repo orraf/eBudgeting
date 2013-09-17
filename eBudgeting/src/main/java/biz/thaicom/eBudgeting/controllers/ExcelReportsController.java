@@ -590,6 +590,12 @@ public class ExcelReportsController {
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("currentUser", currentUser);
 		
+		Organization parent = entityService.findOrganizationParentOf(currentUser.getWorkAt());
+		if(parent != null) {
+			currentUser.getWorkAt().setParent(parent);
+		}
+		
+		
 		Cookie cookie = new Cookie("fileDownload", "true");
 		cookie.setPath("/");
 		

@@ -22,7 +22,9 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.transaction.annotation.Transactional;
 
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
@@ -41,6 +43,12 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 			HttpServletResponse response) throws Exception {
 		
 		ThaicomUserDetail currentUser = (ThaicomUserDetail) model.get("currentUser");
+		
+		Organization searchOrg = currentUser.getWorkAt();
+		
+		if(currentUser.getWorkAt().isSubSection()) {
+			searchOrg = searchOrg.getParent();
+		}
 		
         Map<String, CellStyle> styles = createStyles(workbook);
 
@@ -68,7 +76,12 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 */		
 		Row secondRow = sheet.createRow(2);
 		Cell cell21 = secondRow.createCell(0);
-		cell21.setCellValue("หน่วยงาน " + currentUser.getWorkAt().getName());
+		if(currentUser.getWorkAt().isSubSection()) {
+			cell21.setCellValue("หน่วยงาน " + currentUser.getWorkAt().getName() + " " + searchOrg.getName());
+		} else {
+			cell21.setCellValue("หน่วยงาน " + currentUser.getWorkAt().getName());
+		}
+		
 		cell21.setCellStyle(styles.get("title"));
 		
 		
@@ -160,7 +173,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				ResultSet rs0 = st0.executeQuery("select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(amountallocated),'999,999,999,999')), '...')||' บาท)' " +
 												 "from bgt_budgetproposal " +
 												 "where objective_id = " + rs.getInt(3) + " " +
-												 "and organization_id = " + currentUser.getWorkAt().getId() + " ");
+												 "and organization_id = " + searchOrg.getId() + " ");
 				
 				Cell rsc1 = rows.createCell(1);
 				if (rs0.next()) {
@@ -184,7 +197,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 												 "from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activity t3 " +
 											  	 "where t1.performance_pln_actper_id = t2.id " +
 												 "and t2.activity_pln_activity_id = t3.id " +
-											  	 "and t1.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + currentUser.getWorkAt().getId() + ") " +
+											  	 "and t1.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
 												 "and t3.obj_pln_objective_id in (select id from pln_objective connect by prior id = parent_pln_objective_id start with id = " + rs.getInt(3) + ") " +
 												 "group by t1.fiscalmonth " +
 												 "order by t1.fiscalmonth ");
@@ -219,7 +232,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				Statement st4 = connection.createStatement();
 				ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
 									   "from v_gl " +
-									   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + currentUser.getWorkAt().getId() + ") " +
+									   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
 									   "and fiscal_year = " + fiscalYear + " " +
 									   "and gl_trans_plan = '" + rs.getString(5) + "' " +
 									   "group by date2fmonth(gl_trans_docdate) " +

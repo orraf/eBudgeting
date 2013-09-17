@@ -113,4 +113,16 @@ public class Organization implements Serializable {
 		this.code = code;
 	}
 	
+	// ถ้าเป็นระดับแผนก return true;
+	public Boolean isSubSection() {
+		if(this.code != null) {
+			if(this.code.substring(this.code.length()-2, this.code.length()-1).equals("00")) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

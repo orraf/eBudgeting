@@ -3054,7 +3054,15 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Objective> findObjectiveByActivityOwnerAndFiscalYear(
 			Organization workAt, Integer fiscalYear) {
-		return objectiveRepository.findAllByActivityOwnerAndFiscalYear(workAt, fiscalYear);
+		
+		Organization searchOrg = workAt;
+		
+		// now if workAt is at แผนก 
+		if(workAt.isSubSection()) {
+			searchOrg = workAt.getParent();
+		}
+		
+		return objectiveRepository.findAllByActivityOwnerAndFiscalYear(searchOrg, fiscalYear);
 	}
 	
 	@Override
@@ -4547,11 +4555,18 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
 			Long objectiveId, Long ownerId) {
+		Organization searchOrg = organizationRepository.findOne(ownerId);
+		if(searchOrg.isSubSection()) {
+			searchOrg = searchOrg.getParent();
+		}
+				
+		
+		
 		String objectiveIdLike = "%."+objectiveId + ".%";
 		
 		List<Objective> childrenObjective = new ArrayList<Objective>();
 		List<ActivityTargetReport> targetReports = activityTargetReportRepository
-				.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, ownerId);
+				.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, searchOrg.getId());
 		
 		logger.debug("targetReports: " + targetReports.size());
 		
@@ -4802,7 +4817,13 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear) {
 		
-		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(workAt.getId(), fiscalYear);
+		Organization searchOrg = organizationRepository.findOne(workAt.getId());
+		if(searchOrg.isSubSection()) {
+			searchOrg = searchOrg.getParent();
+		}
+		
+		
+		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(searchOrg.getId(), fiscalYear);
 		
 		List<Objective> objectives = new ArrayList<Objective>();
 		
@@ -4848,16 +4869,16 @@ public class EntityServiceJPA implements EntityService {
 		for(Objective obj: objectives) {
 			// now we'll find out the current budget usages!
 			Double sumUsage = budgetUsageFromExternalRepository.findBudgetUsageSummaryByCodeAndOwner(
-					obj.getCode(), workAt.getId());
+					obj.getCode(), searchOrg.getId());
 			
-			List<BudgetProposal> proposals = budgetProposalRepository.findByForObjectiveAndOwner(obj, workAt);
+			List<BudgetProposal> proposals = budgetProposalRepository.findByForObjectiveAndOwner(obj, searchOrg);
 			
 			
 			if(proposals == null || proposals.size() == 0) {
 				proposals = new ArrayList<BudgetProposal>();
 				BudgetProposal p = new BudgetProposal();
 				p.setAmountUsed(sumUsage);
-				p.setOwner(workAt);
+				p.setOwner(searchOrg);
 				p.setForObjective(obj);
 				
 				logger.debug("adding new proposal");
@@ -5448,7 +5469,11 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<AssetAllocation> findAssetAllocationByForObjectiveIdAndOperator(
 			Long objectiveId, Organization operator) {
-		// TODO Auto-generated method stub
+		
+		if(operator.isSubSection()) {
+			operator = operator.getParent();
+		}
+		
 		return assetAllocationRepository.findAllByForObjectiveIdAndOperator(objectiveId, operator);
 	}
 	
