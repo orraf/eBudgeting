@@ -125,4 +125,8 @@ public class Organization implements Serializable {
 		
 		return false;
 	}
+	
+	public Boolean getIsSubSection() {
+		return this.isSubSection();
+	}
 }
