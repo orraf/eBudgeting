@@ -17,6 +17,11 @@ import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import biz.thaicom.eBudgeting.services.EntityServiceJPA;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -25,6 +30,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @SequenceGenerator(name="HRX_ORGANIZATION_SEQ", sequenceName="HRX_ORGANIZATION_SEQ", allocationSize=1)
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Organization implements Serializable {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Organization.class);
 	
 	/**
 	 * 
@@ -116,7 +123,8 @@ public class Organization implements Serializable {
 	// ถ้าเป็นระดับแผนก return true;
 	public Boolean isSubSection() {
 		if(this.code != null) {
-			if(this.code.substring(this.code.length()-2, this.code.length()-1).equals("00")) {
+			
+			if(this.code.substring(this.code.length()-2, this.code.length()).equals("00")) {
 				return false;
 			} else {
 				return true;

@@ -4556,6 +4556,7 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
 			Long objectiveId, Long ownerId) {
 		Organization searchOrg = organizationRepository.findOne(ownerId);
+		logger.debug("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx " + searchOrg.getCode() + ": " + searchOrg.isSubSection());
 		if(searchOrg.isSubSection()) {
 			searchOrg = searchOrg.getParent();
 		}
