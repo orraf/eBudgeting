@@ -195,6 +195,7 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				
 				logger.debug(rs1SQL);
 				ResultSet rs1 = st1.executeQuery(rs1SQL);
+				
 				Long id = null;
 				
 				name = "";
@@ -203,6 +204,7 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 					id=rs1.getLong(2);
 				}
 				rsc5.setCellValue(name);
+				logger.debug("rs1SLQ  RESULT: " + name);
 				rs1.close();
 				st1.close();
 
@@ -223,15 +225,23 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				st2.close();
 				
 				Statement st3 = connection.createStatement();
-				ResultSet rs3 = st3.executeQuery("select sum(t2.budgetallocated) target " +
-												 "from pln_activity t1, pln_activityperformance t2,  " +
-													 "(select id from pln_objective " +
-									                     "connect by prior id  = PARENT_PLN_OBJECTIVE_ID " +
-									                     "start with code = '" + pType + "') t3 " +			
-												 "where t1.id = t2.activity_pln_activity_id " +
-												 "and t1.obj_pln_objective_id = t3.id ");
+				String st3SQL = ""
+						+ "select sum(t2.budgetallocated) target "
+						+ "from pln_activity t1, pln_activityperformance t2,  "
+						+ "	(select id "
+						+ "		from pln_objective "
+						+ "     connect by prior id  = PARENT_PLN_OBJECTIVE_ID "
+						+ "		start with id = " + id + ") t3 "
+						+ "where t1.id = t2.activity_pln_activity_id "
+						+ "      and t1.obj_pln_objective_id = t3.id ";
+				
+				logger.debug("--- st3SQL: " );
+				logger.debug(st3SQL);
+				
+				ResultSet rs3 = st3.executeQuery(st3SQL);
 				
 				rs3.next();
+				logger.debug("st3SQL result: " + rs3.getDouble(1));
 				rsc7.setCellValue(rs3.getDouble(1));
 				rsc7.setCellStyle(styles.get("summarynumber"));
 				rs3.close();
