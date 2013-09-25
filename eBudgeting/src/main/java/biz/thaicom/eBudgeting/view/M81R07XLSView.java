@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -190,19 +191,38 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				String rs1SQL = "select name, id " +
 					     "from pln_objective " +
 					     "where fiscalyear = " + fiscalYear + " " +
-					     "and code = '" + pType + "' " +
+					     "and code = '" + pType + "' and type_pln_objectivetype_id = 103 " +
 					     "order by parentlevel ";
 				
 				logger.debug(rs1SQL);
 				ResultSet rs1 = st1.executeQuery(rs1SQL);
 				
 				Long id = null;
+				ArrayList<Long> idList = new ArrayList<Long>();
 				
 				name = "";
 				while (rs1.next()) {
 					name = name + rs1.getString(1) + "  ";
 					id=rs1.getLong(2);
+					idList.add(id);
 				}
+				
+				String idString = "(";
+				String idLike = " (";
+				for(int k=0; k<idList.size(); k++) {
+					idString += idList.get(k);
+					idLike += "t3.parentpath like '%."+ id + ".%' ";
+					if(k != idList.size()-1) {
+						// not the last one
+						idString += ",";
+						idLike += " OR ";
+					} else {
+						idString += ")";
+						idLike += ") ";
+					}
+				}
+				
+				
 				rsc5.setCellValue(name);
 				logger.debug("rs1SLQ  RESULT: " + name);
 				rs1.close();
@@ -213,7 +233,7 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 						 "from bgt_allocationrecord t1, pln_objective t2 " +
 						 "where t1.objective_pln_objective_id = t2.id " +
 						 //"and t2.code = '" + pType + "' ";
-						 " and t2.id = " + id;
+						 " and t2.id in " + idString;
 				logger.debug(st2SQL);
 				ResultSet rs2 = st2.executeQuery(st2SQL );
 				
@@ -225,25 +245,40 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				st2.close();
 				
 				Statement st3 = connection.createStatement();
+				/**
 				String st3SQL = ""
 						+ "select sum(t2.budgetallocated) target "
 						+ "from pln_activity t1, pln_activityperformance t2,  "
 						+ "	(select id "
 						+ "		from pln_objective "
 						+ "     connect by prior id  = PARENT_PLN_OBJECTIVE_ID "
-						+ "		start with id = " + id + ") t3 "
+						+ "		start with id in " + idString + ") t3 "
 						+ "where t1.id = t2.activity_pln_activity_id "
 						+ "      and t1.obj_pln_objective_id = t3.id ";
+				**/
 				
+				String st3SQL = ""
+						+ "SELECT sum(p1.sumallocated) FROM ("
+						+ "SELECT t3.id objectiveid, t3.parent_pln_objective_id parent_id, t3.parentpath, t3.name objectivename, sum(t2.budgetallocated) sumallocated "
+						+ "FROM pln_activity t1, pln_activityperformance t2, pln_objective t3 "
+						+ "WHERE t2.activity_pln_activity_id = t1.id and t1.parent_pln_activity_id is null "
+						+ "	and t3.id = t1.obj_pln_objective_id and " + idLike 
+						+ "GROUP BY t3.id, t3.name, t3.parent_pln_objective_id, t3.parentpath"
+						+ ") p1 ";
 				logger.debug("--- st3SQL: " );
 				logger.debug(st3SQL);
 				
 				ResultSet rs3 = st3.executeQuery(st3SQL);
 				
-				rs3.next();
-				logger.debug("st3SQL result: " + rs3.getDouble(1));
-				rsc7.setCellValue(rs3.getDouble(1));
-				rsc7.setCellStyle(styles.get("summarynumber"));
+				if(rs3.next()) {
+				
+					logger.debug("st3SQL result: " + rs3.getDouble(1));
+					rsc7.setCellValue(rs3.getDouble(1));
+					rsc7.setCellStyle(styles.get("summarynumber"));
+				} else {
+					rsc7.setCellValue(0.0);
+					rsc7.setCellStyle(styles.get("summarynumber"));
+				}
 				rs3.close();
 				st3.close();
 				
