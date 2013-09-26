@@ -237,6 +237,18 @@ function showLoadingReportModal(){
 				"</div> "+
 				"");
 		
+	} else {
+		$("div#showLoadingReportModal").html("" +
+				"<div id='showLoadingReportModal' class='modal hide fade'>" +
+				"	<div class='modal-header'>" + 
+				"	<button type='button' class='close' data-dismiss='modal'>&times;</button> " +
+				"	<span style='font-weight: bold;'>แสดงรายงาน</span> "  +
+				"</div> " +
+				"<div class='modal-body'> "+
+				"<img src='" + appUrl('/resources/graphics/loading.gif') + "'/>"+ " กรุณารอสักครู่ ระบบกำลังสร้างรายงาน... " + 
+				"</div> "+
+				"");
+		
 	}
 	
 	

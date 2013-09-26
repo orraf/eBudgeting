@@ -363,10 +363,12 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				st3.close();
 				
 				Statement st4 = connection.createStatement();
-				String st4SQL = "select sum(amt) " +
-					     "from v_gl " +
-					     "where fiscal_year = " + fiscalYear + " " +
-					     "and gl_trans_plan = '" + plan + "'";
+				String st4SQL = ""
+						+ "select sum(amt) "
+						+ "from v_gl t1, pln_objective t2 "
+						+ "where t1.fiscal_year = " + fiscalYear + " "
+						+ "	and t1.gl_trans_plan = '" + plan + "'" 
+						+ " and t1.activitycode = t2.code ";
 				logger.debug("st4SQL:");
 				logger.debug(st4SQL);
 				ResultSet rs4 = st4.executeQuery(st4SQL);
