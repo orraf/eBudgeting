@@ -211,7 +211,7 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				String idLike = " (";
 				for(int k=0; k<idList.size(); k++) {
 					idString += idList.get(k);
-					idLike += "t3.parentpath like '%."+ id + ".%' ";
+					idLike += "t3.parentpath like '%."+ idList.get(k) + ".%' ";
 					if(k != idList.size()-1) {
 						// not the last one
 						idString += ",";
@@ -261,7 +261,7 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 						+ "SELECT sum(p1.sumallocated) FROM ("
 						+ "SELECT t3.id objectiveid, t3.parent_pln_objective_id parent_id, t3.parentpath, t3.name objectivename, sum(t2.budgetallocated) sumallocated "
 						+ "FROM pln_activity t1, pln_activityperformance t2, pln_objective t3 "
-						+ "WHERE t2.activity_pln_activity_id = t1.id and t1.parent_pln_activity_id is null "
+						+ "WHERE t2.activity_pln_activity_id = t1.id " //and t1.parent_pln_activity_id is null "
 						+ "	and t3.id = t1.obj_pln_objective_id and " + idLike 
 						+ "GROUP BY t3.id, t3.name, t3.parent_pln_objective_id, t3.parentpath"
 						+ ") p1 ";
@@ -400,13 +400,17 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 			rsc5.setCellValue(rs.getString(7));
 
 			Statement st2 = connection.createStatement();
-			ResultSet rs2 = st2.executeQuery("select sum(t2.budgetallocated) target " +
-											 "from pln_activity t1, pln_activityperformance t2,  " +
-												 "(select id from pln_objective " +
-								                     "connect by prior id  = PARENT_PLN_OBJECTIVE_ID " +
-								                     "start with code = " + rs.getString(6) + ") t3 " +			
-											 "where t1.id = t2.activity_pln_activity_id " +
-											 "and t1.obj_pln_objective_id = t3.id ");
+			String rs2SQL = "select sum(t2.budgetallocated) target "
+					+ "from pln_activity t1, pln_activityperformance t2,  "
+					+ "		(select id from pln_objective "
+					+ "			connect by prior id  = PARENT_PLN_OBJECTIVE_ID "
+					+ "				start with code = " + rs.getString(6) + ") t3 "
+					+ "where t1.id = t2.activity_pln_activity_id "
+					+ "and t1.obj_pln_objective_id = t3.id ";
+			ResultSet rs2 = st2.executeQuery(rs2SQL);
+			
+			logger.debug("rs2SQL: ");
+			logger.debug(rs2SQL);
 			
 			rs2.next();
 			rsc7.setCellValue(rs2.getDouble(1));
