@@ -363,12 +363,16 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				st3.close();
 				
 				Statement st4 = connection.createStatement();
-				ResultSet rs4 = st4.executeQuery("select sum(amt) " +
-											     "from v_gl " +
-											     "where fiscal_year = " + fiscalYear + " " +
-											     "and gl_trans_plan = '" + plan + "'");
+				String st4SQL = "select sum(amt) " +
+					     "from v_gl " +
+					     "where fiscal_year = " + fiscalYear + " " +
+					     "and gl_trans_plan = '" + plan + "'";
+				logger.debug("st4SQL:");
+				logger.debug(st4SQL);
+				ResultSet rs4 = st4.executeQuery(st4SQL);
 				
 				rs4.next();
+				logger.debug("rs4 result: " + rs4.getDouble(1));
 				rsc8.setCellValue(rs4.getDouble(1));
 				rsc8.setCellStyle(styles.get("summarynumber"));
 				rs4.close();
@@ -418,12 +422,16 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 			st2.close();
 			
 			Statement st3 = connection.createStatement();
-			ResultSet rs3 = st3.executeQuery("select sum(amt) " +
-										     "from v_gl " +
-										     "where fiscal_year = " + fiscalYear + " " +
-										     "and activitycode = '" + rs.getString(6) + "'");
+			String st3SQL  = "select sum(amt) " +
+				     "from v_gl " +
+				     "where fiscal_year = " + fiscalYear + " " +
+				     "and activitycode = '" + rs.getString(6) + "'";
+			logger.debug("st3DQL: ");
+			logger.debug(st3SQL);
+			ResultSet rs3 = st3.executeQuery(st3SQL);
 			
 			rs3.next();
+			logger.debug("st3SQL result: " + rs3.getDouble(1));
 			rsc8.setCellValue(rs3.getDouble(1));
 			rs3.close();
 			st3.close();
