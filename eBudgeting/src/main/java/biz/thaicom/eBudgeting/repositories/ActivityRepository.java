@@ -15,18 +15,27 @@ import biz.thaicom.eBudgeting.models.pln.Objective;
 public interface ActivityRepository extends PagingAndSortingRepository<Activity, Long>,
 		JpaSpecificationExecutor<Long> {
 
-	@Query("" +
-			"SELECT activity " +
-			"FROM Activity activity " +
-			"	INNER JOIN activity.forObjective objective " +
-			"	INNER JOIN objective.parent parentObjective "
+	@Query("" 
+			+ "SELECT activity " 
+			+ "FROM Activity activity " 
+			+"	INNER JOIN activity.forObjective objective " 
+			+ "	INNER JOIN objective.parent parentObjective "
 			+ " LEFT JOIN FETCH activity.targets target "
-			+ " LEFT JOIN FETCH target.unit " +
-			"WHERE " +
-			"	(activity.owner = ?1 OR activity.regulator = ?1) AND " +
-			"	objective.id = ?2 "
+			+ " LEFT JOIN FETCH target.unit "
+			+ "WHERE " 
+			+ "	(activity.owner = ?1 OR activity.regulator = ?1) AND " 
+			+ "	objective.id = ?2 "
 			+ "ORDER BY activity.regulator.id ASC, activity.code ASC ")
-	List<Activity> findAllByOwnerAndForObejctive_Id(Organization org, Long objectiveId);
+	List<Activity> findAllByOwnerAndForObjective_Id(Organization org, Long objectiveId);
+	
+	
+	@Query(""
+			+ "SELECT activity "
+			+ "FROM ActivityTargetReport report "
+			+ "		INNER JOIN report.target target "
+			+ "		INNER JOIN target.activity activity "
+			+ "WHERE report.owner = ?1 AND activity.forObjective.id = ?2 ")
+	List<Activity> findAllByActivityTargetReportOwner(Organization org, Long objectiveId);
 
 	@Query("" +
 			"SELECT act " +
