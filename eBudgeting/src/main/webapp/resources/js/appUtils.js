@@ -185,6 +185,7 @@ function changeCurrentRootFY(sel) {
 		},
 		success: function(response) {
 			alert("success!");
+			window.location.reload();
 		}
 	});	
 }
