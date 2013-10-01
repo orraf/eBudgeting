@@ -61,14 +61,23 @@ public class HomeController {
 				year = year+1;
 			}
 			
+			logger.debug("current Year: " + year);
+			Boolean foundFiscalYear = false;
 			// now find current fyYear
 			for(int i=0; i<root.size(); i++) {
 				Objective o = root.get(i);
 				if(o.getFiscalYear().equals(year)) {
 					session.setAttribute("currentRootFY", o);
 					logger.debug("year = "  + year);
+					foundFiscalYear = true;
 					break;
 				}
+			}
+			
+			if(!foundFiscalYear) {
+				Objective o = entityService.findRootMaxFiscalYear();
+				session.setAttribute("currentRootFY", o);
+				year = o.getFiscalYear();
 			}
 			
 			currentFY = year;
