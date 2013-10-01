@@ -44,11 +44,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		
 		ThaicomUserDetail currentUser = (ThaicomUserDetail) model.get("currentUser");
 		
-		Organization searchOrg = currentUser.getWorkAt();
+		Organization searchOrg = (Organization) model.get("searchOrg");
 		
-		if(currentUser.getWorkAt().isSubSection()) {
-			searchOrg = searchOrg.getParent();
-		}
 		
         Map<String, CellStyle> styles = createStyles(workbook);
 
@@ -76,10 +73,10 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 */		
 		Row secondRow = sheet.createRow(2);
 		Cell cell21 = secondRow.createCell(0);
-		if(currentUser.getWorkAt().isSubSection()) {
-			cell21.setCellValue("หน่วยงาน " + currentUser.getWorkAt().getName() + " " + searchOrg.getName());
+		if(searchOrg.isSubSection()) {
+			cell21.setCellValue("หน่วยงาน " + searchOrg.getName() + " " + searchOrg.getParent().getName());
 		} else {
-			cell21.setCellValue("หน่วยงาน " + currentUser.getWorkAt().getName());
+			cell21.setCellValue("หน่วยงาน " + searchOrg.getName());
 		}
 		
 		cell21.setCellStyle(styles.get("title"));
@@ -146,7 +143,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 									   "(select 1 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, " +
 					                       "(select id from hrx_organization " +
 					                           "connect by prior id = parent_hrx_organization_id " +
-					                           "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t3 " +
+					                           "start with id = "+ searchOrg.getId() +") t3 " +
 					                        "where t4.target_pln_acttarget_id = t5.id " +
 					                        "and t5.activity_pln_activity_id = t1.id " +
 					                        "and t1.obj_pln_objective_id = t2.id " +

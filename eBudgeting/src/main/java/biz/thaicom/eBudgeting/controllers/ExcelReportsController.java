@@ -554,8 +554,9 @@ public class ExcelReportsController {
 		return "m81r01.xls";
 	}
 	
-	@RequestMapping("/m81r02.xls/{fiscalYear}/file/m81r02.xls")
-	public String excelM81R02(@PathVariable Integer fiscalYear, Model model, 
+	@RequestMapping("/m81r02.xls/{fiscalYear}/{searchOrgId}/file/m81r02.xls")
+	public String excelM81R02(@PathVariable Integer fiscalYear, Model model,
+			@PathVariable Long searchOrgId,
 			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 //		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
@@ -590,11 +591,14 @@ public class ExcelReportsController {
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("currentUser", currentUser);
 		
-		Organization parent = entityService.findOrganizationParentOf(currentUser.getWorkAt());
+		Organization searchOrg = entityService.findOrganizationById(searchOrgId);
+		
+		Organization parent = entityService.findOrganizationParentOf(searchOrg);
 		if(parent != null) {
-			currentUser.getWorkAt().setParent(parent);
+			searchOrg.setParent(parent);
 		}
 		
+		model.addAttribute("searchOrg", searchOrg);
 		
 		Cookie cookie = new Cookie("fileDownload", "true");
 		cookie.setPath("/");

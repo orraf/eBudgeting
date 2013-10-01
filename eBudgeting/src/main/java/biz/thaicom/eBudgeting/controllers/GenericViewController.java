@@ -1243,6 +1243,42 @@ public class GenericViewController {
 		
 		return "m81f02";
 	}
+
+	// --------------------------------------------------------------m81r02: รายงานแผนปฏิบัติการสำหรับส่วนงาน/สกยจ./สกยอ.
+	@RequestMapping("/page/m81r02/")
+	public String render_m81r02(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		model.addAttribute("rootPage", true);
+		Integer currentfy = setFiscalYearFromSession(model, session);
+		logger.debug("currentOrganizationId:" + currentUser.getWorkAt().getId());
+		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
+		
+		
+		
+		String userGroups = "";
+	    String delim = "";
+	    Boolean isPlan = false;
+	 	for(GrantedAuthority a :  currentUser.getAuthorities()) {
+		    userGroups += delim + a.getAuthority();
+		    delim = ",";
+		    
+		    if(a.getAuthority().toString().equals("PMS_PLAN") || a.getAuthority().toString().equals("PMS_ADMIN")){
+		    	isPlan = true;
+		    }
+		    
+		}
+		
+		model.addAttribute("userGroups", userGroups);
+		
+		if(isPlan) {
+			return "m81r02";
+		} else {
+			return "redirect:/m81r02.xls/"+ currentfy + "/"+ currentUser.getWorkAt().getId() + "/file/m81r02.xls";
+		}
+		
+	}
 	
 	@RequestMapping("/page/m82r01/")
 	public String render_m82r01(
