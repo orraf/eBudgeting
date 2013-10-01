@@ -3090,6 +3090,13 @@ public class EntityServiceJPA implements EntityService {
 		return objectiveRepository.findAllChildrenByActivityOwnerAndPanrentId(workAt,id);
 	}
 
+	@Override
+	public List<Objective> findObjectiveChildrenByActivityTargetOwnerAndObjectiveParentId(
+			Organization workAt, Long id) {
+		
+		return objectiveRepository.findAllChildrenByActivityOwnerAndPanrentId(workAt, id);
+	}
+	
 	
 	
 	@Override
@@ -5886,8 +5893,8 @@ public class EntityServiceJPA implements EntityService {
 
 		return (List<AssetCategory>) assetCategoryRepository.findAll(new Sort(Sort.Direction.ASC, "code"));
 	}
-	
-	
+
+
 	
 	
 	

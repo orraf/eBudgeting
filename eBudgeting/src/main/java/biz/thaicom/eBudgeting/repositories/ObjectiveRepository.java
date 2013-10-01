@@ -272,6 +272,19 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 	public List<Objective> findAllChildrenByActivityOwnerAndPanrentId(
 			Organization workAt, Long id);
 
+
+	@Query("" +
+			"SELECT objective " +
+			"FROM ActivityPerformance activityPerformance " +
+			"	INNER JOIN activityPerformance.activity activity " +
+			"	INNER JOIN activity.forObjective objective " +
+			"WHERE " +
+			"	activityPerformance.owner  = ?1 AND " +
+			"	objective.parent.id = ?2 " +
+			"ORDER BY objective.code asc ")
+	public List<Objective> findObjectiveChildrenByActivityTargetOwnerAndObjectiveParentId(
+			Organization workAt, Long id);
+	
 	@Query("" +
 			"SELECT objective " +
 			"FROM Activity activity " +

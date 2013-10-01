@@ -273,6 +273,14 @@ public class ObjectiveRestController {
 			){
 		return entityService.findObjectiveChildrenByActivityRegulatorAndParentId(currentUser.getWorkAt(), id);
 	}
+	
+	@RequestMapping(value="/Objective/{id}/childrenOnlyWithCurrentActivityTargetOwner", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> findObjectiveChildrenByCurrentActivityTargetOwner(
+			@PathVariable Long id,
+			@Activeuser ThaicomUserDetail currentUser
+			){
+		return entityService.findObjectiveChildrenByActivityTargetOwnerAndObjectiveParentId(currentUser.getWorkAt(), id);
+	}
 
 	
 	@RequestMapping(value="/Objective", method=RequestMethod.POST) 

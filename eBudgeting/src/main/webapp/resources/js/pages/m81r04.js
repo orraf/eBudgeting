@@ -500,7 +500,7 @@ var MainSelectionView = Backbone.View.extend({
 		var type101Id = $(e.target).val();
 		if(type101Id != 0) {
 			this.type102Collection.fetch({
-				url: appUrl('/Objective/' + type101Id + '/children'),
+				url: appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityTargetOwner'),
 				success: _.bind(function() {
 					this.type102Collection.trigger('reset');
 				}, this)
