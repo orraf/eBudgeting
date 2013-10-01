@@ -75,6 +75,7 @@ public interface EntityService {
 	public List<Objective> findAvailableObjectiveChildrenByObjectiveId(Long id);
 	public List<Objective> findAllObjectiveChildren(Integer fiscalYear, Long id);
 	
+	public Objective findRootMaxFiscalYear();
 	
 	public List<Objective> findObjectiveByOwnerAndFiscalYear(
 			Organization workAt, Integer fiscalYear);
@@ -454,6 +455,7 @@ public interface EntityService {
 	public AssetCategory saveAssetCategory(JsonNode node);
 	public AssetCategory deleteAssetCategory(Long id);
 	public List<AssetCategory> findAssetCategoryAll();
+
 
 
 

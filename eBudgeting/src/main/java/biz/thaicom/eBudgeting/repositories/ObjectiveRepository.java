@@ -308,5 +308,11 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"WHERE	assetAllocation.fiscalYear = ?1 ")
 	public List<Objective> findAllHasBudgetAssetByFiscalYear(Integer fiscalYear);
 
+	@Query(""
+			+ "SELECT max(obj.fiscalYear) "
+			+ "FROM Objective obj "
+			+ "WHERE obj.parent is null ")
+	public Integer findMaxFiscalYear();
+
 
 }

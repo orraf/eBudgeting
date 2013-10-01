@@ -2999,6 +2999,19 @@ public class EntityServiceJPA implements EntityService {
 		
 	}
 	
+	
+	/**
+	 * ค้นหา root objective ของปีงบประมาณล่าสุด
+	 */
+	@Override
+	public Objective findRootMaxFiscalYear() {
+		// TODO Auto-generated method stub
+		Integer fy = objectiveRepository.findMaxFiscalYear();
+		Objective o = objectiveRepository.findRootOfFiscalYear(fy);
+		
+		return o;
+	}
+
 	/** ค้นหา Objective ด้วยผู้รับผิดชอบและปีงบประมาณ
 	 * 
 	 */
@@ -4194,12 +4207,20 @@ public class EntityServiceJPA implements EntityService {
 			org = org.getParent();
 		}
 		
-		List<Activity> list1 =  activityRepository.findAllByOwnerAndForObejctive_Id(org, objectiveId);
+		logger.debug("org: " + org.getId() +  " : " + org.getName());
+		
+		List<Activity> list1 =  activityRepository.findAllByOwnerAndForObjective_Id(org, objectiveId);
 		List<Activity> list2 = activityRepository.findAllByRegulatorAndForObejctive_Id(org, objectiveId);
+		List<Activity> list3 = activityRepository.findAllByActivityTargetReportOwner(org, objectiveId);
 		
 		List<Activity> list = new ArrayList<Activity>();
 		list.addAll(list1);
 		for(Activity act : list2) {
+			if(!list.contains(act)) {
+				list.add(act);
+			}
+		}
+		for(Activity act : list3) {
 			if(!list.contains(act)) {
 				list.add(act);
 			}
@@ -4228,6 +4249,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		logger.debug("list size: " + list1.size());
 		logger.debug("list size: " + list2.size());
+		logger.debug("list size: " + list3.size());
 		logger.debug("list size: " + list.size());
 		
 		return list;
