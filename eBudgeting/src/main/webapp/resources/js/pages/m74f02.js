@@ -107,8 +107,6 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		var length = $(e.target).val();
 		var currentPlans = this.currentAssetAllocation.get('assetBudgetPlans');
 		
-		console.log(currentPlans.toJSON());
-		
 		if(currentPlans.length == length) {
 			//do nothing here
 			return false;
@@ -126,8 +124,6 @@ var AssignAssetPlanModal = Backbone.View.extend({
 			}
 		}
 		
-		
-		console.log(currentPlans.toJSON());
 		
 		var html=this.budgetPlanTblTemplate(currentPlans.toJSON());
 		this.$el.find('#budgetPlanDiv').html(html);

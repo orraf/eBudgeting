@@ -105,7 +105,7 @@ public class AssetAllocation implements Serializable{
 	@OrderColumn(name="STEPORDER")
 	private List<AssetStepReport> assetStepReports;
 
-	@OneToMany(mappedBy="assetAllocation", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="assetAllocation", cascade = CascadeType.ALL,  orphanRemoval=true)
 	@OrderColumn(name="BUDGETORDER")
 	private List<AssetBudgetPlan> assetBudgetPlans;
 	

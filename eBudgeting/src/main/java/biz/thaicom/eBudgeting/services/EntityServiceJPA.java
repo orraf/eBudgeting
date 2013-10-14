@@ -5565,7 +5565,9 @@ public class EntityServiceJPA implements EntityService {
 			asset.setAssetStepReports(new ArrayList<AssetStepReport>());
 			
 			//we'll have to delete the old one!
-			assetStepReportRepository.delete(oldreports);
+			if(oldreports != null && oldreports.size() > 0) {
+				assetStepReportRepository.delete(oldreports);
+			}
 			
 			asset.setAssetMethod(assetMethod);
 			newMethod=true;
@@ -5577,19 +5579,25 @@ public class EntityServiceJPA implements EntityService {
 		
 		for(JsonNode reportNode: node.get("assetStepReports")) {
 			AssetStepReport report;
+			logger.debug("stepIndex: " + stepIndex);
+			logger.debug("newMethod: " + newMethod);
 			if(newMethod) {
 				report = new AssetStepReport();
 				report.setStepOrder(stepIndex);
 				report.setStep(assetMethod.getSteps().get(stepIndex++));
 				report.setAssetAllocation(asset);
+				asset.getAssetStepReports().add(report);
+				
 			} else {
-				report = asset.getAssetStepReports().get(stepIndex++);
+				report = asset.getAssetStepReports().get(stepIndex);
+				report.setStepOrder(stepIndex);
+				stepIndex++;
 			}
 			
 			
 			if(!saveResult) {
 				try {
-					
+					logger.debug(">>>>>> "  + report);
 					report.setPlanBegin(df.parse(reportNode.get("planBegin").asText()));
 					report.setPlanEnd(df.parse(reportNode.get("planEnd").asText()));
 					
@@ -5619,7 +5627,7 @@ public class EntityServiceJPA implements EntityService {
 			}
 			
 			
-			asset.getAssetStepReports().add(report);
+			
 
 		}
 		
@@ -5707,6 +5715,7 @@ public class EntityServiceJPA implements EntityService {
 			Integer planSize = asset.getAssetBudgetPlans().size();
 			
 			
+			logger.debug("i = " + i + " and planSize = " + planSize);
 			
 			while(i < planSize) {
 				// now we must remove the rest
