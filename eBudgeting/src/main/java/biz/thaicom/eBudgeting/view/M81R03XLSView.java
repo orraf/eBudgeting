@@ -121,7 +121,9 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 		Cell cell316 = thirdRow.createCell(15);
 		cell316.setCellValue("รวม");
 		cell316.setCellStyle(styles.get("header"));
-
+		Cell cell317 = thirdRow.createCell(16);
+		cell317.setCellValue("ผู้รับผิดชอบ");
+		cell317.setCellStyle(styles.get("header"));
 		
 		Connection connection = dataSource.getConnection();
 				
@@ -167,7 +169,7 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 				rsc2.setCellValue("แผนการใช้เงิน");
 				rsc2.setCellStyle(styles.get("cellcenter"));
 				
-				for (j=3;j<16;j++) {
+				for (j=3;j<17;j++) {
 					Cell rscj = rows.createCell(j);
 					rscj.setCellStyle(styles.get("cellcenter"));
 				}
@@ -203,7 +205,7 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 				rsc2.setCellValue("ผลการใช้เงิน");
 				rsc2.setCellStyle(styles.get("cellcenter"));
 				
-				for (j=3;j<16;j++) {
+				for (j=3;j<17;j++) {
 					Cell rscj = rows.createCell(j);
 					rscj.setCellStyle(styles.get("cellcenter"));
 				}
@@ -254,7 +256,7 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 					rsc13.setCellValue("แผนงาน");
 					rsc13.setCellStyle(styles.get("cellcenter"));
 					
-					for (j=3;j<16;j++) {
+					for (j=3;j<17;j++) {
 						Cell rscj = rows1.createCell(j);
 						rscj.setCellStyle(styles.get("cellcenter"));
 
@@ -269,7 +271,7 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 					rsc23.setCellValue("ผลงาน");
 					rsc23.setCellStyle(styles.get("cellcenter"));
 					
-					for (j=3;j<16;j++) {
+					for (j=3;j<17;j++) {
 						Cell rscj = rows2.createCell(j);
 						rscj.setCellStyle(styles.get("cellcenter"));
 
@@ -310,11 +312,36 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 				st1.close();
 			}
 			else {
-				for (j=1;j<16;j++) {
+				for (j=1;j<17;j++) {
 					Cell rscj = rows.createCell(j);
 					rscj.setCellStyle(styles.get("cellleft"));
 
 				}
+				
+				// แสดงผู้รับผิดชอบ
+				Long objId = rs.getLong(3);
+				
+				Statement st5 = connection.createStatement();
+				ResultSet rs5;
+				String sql5 = ""
+						+ "SELECT  org.abbr "
+						+ "FROM pln_objectiveownerrelation rel, "
+						+ "		pln_objective_owner_join owner_join, "
+						+ "		hrx_organization org "
+						+ "WHERE rel.id = owner_join.pln_objectiveownerrelation_id "
+						+ "		and owner_join.owners_id = org.id"
+						+ "		and rel.obj_pln_objective_id=" + objId; 
+  
+				rs5 = st5.executeQuery(sql5);
+				String owner = "";
+				while (rs5.next()) {
+					owner += rs5.getString(1);
+				}
+				Cell cell = rows.getCell(16);
+				cell.setCellValue(owner);
+				
+				
+				
 				i = i+1;
 			}
 		}
