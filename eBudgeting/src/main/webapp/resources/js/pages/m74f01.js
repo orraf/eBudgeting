@@ -116,7 +116,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		}
  		
  		this.$el.find('a#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
- 		
+ 		//console.dir(this.currentTargetReport.toJSON());
  		// we should be ready to save the 
  		this.currentTargetReport.save(null, {
  			url: appUrl('/ActivityTargetReport/saveReportPlan/' + this.currentTargetReport.get('id')),

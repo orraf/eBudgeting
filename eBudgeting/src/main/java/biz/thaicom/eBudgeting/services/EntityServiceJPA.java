@@ -4735,6 +4735,13 @@ public class EntityServiceJPA implements EntityService {
 	public ActivityTargetReport saveActivityTargetReportPlan(Long id, JsonNode node) {
 		ActivityTargetReport report = activityTargetReportRepository.findOne(id);
 		if(report.getMonthlyReports() == null || report.getMonthlyReports().size() != 12) {
+			// remove the the old one!
+			if(report.getMonthlyReports() != null) {
+				monthlyActivityReportRepository.delete(report.getMonthlyReports());
+			}
+			
+			// make new Report first!
+			logger.debug("create new Report!");
 			report.setMonthlyReports(new ArrayList<MonthlyActivityReport>());
 			List<MonthlyActivityReport> monthlyReports = report.getMonthlyReports();
 			for(Integer i=0; i<12; i++) {
@@ -4749,7 +4756,12 @@ public class EntityServiceJPA implements EntityService {
 		
 		for(JsonNode monthlyNode : node.get("monthlyReports")) {
 			Integer month = monthlyNode.get("fiscalMonth").asInt();
+			
+			
 			MonthlyActivityReport monthly = report.getMonthlyReports().get(month);
+			logger.debug("get report of fiscalMonth: " + month + " old Value: " + monthly.getActivityPlan() 
+					+ " set to new Value: " + monthlyNode.get("activityPlan").asDouble());
+			
 			if(monthlyNode.get("activityPlan")!=null) {
 				monthly.setActivityPlan(monthlyNode.get("activityPlan").asDouble());
 			} else {
