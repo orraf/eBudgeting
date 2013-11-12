@@ -209,6 +209,12 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				
 				String idString = "(";
 				String idLike = " (";
+				
+				if(idList.size() == 0) {
+					idString = "( null )";
+					idLike = "( 1 = 1)";
+				}
+				
 				for(int k=0; k<idList.size(); k++) {
 					idString += idList.get(k);
 					idLike += "t3.parentpath like '%."+ idList.get(k) + ".%' ";
