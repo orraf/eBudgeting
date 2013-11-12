@@ -138,26 +138,30 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
-									   "from pln_objective m where m.id <> " + root.getId() + " and exists " +
-									   "(select 1 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, " +
-					                       "(select id from hrx_organization " +
-					                           "connect by prior id = parent_hrx_organization_id " +
-					                           "start with id = "+ searchOrg.getId() +") t3 " +
-					                        "where t4.target_pln_acttarget_id = t5.id " +
-					                        "and t5.activity_pln_activity_id = t1.id " +
-					                        "and t1.obj_pln_objective_id = t2.id " +
-					                        "and t4.owner_hrx_organization_id = t3.id " + 
-					                        "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
-					                        "and t2.fiscalyear = " + fiscalYear + ") " +
-									   "connect by prior m.id = m.parent_pln_objective_id " +
-					                   "start with m.id = 21 "
-					                   + "order siblings by m.code asc");
+		String st01 = "select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
+				   "from pln_objective m where m.id <> " + root.getId() + " and exists " +
+				   "(select 1 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, " +
+                    "(select id from hrx_organization " +
+                        "connect by prior id = parent_hrx_organization_id " +
+                        "start with id = "+ searchOrg.getId() +") t3 " +
+                     "where t4.target_pln_acttarget_id = t5.id " +
+                     "and t5.activity_pln_activity_id = t1.id " +
+                     "and t1.obj_pln_objective_id = t2.id " +
+                     "and t4.owner_hrx_organization_id = t3.id " + 
+                     "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
+                     "and t2.fiscalyear = " + fiscalYear + ") " +
+				   "connect by prior m.id = m.parent_pln_objective_id " +
+                "start with m.id = 21 "
+                + "order siblings by m.code asc";
+		ResultSet rs = st.executeQuery(st01);
 
 		int i = 4;
 		int j = 0;
 		int s1 = 0;
 		int s2 = 0;
+		
+		logger.debug(st01);
+		
 		while (rs.next()) {
 			Row rows = sheet.createRow(i);
 			
@@ -167,7 +171,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 			
 			if (rs.getString(5).length() == 7) {
 				Statement st0 = connection.createStatement();
-				ResultSet rs0 = st0.executeQuery("select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(amountallocated),'999,999,999,999')), '...')||' บาท)' " +
+				ResultSet rs0 = st0.executeQuery("select '   (1.จัดสรรเงิน '||nvl(ltrim(to_char(sum(amountallocated),'999,999,999,999')), '...')||' บาท)' " +
 												 "from bgt_budgetproposal " +
 												 "where objective_id = " + rs.getInt(3) + " " +
 												 "and organization_id = " + searchOrg.getId() + " ");
@@ -190,15 +194,18 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				}
 
 				Statement st3 = connection.createStatement();
-				ResultSet rs3 = st3.executeQuery("select t1.fiscalmonth, sum(t1.budgetplan) " +
-												 "from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activity t3 " +
-											  	 "where t1.performance_pln_actper_id = t2.id " +
-												 "and t2.activity_pln_activity_id = t3.id " +
-											  	 "and t1.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
-												 "and t3.obj_pln_objective_id in (select id from pln_objective connect by prior id = parent_pln_objective_id start with id = " + rs.getInt(3) + ") " +
-												 "group by t1.fiscalmonth " +
-												 "order by t1.fiscalmonth ");
+				String st03 = "select t1.fiscalmonth, sum(t1.budgetplan) " +
+						 "from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activity t3 " +
+					  	 "where t1.performance_pln_actper_id = t2.id " +
+						 "and t2.activity_pln_activity_id = t3.id " +
+					  	 "and t1.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
+						 "and t3.obj_pln_objective_id in (select id from pln_objective connect by prior id = parent_pln_objective_id start with id = " + rs.getInt(3) + ") " +
+						 "group by t1.fiscalmonth " +
+						 "order by t1.fiscalmonth ";
+				ResultSet rs3 = st3.executeQuery(st03);
 
+				logger.debug(st03);
+				
 				j = 3;
 				s1 = 0;
 				while (rs3.next()) {
@@ -248,16 +255,20 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 
 				i = i+2;
 				
-			}
-			else {
+			} else {
 				if (rs.getInt(2) == 1) {
 					Statement st0 = connection.createStatement();
-					ResultSet rs0 = st0.executeQuery("select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(budgetallocated),'999,999,999,999')), '...')||' บาท)' " +
-													 "from pln_activity t1, pln_activityperformance t3, s_user t2 " +
-													 "where t1.owner_hrx_organization = t2.dept_id " +
-													 "and t1.id = t3.activity_pln_activity_id " +
-													 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
-													 "and t2.login = '" + currentUser.getUsername() + "' ");
+					String st02 = "select '   (2จัดสรรเงิน '||nvl(ltrim(to_char(sum(budgetallocated),'999,999,999,999')), '...')||' บาท)' " +
+							 "from pln_activity t1, pln_activityperformance t3 " +
+							 "where t1.id = t3.activity_pln_activity_id " +
+							 "and t1.id in (select id from PLN_ACTIVITY connect by prior id = PARENT_PLN_ACTIVITY_ID start with OBJ_PLN_OBJECTIVE_ID =" + rs.getInt(3) + ")" +
+							 "and t3.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with parent_hrx_organization_id = " + searchOrg.getId() + ") ";							
+					
+					logger.debug(st02);
+					
+					ResultSet rs0 = st0.executeQuery(st02);
+					
+					
 					
 					Cell rsc1 = rows.createCell(1);
 					if (rs0.next()) {
@@ -277,21 +288,41 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 					}
 
 					Statement st3 = connection.createStatement();
-					ResultSet rs3 = st3.executeQuery("select t1.fiscalmonth, sum(t1.budgetplan), ltrim(to_char(sum(t1.budgetplan),'999,999,999,999')) " +
-													 "from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activity t3, s_user t4 " +
-												  	 "where t1.performance_pln_actper_id = t2.id " +
-												  	 "and t1.owner_hrx_organization_id = t4.dept_id " +
-													 "and t2.activity_pln_activity_id = t3.id " +
-													 "and t3.obj_pln_objective_id = " + rs.getInt(3) + 
-													 " and t4.login = '" + currentUser.getUsername() + "' " +
-													 "group by t1.fiscalmonth " +
-													 "order by t1.fiscalmonth ");
+					
+					/**
+					 * 
+select t1.fiscalmonth, sum(t1.budgetplan), ltrim(to_char(sum(t1.budgetplan),'999,999,999,999')) 
+from pln_monthlybgtreport t1, pln_activityperformance t2, PLN_ACTIVITY t3
+where t1.performance_pln_actper_id = t2.id 
+  and t2.ACTIVITY_PLN_ACTIVITY_ID = t3.id
+  and t3.id in (select id from PLN_ACTIVITY connect by prior id = PARENT_PLN_ACTIVITY_ID start with OBJ_PLN_OBJECTIVE_ID = 86)
+  and t2.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = 132010000)
+group by t1.fiscalmonth order by t1.fiscalmonth;
+					 * 
+					 * 
+					 */
+					
+					
+					String st03 = "" +
+							"select t1.fiscalmonth, sum(t1.budgetplan), ltrim(to_char(sum(t1.budgetplan),'999,999,999,999')) " +
+							"from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activity t3 " +
+						  	"where t1.performance_pln_actper_id = t2.id " +
+						  	"	and t2.ACTIVITY_PLN_ACTIVITY_ID = t3.id " +
+							"	and t3.id in (select id from PLN_ACTIVITY connect by prior id = PARENT_PLN_ACTIVITY_ID start with OBJ_PLN_OBJECTIVE_ID = " + rs.getInt(3) + ") " +
+							"	and t3.obj_pln_objective_id = " + rs.getInt(3) + 
+							"	and t2.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ")" +
+							"group by t1.fiscalmonth " +
+							"order by t1.fiscalmonth ";
+					logger.debug("XXXXXXX");
+					logger.debug(st03);
+					
+					ResultSet rs3 = st3.executeQuery(st03);
 
 					j = 3;
 					s1 = 0;
 					while (rs3.next()) {
 						Cell rscj = rows.getCell(j);
-						rscj.setCellValue(rs3.getString(3));
+						rscj.setCellValue(rs3.getInt(2));
 						s1 = s1 + rs3.getInt(2);
 						j = j+1;
 					}
@@ -335,6 +366,11 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 					rsc3.setCellValue(s1);
 
 					i = i+2;
+					
+					
+					
+					
+					
 					Statement st1 = connection.createStatement();
 					ResultSet rs1 = st1.executeQuery("select distinct t1.code, t1.name, t1.id, t5.owner_hrx_organization_id, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t5.targetvalue,'999,999,999,999'))||' '||t4.name||')' target " +
 													 "from pln_activitytargetreport t5, pln_activity t1, pln_activitytarget t3, pln_targetunit t4, s_user t2 " +
@@ -352,8 +388,71 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 						if (rs1.getInt(3)!=actId) {
 							rsc11.setCellValue(rs.getString(4)+rs1.getString(2));
 							actId = rs1.getInt(3);
+							rsc11.setCellStyle(styles.get("cellleft"));
+								
+							// here we have to do แผนการใช้เงิน/ผลการใช้เงิน
+						
+							// now แผน/ผลการใช้เงินของกิจกรรม
+							
+							
+							Cell rsc013 = rows1.createCell(2);
+							rsc013.setCellValue("แผนการใช้เงิน");
+							rsc013.setCellStyle(styles.get("cellcenter"));
+							
+							for (j=3;j<16;j++) {
+								Cell rscj01 = rows1.createCell(j);
+								rscj01.setCellStyle(styles.get("cellnumbercenter"));
+
+							}
+
+							Row rows02 = sheet.createRow(i+1);
+							Cell rsc021 = rows02.createCell(0);
+							rsc021.setCellStyle(styles.get("cellleft"));
+							
+							Cell rsc022 = rows02.createCell(1);
+							rsc022.setCellStyle(styles.get("cellcenter"));
+							
+							Cell rsc023 = rows02.createCell(2);
+							rsc023.setCellValue("ผลการใช้เงิน");
+							rsc023.setCellStyle(styles.get("cellcenter"));
+							
+							for (j=3;j<16;j++) {
+								Cell rscj02 = rows02.createCell(j);
+								rscj02.setCellStyle(styles.get("cellnumbercenter"));
+
+							}
+							
+							String st05 = "select t1.fiscalmonth, nvl(sum(t1.budgetplan),0), nvl(sum(t1.BUDGETRESULT),0) " 
+									+ "from pln_monthlybgtreport t1, pln_activityperformance t2, PLN_ACTIVITY t3 "
+									+ "where t1.performance_pln_actper_id = t2.id "
+									+ "		and t2.ACTIVITY_PLN_ACTIVITY_ID = t3.id "
+									+ "  	and t3.id = " + actId  
+									+ " 	and t2.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = "+ searchOrg.getId() +") " 
+									+ "group by t1.fiscalmonth order by t1.fiscalmonth";
+							Statement st5 = connection.createStatement();
+							ResultSet rs5 = st5.executeQuery(st05);
+							j = 3;
+							s1 = 0;
+							s2 = 0;
+							while(rs5.next()) {
+								Cell rscj1 = rows1.getCell(j);
+								rscj1.setCellValue(rs5.getInt(2));
+								Cell rscj2 = rows02.getCell(j);
+								rscj2.setCellValue(rs5.getInt(3));
+								
+								s1 = s1 + rs5.getInt(2);
+								s2 = s2 + rs5.getInt(3);
+								j = j+1;
+							}
+							Cell rscs1 = rows1.getCell(15);
+							rscs1.setCellValue(s1);
+							Cell rscs2 = rows02.getCell(15);
+							rscs2.setCellValue(s2);
+							
+							i = i+2;
+							
+							rows1 = sheet.createRow(i);
 						}
-						rsc11.setCellStyle(styles.get("cellleft"));
 						
 						Cell rsc12 = rows1.createCell(1);
 						rsc12.setCellValue(rs1.getString(7));
@@ -628,13 +727,13 @@ public class M81R02XLSView extends AbstractPOIExcelView {
         style.setBorderLeft(CellStyle.BORDER_THIN);
         style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setAlignment(CellStyle.ALIGN_LEFT);
         style.setTopBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cellnumbercenter", style);
 
         style = wb.createCellStyle();
-        style.setAlignment(CellStyle.ALIGN_LEFT);
         style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
         style.setWrapText(true);
         style.setBorderTop(CellStyle.BORDER_THIN);
