@@ -4759,8 +4759,13 @@ public class EntityServiceJPA implements EntityService {
 			
 			
 			MonthlyActivityReport monthly = report.getMonthlyReports().get(month);
+			
+			Double monthlyActivityPlan = 0.0;
+			if(monthlyNode.get("activityPlan") != null) {
+				monthlyActivityPlan = monthlyNode.get("activityPlan").asDouble();
+			}
 			logger.debug("get report of fiscalMonth: " + month + " old Value: " + monthly.getActivityPlan() 
-					+ " set to new Value: " + monthlyNode.get("activityPlan").asDouble());
+					+ " set to new Value: " + monthlyActivityPlan);
 			
 			if(monthlyNode.get("activityPlan")!=null) {
 				monthly.setActivityPlan(monthlyNode.get("activityPlan").asDouble());
