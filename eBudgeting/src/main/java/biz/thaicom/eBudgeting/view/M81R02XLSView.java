@@ -22,6 +22,8 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
@@ -31,6 +33,8 @@ import biz.thaicom.security.models.ThaicomUserDetail;
 public class M81R02XLSView extends AbstractPOIExcelView {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:sss");
+	
+	public static Logger logger = LoggerFactory.getLogger(M81R02XLSView.class);
 	
 	@Override
 	protected Workbook createWorkbook() {
