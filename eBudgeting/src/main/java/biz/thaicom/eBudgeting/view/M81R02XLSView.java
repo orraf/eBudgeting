@@ -379,11 +379,11 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					ResultSet rs1 = st1.executeQuery("select distinct t1.code, t1.name, t1.id, t5.owner_hrx_organization_id, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t5.targetvalue,'999,999,999,999'))||' '||t4.name||')' target " +
 													 "from pln_activitytargetreport t5, pln_activity t1, pln_activitytarget t3, pln_targetunit t4, s_user t2 " +
 							 						 "where t5.target_pln_acttarget_id = t3.id " +
-													 "and t5.owner_hrx_organization_id = t2.dept_id " +
-													 "and t1.id = t3.activity_pln_activity_id " +
-													 "and t3.unit_pln_targetunit_id = t4.id " +
-													 "and t1.obj_pln_objective_id = " + rs.getInt(3) +
-													 "and t2.login = '" + currentUser.getUsername() + "' " +
+													 "	and t5.owner_hrx_organization_id = t2.dept_id " +
+													 "	and t1.id = t3.activity_pln_activity_id " +
+													 "	and t3.unit_pln_targetunit_id = t4.id " +
+													 "	and t1.obj_pln_objective_id = " + rs.getInt(3) +
+													 "	and t2.login = '" + currentUser.getUsername() + "' " +
 													 "order by 3, 5 ");
 					int actId = 0;
 					while (rs1.next()) {
