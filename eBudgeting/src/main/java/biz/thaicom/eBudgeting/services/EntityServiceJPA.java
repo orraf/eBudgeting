@@ -4259,6 +4259,14 @@ public class EntityServiceJPA implements EntityService {
 		logger.debug("list size: " + list3.size());
 		logger.debug("list size: " + list.size());
 		
+		Collections.sort(list, new Comparator<Activity>() {
+
+			@Override
+			public int compare(Activity o1, Activity o2) {
+				return o1.getCode().compareTo(o2.getCode());
+			}
+		});
+		
 		return list;
 	}
 
