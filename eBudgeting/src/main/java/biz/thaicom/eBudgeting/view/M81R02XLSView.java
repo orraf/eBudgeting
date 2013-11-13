@@ -141,6 +141,19 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		Connection connection = dataSource.getConnection();
 		
 		PreparedStatement ps = null;
+		
+		Statement rootStmt = connection.createStatement();
+		String st0Sql = "select m.id " +
+				"from pln_objective m " +
+				"where m.parent_pln_objective_id is null " +
+				"	and m.type_pln_objectivetype_id = 100 " +
+				"	and m.fiscalYear = " + fiscalYear; 
+		ResultSet rootRs = rootStmt.executeQuery(st0Sql);
+		Long rootObjectiveId = null;
+		while(rootRs.next()) {
+			rootObjectiveId = rootRs.getLong("id");
+		}
+		
 		Statement st = connection.createStatement();
 		String st01 = "select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
 				   "from pln_objective m where m.id <> " + root.getId() + " and exists " +
@@ -155,8 +168,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
                      "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
                      "and t2.fiscalyear = " + fiscalYear + ") " +
 				   "connect by prior m.id = m.parent_pln_objective_id " +
-                "start with m.id = 21 "
-                + "order siblings by m.code asc";
+                " start with m.id = " + rootObjectiveId 
+                + " order siblings by m.code asc";
 		ResultSet rs = st.executeQuery(st01);
 
 		int i = 4;
