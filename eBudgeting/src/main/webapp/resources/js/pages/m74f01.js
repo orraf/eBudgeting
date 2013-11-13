@@ -77,16 +77,39 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		"click #saveAssignTargetBtn" : "saveAssignTarget",
 		"click #cancelBtn" : "cancelAssignTarget"
 	},
-	
+	updateTargetSum: function() {
+		 var sum = 0;
+		    $('.monthlyReportPlan').each(function() {
+		        sum += Number($(this).val());
+		    });
+		    
+		 $('#curentSumTarget').html(addCommas(sum));
+		
+	},	
 	changeMonthlyReportPlan: function(e) {
 		var idx = $(e.target).attr('data-idx');
 		var planTxt = parseFloat($(e.target).val());
 		this.currentTargetReport.get('monthlyReports').at(idx).set('activityPlan', planTxt);
+		
+		// now update sum
+		this.updateTargetSum();
+		
+	},
+	updateBudgetSum: function() {
+		var sum = 0;
+	    $('.monthlyBudgetPlan').each(function() {
+	        sum += Number($(this).val());
+	    });
+	    
+	 $('#curentSumBudget').html(addCommas(sum));
+		
 	},
 	changeMonthlyBudgetPlan: function(e) {
 		var idx = $(e.target).attr('data-idx');
 		var planTxt = parseFloat($(e.target).val());
 		this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(idx).set('budgetPlan', planTxt);
+
+		this.updateBudgetSum();
 	},
 	
 	cancelAssignTarget: function(e) {
@@ -137,6 +160,9 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		var json = this.currentTargetReport.toJSON();
 		var html = this.assignTargetValueModalTemplate(json);
 		this.$el.find('.modal-body').html(html);
+		
+		this.updateTargetSum();
+		this.updateBudgetSum();
 		
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		return this;
