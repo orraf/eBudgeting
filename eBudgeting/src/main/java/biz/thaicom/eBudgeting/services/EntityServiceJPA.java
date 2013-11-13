@@ -5395,8 +5395,13 @@ public class EntityServiceJPA implements EntityService {
 		
 		// have to update proposal! 
 		BudgetProposal proposal = assetAllocation.getProposal();
-		Double sumAssetAllocation = assetAllocationRepository
-				.findSumBudgetOfPropsoal(proposal).doubleValue();
+		
+		Long sum = assetAllocationRepository.findSumBudgetOfPropsoal(proposal);
+		Double sumAssetAllocation = 0.0;
+		if(sum != null) {
+			sumAssetAllocation = sum.doubleValue();
+		}
+		
 		if(sumAssetAllocation != null) {
 			proposal.setAmountAllocated(sumAssetAllocation);
 			
