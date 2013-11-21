@@ -60,6 +60,7 @@ import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
 import biz.thaicom.eBudgeting.models.bgt.RequestColumn;
 import biz.thaicom.eBudgeting.models.bgt.ReservedBudget;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
@@ -3019,28 +3020,40 @@ public class EntityServiceJPA implements EntityService {
 			Organization workAt, Integer fiscalYear){
 		Organization org = organizationRepository.findOne(workAt.getId());
 		
-		if(org.getParent().getId() != 0L) {
-			org = org.getParent();
-		}
 		
 		logger.debug(org.getAbbr());
 		
-		
-		List<Objective> list = objectiveRepository.findAllByOwnerAndfiscalYear(org, fiscalYear);
-		List<Objective> list2 = objectiveRepository.findAllByActivityOwnerAndFiscalYear(org, fiscalYear);
 		List<Objective> returnList = new ArrayList<Objective>();
 		
-		for(Objective obj : list) {
-			if(!returnList.contains(obj)) {
-				 returnList.add(obj);
+		
+		if(org.getType() == OrganizationType.ฝ่าย  || org.getType() == OrganizationType.จังหวัด ) {
+		
+			List<Objective> list = objectiveRepository.findAllByOwnerAndfiscalYear(org, fiscalYear);
+			List<Objective> list2 = objectiveRepository.findAllByActivityOwnerAndFiscalYear(org, fiscalYear);
+	
+			for(Objective obj : list) {
+				if(!returnList.contains(obj)) {
+					 returnList.add(obj);
+				}
 			}
-		}
+	
+			for(Objective obj : list2) {
+				if(!returnList.contains(obj)) {
+					 returnList.add(obj);
+				}
+			}
 
-		for(Objective obj : list2) {
-			if(!returnList.contains(obj)) {
-				 returnList.add(obj);
+		} else if(org.getType() == OrganizationType.ส่วน) {
+			List<Objective> list = objectiveRepository.findAllByActivityRegulatorAndFiscalYear(org, fiscalYear);
+			for(Objective obj : list) {
+				if(!returnList.contains(obj)) {
+					returnList.add(obj);
+				}
 			}
+			
 		}
+		
+		
 		
 		Collections.sort(returnList, new Comparator<Objective>() {
 
