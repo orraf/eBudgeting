@@ -1313,6 +1313,7 @@ public class GenericViewController {
 		setFiscalYearFromSession(model, session);
 		logger.debug("currentOrganizationId:" + currentUser.getWorkAt().getId());
 		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
+		model.addAttribute("userOrgType", currentUser.getWorkAt().getType());
 		
 		return "m81r04";
 	}

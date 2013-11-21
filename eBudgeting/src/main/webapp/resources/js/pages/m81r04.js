@@ -499,8 +499,15 @@ var MainSelectionView = Backbone.View.extend({
 	type101SltChange : function(e) {
 		var type101Id = $(e.target).val();
 		if(type101Id != 0) {
+			var url;
+			if(userOrgType == 'ฝ่าย') {
+				url = appUrl('/Objective/' + type101Id + '/children');
+			} else {
+				url = appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityTargetOwner');
+			}
+			
 			this.type102Collection.fetch({
-				url: appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityTargetOwner'),
+				url: url,
 				success: _.bind(function() {
 					this.type102Collection.trigger('reset');
 				}, this)

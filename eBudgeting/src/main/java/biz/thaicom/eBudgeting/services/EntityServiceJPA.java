@@ -4144,9 +4144,11 @@ public class EntityServiceJPA implements EntityService {
 		logger.debug("id" + id.toString());
 		
 		Organization org = organizationRepository.findOneById(id);
-		org.getChildren().size();
-	
-		
+		if(org!=null && org.getChildren() != null) {
+			org.getChildren().size();
+		} else {
+			logger.debug("org is null");
+		}
 		return org;
 	}
 	

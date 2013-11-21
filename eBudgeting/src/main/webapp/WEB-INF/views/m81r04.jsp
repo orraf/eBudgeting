@@ -385,6 +385,7 @@
 	var objectiveCollection = null;
 	var budgetTypeSelectionView = null;
 	var rootCollection;
+	var userOrgType = "${userOrgType}";
 	var topBudgetList = ["งบบุคลากร","งบดำเนินงาน","งบลงทุน","งบอุดหนุน","งบรายจ่ายอื่น"];
 	var currentOrganizationId = parseInt("${currentOrganizationId}");
 	var parentCurrentOrganizationId = parseInt("${parentCurrentOrganizationId}");
