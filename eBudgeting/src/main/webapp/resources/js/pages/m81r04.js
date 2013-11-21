@@ -502,6 +502,8 @@ var MainSelectionView = Backbone.View.extend({
 			var url;
 			if(userOrgType == 'ฝ่าย') {
 				url = appUrl('/Objective/' + type101Id + '/children');
+			} else if(userOrgType == 'ส่วน' ) {
+				url = appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityRegulator');
 			} else {
 				url = appUrl('/Objective/' + type101Id + '/childrenOnlyWithCurrentActivityTargetOwner');
 			}
