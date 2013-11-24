@@ -174,6 +174,10 @@ function addCommas(nStr)
 	return x1 + x2;
 }
 
+function round2Digit(num) {
+	return Math.round(num * 100) / 100;
+}
+
 function changeCurrentRootFY(sel) {
 	var value = sel.options[sel.selectedIndex].value;
 	

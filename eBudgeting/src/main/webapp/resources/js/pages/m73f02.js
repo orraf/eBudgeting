@@ -120,7 +120,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			
 		});
 		
-		$('#sumTotalAllocated').html(addCommas(sum));
+		$('#sumTotalAllocated').html(addCommas(round2Digit(sum)));
 
 	},
 	removeOrganizationTarget: function(e) {
