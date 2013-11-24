@@ -302,7 +302,7 @@
 <div id="inputAll">
 		
 		<div style="padding-bottom:12px;">
-           <strong><u>แผนการดำเนินงาน</u>: {{formatNumber targetValue}} {{target.unit.name}}</strong>
+           <strong><u>แผนการดำเนินงาน</u>: {{formatNumber targetValue}} {{target.unit.name}}  จัดสรรแล้ว <span id="curentSumTarget"></span> {{target.unit.name}}</strong> 
         </div>
         <div class="row">
 			<div class="span3">
@@ -352,7 +352,7 @@
 	<div class="clearfix"></div>
 	
 		<div style="padding-bottom:12px;">
-           <strong><u>แผนเบิกจ่ายงบประมาณ</u>: {{formatNumber activityPerformance.budgetAllocated}} บาท</strong>
+           <strong><u>แผนเบิกจ่ายงบประมาณ</u>: {{formatNumber activityPerformance.budgetAllocated}} บาท  จัดสรรแล้ว <span id="curentSumBudget"></span> บาท</strong>
         </div>
         <div class="row">
 			<div class="span3">

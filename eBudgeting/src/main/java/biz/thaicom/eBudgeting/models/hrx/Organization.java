@@ -120,6 +120,10 @@ public class Organization implements Serializable {
 		this.code = code;
 	}
 	
+	public OrganizationType getType() {
+		return OrganizationType.getType(this);
+	}
+	
 	// ถ้าเป็นระดับแผนก return true;
 	public Boolean isSubSection() {
 		if(this.code != null) {

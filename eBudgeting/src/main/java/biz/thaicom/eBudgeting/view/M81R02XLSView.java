@@ -141,6 +141,19 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		Connection connection = dataSource.getConnection();
 		
 		PreparedStatement ps = null;
+		
+		Statement rootStmt = connection.createStatement();
+		String st0Sql = "select m.id " +
+				"from pln_objective m " +
+				"where m.parent_pln_objective_id is null " +
+				"	and m.type_pln_objectivetype_id = 100 " +
+				"	and m.fiscalYear = " + fiscalYear; 
+		ResultSet rootRs = rootStmt.executeQuery(st0Sql);
+		Long rootObjectiveId = null;
+		while(rootRs.next()) {
+			rootObjectiveId = rootRs.getLong("id");
+		}
+		
 		Statement st = connection.createStatement();
 		String st01 = "select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
 				   "from pln_objective m where m.id <> " + root.getId() + " and exists " +
@@ -155,8 +168,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
                      "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
                      "and t2.fiscalyear = " + fiscalYear + ") " +
 				   "connect by prior m.id = m.parent_pln_objective_id " +
-                "start with m.id = 21 "
-                + "order siblings by m.code asc";
+                " start with m.id = " + rootObjectiveId 
+                + " order siblings by m.code asc";
 		ResultSet rs = st.executeQuery(st01);
 
 		int i = 4;
@@ -393,6 +406,8 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					
 					int actId = 0;
 					while (rs1.next()) {
+						Long targetId=rs1.getLong("target_id");
+						
 						Row rows1 = sheet.createRow(i);
 						Cell rsc11 = rows1.createCell(0);
 						if (rs1.getInt(3)!=actId) {
@@ -432,10 +447,12 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						}
 						
 						String st05 = "select t1.fiscalmonth, nvl(sum(t1.budgetplan),0), nvl(sum(t1.BUDGETRESULT),0) " 
-								+ "from pln_monthlybgtreport t1, pln_activityperformance t2, PLN_ACTIVITY t3 "
+								+ "from pln_monthlybgtreport t1, pln_activityperformance t2, PLN_ACTIVITYTARGETREPORT t3," +
+								"		pln_activitytarget t4 "
 								+ "where t1.performance_pln_actper_id = t2.id "
-								+ "		and t2.ACTIVITY_PLN_ACTIVITY_ID = t3.id "
-								+ "  	and t3.id = " + actId  
+								+ " 	and t2.id = t3.performance_pln_actper_id " 
+								+ "		and t3.target_pln_acttarget_id = t4.id "	
+								+ "  	and t4.id = " + targetId
 								+ " 	and t2.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = "+ searchOrg.getId() +") " 
 								+ "group by t1.fiscalmonth order by t1.fiscalmonth";
 						Statement st5 = connection.createStatement();

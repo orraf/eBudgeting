@@ -21,6 +21,8 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.security.models.ThaicomUserDetail;
@@ -29,6 +31,9 @@ import biz.thaicom.security.models.ThaicomUserDetail;
 public class M81R01XLSView extends AbstractPOIExcelView {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:sss");
+	
+	public static Logger logger = LoggerFactory.getLogger(M81R01XLSView.class);
+
 	
 	@Override
 	protected Workbook createWorkbook() {
@@ -126,19 +131,36 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 
 		
 		Connection connection = dataSource.getConnection();
+		
+		Statement rootStmt = connection.createStatement();
+		String st0Sql = "select m.id " +
+				"from pln_objective m " +
+				"where m.parent_pln_objective_id is null " +
+				"	and m.type_pln_objectivetype_id = 100 " +
+				"	and m.fiscalYear = " + fiscalYear; 
+		ResultSet rootRs = rootStmt.executeQuery(st0Sql);
+		Long rootObjectiveId = null;
+		while(rootRs.next()) {
+			rootObjectiveId = rootRs.getLong("id");
+		}
+
 				
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
-		                               "from pln_objective m where m.id <> "+ root.getId() + " and exists " +
-									   "(select 1 from pln_activity t1, pln_objective t2, s_user t3 " +
-		                               "where t1.obj_pln_objective_id = t2.id " +
-									   "and t1.owner_hrx_organization = t3.dept_id " +
-		                               "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
-									   "and t2.fiscalyear = " + fiscalYear + 
-									   " and t3.login = '" + currentUser.getUsername() + "') " +
-									   "connect by prior m.id = m.parent_pln_objective_id " +
-									   "start with m.id = 21 "
-									   + "order siblings by m.code asc ");
+		String rs0Sql = "select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
+                "from pln_objective m where m.id <> "+ root.getId() + " and exists " +
+				   "(select 1 from pln_activity t1, pln_objective t2, s_user t3 " +
+                "where t1.obj_pln_objective_id = t2.id " +
+				   "and t1.owner_hrx_organization = t3.dept_id " +
+                "and '.'||t2.id||t2.parentpath like '%.'||m.id||'.%' " +
+				   "and t2.fiscalyear = " + fiscalYear + 
+				   " and t3.login = '" + currentUser.getUsername() + "') " +
+				   " connect by prior m.id = m.parent_pln_objective_id " +
+				   " start with m.id =  " + rootObjectiveId 
+				   + " order siblings by m.code asc ";
+		
+		logger.debug(rs0Sql);
+		
+		ResultSet rs = st.executeQuery(rs0Sql);
 
 		int i = 4;
 		int j = 0;
