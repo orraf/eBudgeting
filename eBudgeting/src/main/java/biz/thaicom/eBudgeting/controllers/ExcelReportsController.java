@@ -554,6 +554,37 @@ public class ExcelReportsController {
 		return "m81r01.xls";
 	}
 	
+
+	@RequestMapping("/m81r12.xls/{fiscalYear}/file/m81r12.xls")
+	public String excelM81R12(@PathVariable Integer fiscalYear, Model model,
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
+		
+		logger.debug("m81r12.xls controller : ");
+		
+		Objective root = entityService.findOneRootObjectiveByFiscalyear(fiscalYear);
+		
+		model.addAttribute("root", root);		
+		model.addAttribute("fiscalYear", fiscalYear);
+		model.addAttribute("currentUser", currentUser);
+		
+//		Organization searchOrg = entityService.findOrganizationById(searchOrgId);
+//		
+//		Organization parent = entityService.findOrganizationParentOf(searchOrg);
+//		if(parent != null) {
+//			searchOrg.setParent(parent);
+//		}
+		
+		model.addAttribute("searchOrg", currentUser.getWorkAt());
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		
+		
+		response.addCookie(cookie);
+		
+		return "m81r12.xls";
+	}
+	
 	@RequestMapping("/m81r02.xls/{fiscalYear}/{searchOrgId}/file/m81r02.xls")
 	public String excelM81R02(@PathVariable Integer fiscalYear, Model model,
 			@PathVariable Long searchOrgId,

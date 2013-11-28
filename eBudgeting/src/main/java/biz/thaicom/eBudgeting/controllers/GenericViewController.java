@@ -1254,9 +1254,7 @@ public class GenericViewController {
 		Integer currentfy = setFiscalYearFromSession(model, session);
 		logger.debug("currentOrganizationId:" + currentUser.getWorkAt().getId());
 		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
-		
-		
-		
+
 		String userGroups = "";
 	    String delim = "";
 	    Boolean isPlan = false;

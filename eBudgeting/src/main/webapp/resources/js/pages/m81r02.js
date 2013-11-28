@@ -537,7 +537,7 @@ var MainSelectionView = Backbone.View.extend({
 			provinces.fetch({
 				url: appUrl("/Organization/findAllProvinces"),
 				success: _.bind(function() {
-					
+
 					var json = provinces.toJSON();
 					json.label = "สกย.จ.";
 					json.id="provinceSlt";
