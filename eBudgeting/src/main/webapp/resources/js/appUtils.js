@@ -160,9 +160,13 @@ Handlebars.registerHelper('formatDateDB', function(date){
 	}
 });
 
+function round2Digit(num) {
+	return Math.round(num * 100) / 100;
+}
 
 function addCommas(nStr)
 {
+	nStr = round2Digit(nStr);
 	nStr += '';
 	x = nStr.split('.');
 	x1 = x[0];
@@ -174,9 +178,7 @@ function addCommas(nStr)
 	return x1 + x2;
 }
 
-function round2Digit(num) {
-	return Math.round(num * 100) / 100;
-}
+
 
 function changeCurrentRootFY(sel) {
 	var value = sel.options[sel.selectedIndex].value;

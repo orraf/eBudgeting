@@ -230,7 +230,7 @@ public class M81R07XLSView extends AbstractPOIExcelView {
 				
 				
 				rsc5.setCellValue(name);
-				logger.debug("rs1SLQ  RESULT: " + name);
+				logger.debug("-------------> rs1SLQ  RESULT: " + name);
 				rs1.close();
 				st1.close();
 
