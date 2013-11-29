@@ -158,6 +158,14 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 				sumReports.add(prevSum);
 				prevReport = report;
 			}
+			
+			prevSum.setTargetValue(prevSum.getTargetValue() 
+					+ report.getTargetValue() );
+			
+			prevSum.getActivityPerformance().setBudgetAllocated(
+					prevSum.getActivityPerformance().getBudgetAllocated() 
+					+ report.getActivityPerformance().getBudgetAllocated());
+			
 			prevSum.sumReports(report.getActivityPerformance().getMonthlyBudgetReports(),
 					report.getMonthlyReports());
 		}
@@ -272,11 +280,27 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 			nameCell.setCellValue(getIndent(4) + report.getTarget().getActivity().getName());
 			
 			Cell targetCell = dataRow1.createCell(1);
-			targetCell.setCellValue(report.getTarget().getUnit().getName());
+			targetCell.setCellValue("จำนวน " + decimalFormat.format(report.getTargetValue()) + "  " + report.getTarget().getUnit().getName());
 			
 			
+			Cell budgetCell = dataRow3.createCell(1);
+			budgetCell.setCellValue("จัดสรร " + decimalFormat.format(report.getActivityPerformance().getBudgetAllocated()) + "  บาท");
 			
+			Cell labelCell;
+			labelCell = dataRow1.createCell(2);
+			labelCell.setCellValue("แผน");
+			labelCell = dataRow2.createCell(2);
+			labelCell.setCellValue("ผล");
 			
+			labelCell = dataRow3.createCell(2);
+			labelCell.setCellValue("แผน");
+			labelCell = dataRow4.createCell(2);
+			labelCell.setCellValue("ผล");
+			
+			Double sumActPlan = 0.0;
+			Double sumActResult = 0.0;
+			Double sumBgtPlan = 0.0;
+			Double sumBgtResult = 0.0;
 			for (int j=3;j<16;j++) {
 				Cell cell1 = dataRow1.createCell(j);
 				Cell cell2 = dataRow2.createCell(j);
@@ -287,18 +311,28 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 				cell3.setCellStyle(styles.get("cellnumbercenter"));
 				cell4.setCellStyle(styles.get("cellnumbercenter"));
 				
-				MonthlyActivityReport actReport = report.getFiscalReportOn(j-3);
-				if(actReport != null) {
-					cell1.setCellValue(actReport.getActivityPlan());
-					cell2.setCellValue(actReport.getActivityResult());
+				if(j != 15) {
+					MonthlyActivityReport actReport = report.getFiscalReportOn(j-3);
+					if(actReport != null) {
+						cell1.setCellValue(actReport.getActivityPlan());
+						sumActPlan += actReport.getActivityPlan();
+						cell2.setCellValue(actReport.getActivityResult());
+						sumActResult += actReport.getActivityResult();
+					}
+					
+					MonthlyBudgetReport bgtReport = report.getFiscalBudgetReportOn(j-3);
+					if(bgtReport != null) {
+						cell3.setCellValue(bgtReport.getBudgetPlan());
+						sumBgtPlan += bgtReport.getBudgetPlan();
+						cell4.setCellValue(bgtReport.getBudgetResult());
+						sumBgtResult += bgtReport.getBudgetResult();
+					}
+				} else {
+					cell1.setCellValue(sumActPlan);
+					cell2.setCellValue(sumActResult);
+					cell3.setCellValue(sumBgtPlan);
+					cell4.setCellValue(sumBgtResult);
 				}
-				
-				MonthlyBudgetReport bgtReport = report.getFiscalBudgetReportOn(j-3);
-				if(bgtReport != null) {
-					cell3.setCellValue(bgtReport.getBudgetPlan());
-					cell4.setCellValue(bgtReport.getBudgetResult());
-				}
-				
 			}
 			
 			

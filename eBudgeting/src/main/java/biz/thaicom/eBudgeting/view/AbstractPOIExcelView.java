@@ -1,5 +1,6 @@
 package biz.thaicom.eBudgeting.view;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Map;
@@ -19,6 +20,8 @@ public abstract class AbstractPOIExcelView extends AbstractView {
 	  /** The content type for an Excel response */
     private static final String CONTENT_TYPE_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private static final String CONTENT_TYPE_XLS = "application/vnd.ms-excel";
+    
+    protected static final DecimalFormat decimalFormat = new DecimalFormat("#,##0.##");
 
     @Autowired
 	protected DataSource dataSource;
