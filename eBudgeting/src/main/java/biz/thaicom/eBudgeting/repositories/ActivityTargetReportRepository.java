@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 
 @Repository
@@ -59,5 +60,26 @@ public interface ActivityTargetReportRepository extends
 			"" )
 	public List<ActivityTargetReport> findAllByParentObjectiveIdAndOwnerId(
 			String objectiveIdLike, Long ownerId);
+	
+	
+	@Query(""
+			+ "SELECT report "
+			+ "FROM ActivityTargetReport report "
+			+ "		INNER JOIN FETCH report.target target "
+			+ "		INNER JOIN FETCH report.activityPerformance performance"
+			+ " 	INNER JOIN FETCH target.activity activity  "
+			+ "		INNER JOIN FETCH activity.forObjective obj1 "
+			+ "		INNER JOIN FETCH obj1.parent obj2 "
+			+ "		INNER JOIN FETCH obj2.parent obj3 "
+			+ "		INNER JOIN FETCH obj3.parent obj4 "
+			+ "		INNER JOIN FETCH obj4.parent obj5 "
+			+ "		INNER JOIN FETCH obj5.parent obj6 "
+			+ "WHERE ( activity.regulator = ?1 "
+			+ "				OR activity.owner = ?1 ) "
+			+ "		AND activity.forObjective.fiscalYear = ?2 "
+			+ "ORDER BY obj6.code asc, obj5.code asc, obj4.code asc, obj3.code asc, obj2.code asc, obj1.code asc, activity.code asc,"
+			+ "		target.id asc ")
+	public List<ActivityTargetReport> findAllByActivityOwnerOrRegulatorAndFiscalYear(
+			Organization org, Integer fiscalYear);
 
 }

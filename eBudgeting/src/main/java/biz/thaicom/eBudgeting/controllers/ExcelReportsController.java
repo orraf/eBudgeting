@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
+
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveType;
 import biz.thaicom.eBudgeting.models.pln.TargetUnit;
@@ -575,6 +577,11 @@ public class ExcelReportsController {
 //		}
 		
 		model.addAttribute("searchOrg", currentUser.getWorkAt());
+		
+		List<ActivityTargetReport> reports = entityService.findActivityTargetReportByOwnerOrRegulator(
+				currentUser.getWorkAt(), fiscalYear);
+		
+		model.addAttribute("reports", reports);
 		
 		Cookie cookie = new Cookie("fileDownload", "true");
 		cookie.setPath("/");

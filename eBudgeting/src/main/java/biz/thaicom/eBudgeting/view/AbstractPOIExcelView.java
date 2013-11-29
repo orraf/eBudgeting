@@ -40,6 +40,14 @@ public abstract class AbstractPOIExcelView extends AbstractView {
         return true;
     }
 
+    protected final String getIndent(int level) {
+    	String indent = " ";
+    	for(int i=0; i<level; i++) {
+    		indent += "          ";
+    	}
+    	return indent;
+    }
+    
     /**
      * Renders the Excel view, given the specified model.
      */

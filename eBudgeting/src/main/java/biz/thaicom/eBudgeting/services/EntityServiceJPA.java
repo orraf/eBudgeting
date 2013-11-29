@@ -5948,6 +5948,13 @@ public class EntityServiceJPA implements EntityService {
 		return (List<AssetCategory>) assetCategoryRepository.findAll(new Sort(Sort.Direction.ASC, "code"));
 	}
 
+	@Override
+	public List<ActivityTargetReport> findActivityTargetReportByOwnerOrRegulator(
+			Organization workAt, Integer fiscalYear) {
+		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByActivityOwnerOrRegulatorAndFiscalYear(workAt, fiscalYear);
+		return reports;
+	}
+
 
 	
 	

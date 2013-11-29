@@ -401,7 +401,9 @@ public interface EntityService {
 	
 	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
 			Long objectiveId, Long ownerId);
-
+	
+	public List<ActivityTargetReport> findActivityTargetReportByOwnerOrRegulator(
+			Organization workAt, Integer fiscalYear);
 	
 	//ActivityTargetResult
 	public ActivityTargetResult saveActivityTargetResult(JsonNode node,
@@ -458,6 +460,7 @@ public interface EntityService {
 	public AssetCategory saveAssetCategory(JsonNode node);
 	public AssetCategory deleteAssetCategory(Long id);
 	public List<AssetCategory> findAssetCategoryAll();
+
 
 
 

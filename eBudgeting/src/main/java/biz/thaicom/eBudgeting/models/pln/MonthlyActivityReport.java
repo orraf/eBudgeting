@@ -129,6 +129,4 @@ public class MonthlyActivityReport implements Serializable {
 		this.remark = remark;
 	}
 	
-	
-	
 }
