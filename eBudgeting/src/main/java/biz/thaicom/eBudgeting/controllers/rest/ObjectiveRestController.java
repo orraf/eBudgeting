@@ -361,6 +361,13 @@ public class ObjectiveRestController {
 				
 		}
 		
+		// now rid of the children .. to improve performance in js
+		logger.debug("objetives.size() : " + objectives.size());
+		for(Objective o : objectives) {
+			o.setChildren(null);
+			o.setParent(null);
+		}
+		
 		return  objectives;
 	}
 	

@@ -5866,6 +5866,34 @@ public class EntityServiceJPA implements EntityService {
 		
 		return root;
 	}
+	
+	
+	@Override
+	public Objective findObjectivesByFiscalyearAndTypeIdForM81R07Report(
+			Integer fiscalYear) {
+		// now we'll have to recursively get all children?
+		List<Objective> allObjective = objectiveRepository.findAllLeftJoinChildrenAndFetchBudgetProposalByFiscalYear(fiscalYear);
+	
+		Objective root = objectiveRepository.findRootOfFiscalYear(fiscalYear);
+		
+		return root;
+	}
+
+	
+	
+	@Override
+	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYear(
+			Integer fiscalYear) {
+		return activityPerformanceRepository.findSumBudgetAllocatedByFiscalYear(fiscalYear);
+	}
+
+	
+	
+	@Override
+	public Iterable<Object[]> findAllSumMonthlyBudgetByFiscalYear(
+			Integer fiscalYear) {
+		return monthlyBudgetReportRepository.findSumBudgetByFiscalYear(fiscalYear);
+	}
 
 	@Override
 	public List<Organization> findAllOrganization() {

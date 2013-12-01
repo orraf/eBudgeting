@@ -779,12 +779,24 @@ public class ExcelReportsController {
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		
+		Objective root = entityService.findObjectivesByFiscalyearAndTypeIdForM81R07Report(fiscalYear);
+		model.addAttribute("rootObjective", root);
+		
+		Iterable<Object[]> sumBudgetPlans = entityService.findAllSumBudgetPlanByFiscalYear(fiscalYear);
+		model.addAttribute("sumBudgetPlans", sumBudgetPlans);
+		
+		Iterable<Object[]> sumMonthlyBudgets = entityService.findAllSumMonthlyBudgetByFiscalYear(fiscalYear);
+		model.addAttribute("sumMonthlyBudgets", sumMonthlyBudgets);
+		
+		
 		Cookie cookie = new Cookie("fileDownload", "true");
 		cookie.setPath("/");
 		response.addCookie(cookie);
 		
 		
-		return "m81r07.xls";
+		return "m81r07_new.xls";
+		
+		//return "m81r07.xls";
 	}
 	
 	@RequestMapping("/m81r08.xls/{fiscalYear}/file/m81r08.xls")

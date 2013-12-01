@@ -288,14 +288,14 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 			
 			Cell labelCell;
 			labelCell = dataRow1.createCell(2);
-			labelCell.setCellValue("แผน");
+			labelCell.setCellValue("แผนงาน");
 			labelCell = dataRow2.createCell(2);
-			labelCell.setCellValue("ผล");
+			labelCell.setCellValue("ผลงาน");
 			
 			labelCell = dataRow3.createCell(2);
-			labelCell.setCellValue("แผน");
+			labelCell.setCellValue("แผนเงิน");
 			labelCell = dataRow4.createCell(2);
-			labelCell.setCellValue("ผล");
+			labelCell.setCellValue("ผลเงิน");
 			
 			Double sumActPlan = 0.0;
 			Double sumActResult = 0.0;

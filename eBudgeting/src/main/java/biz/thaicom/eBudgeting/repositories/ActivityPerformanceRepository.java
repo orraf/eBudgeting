@@ -53,4 +53,14 @@ public interface ActivityPerformanceRepository extends
 			ActivityTarget target,
 			Long parentOrgId);
 	
+	
+	@Query(""
+			+ "SELECT activity.forObjective.id, sum(performance.budgetAllocated) "
+			+ "FROM ActivityPerformance performance "
+			+ "	 	INNER JOIN performance.activity activity "
+			+ "WHERE activity.forObjective.fiscalYear = ?1 "
+			+ "GROUP BY activity.forObjective.id "
+			+ "")
+	public Iterable<Object[]> findSumBudgetAllocatedByFiscalYear(Integer fiscalYear);
+	
 }

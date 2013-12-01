@@ -168,7 +168,12 @@ public interface EntityService {
 	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear);
 	public Objective findObjectivesByFiscalyearAndTypeIdForM82R01Report(
 			Integer fiscalYear);
-
+	public Objective findObjectivesByFiscalyearAndTypeIdForM81R07Report(
+			Integer fiscalYear);
+	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYear(
+			Integer fiscalYear);
+	public Iterable<Object[]> findAllSumMonthlyBudgetByFiscalYear(
+			Integer fiscalYear);
 	
 	//BudgetType
 	public List<BudgetType> findRootBudgetType();
@@ -460,6 +465,8 @@ public interface EntityService {
 	public AssetCategory saveAssetCategory(JsonNode node);
 	public AssetCategory deleteAssetCategory(Long id);
 	public List<AssetCategory> findAssetCategoryAll();
+	
+
 
 
 

@@ -327,5 +327,15 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			+ "WHERE obj.parent is null ")
 	public Integer findMaxFiscalYear();
 
+	@Query("" +
+			"SELECT obj "
+			+ "FROM Objective obj " 
+			+ "	LEFT JOIN FETCH obj.children "
+			+ "	INNER JOIN FETCH obj.type "
+			+ "	INNER JOIN FETCH obj.objectiveName "
+			+ "WHERE obj.fiscalYear = ?1 ")
+	public List<Objective> findAllLeftJoinChildrenAndFetchBudgetProposalByFiscalYear(
+			Integer fiscalYear);
+
 
 }

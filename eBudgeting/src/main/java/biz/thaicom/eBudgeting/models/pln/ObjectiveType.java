@@ -31,7 +31,15 @@ public class ObjectiveType implements Serializable {
 	 */
 	private static final long serialVersionUID = -1906396844701411875L;
 	
-	
+	@Override
+	public int hashCode() {
+		if(id != null)
+			return id.hashCode();
+		else if(name != null) 
+			return name.hashCode();
+		else 
+			return super.hashCode();
+	}
 	// Field
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="PLN_OBJECTIVETYPE_SEQ")

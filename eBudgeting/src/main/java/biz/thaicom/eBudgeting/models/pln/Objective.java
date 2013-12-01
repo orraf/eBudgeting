@@ -2,6 +2,7 @@ package biz.thaicom.eBudgeting.models.pln;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -26,6 +27,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Formula;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Table(name="PLN_OBJECTIVE")
 @SequenceGenerator(name="PLN_OBJECTIVE_SEQ", sequenceName="PLN_OBJECTIVE_SEQ", allocationSize=1)
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class Objective implements Serializable {
+public class Objective implements Serializable, Comparable<Objective> {
 	private static final Logger logger = LoggerFactory.getLogger(Objective.class);
 	
 	/**
@@ -104,7 +106,7 @@ public class Objective implements Serializable {
 	private List<Objective> children;
 	
 	@OneToMany(mappedBy="forObjective", fetch=FetchType.LAZY)
-	private List<BudgetProposal> proposals;
+	private Set<BudgetProposal> proposals;
 	
 	@OneToMany(mappedBy="forObjective", fetch=FetchType.LAZY)
 	private List<ObjectiveBudgetProposal> objectiveProposals;
@@ -150,6 +152,48 @@ public class Objective implements Serializable {
 	
 	@Transient
 	private List<Organization> owner;
+	
+	// Overide hash 
+	@Override
+	public int hashCode() {
+		if(id != null) 
+			return id.hashCode();
+		else if(code != null)
+			return code.hashCode();
+		else if(name != null)
+			return name.hashCode();
+		else
+			return super.hashCode();
+	}
+	
+	// Basic compare
+	@Override
+	public int compareTo(Objective o) {
+		return Comparators.CODE.compare(this, o);
+	}
+	
+	public static class Comparators {
+		public static Comparator<Objective> NAME = new Comparator<Objective>() {
+			@Override
+			public int compare(Objective o1, Objective o2) {
+				return o1.name.compareTo(o2.name);
+			}
+		};
+		
+		public static Comparator<Objective> CODE = new Comparator<Objective>() {
+			@Override
+			public int compare(Objective o1, Objective o2) {
+				return o1.code.compareTo(o2.code);
+			}
+		};
+		
+		public static Comparator<Objective> CODE_DESC = new Comparator<Objective>() {
+			@Override
+			public int compare(Objective o1, Objective o2) {
+				return o2.code.compareTo(o1.code);
+			}
+		};
+	}
 	
 	
 	//Normal Getter/Setter
@@ -214,10 +258,10 @@ public class Objective implements Serializable {
 	public void setBudgetTypes(List<BudgetType> budgetTypes) {
 		this.budgetTypes = budgetTypes;
 	}
-	public List<BudgetProposal> getProposals() {
+	public Set<BudgetProposal> getProposals() {
 		return proposals;
 	}
-	public void setProposals(List<BudgetProposal> proposals) {
+	public void setProposals(Set<BudgetProposal> proposals) {
 		this.proposals = proposals;
 	}
 	public String getParentPath() {
@@ -603,8 +647,20 @@ public class Objective implements Serializable {
 		this.owner = owner;
 	}
 	
-	
-
-	
+	@Transient
+	public Double getSumAllocated() {
+		Double sum = 0.0;
+		if(this.proposals != null && this.proposals.size() > 0) {
+			for(BudgetProposal proposal: proposals) {
+				sum += proposal.getAmountAllocated();
+			}
+			return sum;
+		} else {
+			for(Objective child : this.children) {
+				sum += child.getSumAllocated();
+			}
+			return sum;
+		}
+	}
 	
 }
