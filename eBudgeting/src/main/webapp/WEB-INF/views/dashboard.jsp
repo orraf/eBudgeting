@@ -30,7 +30,7 @@
 <script id="alertNoReportTemplate" type="text/x-handlebars-template">
 <div class="alert alert-block">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <h4 style="padding-bottom: 10px;">เดือนนี้ยังมีกิจกรรมที่ยังไม่ได้รายงานผล!</h4>
+    <h4 style="padding-bottom: 10px;">เดือนนี้มีกิจกรรมที่ยังไม่ได้รายงานผล!</h4>
     	<ul>
 			{{#each this}}
 				<li> {{name}} </li>
