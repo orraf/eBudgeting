@@ -28,6 +28,22 @@ public interface ActivityTargetResultRepository extends JpaRepository<ActivityTa
 	ActivityTargetResult findByReportIdAndFiscalMonthAndBgtResult(
 			Long targetReportId, Integer fiscalMonth);
 
+
+	@Query(""
+			+ "SELECT objective.id, sum(result.budgetResult) "
+			+ "FROM ActivityTargetResult result "
+			+ "		INNER JOIN result.report report  "
+			+ "		INNER JOIN report.target target " 
+			+ "		INNER JOIN target.activity activity "
+			+ " 	INNER JOIN activity.forObjective objective "
+			+ "WHERE  "
+			+ " 	result.resultBudgetType = TRUE "
+			+ "		AND result.removed = FALSE " 
+			+ "		AND objective.fiscalYear = ?1 " 
+			+ "GROUP BY objective.id ")
+	Iterable<Object[]>  findBudgetResultByFiscalYear(Integer fiscalYear);
+
+	
 	@Query(""
 			+ "SELECT result "
 			+ "FROM ActivityTargetResult result "

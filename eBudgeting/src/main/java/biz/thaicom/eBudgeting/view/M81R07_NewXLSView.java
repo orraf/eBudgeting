@@ -102,7 +102,7 @@ public class M81R07_NewXLSView extends AbstractPOIExcelView {
 		// now put this in hashtable
 		for(Object[] sumMonthlyBudget : sumMonthlyBudgets) {
 			budgetResultTable.put((Long) sumMonthlyBudget[0],
-					(Double) sumMonthlyBudget[2]); 
+					(Double) sumMonthlyBudget[1]); 
 		}
 		
         Map<String, CellStyle> styles = createStyles(workbook);

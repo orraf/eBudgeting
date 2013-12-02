@@ -5892,7 +5892,7 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Iterable<Object[]> findAllSumMonthlyBudgetByFiscalYear(
 			Integer fiscalYear) {
-		return monthlyBudgetReportRepository.findSumBudgetByFiscalYear(fiscalYear);
+		return activityTargetResultRepository.findBudgetResultByFiscalYear(fiscalYear);
 	}
 
 	@Override
