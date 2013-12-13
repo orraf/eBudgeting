@@ -785,6 +785,9 @@ public class ExcelReportsController {
 		Iterable<Object[]> sumBudgetPlans = entityService.findAllSumBudgetPlanByFiscalYear(fiscalYear);
 		model.addAttribute("sumBudgetPlans", sumBudgetPlans);
 		
+		Iterable<Object[]> sumBudgetUseds = entityService.findAllSumBudgetUsedByFiscalYear(fiscalYear);
+		model.addAttribute("sumBudgetUseds", sumBudgetUseds);
+		
 		logger.debug("Calling findAllSumMonthlyBudgetByFiscalYear");
 		Iterable<Object[]> sumMonthlyBudgets = entityService.findAllSumMonthlyBudgetByFiscalYear(fiscalYear);
 		model.addAttribute("sumMonthlyBudgets", sumMonthlyBudgets);

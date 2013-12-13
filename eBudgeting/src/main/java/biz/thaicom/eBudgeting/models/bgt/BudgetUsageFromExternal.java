@@ -27,6 +27,10 @@ public class BudgetUsageFromExternal implements Serializable {
 	private String activityName;
 	
 	@Basic
+	@Column(name="FISCAL_YEAR")
+	private Integer fiscalYear;
+	
+	@Basic
 	@Column(name="AMT")
 	private Double amount;
 
@@ -61,8 +65,14 @@ public class BudgetUsageFromExternal implements Serializable {
 
 	public void setAmount(Double amount) {
 		this.amount = amount;
+	}
+
+	public Integer getFiscalYear() {
+		return fiscalYear;
+	}
+
+	public void setFiscalYear(Integer fiscalYear) {
+		this.fiscalYear = fiscalYear;
 	} 
-	
-	
 	
 }

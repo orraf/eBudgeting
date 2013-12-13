@@ -174,6 +174,8 @@ public interface EntityService {
 			Integer fiscalYear);
 	public Iterable<Object[]> findAllSumMonthlyBudgetByFiscalYear(
 			Integer fiscalYear);
+	public Iterable<Object[]> findAllSumBudgetUsedByFiscalYear(
+			Integer fiscalYear);
 	
 	//BudgetType
 	public List<BudgetType> findRootBudgetType();
@@ -465,6 +467,7 @@ public interface EntityService {
 	public AssetCategory saveAssetCategory(JsonNode node);
 	public AssetCategory deleteAssetCategory(Long id);
 	public List<AssetCategory> findAssetCategoryAll();
+
 	
 
 

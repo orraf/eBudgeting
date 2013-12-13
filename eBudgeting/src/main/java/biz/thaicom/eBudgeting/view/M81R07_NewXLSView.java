@@ -42,6 +42,8 @@ public class M81R07_NewXLSView extends AbstractPOIExcelView {
 	
 	private Hashtable<Long, Double> budgetPlanTable = new Hashtable<Long, Double>();
 	private Hashtable<Long, Double> budgetResultTable = new Hashtable<Long, Double>();
+	private Hashtable<String, Double> budgetUsedTable = new Hashtable<String, Double>();
+	
 	
 	@Override
 	protected Workbook createWorkbook() {
@@ -76,6 +78,20 @@ public class M81R07_NewXLSView extends AbstractPOIExcelView {
 		return sum;
 	}
 	
+	private Double getSumBudgetUsed(Objective obj) {
+		Double sum =0.0;
+		if(obj.getChildren() == null || obj.getChildren().size() == 0) {
+			if(budgetUsedTable.get(obj.getCode()) != null) {
+				return budgetUsedTable.get(obj.getCode());
+			}
+		} else {
+			for(Objective child: obj.getChildren()) {
+				sum += getSumBudgetUsed(child);
+			}
+		}
+		return sum;
+	}
+	
 	
 	@Override
 	protected void buildExcelDocument(Map<String, Object> model,
@@ -104,6 +120,15 @@ public class M81R07_NewXLSView extends AbstractPOIExcelView {
 			budgetResultTable.put((Long) sumMonthlyBudget[0],
 					(Double) sumMonthlyBudget[1]); 
 		}
+		
+		@SuppressWarnings("unchecked")
+		Iterable<Object[]> sumBudgetUseds = (Iterable<Object[]>) model.get("sumBudgetUseds");
+		// now put this in hashtable
+		for(Object[] sumBudgetUsed : sumBudgetUseds) {
+			budgetUsedTable.put((String) sumBudgetUsed[0],
+					(Double) sumBudgetUsed[1]); 
+		}
+		
 		
         Map<String, CellStyle> styles = createStyles(workbook);
 
@@ -197,7 +222,7 @@ public class M81R07_NewXLSView extends AbstractPOIExcelView {
 		cell0.setCellStyle(styles.get("cellnumber"));
 		
 		cell0 = row.createCell(col_ผลการใช้เงิน);
-		cell0.setCellValue(getSumBudgetResult(rootObjective));
+		cell0.setCellValue(getSumBudgetUsed(rootObjective));
 		cell0.setCellStyle(styles.get("cellnumber"));
 		
 		
@@ -244,7 +269,7 @@ public class M81R07_NewXLSView extends AbstractPOIExcelView {
 			cell0.setCellStyle(styles.get("cellnumber"));
 			
 			cell0 = row.createCell(col_ผลการใช้เงิน);
-			cell0.setCellValue(getSumBudgetResult(obj));
+			cell0.setCellValue(getSumBudgetUsed(obj));
 			cell0.setCellStyle(styles.get("cellnumber"));
 			
 			if(obj.getChildren() != null) {

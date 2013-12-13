@@ -5887,6 +5887,12 @@ public class EntityServiceJPA implements EntityService {
 		return activityPerformanceRepository.findSumBudgetAllocatedByFiscalYear(fiscalYear);
 	}
 
+	@Override
+	public Iterable<Object[]> findAllSumBudgetUsedByFiscalYear(
+			Integer fiscalYear) {
+		return budgetUsageFromExternalRepository.findSumBudgetUsedByFiscalYear(fiscalYear);
+	}
+
 	
 	
 	@Override
@@ -5982,6 +5988,7 @@ public class EntityServiceJPA implements EntityService {
 		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByActivityOwnerOrRegulatorAndFiscalYear(workAt, fiscalYear);
 		return reports;
 	}
+
 
 
 	
