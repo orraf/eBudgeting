@@ -100,6 +100,10 @@ public class AssetAllocation implements Serializable{
 	@ManyToOne
 	@JoinColumn(name="BGT_ASSETMETHOD_ID")
 	private AssetMethod assetMethod;
+
+	@ManyToOne
+	@JoinColumn(name="BGT_ASSETCATEGORY_ID")
+	private AssetCategory category;
 	
 	@OneToMany(mappedBy="assetAllocation")
 	@OrderColumn(name="STEPORDER")
@@ -252,8 +256,14 @@ public class AssetAllocation implements Serializable{
 	public void setEstimatedCost(Double estimatedCost) {
 		this.estimatedCost = estimatedCost;
 	}
-	
-	
+
+	public AssetCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(AssetCategory category) {
+		this.category = category;
+	}
 	
 	
 }
