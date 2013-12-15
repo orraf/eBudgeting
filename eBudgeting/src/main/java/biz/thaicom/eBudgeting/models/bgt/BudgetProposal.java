@@ -43,6 +43,9 @@ public class BudgetProposal implements Serializable {
 	@JoinColumn(name="BUDGETTYPE_BGT_BUDGETTYPE_ID")
 	private BudgetType budgetType;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="BGT_BUDGETPROPOSALROUND_ID")
+	private BudgetProposalRound round;
 	
 	@Basic
 	private String name;

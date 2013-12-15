@@ -1373,9 +1373,26 @@ alter table bgt_assetallocation add (estimatedcost number(19,2));
  
 -- version 24
 -- Modified Date: December 15, 2013
+update app_info set db_version=24;
 alter table bgt_assetallocation add (bgt_assetCategory_id number(19,2));
 alter table BGT_ASSETALLOCATION	               
 	add constraint FK389D89EF83923378
     foreign key (bgt_ASSETCATEGORY_ID) 
     references BGT_ASSETCATEGORY;
 
+create sequence BGT_BUDGETPROPOSALROUND_SEQ;
+create table BGT_BUDGETPROPOSALROUND (
+        id number(19,0) not null,
+        fiscalYear number(10,0),
+        name varchar2(255 char),
+        officialDate date,
+        roundNo number(10,0),
+        primary key (id)
+    );
+    
+alter table BGT_BUDGETPROPOSAL add (BGT_BUDGETPROPOSALROUND_ID number(19,0));
+    
+alter table BGT_BUDGETPROPOSAL 
+        add constraint FK_fcfkwtx7il9le71yjxuyhk0gl 
+        foreign key (BGT_BUDGETPROPOSALROUND_ID) 
+        references BGT_BUDGETPROPOSALROUND;
