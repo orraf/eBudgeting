@@ -1370,4 +1370,12 @@ INSERT INTO bgt_assetmethodstep_join VALUES (6,9,2);
 
 
 alter table bgt_assetallocation add (estimatedcost number(19,2));
-    
+ 
+-- version 24
+-- Modified Date: December 15, 2013
+alter table bgt_assetallocation add (bgt_assetCategory_id number(19,2));
+alter table BGT_ASSETALLOCATION	               
+	add constraint FK389D89EF83923378
+    foreign key (bgt_ASSETCATEGORY_ID) 
+    references BGT_ASSETCATEGORY;
+

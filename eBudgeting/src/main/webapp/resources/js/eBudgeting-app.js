@@ -802,7 +802,11 @@ AssetAllocation = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'operator',
 		relatedModel: 'Organization'
-	},{
+	}, {
+		type: Backbone.HasOne,
+		key: 'category',
+		relatedModel: 'AssetCategory'
+	}, {
 		type: Backbone.HasMany,
 		key: 'assetStepReports',
 		relatedModel: 'AssetStepReport',

@@ -5483,6 +5483,11 @@ public class EntityServiceJPA implements EntityService {
 			Organization operator = organizationRepository.findOne(getJsonNodeId(assetAllocNode.get("operator")));
 			assetAlloc.setOperator(operator);
 			
+			if(getJsonNodeId(assetAllocNode.get("category")) != null) {
+				AssetCategory category = assetCategoryRepository.findOne(getJsonNodeId(assetAllocNode.get("category")));
+				assetAlloc.setCategory(category);
+			}
+			
 			assetAlloc.setQuantity(assetAllocNode.get("quantity").asInt());
 			assetAlloc.setUnitBudget(assetAllocNode.get("unitBudget").asLong());
 			

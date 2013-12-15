@@ -508,7 +508,14 @@
 <script id="assetAllocationTbodyTemplate"  type="text/x-handler-template">
 <tr data-id="{{id}}">
 	<td><a href="#td-{{id}}" class="deleteAssetAllocation"><i class="icon-trash icon-red"></i></a></td>
-	<td>{{assetBudget.name}}</td>
+	<td><select class="assetCategorySlt" style="font-size:12px; height:auto; width:200px;" id="assetCategory-{{id}}">
+		<option value="0">กรุณาเลือก</option>
+			{{#each categories}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{name}}</option>
+			{{/each}}
+		</select>
+		<br/>{{assetBudget.name}}
+	</td>
 	<td><select class="assetAllocationOnwerSlt" style="width:90px;" id="assetAllocationOwnerOption-{{id}}">
 			<option value="0">กรุณาเลือก</option>
 			{{#each organizations}}
@@ -671,6 +678,11 @@
 	var mainCtrView = null;
 	var objectiveCollection = null;
 	var budgetTypeSelectionView = null;
+	var assetCategories = new AssetCategoryCollection();
+	assetCategories.fetch({
+		url: appUrl('/AssetCategory/all')
+	});
+	
 	var rootCollection;
 	var mainBudgetTypeCollection = null;
 	var topBudgetList = ["งบบุคลากร","งบดำเนินงาน","งบลงทุน","งบอุดหนุน","งบรายจ่ายอื่น"];

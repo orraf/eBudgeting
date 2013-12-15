@@ -47,6 +47,7 @@ var ModalView = Backbone.View.extend({
 		"change .assetAllocationNumber" : "changeAssetAllocationNumber",
 		"click #saveAssetAllocationBtn" : "saveAssetAllocation",
 		"change .assetAllocationOnwerSlt" : "changeAssetAllocationOnwerSlt",
+		"change .assetCategorySlt" : "changeAssetCategorySlt",
 		"change .assetAllocationOperatorSlt" : "changeAssetAllocationOperatorSlt",
 		"click #backToProposalFromAssetBtn" : "backToProposalFromAsset",
 		"click .removeOrganizationAssetProposal" : "removeOrganizationAssetProposal",
@@ -138,6 +139,16 @@ var ModalView = Backbone.View.extend({
 							}
 						});
 					}
+					
+					json.categories = assetCategories.toJSON();
+					if(record.get('category') != null) {
+						_.each(json.categories, function(cat) {
+							if(cat.id == record.get('category').get('id')) {
+								cat.selected = true;
+							}
+						});
+					}
+					
 					var html = this.assetAllocationTbodyTemplate(json);
 					this.$el.find('#assetTbl tbody').append(html);		
 				}
@@ -187,6 +198,18 @@ var ModalView = Backbone.View.extend({
 	},
 	backToProposalFromAsset: function(e) {
 		this.renderAllocationRecordInput();
+	},
+	changeAssetCategorySlt: function(e) {
+		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
+		var assetAllocation = AssetAllocation.findOrCreate(assetAllocationId);
+		
+		var catId = $(e.target).val();
+		if(catId > 0) {
+			var category = AssetCategory.findOrCreate(catId);
+			assetAllocation.set('category', category);
+			e1=assetAllocation;
+		}
+		
 	},
 	changeAssetAllocationOnwerSlt: function(e) {
 		var assetAllocationId = $(e.target).parents('tr').attr('data-id');
