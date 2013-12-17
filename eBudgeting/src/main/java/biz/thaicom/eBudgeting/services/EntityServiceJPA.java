@@ -3063,9 +3063,15 @@ public class EntityServiceJPA implements EntityService {
 			
 		});
 		
+		Organization searhOrg = org;
+		if(org.getType() == OrganizationType.ส่วน) {
+			searhOrg = org.getParent();
+		}
+		
 		for(Objective obj: returnList) {
+			
 			List<BudgetProposal> proposals = 
-					budgetProposalRepository.findByForObjectiveAndOwner(obj, org);
+					budgetProposalRepository.findByForObjectiveAndOwner(obj, searhOrg);
 			
 			obj.setFilterProposals(proposals);
 		}
