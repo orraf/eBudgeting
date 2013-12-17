@@ -29,9 +29,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 
 
+
 import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -224,11 +226,25 @@ public class ObjectiveRestController {
 		return entityService.saveObjectiveOwners(id, ownerIds);
 	}
 
+	@RequestMapping(value="/Objective/currentTopOwner/{fiscalYear}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> findObjectiveByCurrentTopOwner(
+			@PathVariable Integer fiscalYear,
+			@Activeuser ThaicomUserDetail currentUser
+			){
+		Organization org = currentUser.getWorkAt();
+		if(org.getType() == OrganizationType.ส่วน) {
+			org = org.getParent();
+		}
+		
+		return entityService.findObjectiveByOwnerAndFiscalYear(currentUser.getWorkAt(), fiscalYear);
+	}
+	
 	@RequestMapping(value="/Objective/currentOwner/{fiscalYear}", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> findObjectiveByCurrentOwner(
 			@PathVariable Integer fiscalYear,
 			@Activeuser ThaicomUserDetail currentUser
 			){
+		
 		return entityService.findObjectiveByOwnerAndFiscalYear(currentUser.getWorkAt(), fiscalYear);
 	}
 	

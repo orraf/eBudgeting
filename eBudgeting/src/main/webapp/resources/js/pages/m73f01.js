@@ -672,7 +672,7 @@ var MainCtrView = Backbone.View.extend({
 		this.mainSelectionView = new MainSelectionView({el: "#mainCtr #mainSelection"});
 
 		this.rootSelection = new ObjectiveCollection();
-		this.rootSelection.url = appUrl("/Objective/currentOwner/" + fiscalYear);
+		this.rootSelection.url = appUrl("/Objective/currentTopOwner/" + fiscalYear);
 		this.rootSelection.fetch({
 			success: _.bind(function() {
 				this.mainSelectionView.renderInitialWith(this.rootSelection);

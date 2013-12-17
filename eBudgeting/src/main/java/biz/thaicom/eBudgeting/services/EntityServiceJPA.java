@@ -3020,7 +3020,6 @@ public class EntityServiceJPA implements EntityService {
 			Organization workAt, Integer fiscalYear){
 		Organization org = organizationRepository.findOne(workAt.getId());
 		
-		
 		logger.debug(org.getAbbr());
 		
 		List<Objective> returnList = new ArrayList<Objective>();
