@@ -88,14 +88,15 @@ public interface BudgetProposalRepository extends
 			Objective forObjective);
 
 
-
+// we're not interested in งบลงทุน
 	@Query("" +
 			"SELECT distinct proposal " +
 			"FROM BudgetProposal proposal " +
 			"	INNER JOIN FETCH proposal.forObjective objective " +
 			"	INNER JOIN FETCH proposal.budgetType budgetType " +
 			"WHERE proposal.forObjective.fiscalYear =?1 " +
-			"	AND proposal.owner.id = ?2 ")
+			"	AND proposal.owner.id = ?2 "
+			+ " AND budgetType.name not like '%ลงทุน%'")
 	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
 			Integer fiscalYear, Long ownerId);
 	
