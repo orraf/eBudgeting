@@ -236,7 +236,7 @@ public class ObjectiveRestController {
 			org = org.getParent();
 		}
 		
-		return entityService.findObjectiveByOwnerAndFiscalYear(currentUser.getWorkAt(), fiscalYear);
+		return entityService.findObjectiveByOwnerAndFiscalYear(org, fiscalYear);
 	}
 	
 	@RequestMapping(value="/Objective/currentOwner/{fiscalYear}", method=RequestMethod.GET)
