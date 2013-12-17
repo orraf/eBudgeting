@@ -291,6 +291,16 @@ var ModalView = Backbone.View.extend({
 						}
 					});
 				}
+				
+				json.categories = assetCategories.toJSON();
+				if(record.get('category') != null) {
+					_.each(json.categories, function(cat) {
+						if(cat.id == record.get('category').get('id')) {
+							cat.selected = true;
+						}
+					});
+				}
+				
 				var html = this.assetAllocationTbodyTemplate(json);
 				this.$el.find('#assetTbl tbody').append(html);	
 				
