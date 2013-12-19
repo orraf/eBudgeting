@@ -44,6 +44,8 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 			HttpServletResponse response) throws Exception {
 
 		ThaicomUserDetail currentUser = (ThaicomUserDetail) model.get("currentUser");
+
+		logger.debug("currentUser: " + currentUser.getUsername());
 		
         Map<String, CellStyle> styles = createStyles(workbook);
 
@@ -171,13 +173,17 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 				
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id " +
+		String rsSql = "select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id " +
 	               "from pln_objective m " +
 	               "where m.id <> " + obj.getId() + " " +
 				   "and m.fiscalyear = " + fiscalYear + " " +
 				   "connect by prior m.id = m.parent_pln_objective_id " +
 				   "start with m.id = " + obj.getId() + " " + 
-				   "ORDER BY m.code asc ");
+				   "ORDER BY m.code asc ";
+		logger.debug("rsSQL >>>> ");
+		logger.debug(rsSql);
+		logger.debug("rsSQL >>>>>");
+		ResultSet rs = st.executeQuery(rsSql);
 
 		while (rs.next()) {
 			Row rows = sheet.createRow(i);
@@ -239,12 +245,19 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 					Statement st2 = connection.createStatement();
 					ResultSet rs2;
 					if (org.getId() == 0) {
-						rs2 = st2.executeQuery("select sum(t1.activityplan), sum(t1.activityresult) " +
+						String sql = "select sum(t1.activityplan), sum(t1.activityresult) " +
 								   "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3 " +
 								   "where t1.report_pln_acttargetreport_id = t2.id " +
 								   "and t2.target_pln_acttarget_id = t3.id " +
 								   "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
-								   " and t3.id = " + rs1.getInt(4) );
+								   " and t3.id = " + rs1.getInt(4);
+						rs2 = st2.executeQuery(sql);
+						
+						logger.debug("org.getId == 0 && SQL >>>>>> ");
+
+						logger.debug(sql);
+						logger.debug("org.getId == 0 && SQL >>>>>> ");
+
 					}
 					else {
 						String sql = "select sum(t1.activityplan), sum(t1.activityresult) "
@@ -258,12 +271,19 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 									+ " and t3.id = " + rs1.getInt(4);
 						
 						rs2 = st2.executeQuery(sql);
+						logger.debug("rs2SQL >>>>>> ");
+
+						logger.debug(sql);
+						logger.debug("rs2SQL >>>>>> ");
 					}
 
 					while (rs2.next()) {
 						Cell rscj1 = rows1.getCell(2);
+						logger.debug("setting cell 2 to:  " +  df.format(rs2.getInt(1)));
 						rscj1.setCellValue(df.format(rs2.getInt(1)));
+						
 						Cell rscj2 = rows1.getCell(3);
+						
 						rscj2.setCellValue(df.format(rs2.getInt(2)));
 						Cell rscj3 = rows1.getCell(4);
 						Cell rscj4 = rows1.getCell(5);

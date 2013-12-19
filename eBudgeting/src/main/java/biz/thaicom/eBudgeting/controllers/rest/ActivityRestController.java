@@ -44,6 +44,17 @@ public class ActivityRestController {
 		return entityService.findActivityByOwnerAndForObjective(currentUser.getWorkAt(), objectiveId);
 	}
 	
+	@RequestMapping(value="/Activity/ownerId/{ownerId}/forObjective/{objectiveId}")
+	public @ResponseBody List<Activity> findActivityFromOnwerandObjective(
+			@PathVariable Long objectiveId,
+			@Activeuser ThaicomUserDetail currentUser,
+			@PathVariable Long ownerId) {
+		
+		Organization org = entityService.findOrganizationById(ownerId);
+		
+		return entityService.findActivityByOwnerAndForObjective(org, objectiveId);
+	}
+	
 	@RequestMapping(value="/Activity/{id}", method=RequestMethod.GET)
 	public @ResponseBody Activity findOneActivity(
 			@PathVariable Long id) {

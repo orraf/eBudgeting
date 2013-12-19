@@ -5852,8 +5852,13 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<AssetAllocation> findAssetAllocationForReportM81r11(
 			Integer fiscalYear, ThaicomUserDetail currentUser) {
+	
+		Organization searchOrg = currentUser.getWorkAt();
+		if(searchOrg.getType() == OrganizationType.แผนก) {
+			searchOrg = searchOrg.getParent();
+		}
 		
-		List<AssetAllocation> assetAllocations = assetAllocationRepository.findAlByFiscalyearAndOwner(fiscalYear, currentUser.getWorkAt());
+		List<AssetAllocation> assetAllocations = assetAllocationRepository.findAlByFiscalyearAndOwner(fiscalYear, searchOrg);
 		
 		for(AssetAllocation alloc : assetAllocations) {
 			alloc.getAssetBudgetPlans().size();

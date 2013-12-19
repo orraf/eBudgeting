@@ -677,7 +677,7 @@ var MainCtrView = Backbone.View.extend({
 		this.mainSelectionView = new MainSelectionView({el: "#mainCtr #mainSelection"});
 
 		this.rootSelection = new ObjectiveCollection();
-		this.rootSelection.url = appUrl("/Objective/currentOwner/" + fiscalYear);
+		this.rootSelection.url = appUrl("/Objective/ownerId/" + currentOrganizationId + "/FY/"  + fiscalYear);
 		this.rootSelection.fetch({
 			success: _.bind(function() {
 				this.mainSelectionView.renderInitialWith(this.rootSelection);
@@ -698,7 +698,7 @@ var MainCtrView = Backbone.View.extend({
 		// first find the activities
 		// and put them in the table 
 		this.activities = new ActivityCollection();
-		this.activities.url = appUrl("/Activity/currentOwner/forObjective/" + this.currentObjective.get('id'));
+		this.activities.url = appUrl("/Activity/ownerId/" + currentOrganizationId + "/forObjective/" + this.currentObjective.get('id'));
 		this.activities.fetch({
 			success : _.bind(function() {
 				var flatActivities = new ActivityCollection();

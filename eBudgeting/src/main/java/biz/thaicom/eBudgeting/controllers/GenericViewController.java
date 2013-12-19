@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import biz.thaicom.eBudgeting.models.bgt.BudgetSignOff;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveTypeId;
 import biz.thaicom.eBudgeting.models.pln.TargetUnit;
@@ -1310,8 +1311,16 @@ public class GenericViewController {
 		model.addAttribute("rootPage", true);
 		setFiscalYearFromSession(model, session);
 		logger.debug("currentOrganizationId:" + currentUser.getWorkAt().getId());
-		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
-		model.addAttribute("userOrgType", currentUser.getWorkAt().getType());
+		if(currentUser.getWorkAt().getType() == OrganizationType.แผนก) {
+			Organization searchOrg = entityService.findOrganizationParentOf(currentUser.getWorkAt());
+			
+			
+			model.addAttribute("currentOrganizationId", searchOrg.getId());
+			model.addAttribute("userOrgType", searchOrg.getType());			
+		} else {
+			model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
+			model.addAttribute("userOrgType", currentUser.getWorkAt().getType());
+		}
 		
 		return "m81r04";
 	}

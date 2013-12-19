@@ -26,6 +26,7 @@ import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
@@ -630,6 +631,10 @@ public class ExcelReportsController {
 		model.addAttribute("currentUser", currentUser);
 		
 		Organization searchOrg = entityService.findOrganizationById(searchOrgId);
+		
+		if(searchOrg.getType() == OrganizationType.แผนก) {
+			searchOrg = entityService.findOrganizationParentOf(searchOrg);
+		}
 		
 		Organization parent = entityService.findOrganizationParentOf(searchOrg);
 		if(parent != null) {

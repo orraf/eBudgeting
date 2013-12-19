@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
@@ -135,6 +136,9 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			searchOrg.setId(0L);
 		} else {
 			searchOrg = currentUser.getWorkAt();
+			if(searchOrg.getType() == OrganizationType.แผนก) {
+				searchOrg = searchOrg.getParent();
+			}
 		}
 		
 		PreparedStatement ps = null;

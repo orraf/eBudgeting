@@ -22,6 +22,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
 public class M81R10XLSView extends AbstractPOIExcelView {
@@ -43,7 +45,10 @@ public class M81R10XLSView extends AbstractPOIExcelView {
 		Sheet sheet = workbook.createSheet("sheet1");
 
 
-		
+		Organization searchOrg = currentUser.getWorkAt();
+		if(searchOrg.getType() == OrganizationType.แผนก) {
+			searchOrg = searchOrg.getParent();
+		}
 		
 		Row firstRow = sheet.createRow(0);
 		Cell cell0 = firstRow.createCell(0);
@@ -160,8 +165,8 @@ public class M81R10XLSView extends AbstractPOIExcelView {
 				+ "	and t1.fiscalyear = " + fiscalYear + " " 
 			    + "	and t2.ASSETCATEGORY_ID  = t7.id(+) "
 			    + "	and ("
-			    + "	t6.id = " + currentUser.getWorkAt().getId() 
-				+ " 	or t6.parent_hrx_organization_id = " + currentUser.getWorkAt().getId() 
+			    + "	t6.id = " + searchOrg.getId()
+				+ " 	or t6.parent_hrx_organization_id = " + searchOrg.getId() 
 			    + " ) "
 				+ "ORDER BY t2.assetcategory_id, t8.code, t6.code, t2.code ");
 		
