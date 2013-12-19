@@ -129,14 +129,19 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 				
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery("select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
-		                               "from pln_objective m " +
-		                               "where m.id <> " + root.getId() + " " +
-									   "and m.fiscalyear = " + fiscalYear + " " +
-									   "connect by prior m.id = m.parent_pln_objective_id " +
-									   "start with m.id = " + root.getId() + " " +
-									   " order siblings by m.code asc ") ;
+		String rsSql = "select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
+                "from pln_objective m " +
+                "where m.id <> " + root.getId() + " " +
+				   "and m.fiscalyear = " + fiscalYear + " " +
+				   "connect by prior m.id = m.parent_pln_objective_id " +
+				   "start with m.id = " + root.getId() + " " +
+				   " order siblings by m.code asc ";
+		ResultSet rs = st.executeQuery(rsSql) ;
 
+		logger.debug("rsSQL >>>>> ");
+		logger.debug(rsSql);
+		logger.debug("rsSQL >>>>> ");
+		
 		int i = 4;
 		int j = 0;
 		int s1 = 0;
@@ -211,10 +216,21 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 				}
 
 				Statement st4 = connection.createStatement();
+				
+				String objCodeStr = rs.getString(5);
+				// now if we can't convert to integer just forget it
+				Long objCodeLong = 0L;
+				try {
+					objCodeLong = Long.parseLong(objCodeStr);
+				} catch (NumberFormatException e) {
+					
+				}
+				
+				
 				ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0), ltrim(to_char(sum(amt),'999,999,999,990.99')) amt " +
 									   "from v_gl " +
 									   "where fiscal_year = " + fiscalYear + " " +
-									   "and activitycode = '" + rs.getInt(5) + "' " +
+									   "and activitycode = '" + objCodeLong + "' " +
 									   "group by date2fmonth(gl_trans_docdate) " +
 									   "order by 1 ");
 
