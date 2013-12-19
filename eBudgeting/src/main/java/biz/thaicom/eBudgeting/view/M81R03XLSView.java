@@ -22,12 +22,17 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import biz.thaicom.eBudgeting.controllers.ExcelReportsController;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.security.models.ThaicomUserDetail;
 
 public class M81R03XLSView extends AbstractPOIExcelView {
 
+	private static final Logger logger = LoggerFactory.getLogger(M81R03XLSView.class);
+	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:sss");
 	
 	@Override
