@@ -367,7 +367,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					Statement st4 = connection.createStatement();
 					ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
 										   "from v_gl " +
-										   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + currentUser.getWorkAt().getId() + ") " +
+										   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
 										   "and fiscal_year = " + fiscalYear + " " +
 										   "and activitycode = '" + rs.getInt(5) + "' " +
 										   "group by date2fmonth(gl_trans_docdate) " +
@@ -392,13 +392,12 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					
 					Statement st1 = connection.createStatement();
 					String st1Sql = "select distinct t1.code, t1.name, t1.id, t5.owner_hrx_organization_id, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t5.targetvalue,'999,999,999,999'))||' '||t4.name||')' target " +
-							 "from pln_activitytargetreport t5, pln_activity t1, pln_activitytarget t3, pln_targetunit t4, s_user t2 " +
+							 "from pln_activitytargetreport t5, pln_activity t1, pln_activitytarget t3, pln_targetunit t4 " +
 	 						 "where t5.target_pln_acttarget_id = t3.id " +
-							 "	and t5.owner_hrx_organization_id = t2.dept_id " +
+							 "	and t5.owner_hrx_organization_id = " + searchOrg.getId() +
 							 "	and t1.id = t3.activity_pln_activity_id " +
 							 "	and t3.unit_pln_targetunit_id = t4.id " +
-							 "	and t1.obj_pln_objective_id = " + rs.getInt(3) +
-							 "	and t2.login = '" + currentUser.getUsername() + "' " +
+							 "	and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
 							 "order by 3, 5 ";
 					logger.debug("YYYYYYY");
 					logger.debug(st1Sql);
@@ -520,7 +519,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 								 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
 								     "(select id from hrx_organization " +
 								        "connect by prior id = parent_hrx_organization_id " +
-								        "start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) t4 " +
+								        "start with id = "+ searchOrg.getId() +") t4 " +
 								 "where t1.report_pln_acttargetreport_id = t2.id " +
 							     "and t2.target_pln_acttarget_id = t3.id " +
 								 "and t1.owner_hrx_organization_id = t4.id " +
