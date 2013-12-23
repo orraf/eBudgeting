@@ -40,6 +40,7 @@ import biz.thaicom.eBudgeting.models.bgt.ReservedBudget;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -648,6 +649,7 @@ public class Objective implements Serializable, Comparable<Objective> {
 	}
 	
 	@Transient
+	@JsonIgnore
 	public Double getSumAllocated() {
 		Double sum = 0.0;
 		if(this.proposals != null && this.proposals.size() > 0) {
