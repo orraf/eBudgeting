@@ -1,6 +1,10 @@
 package biz.thaicom.eBudgeting.models.pln;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,11 +13,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -50,6 +57,9 @@ public class ActivityTarget implements Serializable {
 
 	@Transient
 	private ActivityTargetReport filterReport;
+	
+	@OneToMany(mappedBy="target")
+	private Set<ActivityTargetReport>  reports;
 	
 	public Long getId() {
 		return id;
@@ -105,6 +115,35 @@ public class ActivityTarget implements Serializable {
 
 	public void setProvincialTarget(Boolean provincialTarget) {
 		this.provincialTarget = provincialTarget;
+	}
+
+	public Set<ActivityTargetReport> getReports() {
+		Set<ActivityTargetReport> level0Reports = new HashSet<ActivityTargetReport>();
+		for(ActivityTargetReport report : reports) {
+			if(report.getReportLevel() == 1) {
+				level0Reports.add(report);
+			}
+		}
+		return level0Reports;
+	}
+	
+	public Double getAllocatedTargetValue() {
+		Double level0AllocatedTargetValue = 0.0;
+		for(ActivityTargetReport report : reports) {
+			if(report.getReportLevel() == 1) {
+				level0AllocatedTargetValue += report.getTargetValue();
+			}
+		}
+		return level0AllocatedTargetValue;
+	}
+	
+	@JsonIgnore
+	public Set<ActivityTargetReport> getAllReports() {
+		return reports;
+	}
+
+	public void setReports(Set<ActivityTargetReport> reports) {
+		this.reports = reports;
 	}
 	
 }

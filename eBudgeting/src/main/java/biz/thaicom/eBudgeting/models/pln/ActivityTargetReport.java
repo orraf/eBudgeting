@@ -163,7 +163,7 @@ public class ActivityTargetReport implements Serializable {
 	private Organization owner;
 
 	/**
-	 * ระดับของรายงาน 0 = จังหวัด/ส่วน, 1 = อำเภอ
+	 * ระดับของรายงาน 1 = จังหวัด/ส่วน, 2 = อำเภอ
 	 */
 	@Basic
 	private Integer reportLevel;

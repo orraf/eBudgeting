@@ -23,7 +23,9 @@ import org.apache.poi.ss.util.WorkbookUtil;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
+import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
 import biz.thaicom.eBudgeting.models.pln.Objective;
+import biz.thaicom.eBudgeting.models.pln.TargetUnit;
 
 public class M81R05XLSView extends AbstractPOIExcelView {
 
@@ -55,9 +57,17 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 			Sheet sheet = workbook.createSheet(sheetName);
 			sheet.setColumnWidth(0, 7500);
 			sheet.setColumnWidth(1, 15000);
+			sheet.setColumnWidth(2, 5000);
+			sheet.setColumnWidth(3, 5000);
+			sheet.setColumnWidth(4, 5000);
+			sheet.setColumnWidth(5, 5000);
 			sheet.setDefaultColumnStyle(0, styles.get("cellleft"));
 			sheet.setDefaultColumnStyle(1, styles.get("cellleft"));
-			sheet.setDefaultColumnStyle(2, styles.get("cellleft"));
+			sheet.setDefaultColumnStyle(2, styles.get("numbercenter"));
+			sheet.setDefaultColumnStyle(3, styles.get("cellcenter"));
+			sheet.setDefaultColumnStyle(4, styles.get("numbercenter"));
+			sheet.setDefaultColumnStyle(5, styles.get("cellcenter"));
+			
 			
 			int rowNum = 0;
 			
@@ -65,6 +75,20 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 			Cell cell0 = firstRow.createCell(0);
 			cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
 			
+			
+			row = sheet.createRow(rowNum++);
+			cell = row.createCell(0);
+			cell.setCellValue("ชื่อแผน/กิจกรรม");
+			cell = row.createCell(1);
+			
+			cell = row.createCell(2);
+			cell.setCellValue("เป้าหมาย");
+			cell = row.createCell(3);
+			cell.setCellValue("หน่วยนับ");
+			cell = row.createCell(4);
+			cell.setCellValue("เป้าหมายที่จัดสรรแล้ว");
+			cell = row.createCell(5);
+			cell.setCellValue("หน่วยนับ");
 			
 			row = sheet.createRow(rowNum++);
 			
@@ -131,6 +155,36 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 								cell = row.createCell(1);
 								cell.setCellValue("[" + กิจกรรมย่อย.getCode()+"]" + กิจกรรมย่อย.getName());
 								
+								
+								if(กิจกรรมย่อย.getTargets().size() > 0) {
+									int i = 0;
+									for(ActivityTarget target: กิจกรรมย่อย.getTargets()) {
+										if( i>0 ) {
+											row = sheet.createRow(rowNum++);
+										}
+										cell = row.createCell(2);
+										cell.setCellValue(target.getTargetValue());
+										
+										cell = row.createCell(3);
+										cell.setCellValue(target.getUnit().getName());
+										
+										// now จัดสรร แล้ว
+										
+										cell = row.createCell(4);
+										cell.setCellValue(target.getAllocatedTargetValue());
+										
+										cell = row.createCell(5);
+										cell.setCellValue(target.getUnit().getName());
+										
+										
+										
+										i++;
+										
+									}
+									
+								}
+								
+								
 								for(Activity กิจกรรมเสริม : กิจกรรมย่อย.getChildren()) {
 									row = sheet.createRow(rowNum++);
 									
@@ -138,12 +192,66 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 									cell = row.createCell(1);
 									cell.setCellValue("          [" + กิจกรรมเสริม.getCode()+"]" + กิจกรรมเสริม.getName());
 									
+									
+									if(กิจกรรมเสริม.getTargets().size() > 0) {
+										int i = 0;
+										for(ActivityTarget target: กิจกรรมเสริม.getTargets()) {
+											if( i>0 ) {
+												row = sheet.createRow(rowNum++);
+											}
+											cell = row.createCell(2);
+											cell.setCellValue(target.getTargetValue());
+											
+											cell = row.createCell(3);
+											cell.setCellValue(target.getUnit().getName());
+											
+											// now จัดสรร แล้ว
+											
+											cell = row.createCell(4);
+											cell.setCellValue(target.getAllocatedTargetValue());
+											
+											cell = row.createCell(5);
+											cell.setCellValue(target.getUnit().getName());
+											
+											i++;
+											
+										}
+									}
+										
+									
 									for(Activity กิจกรรมสนับสนุน : กิจกรรมเสริม.getChildren()) {
 										row = sheet.createRow(rowNum++);
 										
 										cell = row.createCell(0);
 										cell = row.createCell(1);
 										cell.setCellValue("          [" + กิจกรรมสนับสนุน.getCode()+"]" + กิจกรรมสนับสนุน.getName());
+										
+										
+										if(กิจกรรมสนับสนุน.getTargets().size() > 0) {
+											int i = 0;
+											for(ActivityTarget target: กิจกรรมเสริม.getTargets()) {
+												if( i>0 ) {
+													row = sheet.createRow(rowNum++);
+												}
+												cell = row.createCell(2);
+												cell.setCellValue(target.getTargetValue());
+												
+												cell = row.createCell(3);
+												cell.setCellValue(target.getUnit().getName());
+												
+												// now จัดสรร แล้ว
+												
+												cell = row.createCell(4);
+												cell.setCellValue(target.getAllocatedTargetValue());
+												
+												cell = row.createCell(5);
+												cell.setCellValue(target.getUnit().getName());
+												
+												i++;
+												
+											}
+										}
+										
 									}
 									
 								}
@@ -213,6 +321,26 @@ public class M81R05XLSView extends AbstractPOIExcelView {
         style.setFont(cellFont);
         styles.put("cellleft", style);
 
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_LEFT);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setDataFormat(format.getFormat("#,##0"));
+        style.setFont(cellFont);
+        styles.put("number", style);
+        
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setDataFormat(format.getFormat("#,##0"));
+        style.setFont(cellFont);
+        styles.put("numbercenter", style);
+        
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setFont(cellFont);
+        styles.put("cellcenter", style);
+        
        
         style = wb.createCellStyle();
         style.setFillForegroundColor(IndexedColors.ROSE.getIndex());
