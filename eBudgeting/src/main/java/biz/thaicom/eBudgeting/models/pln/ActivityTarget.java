@@ -119,9 +119,11 @@ public class ActivityTarget implements Serializable {
 
 	public Set<ActivityTargetReport> getReports() {
 		Set<ActivityTargetReport> level0Reports = new HashSet<ActivityTargetReport>();
-		for(ActivityTargetReport report : reports) {
-			if(report.getReportLevel() == 1) {
-				level0Reports.add(report);
+		if(reports != null && reports.size() > 0 ) {
+			for(ActivityTargetReport report : reports) {
+				if(report.getReportLevel() == 1) {
+					level0Reports.add(report);
+				}
 			}
 		}
 		return level0Reports;
@@ -129,9 +131,11 @@ public class ActivityTarget implements Serializable {
 	
 	public Double getAllocatedTargetValue() {
 		Double level0AllocatedTargetValue = 0.0;
-		for(ActivityTargetReport report : reports) {
-			if(report.getReportLevel() == 1) {
-				level0AllocatedTargetValue += report.getTargetValue();
+		if(reports != null && reports.size() > 0 ) {
+			for(ActivityTargetReport report : reports) {
+				if(report.getReportLevel() == 1) {
+					level0AllocatedTargetValue += report.getTargetValue();
+				}
 			}
 		}
 		return level0AllocatedTargetValue;
