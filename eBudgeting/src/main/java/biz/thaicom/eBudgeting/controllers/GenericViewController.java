@@ -1324,6 +1324,29 @@ public class GenericViewController {
 		
 		return "m81r04";
 	}
+	
+	@RequestMapping("/page/m81r05/")
+	public String render_m81r05(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		model.addAttribute("rootPage", true);
+		setFiscalYearFromSession(model, session);
+		logger.debug("currentOrganizationId:" + currentUser.getWorkAt().getId());
+		if(currentUser.getWorkAt().getType() == OrganizationType.แผนก) {
+			Organization searchOrg = entityService.findOrganizationParentOf(currentUser.getWorkAt());
+			
+			
+			model.addAttribute("currentOrganizationId", searchOrg.getId());
+			model.addAttribute("userOrgType", searchOrg.getType());			
+		} else {
+			model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
+			model.addAttribute("userOrgType", currentUser.getWorkAt().getType());
+		}
+		
+		return "m81r05";
+	}
+	
 
 	@RequestMapping("/page/m81r06/")
 	public String render_m81r06(

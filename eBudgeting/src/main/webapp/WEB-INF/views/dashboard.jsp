@@ -172,7 +172,7 @@ var menuJson = [{
 	    }, {
 	    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", code: "m81r04", parent: 'm81r', link: "page/m81r04/", group: ["PMS_USER", "PMS_USER1", "PMS_USER2", "PMS_USER3", "PMS_USER4"]
 	    }, {
-	    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", code: "m81r05", parent: 'm81r', link: "m81r05.xls/" + fiscalYear + "/file/m81r05.xls", type: "download", group: ["PMS_BGT_ADMIN", "PMS_PLAN", "PMS_BGT"]
+	    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", code: "m81r05", parent: 'm81r', link: "page/m81r05/",group: ["PMS_BGT_ADMIN", "PMS_PLAN", "PMS_BGT"]
 	    }, {
 	    	name: "m81r06: รายงานแผนปฏิบัติการรายเดือน - แยกตามยุทธศาสตร์", code: "m81r06", parent: 'm81r', link: "page/m81r06/", group: ["PMS_USER", "PMS_PLAN"]
 	    }, {
