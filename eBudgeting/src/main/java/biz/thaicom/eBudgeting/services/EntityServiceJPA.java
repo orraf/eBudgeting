@@ -4621,18 +4621,28 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
 			Long objectiveId, Long ownerId) {
 		Organization searchOrg = organizationRepository.findOne(ownerId);
-		logger.debug("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx " + searchOrg.getCode() + ": " + searchOrg.isSubSection());
-		if(searchOrg.isSubSection()) {
-			searchOrg = searchOrg.getParent();
-		}
+		
+		
+		
 				
 		
 		
 		String objectiveIdLike = "%."+objectiveId + ".%";
 		
 		List<Objective> childrenObjective = new ArrayList<Objective>();
+		
+		
+		
 		List<ActivityTargetReport> targetReports = activityTargetReportRepository
 				.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, searchOrg.getId());
+		
+		logger.debug("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx " + searchOrg.getCode() + ": " + searchOrg.isSubSection());
+		if(searchOrg.isSubSection()) {
+			// now find its parent also
+			List<ActivityTargetReport> parentReports = activityTargetReportRepository
+					.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, searchOrg.getParent().getId());
+			targetReports.addAll(parentReports);
+		}
 		
 		logger.debug("targetReports: " + targetReports.size());
 		
@@ -4651,7 +4661,7 @@ public class EntityServiceJPA implements EntityService {
 				//lazily init TargetUnit here 
 				report.getTarget().getUnit().getId();
 				act.getFilterTargets().add(report.getTarget());
-			}
+			} 
 			
 			//then check if there is anyparent
 			while(act.getParent() != null) {

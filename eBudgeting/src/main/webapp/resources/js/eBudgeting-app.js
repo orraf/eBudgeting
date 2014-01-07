@@ -527,6 +527,10 @@ ActivityTarget = Backbone.RelationalModel.extend({
 		key: 'filterReport',
 		relatedModel: 'ActivityTargetReport'
 	},{
+		type: Backbone.HasMany,
+		key: 'reports',
+		relatedModel: 'ActivityTargetReport'
+	},{
 		type: Backbone.HasOne,
 		key: 'unit',
 		relatedModel: 'TargetUnit'
