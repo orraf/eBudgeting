@@ -4622,27 +4622,14 @@ public class EntityServiceJPA implements EntityService {
 			Long objectiveId, Long ownerId) {
 		Organization searchOrg = organizationRepository.findOne(ownerId);
 		
-		
-		
-				
-		
-		
 		String objectiveIdLike = "%."+objectiveId + ".%";
 		
 		List<Objective> childrenObjective = new ArrayList<Objective>();
 		
-		
-		
 		List<ActivityTargetReport> targetReports = activityTargetReportRepository
 				.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, searchOrg.getId());
 		
-		logger.debug("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx " + searchOrg.getCode() + ": " + searchOrg.isSubSection());
-		if(searchOrg.isSubSection()) {
-			// now find its parent also
-			List<ActivityTargetReport> parentReports = activityTargetReportRepository
-					.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, searchOrg.getParent().getId());
-			targetReports.addAll(parentReports);
-		}
+		
 		
 		logger.debug("targetReports: " + targetReports.size());
 		
