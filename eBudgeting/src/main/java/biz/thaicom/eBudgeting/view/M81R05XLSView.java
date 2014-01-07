@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
 
+import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityTarget;
@@ -64,13 +65,18 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 			sheet.setColumnWidth(3, 5000);
 			sheet.setColumnWidth(4, 5000);
 			sheet.setColumnWidth(5, 5000);
+			sheet.setColumnWidth(6, 5000);
+			sheet.setColumnWidth(7, 5000);
+			sheet.setColumnWidth(8, 5000);
 			sheet.setDefaultColumnStyle(0, styles.get("cellleft"));
 			sheet.setDefaultColumnStyle(1, styles.get("cellleft"));
-			sheet.setDefaultColumnStyle(2, styles.get("numbercenter"));
-			sheet.setDefaultColumnStyle(3, styles.get("cellcenter"));
-			sheet.setDefaultColumnStyle(4, styles.get("numbercenter"));
-			sheet.setDefaultColumnStyle(5, styles.get("cellcenter"));
-			
+			sheet.setDefaultColumnStyle(2, styles.get("cellcenter"));
+			sheet.setDefaultColumnStyle(3, styles.get("numbercenter"));
+			sheet.setDefaultColumnStyle(4, styles.get("cellcenter"));
+			sheet.setDefaultColumnStyle(5, styles.get("numbercenter"));
+			sheet.setDefaultColumnStyle(6, styles.get("cellcenter"));
+			sheet.setDefaultColumnStyle(7, styles.get("numbercenter"));
+			sheet.setDefaultColumnStyle(8, styles.get("numbercenter"));
 			
 			int rowNum = 0;
 			
@@ -99,13 +105,20 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 			cell = row.createCell(1);
 			
 			cell = row.createCell(2);
-			cell.setCellValue("เป้าหมาย");
+			cell.setCellValue("ส่วนงานทีรับผิดชอบ");
+			
 			cell = row.createCell(3);
-			cell.setCellValue("หน่วยนับ");
+			cell.setCellValue("เป้าหมาย");
 			cell = row.createCell(4);
-			cell.setCellValue("เป้าหมายที่จัดสรรแล้ว");
-			cell = row.createCell(5);
 			cell.setCellValue("หน่วยนับ");
+			cell = row.createCell(5);
+			cell.setCellValue("เป้าหมายที่จัดสรรแล้ว");
+			cell = row.createCell(6);
+			cell.setCellValue("หน่วยนับ");
+			cell = row.createCell(7);
+			cell.setCellValue("งบจัดสรร");
+			cell = row.createCell(8);
+			cell.setCellValue("งบกิจกรรม");
 			
 			for(Objective กิจกรรมหลัก : ผลผลิต.getChildren()) {
 				if(กิจกรรมหลัก.getShowInTree()) {
@@ -122,6 +135,19 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 							cell = row.createCell(0);
 							cell.setCellValue("        ["+แผนปฏิบัติการ.getCode()+"] " + แผนปฏิบัติการ.getName());
 							cell.setCellStyle(styles.get("groupleft"));
+							
+							Cell sumRow = row.createCell(8);
+							Double sumRowValue = 0.0;
+							
+							// now find budget
+							for(BudgetProposal p : แผนปฏิบัติการ.getProposals()) {
+								if(p.getOwner().getId().equals(org.getId())) {
+									cell = row.createCell(7);
+									cell.setCellValue(p.getAmountAllocated());
+								}
+							}
+							
+							
 							
 							if(แผนปฏิบัติการ.getOwner() != null) {
 								cell = row.createCell(2);
@@ -164,8 +190,10 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 											
 											cell = row.createCell(0);
 											cell = row.createCell(1);
-											cell.setCellValue("[" + กิจกรรมย่อย.getCode()+"]" + กิจกรรมย่อย.getName());
+											cell.setCellValue("[" + กิจกรรมย่อย.getCode()+"]" + กิจกรรมย่อย.getName()) ; 
 											
+											cell = row.createCell(2);
+											cell.setCellValue(กิจกรรมย่อย.getRegulator().getAbbr());
 											
 											if(กิจกรรมย่อย.getTargets().size() > 0) {
 												int i = 0;
@@ -173,20 +201,26 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 													if( i>0 ) {
 														row = sheet.createRow(rowNum++);
 													}
-													cell = row.createCell(2);
+													cell = row.createCell(3);
 													cell.setCellValue(target.getTargetValue());
 													
-													cell = row.createCell(3);
+													cell = row.createCell(4);
 													cell.setCellValue(target.getUnit().getName());
 													
 													// now จัดสรร แล้ว
 													
-													cell = row.createCell(4);
+													cell = row.createCell(5);
 													cell.setCellValue(target.getAllocatedTargetValue());
 													
-													cell = row.createCell(5);
+													cell = row.createCell(6);
 													cell.setCellValue(target.getUnit().getName());
+												
 													
+													// งบประมาณที่ได้รับจัดสรร
+													cell = row.createCell(8);
+													cell.setCellValue(target.getBudgetAllocated());
+													
+													sumRowValue += target.getBudgetAllocated();
 													
 													
 													i++;
@@ -203,6 +237,8 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 												cell = row.createCell(1);
 												cell.setCellValue("          [" + กิจกรรมเสริม.getCode()+"]" + กิจกรรมเสริม.getName());
 												
+												cell = row.createCell(2);
+												cell.setCellValue(กิจกรรมเสริม.getRegulator().getAbbr());
 												
 												if(กิจกรรมเสริม.getTargets().size() > 0) {
 													int i = 0;
@@ -210,19 +246,25 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 														if( i>0 ) {
 															row = sheet.createRow(rowNum++);
 														}
-														cell = row.createCell(2);
+														cell = row.createCell(3);
 														cell.setCellValue(target.getTargetValue());
 														
-														cell = row.createCell(3);
+														cell = row.createCell(4);
 														cell.setCellValue(target.getUnit().getName());
 														
 														// now จัดสรร แล้ว
 														
-														cell = row.createCell(4);
+														cell = row.createCell(5);
 														cell.setCellValue(target.getAllocatedTargetValue());
 														
-														cell = row.createCell(5);
+														cell = row.createCell(6);
 														cell.setCellValue(target.getUnit().getName());
+														
+														// งบประมาณที่ได้รับจัดสรร
+														cell = row.createCell(8);
+														cell.setCellValue(target.getBudgetAllocated());
+														
+														sumRowValue += target.getBudgetAllocated();
 														
 														i++;
 														
@@ -237,6 +279,8 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 													cell = row.createCell(1);
 													cell.setCellValue("          [" + กิจกรรมสนับสนุน.getCode()+"]" + กิจกรรมสนับสนุน.getName());
 													
+													cell = row.createCell(2);
+													cell.setCellValue(กิจกรรมสนับสนุน.getRegulator().getAbbr());
 													
 													if(กิจกรรมสนับสนุน.getTargets().size() > 0) {
 														int i = 0;
@@ -244,19 +288,25 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 															if( i>0 ) {
 																row = sheet.createRow(rowNum++);
 															}
-															cell = row.createCell(2);
+															cell = row.createCell(3);
 															cell.setCellValue(target.getTargetValue());
 															
-															cell = row.createCell(3);
+															cell = row.createCell(4);
 															cell.setCellValue(target.getUnit().getName());
 															
 															// now จัดสรร แล้ว
 															
-															cell = row.createCell(4);
+															cell = row.createCell(5);
 															cell.setCellValue(target.getAllocatedTargetValue());
 															
-															cell = row.createCell(5);
+															cell = row.createCell(6);
 															cell.setCellValue(target.getUnit().getName());
+															
+															// งบประมาณที่ได้รับจัดสรร
+															cell = row.createCell(8);
+															cell.setCellValue(target.getBudgetAllocated());
+															
+															sumRowValue += target.getBudgetAllocated();
 															
 															i++;
 															
@@ -272,6 +322,10 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 								}
 								
 							}
+							
+							// update 
+							sumRow.setCellValue(sumRowValue);
+							
 						}
 					}
 				}

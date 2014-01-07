@@ -4629,8 +4629,6 @@ public class EntityServiceJPA implements EntityService {
 		List<ActivityTargetReport> targetReports = activityTargetReportRepository
 				.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, searchOrg.getId());
 		
-		
-		
 		logger.debug("targetReports: " + targetReports.size());
 		
 		for(ActivityTargetReport report : targetReports) {
