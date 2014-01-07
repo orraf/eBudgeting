@@ -5837,8 +5837,13 @@ public class EntityServiceJPA implements EntityService {
 					}
 					
 				} else {
+					// about to query
+					logger.info("qeurying for activity " + กิจกรรมรอง.getName());
 					activities = activityRepository.findAllByForObjectiveAndOwnerOrRegulator(กิจกรรมรอง, orgId);
+					logger.info(" -- has " + activities.size()  + " กิจกรรม");
+					
 				}
+				
 				กิจกรรมรอง.setFilterActivities(activities);
 				
 				for(Activity กิจกรรมย่อย : activities ) {
