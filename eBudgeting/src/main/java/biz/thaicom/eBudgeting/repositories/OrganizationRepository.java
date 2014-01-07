@@ -69,4 +69,12 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			"FROM Organization org " +
 			"WHERE org.id = 0 ")
 	public Organization findRoot();
+
+	@Query(""
+			+ "SELECT org "
+			+ "FROM Organization org "
+			+ "WHERE org.parent.id=0 "
+			+ " 	AND org.id < 110000000 "
+			+ "ORDER BY org.id asc")
+	public List<Organization> findAll_ฝ่าย();
 }

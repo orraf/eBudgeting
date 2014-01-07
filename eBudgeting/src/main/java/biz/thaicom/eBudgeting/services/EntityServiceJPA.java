@@ -4145,6 +4145,14 @@ public class EntityServiceJPA implements EntityService {
 
 	
 	
+	
+	
+	@Override
+	public List<Organization> findOrganization_ฝ่าย() {
+		// TODO Auto-generated method stub
+		return organizationRepository.findAll_ฝ่าย();
+	}
+
 	@Override
 	public List<Organization> findOrganizationProvinces() {
 		
@@ -5798,41 +5806,105 @@ public class EntityServiceJPA implements EntityService {
 	}
 
 	@Override
-	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear) {
-		List<Objective> ผลผลิตทั้งหมด = objectiveRepository.findAllByFiscalYearAndType_id(fiscalYear, 103L);
-		for(Objective ผลผลิต : ผลผลิตทั้งหมด) {
-			Hibernate.initialize(ผลผลิต.getParent());
-			Hibernate.initialize(ผลผลิต.getParent().getType());
-			
-			for(Objective กิจกรรมหลัก : ผลผลิต.getChildren()) {
-				for(Objective แผนปฏิบัติการ : กิจกรรมหลัก.getChildren()) {
-					ObjectiveOwnerRelation ownerRelation = objectiveOwnerRelationRepository.findByObjective_Id(แผนปฏิบัติการ.getId());
+	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear, Long orgId) {
+		
+		Organization org = null;
+		List<Objective> แผนปฏิบัติการ_list = null;
+		List<Objective> กิจกรรมหลัก_list = new ArrayList<Objective>();
+		List<Objective> ผลผลิต_list = new ArrayList<Objective>();
+		if(orgId > 0) {
+			org = organizationRepository.findOneById(orgId);
+			แผนปฏิบัติการ_list = objectiveRepository.findAllByOwnerAndfiscalYear(org, fiscalYear); 
+		} else {
+			// กรณีเลือกทุกหน่วยงาน
+			แผนปฏิบัติการ_list = objectiveRepository.findAllByFiscalYearAndType_id(fiscalYear, 105L);
+		}
+		
+		
+		
+		for(Objective แผนปฏิบัติการ : แผนปฏิบัติการ_list) {
+				for(Objective กิจกรรมรอง : แผนปฏิบัติการ.getChildren()) {
+				Hibernate.initialize(กิจกรรมรอง);
+				
+				List<Activity> activities = null;
+				if(orgId == 0L) {
+					activities = activityRepository.findAllByForObjective(กิจกรรมรอง);
 					
+					ObjectiveOwnerRelation ownerRelation = objectiveOwnerRelationRepository.findByObjective_Id(แผนปฏิบัติการ.getId());
 					if(ownerRelation != null) {
 						Hibernate.initialize(ownerRelation.getOwners());
 						แผนปฏิบัติการ.setOwner(ownerRelation.getOwners());
 					}
-					for(Objective กิจกรรมรอง : แผนปฏิบัติการ.getChildren()) {
-						Hibernate.initialize(กิจกรรมรอง);
-						List<Activity> activities = activityRepository.findAllByForObjective(กิจกรรมรอง);
-						กิจกรรมรอง.setFilterActivities(activities);
-						
-						for(Activity กิจกรรมย่อย : activities ) {
-							Hibernate.initialize(กิจกรรมย่อย.getChildren());
-							
-							for(Activity กิจกรรมเสริม : กิจกรรมย่อย.getChildren()) {
-								Hibernate.initialize(กิจกรรมเสริม.getChildren());
-							}
-							
-						}
-						
+					
+				} else {
+					activities = activityRepository.findAllByForObjectiveAndOwnerOrRegulator(กิจกรรมรอง, orgId);
+				}
+				กิจกรรมรอง.setFilterActivities(activities);
+				
+				for(Activity กิจกรรมย่อย : activities ) {
+					Hibernate.initialize(กิจกรรมย่อย.getChildren());
+					
+					for(Activity กิจกรรมเสริม : กิจกรรมย่อย.getChildren()) {
+						Hibernate.initialize(กิจกรรมเสริม.getChildren());
 					}
+					
 				}
 			}
 			
+			แผนปฏิบัติการ.setShowInTree(true);
+				
+				
+			if(!กิจกรรมหลัก_list.contains(แผนปฏิบัติการ.getParent()) ) {
+				กิจกรรมหลัก_list.add(แผนปฏิบัติการ.getParent());
+				
+				if(!ผลผลิต_list.contains(แผนปฏิบัติการ.getParent().getParent())) {
+					ผลผลิต_list.add(แผนปฏิบัติการ.getParent().getParent());
+				
+				}
+			}
 		}
 		
-		return ผลผลิตทั้งหมด;
+		return ผลผลิต_list;
+		
+		
+		
+		
+		
+		
+//		List<Objective> ผลผลิตทั้งหมด = objectiveRepository.findAllByFiscalYearAndType_id(fiscalYear, 103L);
+//		for(Objective ผลผลิต : ผลผลิตทั้งหมด) {
+//			Hibernate.initialize(ผลผลิต.getParent());
+//			Hibernate.initialize(ผลผลิต.getParent().getType());
+//			
+//			for(Objective กิจกรรมหลัก : ผลผลิต.getChildren()) {
+//				for(Objective แผนปฏิบัติการ : กิจกรรมหลัก.getChildren()) {
+//					ObjectiveOwnerRelation ownerRelation = objectiveOwnerRelationRepository.findByObjective_Id(แผนปฏิบัติการ.getId());
+//					
+//					if(ownerRelation != null) {
+//						Hibernate.initialize(ownerRelation.getOwners());
+//						แผนปฏิบัติการ.setOwner(ownerRelation.getOwners());
+//					}
+//					for(Objective กิจกรรมรอง : แผนปฏิบัติการ.getChildren()) {
+//						Hibernate.initialize(กิจกรรมรอง);
+//						List<Activity> activities = activityRepository.findAllByForObjective(กิจกรรมรอง);
+//						กิจกรรมรอง.setFilterActivities(activities);
+//						
+//						for(Activity กิจกรรมย่อย : activities ) {
+//							Hibernate.initialize(กิจกรรมย่อย.getChildren());
+//							
+//							for(Activity กิจกรรมเสริม : กิจกรรมย่อย.getChildren()) {
+//								Hibernate.initialize(กิจกรรมเสริม.getChildren());
+//							}
+//							
+//						}
+//						
+//					}
+//				}
+//			}
+//			
+//		}
+		
+//		return ผลผลิตทั้งหมด;
 	}
 
 	@Override

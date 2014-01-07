@@ -1333,16 +1333,10 @@ public class GenericViewController {
 		model.addAttribute("rootPage", true);
 		setFiscalYearFromSession(model, session);
 		logger.debug("currentOrganizationId:" + currentUser.getWorkAt().getId());
-		if(currentUser.getWorkAt().getType() == OrganizationType.แผนก) {
-			Organization searchOrg = entityService.findOrganizationParentOf(currentUser.getWorkAt());
-			
-			
-			model.addAttribute("currentOrganizationId", searchOrg.getId());
-			model.addAttribute("userOrgType", searchOrg.getType());			
-		} else {
-			model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
-			model.addAttribute("userOrgType", currentUser.getWorkAt().getType());
-		}
+		
+		List<Organization> orgList = entityService.findOrganization_ฝ่าย();
+		
+		model.addAttribute("orgList",orgList);
 		
 		return "m81r05";
 	}

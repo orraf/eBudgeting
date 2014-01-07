@@ -140,6 +140,9 @@ public class Objective implements Serializable, Comparable<Objective> {
 	private List<BudgetProposal> filterProposals;	
 	
 	@Transient
+	private Boolean showInTree = false;
+	
+	@Transient
 	private List<ObjectiveBudgetProposal> filterObjectiveBudgetProposals;
 	
 	@Transient
@@ -663,6 +666,21 @@ public class Objective implements Serializable, Comparable<Objective> {
 			}
 			return sum;
 		}
+	}
+
+	public Boolean getShowInTree() {
+		return showInTree;
+	}
+
+	public void setShowInTree(Boolean showInTree) {
+		this.showInTree = showInTree;
+		
+		Objective obj = this.getParent();
+		while (obj != null) {
+			obj.setShowInTree(true);
+			obj = obj.getParent();
+		}
+		
 	}
 	
 }

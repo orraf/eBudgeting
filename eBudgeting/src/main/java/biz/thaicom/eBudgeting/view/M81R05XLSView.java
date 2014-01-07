@@ -46,6 +46,9 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 		@SuppressWarnings("unchecked")
 		List<Objective> objectives = (List<Objective>) model.get("objectives");
 
+		Organization org = (Organization) model.get("organization");
+		Integer fiscalYear = (Integer) model.get("fiscalYear"); 
+		
 		
 		
 		Row row = null;
@@ -74,7 +77,21 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 			Row firstRow = sheet.createRow(rowNum++);
 			Cell cell0 = firstRow.createCell(0);
 			cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+			if(org!=null) {
+				row = sheet.createRow(rowNum++);
+				cell = row.createCell(0);
+				cell.setCellValue("รายงานทะเบียนแผนปฏิบัติการและกิจกรรมสำหรับ" + org.getName() + " ประจำปีงบประมาณ " + fiscalYear );
+					
+			} else {
+				row = sheet.createRow(rowNum++);
+				cell = row.createCell(0);
+				cell.setCellValue("รายงานทะเบียนแผนปฏิบัติการและกิจกรรม ประจำปีงบประมาณ " + fiscalYear);
+				
+			}
 			
+			row = sheet.createRow(rowNum++);
+			cell = row.createCell(0);
+			cell.setCellValue("ยุทธ์ศาสตร์ที่ " + ผลผลิต.getParent().getCode() + " - " + ผลผลิต.getName());
 			
 			row = sheet.createRow(rowNum++);
 			cell = row.createCell(0);
@@ -90,178 +107,175 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 			cell = row.createCell(5);
 			cell.setCellValue("หน่วยนับ");
 			
-			row = sheet.createRow(rowNum++);
-			
-			
-			sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 0, 1));
-			cell = row.createCell(0);
-			cell.setCellValue("["+ผลผลิต.getCode()+"] " + ผลผลิต.getName());
-			
-			
-			
-			
 			for(Objective กิจกรรมหลัก : ผลผลิต.getChildren()) {
-				row = sheet.createRow(rowNum++);
-				
-				cell = row.createCell(0);
-				cell.setCellValue("["+กิจกรรมหลัก.getCode()+"] " + กิจกรรมหลัก.getName());
-				
-				for(Objective แผนปฏิบัติการ : กิจกรรมหลัก.getChildren()) {
-					sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 0, 1));
+				if(กิจกรรมหลัก.getShowInTree()) {
 					row = sheet.createRow(rowNum++);
 					
 					cell = row.createCell(0);
-					cell.setCellValue("        ["+แผนปฏิบัติการ.getCode()+"] " + แผนปฏิบัติการ.getName());
-					cell.setCellStyle(styles.get("groupleft"));
+					cell.setCellValue("["+กิจกรรมหลัก.getCode()+"] " + กิจกรรมหลัก.getName());
 					
-					if(แผนปฏิบัติการ.getOwner() != null) {
-						cell = row.createCell(2);
-						String ownerString = "";
-						
-						for(Organization owner : แผนปฏิบัติการ.getOwner()) {
-							if(ownerString.length() == 0 ) {
-								ownerString += owner.getAbbr();	
-							} else {
-								ownerString += " / " + owner.getAbbr();
-							}
-							
-						}
-						cell.setCellValue(ownerString);
-						cell.setCellStyle(styles.get("groupleft"));
-					}
-					
-					
-					
-					for(Objective กิจกรรมรอง : แผนปฏิบัติการ.getChildren()) {
-						sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 0, 1));
-						row = sheet.createRow(rowNum++);
-						
-						cell = row.createCell(0);
-						cell.setCellValue("                ["+กิจกรรมรอง.getCode()+"] " + กิจกรรมรอง.getName());
-						
-						if(กิจกรรมรอง.getFilterActivities().size() == 0) {
+					for(Objective แผนปฏิบัติการ : กิจกรรมหลัก.getChildren()) {
+						if(แผนปฏิบัติการ.getShowInTree()) {
+							sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 0, 1));
 							row = sheet.createRow(rowNum++);
 							
 							cell = row.createCell(0);
-							cell = row.createCell(1);
-							cell.setCellValue("ยังไม่ได้สร้างกิจกรรมย่อย");
-							cell.setCellStyle(styles.get("cellRoseColor"));
-						} else {
-						
-							for(Activity กิจกรรมย่อย : กิจกรรมรอง.getFilterActivities() ) {
-								row = sheet.createRow(rowNum++);
+							cell.setCellValue("        ["+แผนปฏิบัติการ.getCode()+"] " + แผนปฏิบัติการ.getName());
+							cell.setCellStyle(styles.get("groupleft"));
+							
+							if(แผนปฏิบัติการ.getOwner() != null) {
+								cell = row.createCell(2);
+								String ownerString = "";
 								
-								cell = row.createCell(0);
-								cell = row.createCell(1);
-								cell.setCellValue("[" + กิจกรรมย่อย.getCode()+"]" + กิจกรรมย่อย.getName());
-								
-								
-								if(กิจกรรมย่อย.getTargets().size() > 0) {
-									int i = 0;
-									for(ActivityTarget target: กิจกรรมย่อย.getTargets()) {
-										if( i>0 ) {
-											row = sheet.createRow(rowNum++);
-										}
-										cell = row.createCell(2);
-										cell.setCellValue(target.getTargetValue());
-										
-										cell = row.createCell(3);
-										cell.setCellValue(target.getUnit().getName());
-										
-										// now จัดสรร แล้ว
-										
-										cell = row.createCell(4);
-										cell.setCellValue(target.getAllocatedTargetValue());
-										
-										cell = row.createCell(5);
-										cell.setCellValue(target.getUnit().getName());
-										
-										
-										
-										i++;
-										
+								for(Organization owner : แผนปฏิบัติการ.getOwner()) {
+									if(ownerString.length() == 0 ) {
+										ownerString += owner.getAbbr();	
+									} else {
+										ownerString += " / " + owner.getAbbr();
 									}
 									
 								}
+								cell.setCellValue(ownerString);
+								cell.setCellStyle(styles.get("groupleft"));
+							}
+							
+							
+							
+							for(Objective กิจกรรมรอง : แผนปฏิบัติการ.getChildren()) {
+								sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 0, 1));
+								row = sheet.createRow(rowNum++);
 								
+								cell = row.createCell(0);
+								cell.setCellValue("                ["+กิจกรรมรอง.getCode()+"] " + กิจกรรมรอง.getName());
 								
-								for(Activity กิจกรรมเสริม : กิจกรรมย่อย.getChildren()) {
-									row = sheet.createRow(rowNum++);
-									
-									cell = row.createCell(0);
-									cell = row.createCell(1);
-									cell.setCellValue("          [" + กิจกรรมเสริม.getCode()+"]" + กิจกรรมเสริม.getName());
-									
-									
-									if(กิจกรรมเสริม.getTargets().size() > 0) {
-										int i = 0;
-										for(ActivityTarget target: กิจกรรมเสริม.getTargets()) {
-											if( i>0 ) {
-												row = sheet.createRow(rowNum++);
-											}
-											cell = row.createCell(2);
-											cell.setCellValue(target.getTargetValue());
-											
-											cell = row.createCell(3);
-											cell.setCellValue(target.getUnit().getName());
-											
-											// now จัดสรร แล้ว
-											
-											cell = row.createCell(4);
-											cell.setCellValue(target.getAllocatedTargetValue());
-											
-											cell = row.createCell(5);
-											cell.setCellValue(target.getUnit().getName());
-											
-											i++;
-											
-										}
-									}
-										
-									
-									for(Activity กิจกรรมสนับสนุน : กิจกรรมเสริม.getChildren()) {
+								if(กิจกรรมรอง.getFilterActivities() != null ) {
+								
+									if(กิจกรรมรอง.getFilterActivities().size() == 0) {
 										row = sheet.createRow(rowNum++);
 										
 										cell = row.createCell(0);
 										cell = row.createCell(1);
-										cell.setCellValue("          [" + กิจกรรมสนับสนุน.getCode()+"]" + กิจกรรมสนับสนุน.getName());
-										
-										
-										if(กิจกรรมสนับสนุน.getTargets().size() > 0) {
-											int i = 0;
-											for(ActivityTarget target: กิจกรรมเสริม.getTargets()) {
-												if( i>0 ) {
-													row = sheet.createRow(rowNum++);
+										cell.setCellValue("ยังไม่ได้สร้างกิจกรรมย่อย");
+										cell.setCellStyle(styles.get("cellRoseColor"));
+									} else {
+									
+										for(Activity กิจกรรมย่อย : กิจกรรมรอง.getFilterActivities() ) {
+											row = sheet.createRow(rowNum++);
+											
+											cell = row.createCell(0);
+											cell = row.createCell(1);
+											cell.setCellValue("[" + กิจกรรมย่อย.getCode()+"]" + กิจกรรมย่อย.getName());
+											
+											
+											if(กิจกรรมย่อย.getTargets().size() > 0) {
+												int i = 0;
+												for(ActivityTarget target: กิจกรรมย่อย.getTargets()) {
+													if( i>0 ) {
+														row = sheet.createRow(rowNum++);
+													}
+													cell = row.createCell(2);
+													cell.setCellValue(target.getTargetValue());
+													
+													cell = row.createCell(3);
+													cell.setCellValue(target.getUnit().getName());
+													
+													// now จัดสรร แล้ว
+													
+													cell = row.createCell(4);
+													cell.setCellValue(target.getAllocatedTargetValue());
+													
+													cell = row.createCell(5);
+													cell.setCellValue(target.getUnit().getName());
+													
+													
+													
+													i++;
+													
 												}
-												cell = row.createCell(2);
-												cell.setCellValue(target.getTargetValue());
-												
-												cell = row.createCell(3);
-												cell.setCellValue(target.getUnit().getName());
-												
-												// now จัดสรร แล้ว
-												
-												cell = row.createCell(4);
-												cell.setCellValue(target.getAllocatedTargetValue());
-												
-												cell = row.createCell(5);
-												cell.setCellValue(target.getUnit().getName());
-												
-												i++;
 												
 											}
+											
+											
+											for(Activity กิจกรรมเสริม : กิจกรรมย่อย.getChildren()) {
+												row = sheet.createRow(rowNum++);
+												
+												cell = row.createCell(0);
+												cell = row.createCell(1);
+												cell.setCellValue("          [" + กิจกรรมเสริม.getCode()+"]" + กิจกรรมเสริม.getName());
+												
+												
+												if(กิจกรรมเสริม.getTargets().size() > 0) {
+													int i = 0;
+													for(ActivityTarget target: กิจกรรมเสริม.getTargets()) {
+														if( i>0 ) {
+															row = sheet.createRow(rowNum++);
+														}
+														cell = row.createCell(2);
+														cell.setCellValue(target.getTargetValue());
+														
+														cell = row.createCell(3);
+														cell.setCellValue(target.getUnit().getName());
+														
+														// now จัดสรร แล้ว
+														
+														cell = row.createCell(4);
+														cell.setCellValue(target.getAllocatedTargetValue());
+														
+														cell = row.createCell(5);
+														cell.setCellValue(target.getUnit().getName());
+														
+														i++;
+														
+													}
+												}
+													
+												
+												for(Activity กิจกรรมสนับสนุน : กิจกรรมเสริม.getChildren()) {
+													row = sheet.createRow(rowNum++);
+													
+													cell = row.createCell(0);
+													cell = row.createCell(1);
+													cell.setCellValue("          [" + กิจกรรมสนับสนุน.getCode()+"]" + กิจกรรมสนับสนุน.getName());
+													
+													
+													if(กิจกรรมสนับสนุน.getTargets().size() > 0) {
+														int i = 0;
+														for(ActivityTarget target: กิจกรรมเสริม.getTargets()) {
+															if( i>0 ) {
+																row = sheet.createRow(rowNum++);
+															}
+															cell = row.createCell(2);
+															cell.setCellValue(target.getTargetValue());
+															
+															cell = row.createCell(3);
+															cell.setCellValue(target.getUnit().getName());
+															
+															// now จัดสรร แล้ว
+															
+															cell = row.createCell(4);
+															cell.setCellValue(target.getAllocatedTargetValue());
+															
+															cell = row.createCell(5);
+															cell.setCellValue(target.getUnit().getName());
+															
+															i++;
+															
+														}
+													}
+													
+												}
+												
+											}
+											
 										}
-										
 									}
-									
 								}
 								
 							}
 						}
-						
 					}
 				}
-			}
+			} // forloop กิจกรรมหลัก
 		}
 		
 

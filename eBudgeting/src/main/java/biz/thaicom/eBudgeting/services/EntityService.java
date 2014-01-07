@@ -165,7 +165,7 @@ public interface EntityService {
 	
 	// Specific for Excel Report!
 	
-	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear);
+	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear, Long orgId);
 	public Objective findObjectivesByFiscalyearAndTypeIdForM82R01Report(
 			Integer fiscalYear);
 	public Objective findObjectivesByFiscalyearAndTypeIdForM81R07Report(
@@ -368,6 +368,8 @@ public interface EntityService {
 	public List<Organization> findOrganizationChildrenOrSiblingOf(
 			Organization workAt);
 	public Organization findOrganizationParentOf(Organization org);
+	public List<Organization> findOrganization_ฝ่าย();
+	
 	public List<Organization> findOrganizationByNameAndParent_IdWithProcuremnt(
 			String query, Long parentId);
 	
@@ -467,6 +469,7 @@ public interface EntityService {
 	public AssetCategory saveAssetCategory(JsonNode node);
 	public AssetCategory deleteAssetCategory(Long id);
 	public List<AssetCategory> findAssetCategoryAll();
+	
 
 	
 
