@@ -48,6 +48,15 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 	List<Activity> findAllByRegulatorAndForObejctive_Id(Organization workAt,
 			Long objectiveId);
 
+	@Query(""
+			+ "SELECT DISTINCT act "
+			+ "FROM Activity act "
+			+ "		LEFT JOIN FETCH act.targets target "
+			+ " 	LEFT JOIN FETCH target.unit "
+			+ "		JOIN act.regulator regulator "
+			+ "		JOIN act.owner owner "
+			+ "WHERE act.forObjective = ?1 AND act.parent is null "
+			+ "ORDER BY act.code ASC ")
 	List<Activity> findAllByForObjective(Objective objective);
 
 
@@ -59,7 +68,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			+ "		JOIN act.regulator regulator "
 			+ "		JOIN act.owner owner "
 			+ "WHERE ( owner.parent.id = ?2 or regulator.parent.id = ?2 ) "
-			+ "		AND act.forObjective = ?1 "
+			+ "		AND act.forObjective = ?1 AND act.parent is null "
 			+ "ORDER BY act.code ASC ")
 	List<Activity> findAllByForObjectiveAndOwnerOrRegulator(
 			Objective objective, Long orgId);
