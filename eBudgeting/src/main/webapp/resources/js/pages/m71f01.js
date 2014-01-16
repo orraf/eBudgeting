@@ -197,6 +197,9 @@ var ModalView = Backbone.View.extend({
 		}
 	},
 	backToProposalFromAsset: function(e) {
+		// just reset this org
+		this.currentOrganization.set('_inProposalList', false);
+		
 		this.renderAllocationRecordInput();
 	},
 	changeAssetCategorySlt: function(e) {
