@@ -158,6 +158,14 @@ public class ActivityRestController {
 		return entityService.saveActivityTargetReportByTargetId(targetId, node, null);
 	}
 	
+	@RequestMapping(value="/ActivityTargetReports/Target/{targetId}", method=RequestMethod.POST)
+	public @ResponseBody List<ActivityTargetReport> saveActivityTargetReportsByTargetId(
+			@PathVariable Long targetId,
+			@RequestBody JsonNode node) {
+		return entityService.saveActivityTargetReportByTargetId(targetId, node, null);
+	}
+	
+	
 	@RequestMapping(value="/ActivityTargetResult/findBgtResultByReport/{targetReportId}/fiscalMonth/{fiscalMonth}", method=RequestMethod.GET)
 	public @ResponseBody ActivityTargetResult findActivityTargetResultBgtByTargetReportAndFiscalMonth(
 			@PathVariable Long targetReportId,

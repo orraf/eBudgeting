@@ -40,29 +40,7 @@
 		</div>
 
 		<div id="mainCtr">
-			<c:choose>
-				<c:when test="${rootPage}">
-					<table class="table table-bordered" id="mainTbl">
-						<thead>
-							<tr>
-								<td>เลือกปีงบประมาณ</td>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach items="${fiscalYears}" var="fiscalYear">
-							<tr>
-								
-									<td><a href="./${fiscalYear.fiscalYear}/${fiscalYear.id}/"
-										class="nextChildrenLnk">${fiscalYear.fiscalYear} <i
-											class="icon icon-chevron-right nextChildrenLnk"></i>
-									</a></td>
-							
-							</tr>
-							</c:forEach>
-						</tbody>
-					</table>
-				</c:when>
-			</c:choose>
+			
 		</div>
 
 	</div>
@@ -288,7 +266,7 @@
 
     	    <div class="span6" style="height:290px; border: 1px solid #cccccc">
         	    <div>
-            	    <table class="table table-bordered" style="margin-bottom:0px">
+            	    <table class="table table-bordered" style="margin-bottom:0px" id="mainTbl">
                 	<thead>
                     	<tr>
                         	<td style="width:237px;">หน่วยงาน</td>
@@ -355,7 +333,6 @@
 </script>
 
 <script id="organizationTargetValueTbodyTemplate" type="text/x-handler-template">
-{{#each this}}
 <tr data-id="{{owner.id}}"><td><a href="#" class="removeOrganizationTarget"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
 	<td  style="width:188px">
 		<div style="height:35px; float:left" id="totalInputForm">
@@ -363,7 +340,6 @@
 		</div>
 	</td>
 </tr>
-{{/each}}
 </script>
 
 

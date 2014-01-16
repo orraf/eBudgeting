@@ -59,21 +59,45 @@ var AssignTargetValueModalView = Backbone.View.extend({
 //			return;
 //		}
  		
- 		this.$el.find('button#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+ 		$('#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+ 		// we should be ready to save the 
+ 		var payload = new Array();
  		
  		// now set reportLevel to 1
  		for(var i=0; i< this.targetReports.length; i++) {
- 			this.targetReports.at(i).set('reportLevel', 1);
+ 			var report =this.targetReports.at(i); 
+ 			report.set('reportLevel', 1);
+ 			
+ 			var dataPost = {};
+ 			dataPost.owner = {id: report.get('owner').get('id')};
+ 			dataPost.targetValue = report.get('targetValue');
+ 			dataPost.id = report.get('id');
+ 			dataPost.reportLevel = 1;
+ 			if(report.get('activityPerformance') != null) {
+ 				dataPost.activityPerformance = {
+ 						id: report.get('activityPerformance').get('id'),
+ 						budgetAllocated: report.get('activityPerformance').get('budgetAllocated')
+ 				};
+ 			}
+ 			
+ 			payload.push(dataPost);
+
  		}
  		
- 		// we should be ready to save the 
- 		Backbone.sync('create', this.targetReports, {
- 			success: _.bind(function() {
+ 		$.ajax({
+ 			type:"POST",
+ 			url: appUrl('/ActivityTargetReports/Target/'+this.currentTarget.get('id')),
+ 			data:  JSON.stringify(payload),
+ 			contentType: "application/json",
+ 			success: _.bind(function(){
  				alert('บันทึกเรียบร้อยแล้ว');
+ 				$('#saveAssignTargetBtn').html('บันทึกข้อมูล');
  				this.cancelAssignTarget();
  			},this)
  		});
+ 		
 	},
+	
 	changeProposalAllocated: function(e) {
 		// validate this one first
 		if( isNaN( +$(e.target).val() ) ) {
@@ -98,8 +122,14 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		
 		this.targetReports.push(newTargetReport);
 		
-		var html=this.organizationTargetValueTbodyTemplate(this.targetReports.toJSON());
-		$('#organizationProposalTbl').find('tbody').html(html);
+		var html=this.organizationTargetValueTbodyTemplate({
+			owner: newTargetReport.get("owner").toJSON(),
+			target: {unit : newTargetReport.get("target").get("unit").toJSON()},
+			id: newTargetReport.get("id"),
+			targetValue: newTargetReport.get("targetValue")
+		});
+		
+		$('#organizationProposalTbl').find('tbody').append(html);
 		
 		this.updateSumTarget();
 		
@@ -136,14 +166,14 @@ var AssignTargetValueModalView = Backbone.View.extend({
 				if(y==true) {
 					
 					var p = this.targetReports.at(i);
+					var ownerId = p.get('owner').get('id');
 					
 					// we remove this on from our list
 					this.targetReports.remove(p);
 					
 					p.get('owner').set('_inProposalList', false);
 			
-					var html=this.organizationTargetValueTbodyTemplate(this.targetReports.toJSON());
-					$('#organizationProposalTbl').find('tbody').html(html);
+					$('#organizationProposalTbl').find('tr[data-id='+ownerId+']').remove();
 					
 					this.updateSumTarget();
 					
@@ -189,22 +219,57 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		this.targetReports = new ActivityTargetReportCollection();
 		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' 
 				+ this.currentTarget.get('id'));
-		this.targetReports.fetch({
-			success: _.bind(function() {
+		
+		$.get(this.targetReports.url, _.bind(function( data ) {
+			for(var i=0; i<data.length; i++) {
+				var report = data[i];
 				
-				this.targetReports.pluck('owner').forEach(function(owner) {
-					owner.set('_inProposalList', true);
-				});
+				var targetReport = ActivityTargetReport.findOrCreate(report);
+				this.targetReports.add(targetReport);
+				
 
-				var html=this.organizationTargetValueTbodyTemplate(this.targetReports.toJSON());
-				$('#organizationProposalTbl').find('tbody').html(html);	
+				var html=this.organizationTargetValueTbodyTemplate({
+					owner: targetReport.get("owner").toJSON(),
+					target: {unit : targetReport.get("target").get("unit").toJSON()},
+					id: targetReport.get("id"),
+					targetValue: targetReport.get("targetValue")
+				});
+				$('#organizationProposalTbl').find('tbody').append(html);	
 				
-				this.updateSumTarget();
-				
-				this.organizationSearch();
-				
-			},this)
-		});
+			}
+			
+			this.targetReports.pluck('owner').forEach(function(owner) {
+				owner.set('_inProposalList', true);
+			});
+
+			this.updateSumTarget();
+			
+			this.organizationSearch();
+			
+			
+		}, this));
+		
+		
+//		console.profile("XXX");
+//		this.targetReports.fetch({
+//			success: _.bind(function() {
+//				console.profileEnd();
+//				
+//				this.targetReports.pluck('owner').forEach(function(owner) {
+//					owner.set('_inProposalList', true);
+//				});
+//
+//				var html=this.organizationTargetValueTbodyTemplate(this.targetReports.toJSON());
+//				$('#organizationProposalTbl').find('tbody').html(html);	
+//				
+//				this.updateSumTarget();
+//				
+//				this.organizationSearch();
+//				
+//				
+//				
+//			},this)
+//		});
 		
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		return this;
