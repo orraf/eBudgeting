@@ -24,7 +24,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			+ " LEFT JOIN FETCH target.unit "
 			+ "WHERE " 
 			+ "	(activity.owner = ?1 OR activity.regulator = ?1) AND " 
-			+ "	objective.id = ?2 "
+			+ "	objective.id = ?2 AND activity.parent is null "
 			+ "ORDER BY activity.regulator.id ASC, activity.code ASC ")
 	List<Activity> findAllByOwnerAndForObjective_Id(Organization org, Long objectiveId);
 	
@@ -34,7 +34,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			+ "FROM ActivityTargetReport report "
 			+ "		INNER JOIN report.target target "
 			+ "		INNER JOIN target.activity activity "
-			+ "WHERE report.owner = ?1 AND activity.forObjective.id = ?2 ")
+			+ "WHERE report.owner = ?1 AND activity.forObjective.id = ?2 AND activity.parent is null ")
 	List<Activity> findAllByActivityTargetReportOwner(Organization org, Long objectiveId);
 
 	@Query("" +

@@ -264,7 +264,7 @@ public class ObjectiveRestController {
 			@PathVariable Integer fiscalYear,
 			@Activeuser ThaicomUserDetail currentUser
 			){
-		return entityService.findObjectiveHasBudgetAssetByFiscalYear(fiscalYear);
+		return entityService.findObjectiveHasBudgetAssetByFiscalYear(fiscalYear, currentUser.getWorkAt());
 		
 	}
 	

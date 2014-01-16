@@ -318,8 +318,9 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 	@Query("" +
 			"SELECT assetAllocation.forObjective " +
 			"FROM AssetAllocation assetAllocation " +
-			"WHERE	assetAllocation.fiscalYear = ?1 ")
-	public List<Objective> findAllHasBudgetAssetByFiscalYear(Integer fiscalYear);
+			"WHERE	assetAllocation.fiscalYear = ?1 AND "
+			+ " (assetAllocation.owner like ?2 OR assetAllocation.operator like ?2) ")
+	public List<Objective> findAllHasBudgetAssetByFiscalYear(Integer fiscalYear, Organization organization);
 
 	@Query(""
 			+ "SELECT max(obj.fiscalYear) "

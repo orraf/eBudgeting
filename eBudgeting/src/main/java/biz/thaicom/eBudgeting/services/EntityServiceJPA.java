@@ -424,8 +424,8 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public List<Objective> findObjectiveHasBudgetAssetByFiscalYear(
-			Integer fiscalYear) {
-		return objectiveRepository.findAllHasBudgetAssetByFiscalYear(fiscalYear);
+			Integer fiscalYear, Organization organization) {
+		return objectiveRepository.findAllHasBudgetAssetByFiscalYear(fiscalYear, organization);
 	}
 
 	@Override

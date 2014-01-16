@@ -156,7 +156,7 @@ public interface EntityService {
 			Organization workAt, Integer fiscalYear);
 	public List<Objective> findObjectiveAllByFiscalYear(Integer fiscalYear);
 	public List<Objective> findObjectiveHasBudgetAssetByFiscalYear(
-			Integer fiscalYear);
+			Integer fiscalYear, Organization organization);
 	public List<ActivityTargetResult> findActivityTargetResultByReportAndFiscalMonth(
 			Long targetReportId, Integer fiscalMonth);
 	
