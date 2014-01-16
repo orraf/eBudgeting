@@ -218,9 +218,15 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 													
 													// งบประมาณที่ได้รับจัดสรร
 													cell = row.createCell(8);
-													cell.setCellValue(target.getBudgetAllocated());
+													if(target.getBudgetAllocated() != null) {
+														cell.setCellValue(target.getBudgetAllocated());
+														sumRowValue += target.getBudgetAllocated();
+													} else {
+														cell.setCellValue("-");
+														sumRowValue += 0;
+													}
 													
-													sumRowValue += target.getBudgetAllocated();
+													
 													
 													
 													i++;
@@ -262,9 +268,13 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 														
 														// งบประมาณที่ได้รับจัดสรร
 														cell = row.createCell(8);
-														cell.setCellValue(target.getBudgetAllocated());
-														
-														sumRowValue += target.getBudgetAllocated();
+														if(target.getBudgetAllocated() != null) {
+															cell.setCellValue(target.getBudgetAllocated());
+															sumRowValue += target.getBudgetAllocated();
+														} else {
+															cell.setCellValue("-");
+															sumRowValue += 0;
+														}
 														
 														i++;
 														
@@ -304,9 +314,13 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 															
 															// งบประมาณที่ได้รับจัดสรร
 															cell = row.createCell(8);
-															cell.setCellValue(target.getBudgetAllocated());
-															
-															sumRowValue += target.getBudgetAllocated();
+															if(target.getBudgetAllocated() != null) {
+																cell.setCellValue(target.getBudgetAllocated());
+																sumRowValue += target.getBudgetAllocated();
+															} else {
+																cell.setCellValue("-");
+																sumRowValue += 0;
+															}
 															
 															i++;
 															
