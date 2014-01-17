@@ -3089,9 +3089,9 @@ public class EntityServiceJPA implements EntityService {
 		Organization searchOrg = workAt;
 		
 		// now if workAt is at แผนก 
-		if(workAt.isSubSection()) {
-			searchOrg = workAt.getParent();
-		}
+//		if(workAt.isSubSection()) {
+//			searchOrg = workAt.getParent();
+//		}
 		
 		return objectiveRepository.findAllByActivityOwnerAndFiscalYear(searchOrg, fiscalYear);
 	}
