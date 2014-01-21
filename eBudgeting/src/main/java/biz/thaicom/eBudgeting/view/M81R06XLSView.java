@@ -187,11 +187,13 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 		Stack<Objective> objStack = new Stack<Objective>();
 		Collections.sort( obj.getChildren() , Objective.Comparators.CODE_DESC );
 		objStack.addAll( obj.getChildren() );
-		Objective o = objStack.pop();
+		
+		
 		
 		while(!objStack.empty()) {
-			
-			//if(o.getShowInTree()) {
+			Objective o = objStack.pop();
+			logger.debug("OBJECTIVE : " + o.getId() + " : " + o.getName());
+			if(o.getShowInTree()) {
 			
 				Row row = sheet.createRow(i++);
 				Cell cell = row.createCell(0);
@@ -274,9 +276,7 @@ public class M81R06XLSView extends AbstractPOIExcelView {
 				
 				Collections.sort( o.getChildren() , Objective.Comparators.CODE_DESC );
 				objStack.addAll(o.getChildren());
-			//}
-			
-			o = objStack.pop();
+			}
 		}
 		
 		

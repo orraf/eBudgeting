@@ -86,6 +86,9 @@ public class Activity implements Serializable, Comparable<Activity> {
 
 	@Transient
 	private List<ActivityTarget> filterTargets;
+
+	@Transient
+	private Boolean showInTree = false;
 	
 	public Long getId() {
 		return id;
@@ -220,6 +223,23 @@ public class Activity implements Serializable, Comparable<Activity> {
 			}
 		}
 		this.setTargets(new ArrayList<ActivityTarget>(grandChildTargets.values()));
+		
+	}
+	
+	public Boolean getShowInTree() {
+		return showInTree;
+	}
+
+	public void setShowInTree(Boolean showInTree) {
+		this.showInTree = showInTree;
+		
+		Activity act = this.getParent();
+		while (act != null) {
+			act.setShowInTree(showInTree);
+			act = act.getParent();
+		}
+		
+		this.getForObjective().setShowInTree(showInTree);
 		
 	}
 	

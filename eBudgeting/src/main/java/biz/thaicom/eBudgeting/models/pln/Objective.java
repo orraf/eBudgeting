@@ -677,7 +677,7 @@ public class Objective implements Serializable, Comparable<Objective> {
 		
 		Objective obj = this.getParent();
 		while (obj != null) {
-			obj.setShowInTree(true);
+			obj.setShowInTree(showInTree);
 			obj = obj.getParent();
 		}
 		

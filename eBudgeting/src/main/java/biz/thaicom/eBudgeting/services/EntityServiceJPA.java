@@ -5844,9 +5844,11 @@ public class EntityServiceJPA implements EntityService {
 		if(orgId == 0L) {
 			targetValue = activityTargetRepository.findSumTargetByMonthAndActivities(0, 12, allActivities);
 		} else {
+			
 			Organization org = organizationRepository.findOne(orgId);
 			String queryOrg = OrganizationType.getChildrenQueryString(org);
 			
+			logger.debug("org Search = " + queryOrg);
 			List<Organization> allWithChildren = organizationRepository.findAllCodeLike(queryOrg);
 			
 			
@@ -5863,6 +5865,8 @@ public class EntityServiceJPA implements EntityService {
 				}
 				
 				t.getActivity().getFilterTargets().add(t);
+				t.getActivity().setShowInTree(true);
+
 			}
 		}
 		
@@ -5876,7 +5880,6 @@ public class EntityServiceJPA implements EntityService {
 				}
 				
 				activity.getForObjective().getFilterActivities().add(activity);
-				activity.getForObjective().setShowInTree(true);
 			}
 			
 			
