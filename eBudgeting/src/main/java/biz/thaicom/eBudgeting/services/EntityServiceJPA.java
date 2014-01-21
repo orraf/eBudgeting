@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -5798,6 +5799,93 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		return asset.getAssetStepReports();
+	}
+
+	@Override
+	/**
+	 * @author dbuaklee
+	 * @return return array of Object with Object[0] = root Objective and Object[1] = List of [ActivityTargetId, sumPlan, sumResult]
+	 * @param objId	Objective ID 
+	 * @param orgId Organization Id
+	 * @param startMonth start of fiscal month to search (0 = October, 11 = September)
+	 * @param endMonth end of fiscal month to search (0 = October, 11 = September)
+	 */
+	public Object[] findObjectiveForM81R06Report(Long objId, Long orgId,
+			Integer startMonth, Integer endMonth) {
+		
+		Object[] returnObjs = new Object[2];
+		
+		Objective objective = objectiveRepository.findOne(objId);
+		if(objective == null) 
+			return null;
+		
+		// now we'll load all chidren
+		List<Objective> allObjectives = objectiveRepository.findAllLeftJoinChildrenByParentIdLike(objId, "%."+objective.getId()+".%");
+		
+		String allObjId = "";
+		for(Objective obj : allObjectives) {
+			allObjId += " " + obj.getId()+",";
+		}
+		
+		logger.debug("ALL ID: " + allObjId);
+		
+		
+		// then we need to get to activitity 
+		List<Activity> allActivities = activityRepository.findAllActivityByListOfObjective(allObjectives);
+		logger.debug("YYYYYYY " + allActivities.size());
+		String allActId = "";
+		for(Activity act : allActivities) {
+			allActId += " " + act.getId()+",";
+		}
+		logger.debug("ALL ID: " + allActId);
+		
+		List<Object[]> targetValue;
+		
+		if(orgId == 0L) {
+			targetValue = activityTargetRepository.findSumTargetByMonthAndActivities(0, 12, allActivities);
+		} else {
+			Organization org = organizationRepository.findOne(orgId);
+			String queryOrg = OrganizationType.getChildrenQueryString(org);
+			
+			List<Organization> allWithChildren = organizationRepository.findAllCodeLike(queryOrg);
+			
+			
+			targetValue = activityTargetRepository.findSumTargetByMonthAndActivitiesAndOrganization(0, 12, allActivities, allWithChildren);
+		}
+		for(Object[] result : targetValue) {
+			Long targetId = (Long) result[0];
+			ActivityTarget t = activityTargetRepository.findOne(targetId);
+			logger.debug("found target:" + t.getId());
+			
+			if(t!=null) {
+				if(t.getActivity().getFilterTargets() == null) {
+					t.getActivity().setFilterTargets(new ArrayList<ActivityTarget> ());
+				}
+				
+				t.getActivity().getFilterTargets().add(t);
+			}
+		}
+		
+		
+		for(Activity activity: allActivities) {
+			if(activity.getParent() == null) {
+				
+								
+				if(activity.getForObjective().getFilterActivities() == null) {
+					activity.getForObjective().setFilterActivities(new ArrayList<Activity> () );
+				}
+				
+				activity.getForObjective().getFilterActivities().add(activity);
+				activity.getForObjective().setShowInTree(true);
+			}
+			
+			
+		}
+		
+		returnObjs[0] = objective;
+		returnObjs[1] = targetValue;
+		
+		return returnObjs;
 	}
 
 	@Override

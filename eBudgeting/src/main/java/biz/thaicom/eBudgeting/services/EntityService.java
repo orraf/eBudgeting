@@ -166,6 +166,8 @@ public interface EntityService {
 	// Specific for Excel Report!
 	
 	public List<Objective> findObjectivesByFiscalyearAndTypeIdForM81R05Report(Integer fiscalYear, Long orgId);
+	public Object[] findObjectiveForM81R06Report(Long objId, Long orgId, Integer startMonth, Integer endMonth);
+	
 	public Objective findObjectivesByFiscalyearAndTypeIdForM82R01Report(
 			Integer fiscalYear);
 	public Objective findObjectivesByFiscalyearAndTypeIdForM81R07Report(
@@ -469,6 +471,7 @@ public interface EntityService {
 	public AssetCategory saveAssetCategory(JsonNode node);
 	public AssetCategory deleteAssetCategory(Long id);
 	public List<AssetCategory> findAssetCategoryAll();
+	
 	
 
 	

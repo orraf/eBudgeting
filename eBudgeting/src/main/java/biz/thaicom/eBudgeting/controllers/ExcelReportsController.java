@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
@@ -754,12 +756,11 @@ public class ExcelReportsController {
 	}
 	
 	@RequestMapping("/m81r06.xls/{fiscalYear}/{startMonth}/{endMonth}/{objId}/{orgId}/file/m81r06.xls")
-	public String excelM81R06(@PathVariable Integer fiscalYear, @PathVariable Integer startMonth, @PathVariable Integer endMonth, @PathVariable Integer objId,
+	public String excelM81R06(@PathVariable Integer fiscalYear, @PathVariable Integer startMonth, @PathVariable Integer endMonth, @PathVariable Long objId,
+			
 			@PathVariable Long orgId,
 			Model model,
 			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
-		
-		Objective objective = entityService.findOjectiveById((long) objId);
 		
 		
 		//Organization organization = entityService.findOrganizationById((long) currentUser.getWorkAt().getId());
@@ -768,11 +769,16 @@ public class ExcelReportsController {
 		
 		organization = entityService.findOrganizationById(orgId);
 		
+		Object[] returnObjs = entityService.findObjectiveForM81R06Report(objId, orgId, startMonth, endMonth);
+		
+		
 		
 		model.addAttribute("fiscalYear", fiscalYear);
 		model.addAttribute("startMonth", startMonth);
 		model.addAttribute("endMonth", endMonth);
-		model.addAttribute("objective", objective);
+		model.addAttribute("objective", returnObjs[0]);
+		model.addAttribute("targetValues", returnObjs[1]);
+		
 		model.addAttribute("organization", organization);
 		model.addAttribute("currentUser", currentUser);
 		

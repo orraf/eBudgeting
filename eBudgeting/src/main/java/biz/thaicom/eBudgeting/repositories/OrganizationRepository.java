@@ -77,4 +77,10 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			+ " 	AND org.id < 110000000 "
 			+ "ORDER BY org.id asc")
 	public List<Organization> findAll_ฝ่าย();
+
+	@Query(""
+			+ "SELECT org "
+			+ "FROM Organization org "
+			+ "WHERE org.code like ?1 ")
+	public List<Organization> findAllCodeLike(String queryOrg);
 }

@@ -58,7 +58,7 @@ public class ActivityTarget implements Serializable {
 	@Transient
 	private ActivityTargetReport filterReport;
 	
-	@OneToMany(mappedBy="target")
+	@OneToMany(mappedBy="target", fetch=FetchType.LAZY)
 	private Set<ActivityTargetReport>  reports;
 	
 	public Long getId() {

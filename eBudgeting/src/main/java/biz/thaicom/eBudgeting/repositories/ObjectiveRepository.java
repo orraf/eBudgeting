@@ -338,5 +338,15 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 	public List<Objective> findAllLeftJoinChildrenAndFetchBudgetProposalByFiscalYear(
 			Integer fiscalYear);
 
+	
+	@Query(""
+			+ "SELECT distinct obj "
+			+ "FROM Objective obj "
+			+ "	LEFT JOIN FETCH obj.children "
+			+ "	INNER JOIN FETCH obj.type " 
+			+ "	INNER JOIN FETCH obj.parent "
+			+ "WHERE obj.parentPath like ?2 or obj.id = ?1 ")
+	public List<Objective> findAllLeftJoinChildrenByParentIdLike(Long ObjId, String pranenId);
+
 
 }

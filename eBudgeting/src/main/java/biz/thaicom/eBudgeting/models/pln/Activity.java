@@ -2,6 +2,7 @@ package biz.thaicom.eBudgeting.models.pln;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.pln.Objective.Comparators;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -29,7 +31,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Table(name="PLN_ACTIVITY")
 @SequenceGenerator(name="PLN_ACTIVITY_SEQ", sequenceName="PLN_ACTIVITY_SEQ", allocationSize=1)
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class Activity implements Serializable {
+public class Activity implements Serializable, Comparable<Activity> {
 	
 	/**
 	 * 
@@ -221,4 +223,33 @@ public class Activity implements Serializable {
 		
 	}
 	
+	
+	// Basic compare
+		@Override
+		public int compareTo(Activity o) {
+			return Comparators.CODE.compare(this, o);
+		}
+		
+		public static class Comparators {
+			public static Comparator<Activity> NAME = new Comparator<Activity>() {
+				@Override
+				public int compare(Activity o1, Activity o2) {
+					return o1.name.compareTo(o2.name);
+				}
+			};
+			
+			public static Comparator<Activity> CODE = new Comparator<Activity>() {
+				@Override
+				public int compare(Activity o1, Activity o2) {
+					return o1.code.compareTo(o2.code);
+				}
+			};
+			
+			public static Comparator<Activity> CODE_DESC = new Comparator<Activity>() {
+				@Override
+				public int compare(Activity o1, Activity o2) {
+					return o2.code.compareTo(o1.code);
+				}
+			};
+		}
 }

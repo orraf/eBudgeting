@@ -32,4 +32,24 @@ public enum OrganizationType {
     	
     	return OrganizationType.อื่นๆ;
     }
+    
+    public static String getChildrenQueryString(Organization org) {
+    	String orgCode = org.getCode();
+    	if(orgCode != null) {
+    		if(orgCode.matches("01\\d\\d0000")){
+    			return orgCode.substring(0, 4) + "%";
+    		} else if(orgCode.matches("01\\d\\d\\d\\d00")) {
+    			return orgCode.substring(0, 6) + "%";
+    		} else if(orgCode.matches("01\\d\\d\\d\\d\\d\\d")) {
+    			return orgCode.substring(0, 8) + "%";
+    		} else if(orgCode.matches("\\d\\d\\d\\d0000")) {
+    			return orgCode.substring(0, 4) + "%";
+    		} else if(orgCode.matches("\\d\\d\\d\\d\\d\\d00")) {
+    			return orgCode.substring(0, 6) + "%";
+    		} else if(orgCode.matches("\\d\\d\\d\\d\\d\\d\\d\\d")) {
+    			return orgCode.substring(0, 8) + "%";
+    		}
+    	}
+		return orgCode;
+    }
 }
