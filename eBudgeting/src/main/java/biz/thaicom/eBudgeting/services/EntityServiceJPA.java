@@ -4337,8 +4337,15 @@ public class EntityServiceJPA implements EntityService {
 			if(targetNode.get("budgetAllocated") != null) {
 				if(!target.getProvincialTarget()) {
 					target.setBudgetAllocated(targetNode.get("budgetAllocated").asDouble());
+					if(target.getReports() != null) {
+						for(ActivityTargetReport report : target.getReports()) {
+							report.getActivityPerformance().setBudgetAllocated(target.getBudgetAllocated());
+							activityPerformanceRepository.save(report.getActivityPerformance());
+						}
+					}
 				} else {
 					target.setBudgetAllocated(0.0);
+					// we should remove all report here?
 				}
 			}
 				
