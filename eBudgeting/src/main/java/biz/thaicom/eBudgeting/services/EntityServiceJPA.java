@@ -4356,6 +4356,16 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		// we'll delete each of the left over
+		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>" + oldTargets.size());
+		
+		List<ActivityTargetReport> reports =  new ArrayList<ActivityTargetReport>();
+		
+		for(ActivityTarget t : oldTargets) {
+			reports.addAll(t.getReports());
+		}
+		
+		activityTargetReportRepository.delete(reports);
+		
 		activityTargetRepository.delete(oldTargets);
 		
 		activityRepository.save(activity);
