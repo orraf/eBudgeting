@@ -67,7 +67,8 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			+ " 	LEFT JOIN FETCH target.unit "
 			+ "		JOIN act.regulator regulator "
 			+ "		JOIN act.owner owner "
-			+ "WHERE ( owner.parent.id = ?2 or regulator.parent.id = ?2 ) "
+			+ "WHERE ( owner.parent.id = ?2 or regulator.parent.id = ?2 "
+			+ "	or owner.id = ?2 or regulator.id =?2 ) "
 			+ "		AND act.forObjective = ?1 AND act.parent is null "
 			+ "ORDER BY act.code ASC ")
 	List<Activity> findAllByForObjectiveAndOwnerOrRegulator(
