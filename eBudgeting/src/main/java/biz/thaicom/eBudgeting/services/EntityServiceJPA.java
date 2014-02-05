@@ -4914,9 +4914,9 @@ public class EntityServiceJPA implements EntityService {
 			Organization workAt, Integer fiscalYear) {
 		
 		Organization searchOrg = organizationRepository.findOne(workAt.getId());
-		if(searchOrg.isSubSection()) {
-			searchOrg = searchOrg.getParent();
-		}
+//		if(searchOrg.isSubSection()) {
+//			searchOrg = searchOrg.getParent();
+//		}
 		
 		
 		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(searchOrg.getId(), fiscalYear);
