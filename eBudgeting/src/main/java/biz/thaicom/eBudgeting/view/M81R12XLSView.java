@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.MonthlyActivityReport;
 import biz.thaicom.eBudgeting.models.pln.MonthlyBudgetReport;
@@ -177,6 +178,11 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 		Objective ยุทธศาสตร์ = null;
 		Objective แผนงาน = null;
 		
+		Activity กิจกรรมย่อย = null;
+		Activity กิจกรรมเสริม = null;
+		Activity กิจกรรมสนับสนุน = null;
+		
+		
 		
 		if(sumReports.size() > 0) {
 			ActivityTargetReport report = sumReports.get(0);
@@ -186,6 +192,21 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 			ผลผลิต = กิจกรรมหลัก.getParent();
 			ยุทธศาสตร์ = ผลผลิต.getParent();
 			แผนงาน = ยุทธศาสตร์.getParent();
+			
+			Activity currentActivity = report.getTarget().getActivity();
+			if(currentActivity.getParent() == null) {
+				กิจกรรมย่อย  = currentActivity;
+				กิจกรรมเสริม = null;
+				กิจกรรมสนับสนุน = null;
+			} else if(currentActivity.getParent().getParent() == null){
+				กิจกรรมย่อย = currentActivity.getParent();
+				กิจกรรมเสริม = currentActivity;
+				กิจกรรมสนับสนุน = null;
+			} else {
+				กิจกรรมย่อย = currentActivity.getParent().getParent();
+				กิจกรรมเสริม = currentActivity.getParent();
+				กิจกรรมสนับสนุน = currentActivity;
+			}
 			
 			Row obj1Row = sheet.createRow(rowNum++);
 			Cell obj1Name = obj1Row.createCell(0);
@@ -210,12 +231,54 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 			obj1Row = sheet.createRow(rowNum++);
 			obj1Name = obj1Row.createCell(0);
 			obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName());
+			
+			
+//			obj1Row = sheet.createRow(rowNum++);
+//			obj1Name = obj1Row.createCell(0);
+//			obj1Name.setCellValue(getIndent(4) + กิจกรรมย่อย.getName());	
+//			
+//			if(กิจกรรมเสริม != null) {
+//				obj1Row = sheet.createRow(rowNum++);
+//				obj1Name = obj1Row.createCell(0);
+//				obj1Name.setCellValue(getIndent(5) + กิจกรรมเสริม.getName());
+//			}
+//			
+//			if(กิจกรรมสนับสนุน != null ) {
+//				obj1Row = sheet.createRow(rowNum++);
+//				obj1Name = obj1Row.createCell(0);
+//				obj1Name.setCellValue(getIndent(6) + กิจกรรมสนับสนุน.getName());
+//			}
+			
 		}
 		
 				
 		
 		
 		for(ActivityTargetReport report : sumReports) {
+			
+			Activity currentกิจกรรมย่อย;
+			Activity currentกิจกรรมเสริม;
+			Activity currentกิจกรรมสนับสนุน;
+			Integer indentLevel = 4;
+			
+			Activity currentActivity = report.getTarget().getActivity();
+			if(currentActivity.getParent() == null) {
+				currentกิจกรรมย่อย  = currentActivity;
+				currentกิจกรรมเสริม = null;
+				currentกิจกรรมสนับสนุน = null;
+				indentLevel = 4;
+			} else if(currentActivity.getParent().getParent() == null){
+				currentกิจกรรมย่อย = currentActivity.getParent();
+				currentกิจกรรมเสริม = currentActivity;
+				currentกิจกรรมสนับสนุน = null;
+				indentLevel = 5;
+			} else {
+				currentกิจกรรมย่อย = currentActivity.getParent().getParent();
+				currentกิจกรรมเสริม = currentActivity.getParent();
+				currentกิจกรรมสนับสนุน = currentActivity;
+				indentLevel = 6;
+			}
+			
 			
 			Objective currentกิจกรรม = report.getTarget().getActivity().getForObjective();
 			Objective currentแผนปฏิบัติการ = currentกิจกรรม.getParent();
@@ -268,16 +331,41 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 				obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName());
 			}
 			
+			if(!currentกิจกรรมย่อย.getId().equals(กิจกรรมย่อย.getId())) {
+				กิจกรรมย่อย = currentกิจกรรมย่อย;
+				obj1Row = sheet.createRow(rowNum++);
+				obj1Name = obj1Row.createCell(0);
+				obj1Name.setCellValue(getIndent(4) + กิจกรรมย่อย.getName());
+			}
 			
-			Row dataRow1 = sheet.createRow(rowNum);
-			Row dataRow2 = sheet.createRow(rowNum+1);
-			Row dataRow3 = sheet.createRow(rowNum+2);
-			Row dataRow4 = sheet.createRow(rowNum+3);
-			rowNum = rowNum+4;
+			if(currentกิจกรรมเสริม != null && 
+					(กิจกรรมเสริม == null || 
+						!currentกิจกรรมเสริม.getId().equals(กิจกรรมเสริม.getId()) )) {
+				กิจกรรมเสริม = currentกิจกรรมเสริม;
+				obj1Row = sheet.createRow(rowNum++);
+				obj1Name = obj1Row.createCell(0);
+				obj1Name.setCellValue(getIndent(5) + กิจกรรมเสริม.getName());
+			}
+			
+			if(currentกิจกรรมสนับสนุน != null && 
+					( กิจกรรมสนับสนุน == null || 
+						!currentกิจกรรมสนับสนุน.getId().equals(กิจกรรมสนับสนุน.getId()))) {
+				กิจกรรมสนับสนุน = currentกิจกรรมสนับสนุน;
+				obj1Row = sheet.createRow(rowNum++);
+				obj1Name = obj1Row.createCell(0);
+				obj1Name.setCellValue(getIndent(6) + กิจกรรมสนับสนุน.getName());
+			}
+			
+			
+			Row dataRow1 = sheet.createRow(rowNum-1);
+			Row dataRow2 = sheet.createRow(rowNum);
+			Row dataRow3 = sheet.createRow(rowNum+1);
+			Row dataRow4 = sheet.createRow(rowNum+2);
+			rowNum = rowNum+3;
 				
 			
 			Cell nameCell = dataRow1.createCell(0);
-			nameCell.setCellValue(getIndent(4) + report.getTarget().getActivity().getName());
+			nameCell.setCellValue(getIndent(indentLevel) + report.getTarget().getActivity().getName());
 			
 			Cell targetCell = dataRow1.createCell(1);
 			targetCell.setCellValue("จำนวน " + decimalFormat.format(report.getTargetValue()) + "  " + report.getTarget().getUnit().getName());

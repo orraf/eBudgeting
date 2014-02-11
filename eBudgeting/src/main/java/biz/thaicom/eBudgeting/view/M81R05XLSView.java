@@ -141,7 +141,8 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 							
 							// now find budget
 							for(BudgetProposal p : แผนปฏิบัติการ.getProposals()) {
-								if(p.getOwner().getId().equals(org.getId())) {
+								if(p.getOwner().getId().equals(org.getId()) && 
+										p.getBudgetType().is_งบลงทุน() == false) {
 									cell = row.createCell(7);
 									cell.setCellValue(p.getAmountAllocated());
 								}
@@ -287,14 +288,14 @@ public class M81R05XLSView extends AbstractPOIExcelView {
 													
 													cell = row.createCell(0);
 													cell = row.createCell(1);
-													cell.setCellValue("          [" + กิจกรรมสนับสนุน.getCode()+"]" + กิจกรรมสนับสนุน.getName());
+													cell.setCellValue("                    [" + กิจกรรมสนับสนุน.getCode()+"]" + กิจกรรมสนับสนุน.getName());
 													
 													cell = row.createCell(2);
 													cell.setCellValue(กิจกรรมสนับสนุน.getRegulator().getAbbr());
 													
 													if(กิจกรรมสนับสนุน.getTargets().size() > 0) {
 														int i = 0;
-														for(ActivityTarget target: กิจกรรมเสริม.getTargets()) {
+														for(ActivityTarget target: กิจกรรมสนับสนุน.getTargets()) {
 															if( i>0 ) {
 																row = sheet.createRow(rowNum++);
 															}

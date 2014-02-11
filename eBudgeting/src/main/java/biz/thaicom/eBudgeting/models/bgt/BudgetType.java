@@ -107,6 +107,14 @@ public class BudgetType implements Serializable {
 		
 	}
 	
+	public Boolean is_งบลงทุน() {
+		if(this.index == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	@JsonCreator
 	public BudgetType(@JsonProperty("id") Long id) {
 		this.id=id;
