@@ -134,14 +134,14 @@ public class ActivityRestController {
 		return entityService.findActivityTargetReportByTargetIdAndReportLevel(targetId, 1);
 	}
 
-	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/parentOrganization/{parentOrgId}", method=RequestMethod.GET)
+	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/province/{orgId}", method=RequestMethod.GET)
 	public @ResponseBody List<ActivityTargetReport> findActivityTargetReportByTargetIdAndParentOrgId(
 			@PathVariable Long targetId,
-			@PathVariable Long parentOrgId) {
-		return entityService.findActivityTargetReportByTarget_IdAndParentOrgId(targetId, parentOrgId);
+			@PathVariable Long orgId) {
+		return entityService.findActivityTargetReportByTarget_IdAndParentOrgId(targetId, orgId);
 	}
 
-	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/parentOrganization/{parentOrgId}", method=RequestMethod.POST)
+	@RequestMapping(value="/ActivityTargetReport/findByTarget/{targetId}/province/{parentOrgId}", method=RequestMethod.POST)
 	public @ResponseBody List<ActivityTargetReport> saveActivityTargetReportByTargetIdAndParentOrgId(
 			@PathVariable Long targetId,
 			@PathVariable Long parentOrgId,

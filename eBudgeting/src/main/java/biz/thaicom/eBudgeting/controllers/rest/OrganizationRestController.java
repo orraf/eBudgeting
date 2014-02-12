@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.repositories.OrganizationRepository;
 import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.eBudgeting.services.EntityServiceJPA;
@@ -99,6 +100,26 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 		return list;
 	}
 
+	@RequestMapping(value="/Organization/childrenOfProvince/{orgId}/findByName", method=RequestMethod.POST)
+	public @ResponseBody List<Organization> findOrganizationChildrenOfProvinceAndName(
+			@RequestParam String query,
+			@PathVariable Long orgId) {
+		logger.debug("query: " + query);
+		
+		Organization org = entityService.findOrganizationById(orgId);
+		if(org == null) return null;
+		
+		Long searchId = orgId;
+		
+		if(org.getType() == OrganizationType.ส่วนในจังหวัด) {
+			searchId = org.getParent().getId();
+		}
+		
+		List<Organization> list =entityService.findOrganizationByNameAndParent_Id(query, searchId);
+
+		return  list;
+	}
+	
 	@RequestMapping(value="/Organization/parentId/{parentId}/findByName", method=RequestMethod.POST)
 	public @ResponseBody List<Organization> findOrganizationByParentIdAndName(
 			@RequestParam String query,

@@ -216,7 +216,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		}
 		
 		this.organizationSearchList = new OrganizationCollection();
-		this.organizationSearchList.url = appUrl("/Organization/parentId/"+organizationId+"/findByName");
+		this.organizationSearchList.url = appUrl("/Organization/childrenOfProvince/"+organizationId+"/findByName");
 		this.organizationSearchList.fetch({
 			data: {
 				query: query
@@ -243,7 +243,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		//now fill in 
 		this.targetReports = new ActivityTargetReportCollection();
 		this.targetReports.url = appUrl('/ActivityTargetReport/findByTarget/' + this.currentTarget.get('id') 
-				+ '/parentOrganization/' + organizationId);
+				+ '/province/' + organizationId);
 		
 		this.targetReports.fetch({
 			success: _.bind(function() {

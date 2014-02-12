@@ -3088,6 +3088,9 @@ public class EntityServiceJPA implements EntityService {
 			Organization workAt, Integer fiscalYear) {
 		
 		Organization searchOrg = workAt;
+		if(workAt.getType() == OrganizationType.แผนกในจังหวัด) {
+			searchOrg = workAt.getParent();
+		}
 		
 		// now if workAt is at แผนก 
 //		if(workAt.isSubSection()) {
@@ -4631,7 +4634,14 @@ public class EntityServiceJPA implements EntityService {
 	public List<ActivityTargetReport> findActivityTargetReportByTarget_IdAndParentOrgId(
 			Long activityTargetId, Long parentOrgId) {
 		
-			return activityTargetReportRepository.findAllByTarget_IdAndOwner_Parent_id(activityTargetId, parentOrgId);
+			Long searchOrgId = parentOrgId;
+			
+			Organization org = organizationRepository.findOne(parentOrgId);
+			if(org.getType() == OrganizationType.ส่วนในจังหวัด) {
+				searchOrgId = org.getParent().getId();
+			}
+		
+			return activityTargetReportRepository.findAllByTarget_IdAndOwner_Parent_id(activityTargetId, searchOrgId);
 		
 	}
 	
@@ -4639,6 +4649,11 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
 			Long objectiveId, Long ownerId) {
 		Organization searchOrg = organizationRepository.findOne(ownerId);
+		if(searchOrg.getType() == OrganizationType.ส่วนในจังหวัด || searchOrg.getType() == OrganizationType.แผนกในอำเภอ 
+				|| searchOrg.getType() == OrganizationType.แผนกในจังหวัด ) {
+			searchOrg = searchOrg.getParent();
+		}
+		
 		
 		String objectiveIdLike = "%."+objectiveId + ".%";
 		
@@ -4651,11 +4666,17 @@ public class EntityServiceJPA implements EntityService {
 		
 		for(ActivityTargetReport report : targetReports) {
 			Objective child = report.getTarget().getActivity().getForObjective();
+			
+			// we're just displaying not save...
+			// so rid of stuff
+			report.getTarget().setReports(null);
+			
+			
 			report.getTarget().setFilterReport(report);
 			report.getActivityPerformance().getId();
 			Activity act = report.getTarget().getActivity();
 			logger.debug("activity id: " + act.getId());
-						
+			
 			// first put the target
 			if(act.getFilterTargets()==null) {
 				act.setFilterTargets(new ArrayList<ActivityTarget>());
@@ -5366,7 +5387,17 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
 			Integer fiscalYear, Long ownerId) {
-		List<BudgetProposal> proposals = budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, ownerId);
+		Organization org = organizationRepository.findOne(ownerId);
+		
+		if(org == null) return null;
+		
+		Long searchOrgId = ownerId;
+		
+		if(org.getType() == OrganizationType.ส่วนในจังหวัด || org.getType() == OrganizationType.แผนกในอำเภอ) {
+			searchOrgId = org.getParent().getId();
+		}
+		
+		List<BudgetProposal> proposals = budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, searchOrgId);
 		
 		Collections.sort(proposals, new Comparator<BudgetProposal>() {
 			@Override
