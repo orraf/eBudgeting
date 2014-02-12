@@ -418,6 +418,11 @@ var BudgetProposalSelectionView = Backbone.View.extend({
 		"click .budgetProposalSelect" : "budgetProposalSelect"
 	},
 	budgetProposalSelect: function(e) {
+		
+		// spining load mainTbl
+		
+		mainTblView.renderSpiningLoad();
+		
 		var propossalId = $(e.target).parents('li').attr('data-id');
 		var proposal = BudgetProposal.findOrCreate(propossalId);
 		
@@ -486,6 +491,9 @@ var MainTblView = Backbone.View.extend({
 		
 		this.$el.find('#totalAllocatedBudget').html(addCommas(this.totalAllocatedBudget) + " บาท");
 		this.$el.find('#totalAllocatedBudgetLeft').html(addCommas(this.totalAllocatedBudgetLeft) + " บาท");
+	},
+	renderSpiningLoad: function() {
+		this.$el.html("<div>Loading Data <img src='" + appUrl('/resources/graphics/loading.gif') + "'/></div>");
 	},
 	renderWithProposal: function(proposal) {
 		this.proposal = proposal;
