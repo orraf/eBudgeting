@@ -118,13 +118,28 @@ public class ObjectiveRestController {
 		return  list;
 	}
 	 
-	@RequestMapping(value="/Objective/getChildrenAndloadActivityAndOwnerId/{id}/{ownerId}", method=RequestMethod.GET)
-	public @ResponseBody List<Objective> getChildrenAndloadActivity(
+	// ค้นหากิจกรรม และ Load เป้าหมายและงบประมาณของกิจกรรม ในระดับ จังหวัด
+	@RequestMapping(value="/Objective/getChildrenAndloadActivityAndOwnerId/{id}/province/{ownerId}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> getChildrenAndloadActivityProvince(
 			@PathVariable Long id, @PathVariable Long ownerId) {
+		
+		Boolean provinceLevel = true;
 		
 		// now load all activity
 		List<Objective> list = entityService
-				.findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(id, ownerId);
+				.findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(id, ownerId, provinceLevel);
+		
+		return  list;
+	}
+	
+	@RequestMapping(value="/Objective/getChildrenAndloadActivityAndOwnerId/{id}/{ownerId}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> getChildrenAndloadActivity(
+			@PathVariable Long id, @PathVariable Long ownerId) {
+		Boolean provinceLevel = false;
+		
+		// now load all activity
+		List<Objective> list = entityService
+				.findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(id, ownerId, provinceLevel);
 		
 		return  list;
 	}

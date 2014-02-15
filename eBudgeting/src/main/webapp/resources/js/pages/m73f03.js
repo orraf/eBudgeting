@@ -501,7 +501,7 @@ var MainTblView = Backbone.View.extend({
 		this.childObjectives = new ObjectiveCollection();
 		this.childObjectives.fetch({
 			url: appUrl('/Objective/getChildrenAndloadActivityAndOwnerId/'
-					+proposal.get('forObjective').get('id')+'/' + organizationId),
+					+proposal.get('forObjective').get('id')+'/province/' + organizationId),
 			success: _.bind(function(model, response, options) {
 				var json = this.proposal.toJSON();
 				var html = this.mainTblTemplate(json);

@@ -411,7 +411,7 @@ public interface EntityService {
 	
 	
 	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
-			Long objectiveId, Long ownerId);
+			Long objectiveId, Long ownerId, Boolean provinceLevel);
 	
 	public List<ActivityTargetReport> findActivityTargetReportByOwnerOrRegulator(
 			Organization workAt, Integer fiscalYear);

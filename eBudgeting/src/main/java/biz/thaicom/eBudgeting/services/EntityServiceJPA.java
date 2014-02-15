@@ -4647,11 +4647,14 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Override
 	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
-			Long objectiveId, Long ownerId) {
+			Long objectiveId, Long ownerId, Boolean provinceLevel) {
 		Organization searchOrg = organizationRepository.findOne(ownerId);
-		if(searchOrg.getType() == OrganizationType.ส่วนในจังหวัด || searchOrg.getType() == OrganizationType.แผนกในอำเภอ 
-				|| searchOrg.getType() == OrganizationType.แผนกในจังหวัด ) {
-			searchOrg = searchOrg.getParent();
+		
+		if(provinceLevel == true) {
+			if(searchOrg.getType() == OrganizationType.ส่วนในจังหวัด || searchOrg.getType() == OrganizationType.แผนกในอำเภอ 
+					|| searchOrg.getType() == OrganizationType.แผนกในจังหวัด ) {
+				searchOrg = searchOrg.getParent();
+			}
 		}
 		
 		
