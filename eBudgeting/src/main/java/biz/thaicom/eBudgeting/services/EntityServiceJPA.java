@@ -4637,9 +4637,9 @@ public class EntityServiceJPA implements EntityService {
 			Long searchOrgId = parentOrgId;
 			
 			Organization org = organizationRepository.findOne(parentOrgId);
-			if(org.getType() == OrganizationType.ส่วนในจังหวัด) {
-				searchOrgId = org.getParent().getId();
-			}
+			searchOrgId = OrganizationType.getProvinceId(org);
+			if(searchOrgId == null) return null;
+			
 		
 			return activityTargetReportRepository.findAllByTarget_IdAndOwner_Parent_id(activityTargetId, searchOrgId);
 		
@@ -4651,10 +4651,8 @@ public class EntityServiceJPA implements EntityService {
 		Organization searchOrg = organizationRepository.findOne(ownerId);
 		
 		if(provinceLevel == true) {
-			if(searchOrg.getType() == OrganizationType.ส่วนในจังหวัด || searchOrg.getType() == OrganizationType.แผนกในอำเภอ 
-					|| searchOrg.getType() == OrganizationType.แผนกในจังหวัด ) {
-				searchOrg = searchOrg.getParent();
-			}
+			logger.debug("province Id  = " + OrganizationType.getProvinceId(searchOrg));
+			searchOrg = organizationRepository.findOne(OrganizationType.getProvinceId(searchOrg));
 		}
 		
 		
