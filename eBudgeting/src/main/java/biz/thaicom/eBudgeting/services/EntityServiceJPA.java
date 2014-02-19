@@ -4653,6 +4653,7 @@ public class EntityServiceJPA implements EntityService {
 		if(provinceLevel == true) {
 			logger.debug("province Id  = " + OrganizationType.getProvinceId(searchOrg));
 			searchOrg = organizationRepository.findOne(OrganizationType.getProvinceId(searchOrg));
+			if(searchOrg == null) return null;
 		}
 		
 		
