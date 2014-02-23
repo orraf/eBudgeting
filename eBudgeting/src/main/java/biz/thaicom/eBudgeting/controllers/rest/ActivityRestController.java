@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityPerformance;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
@@ -146,7 +147,11 @@ public class ActivityRestController {
 			@PathVariable Long targetId,
 			@PathVariable Long parentOrgId,
 			@RequestBody JsonNode node) {
-		return entityService.saveActivityTargetReportByTargetId(targetId, node, parentOrgId);
+		
+		Organization org = entityService.findOrganizationById(parentOrgId);
+		Long provinceId = OrganizationType.getProvinceId(org);
+		
+		return entityService.saveActivityTargetReportByTargetId(targetId, node, provinceId);
 	}
 
 	

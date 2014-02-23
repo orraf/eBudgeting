@@ -4579,6 +4579,7 @@ public class EntityServiceJPA implements EntityService {
 			
 			sumBudget += performance.getBudgetAllocated();
 			
+			
 			newList.add(report);
 		}
 		
@@ -4676,6 +4677,10 @@ public class EntityServiceJPA implements EntityService {
 			
 			report.getTarget().setFilterReport(report);
 			report.getActivityPerformance().getId();
+			//now sum all performance 
+			//report.getActivityPerformance().setBudgetAllocated(budgetAllocated);
+			
+			
 			Activity act = report.getTarget().getActivity();
 			logger.debug("activity id: " + act.getId());
 			
