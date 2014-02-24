@@ -132,6 +132,8 @@ public class ObjectiveRestController {
 		return  list;
 	}
 	
+	
+	// ค้นหากิจกรรม และ Load เป้าหมายและงบประมาณของกิจกรรม ในระดับ ส่วน/อำเภอ
 	@RequestMapping(value="/Objective/getChildrenAndloadActivityAndOwnerId/{id}/{ownerId}", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> getChildrenAndloadActivity(
 			@PathVariable Long id, @PathVariable Long ownerId) {
