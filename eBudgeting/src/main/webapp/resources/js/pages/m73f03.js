@@ -133,6 +133,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		var newPerformance = new ActivityPerformance();
 		newPerformance.set('activity', this.currentActivity);
 		newPerformance.set('owner', organization);
+		newPerformance.set('budgetAllocated',0);
 		
 		newTargetReport.set('activityPerformance', newPerformance);
 		
