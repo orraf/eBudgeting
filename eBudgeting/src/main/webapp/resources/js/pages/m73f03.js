@@ -67,7 +67,8 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			sum += parseFloat($(el).val());
 		});
 		
- 		this.$el.find('button#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+ 		this.$el.find('a#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+ 		//this.$el.find('a#cancelBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
  		
  		// now set reportLevel to 2
  		for(var i=0; i<this.targetReports.length; i++) {
@@ -84,6 +85,9 @@ var AssignTargetValueModalView = Backbone.View.extend({
  				
  				$('#target_'+ this.currentTarget.get('id') +'-budgetAllocated').html(addCommas(sum));
  				$('#target_'+ this.currentTarget.get('id') +'-budgetAllocated').attr('data-value', sum);
+ 				
+ 				// reset button
+ 				this.$el.find('a#saveAssignTargetBtn').html('บันทึกข้อมูล');
  				
  				this.cancelAssignTarget();
  			},this)
