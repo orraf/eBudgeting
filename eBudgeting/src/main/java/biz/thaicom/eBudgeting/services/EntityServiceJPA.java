@@ -4642,7 +4642,15 @@ public class EntityServiceJPA implements EntityService {
 			if(searchOrgId == null) return null;
 			
 		
-			return activityTargetReportRepository.findAllByTarget_IdAndOwner_Parent_id(activityTargetId, searchOrgId);
+			 List<ActivityTargetReport> targetReports = activityTargetReportRepository.findAllByTarget_IdAndOwner_Parent_id(activityTargetId, searchOrgId);
+			 
+			 // to exclude the unneccesary information
+			 for(ActivityTargetReport report : targetReports) {
+				 report.getTarget().setReports(null);
+			 }
+			 
+			 
+			 return targetReports;
 		
 	}
 	
