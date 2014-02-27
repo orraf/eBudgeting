@@ -4664,8 +4664,8 @@ public class EntityServiceJPA implements EntityService {
 			searchOrg = organizationRepository.findOne(OrganizationType.getProvinceId(searchOrg));
 			if(searchOrg == null) return null;
 		} else {
-			logger.debug("provinceLevel=false and searchOrgId  = " + OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg));
-			searchOrg = organizationRepository.findOne(OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg));
+			logger.debug("provinceLevel=false and searchOrgId  = " + OrganizationType.get_ส่วนหรืออำเภอ_Id(searchOrg));
+			searchOrg = organizationRepository.findOne(OrganizationType.get_ส่วนหรืออำเภอ_Id(searchOrg));
 			if(searchOrg == null) return null;
 		}
 		
