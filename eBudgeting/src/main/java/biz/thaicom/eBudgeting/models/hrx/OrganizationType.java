@@ -56,12 +56,15 @@ public enum OrganizationType {
     	
     }
     
-    public static Long get_ส่วนหรืออำเภอ_Id(Organization org) {
-    	
-    	String first6Digit = org.getCode().substring(0, 6);
+    public static Long get_ส่วนในจังหวัดหรืออำเภอ_Id(Organization org) {
+    	if(org.getCode().startsWith("0")) {
+    		// จังหวัด code จะขึ้นต้น ด้วย 0
+    		return null;
+    	} else {
+    		String first6Digit = org.getCode().substring(0, 6);
     		
-    	return Long.parseLong("1" + first6Digit + "00");	
-    	    	
+    		return Long.parseLong("1" + first6Digit + "00");	
+    	}
     }
     
     public static String getChildrenQueryString(Organization org) {
