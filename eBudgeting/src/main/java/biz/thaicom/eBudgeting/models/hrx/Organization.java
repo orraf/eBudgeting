@@ -126,15 +126,22 @@ public class Organization implements Serializable {
 	
 	// ถ้าเป็นระดับแผนก return true;
 	public Boolean isSubSection() {
-		if(this.code != null) {
-			
-			if(this.code.substring(this.code.length()-2, this.code.length()).equals("00")) {
-				return false;
-			} else {
-				return true;
-			}
-		}
-		
+		OrganizationType myType =  this.getType();
+		if(myType == OrganizationType.ส่วนในจังหวัด || 
+				myType == OrganizationType.แผนก ||
+				myType == OrganizationType.แผนกในจังหวัด ||
+				myType == OrganizationType.แผนกในอำเภอ)
+			return true;
+	
+//		if(this.code != null) {
+//			
+//			if(this.code.substring(this.code.length()-2, this.code.length()).equals("00")) {
+//				return false;
+//			} else {
+//				return true;
+//			}
+//		}
+//		
 		return false;
 	}
 	

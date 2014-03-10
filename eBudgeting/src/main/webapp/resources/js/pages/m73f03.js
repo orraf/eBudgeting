@@ -158,6 +158,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			sum += parseFloat($(el).val());
 		});
 		
+		this.$el.find('#totalInputTxt').val(addCommas(sum));
 		$('#sumTotalAllocated').html(addCommas(sum));
 		
 		
@@ -238,8 +239,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 	render: function() {
 		
 		
-		this.$el.find('.modal-header span').html("จัดสรรเป้าหมาย: " + this.currentActivity.get('name'));
-		
+		this.$el.find('.modal-header span').html("จัดสรรเป้าหมาย: " + this.currentActivity.get('name')); 
 		var json = this.currentTargetReport.toJSON();
 		
 		var html = this.assignTargetValueModalTemplate(json);
@@ -519,34 +519,51 @@ var MainTblView = Backbone.View.extend({
 					this.$el.find('tbody').append(html);
 					
 					var activities = child.get('filterActivities');
+					
+					
 					for(var j=0; j<activities.length; j++) {
 						var act = activities.at(j);
-						json =act.toJSON();
-						json.padding=30;
-						html=this.mainTblTbodyActivityTemplate(json);
-						this.$el.find('tbody').append(html);
-						
 						if(act.get('children').length>0) {
+							json =act.toJSON();
+							json.padding=30;
+							html=this.mainTblTbodyActivityTemplate(json);
+							this.$el.find('tbody').append(html);
+						
+						
 							var childrenAct = act.get('children');
 							for(var k=0; k<childrenAct.length; k++) {
 								var childAct = childrenAct.at(k);
-								json = childAct.toJSON();
-								json.padding=60;
-								html=this.mainTblTbodyActivityTemplate(json);
-								this.$el.find('tbody').append(html);
-								
 								if(childAct.get('children') !=  null && childAct.get('children').length >0 ) {
+									json = childAct.toJSON();
+									json.padding=60;
+									html=this.mainTblTbodyActivityTemplate(json);
+									this.$el.find('tbody').append(html);
+								
+								
 									var grandChildrenAct = childAct.get('children');
 									for(var l=0; l<grandChildrenAct.length; l++) {
 										var grandChildAct = grandChildrenAct.at(l);
-										json = grandChildAct.toJSON();
-										json.padding=90;
-										html=this.mainTblTbodyActivityTemplate(json);
-										this.$el.find('tbody').append(html);
+										
+										if(grandChildAct.get('filterTargets') != null && grandChildAct.get('filterTargets').length > 0) {
+											json = grandChildAct.toJSON();
+											json.padding=90;
+											html=this.mainTblTbodyActivityTemplate(json);
+											this.$el.find('tbody').append(html);
+										}
 									}
 									
+								} else if(childAct.get('filterTargets') != null && childAct.get('filterTargets').length >0) {
+									json = childAct.toJSON();
+									json.padding=60;
+									html=this.mainTblTbodyActivityTemplate(json);
+									this.$el.find('tbody').append(html);
 								}
 							}
+						} else if(act.get('filterTargets') != null && act.get('filterTargets').length > 0) {
+							json =act.toJSON();
+							json.padding=30;
+							html=this.mainTblTbodyActivityTemplate(json);
+							this.$el.find('tbody').append(html);
 						}
 						
 					}

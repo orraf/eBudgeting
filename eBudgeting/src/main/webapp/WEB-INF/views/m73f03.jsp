@@ -56,7 +56,7 @@
 			<td style="width:30px;"></td>
 			<td style="width:30px;">รหัส</td>
 			<td>ชื่อกิจกรรมย่อย</td>
-			<td style="width:100px;">เป้าหมาย</td>
+			<td style="width:100px;">เป้าหมายที่ส่วนกลางกำหนด</td>
 			<td style="width:100px;">หน่วยนับ</td>
 			<td style="width:100px;">งบประมาณที่จัดสรร (บาท)</td>
 
@@ -95,7 +95,7 @@
 	<td><span style="padding-left:{{padding}}px;">{{name}}</span></td>
 	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each filterTargets}}
-			<li data-id="{{filterReport.id}}"><a href="javascript:;" class="assignTargetValueLnk">{{formatNumber filterReport.targetValue}}</a></li>
+			<li data-id="{{filterReport.id}}">{{formatNumber filterReport.targetValue}}</li>
 		{{/each}}
 		</ul>
 	</td>
@@ -121,14 +121,16 @@
 </script>
 <script id="assignTargetValueModalTemplate" type="text/x-handler-template">
 <div id="inputAll">
+	<div><strong> ค่าเป้าหมายที่ส่วนกลางกำหนด: {{formatNumber targetValue}} {{target.unit.name}}</strong></div>
+	<div class="clearfix"></div>
 	<div style="padding-top:7px; padding-right: 20px;height:35px; float:left">
-    	<strong> ค่าเป้าหมายรวม: </strong>
+    	<strong> ค่าเป้าหมายจัดสรรให้อำเภอ/ส่วน/ศูนย์: </strong>
 	</div>
     <div style="height:35px; float:left" id="totalInputForm">
 		<div class="input-append"><input disabled type="text" id="totalInputTxt" style="width:120px;" value="{{formatNumber targetValue}}"><span class="add-on">{{target.unit.name}}</span></div>
 	</div>
 
-	<div style="padding-top:7px; padding-right: 20px;height:35px; float:left">
+	<div style="padding-top:7px;padding-left:15px; padding-right: 20px;height:35px; float:left">
     	<strong> งบประมาณจัดสรรรวม: </strong>
 	</div>
     <div style="height:35px; float:left" id="totalInputForm">
@@ -216,10 +218,18 @@
 <tr data-id="{{owner.id}}">
 	<td><a href="#" class="removeOrganizationTarget"><i class="icon icon-trash"></i></a> {{owner.name}}</td>
 	<td style="width:100px;">
+		 <div class="control-group">
+			<div class="controls">
 			<input type="text" class="proposalAllocated" id="amountAllocated-{{id}}" style="width:82px; text-align:right;" value="{{targetValue}}"/>
+			</div>
+		</div>
 	</td>
 	<td style="width:160px;">
+		<div class="control-group">
+			<div class="controls">
 			<input type="text" class="budgetAllocated" id="budgetAllocated-{{id}}" style="width:140px; text-align:right;" value="{{activityPerformance.budgetAllocated}}"/>
+			</div>
+		</div>
 	</td>
 </tr>
 {{/each}}
