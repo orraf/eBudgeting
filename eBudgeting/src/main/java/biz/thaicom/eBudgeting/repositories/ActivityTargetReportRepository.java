@@ -39,6 +39,9 @@ public interface ActivityTargetReportRepository extends
 			"FROM ActivityTargetReport report " +
 			"	LEFT JOIN FETCH report.monthlyReports monthlyReports " +
 			"	INNER JOIN FETCH report.activityPerformance performance " +
+			"	INNER JOIN FETCH report.target target " +
+			"	INNER JOIN FETCH target.activity activity " +
+			"	INNER JOIN FETCH activity.forObjective objective " +
 			"WHERE report.owner.id = ?1 " +
 			" 	AND report.target.activity.forObjective.fiscalYear = ?2 ")
 	public List<ActivityTargetReport> findAllByOwner_idAndFiscalYear(Long ownerId, Integer fiscalYear);

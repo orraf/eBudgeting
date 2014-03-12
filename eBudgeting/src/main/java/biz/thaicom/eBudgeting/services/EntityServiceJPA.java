@@ -4941,6 +4941,9 @@ public class EntityServiceJPA implements EntityService {
 				report.getTarget().getActivity().setFilterTargets(new ArrayList<ActivityTarget>());
 			}
 			
+			//we don't need all report here!
+			report.getTarget().setReports(null);
+			
 			report.getTarget().setFilterReport(report);
 			report.getTarget().getUnit().getId();
 			
