@@ -123,7 +123,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			sum += isNaN(value)?0:value;
 		});
 		
-		if(sum != this.currentTargetReport.get('targetValue')) {
+		if(sum.toFixed(2) != this.currentTargetReport.get('targetValue')) {
 			alert("กรุณาตรวจสอบ แผนการดำเนินงาน รวมแล้วไม่เท่ากับค่าเป้าหมาย");
 			return;
 		}
@@ -133,7 +133,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 			var value = parseFloat($(el).val());
 			sum += isNaN(value)?0.0:value;
 		});
-		if(sum != this.currentTargetReport.get('activityPerformance').get('budgetAllocated')) {
+		if(sum.toFixed(2) != this.currentTargetReport.get('activityPerformance').get('budgetAllocated')) {
 			alert("กรุณาตรวจสอบ แผนการเบิกจ่ายงบประมาณ รวมแล้วไม่เท่ากับงบที่ได้รับจัดสรร");
 			return;
 		}
