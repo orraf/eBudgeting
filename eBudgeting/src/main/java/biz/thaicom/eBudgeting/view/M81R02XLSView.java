@@ -514,7 +514,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						Statement st2 = connection.createStatement();
 						ResultSet rs2;
-						rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
+						String rs2SQL ="select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
 
 								 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
 								     "(select id from hrx_organization " +
@@ -525,13 +525,19 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 								 "and t1.owner_hrx_organization_id = t4.id " +
 								 "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
 								 " and t3.id = " + rs1.getInt(6) +
-								 " group by t1.fiscalmonth order by t1.fiscalmonth ");
+								 " group by t1.fiscalmonth order by t1.fiscalmonth ";
+						rs2 = st2.executeQuery(rs2SQL);
 
+						
 						
 						
 						j = 3;
 						s1 = 0;
 						s2 = 0;
+						if(rs1.getInt(3) == 2900 ) {
+							logger.debug(">>>>>>>>>>: rs2:");
+							logger.debug(rs2SQL);
+						}
 						while (rs2.next()) {
 							Cell rscj1 = rows1.getCell(j);
 							rscj1.setCellValue(rs2.getInt(2));
@@ -733,7 +739,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
         style.setAlignment(CellStyle.ALIGN_RIGHT);
         style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
         style.setWrapText(true);
-        style.setDataFormat(format.getFormat("#,##0"));
+        style.setDataFormat(format.getFormat("#,##0.00"));
         style.setBorderRight(CellStyle.BORDER_THIN);
         style.setRightBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderLeft(CellStyle.BORDER_THIN);
