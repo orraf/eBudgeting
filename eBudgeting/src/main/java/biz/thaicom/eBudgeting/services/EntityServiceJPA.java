@@ -5132,7 +5132,11 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<ActivityTargetResult> findActivityTargetResultByReportAndFiscalMonth(
 			Long targetReportId, Integer fiscalMonth) {
-		fiscalMonth = (fiscalMonth + 10) % 12; 
+		fiscalMonth = ((fiscalMonth + 10) % 12);
+		if(fiscalMonth == 0 ) fiscalMonth = 12;
+		
+		
+		logger.debug("searching for Month: " + fiscalMonth);
 		
 		List<ActivityTargetResult> atrList =activityTargetResultRepository.findByReportIdAndFiscalMonthAndNotBgtResult(targetReportId,fiscalMonth);
 		

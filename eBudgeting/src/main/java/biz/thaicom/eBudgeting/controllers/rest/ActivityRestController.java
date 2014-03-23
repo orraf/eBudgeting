@@ -186,7 +186,7 @@ public class ActivityRestController {
 			@PathVariable Long targetReportId,
 			@PathVariable Integer fiscalMonth,
 			@Activeuser ThaicomUserDetail currentUser) {
-		
+		logger.debug("fiscalMonth: "+ fiscalMonth);
 		return entityService.findActivityTargetResultByReportAndFiscalMonth(targetReportId, fiscalMonth);
 		
 	}
