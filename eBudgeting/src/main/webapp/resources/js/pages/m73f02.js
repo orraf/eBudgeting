@@ -587,10 +587,16 @@ var MainCtrView = Backbone.View.extend({
 		this.$el.find("#mainTbl").empty();
 	},
 	
+	renderSpiningLoad: function() {
+		this.$el.find("#mainTbl").html("<div>Loading Data <img src='" + appUrl('/resources/graphics/loading.gif') + "'/></div>");
+	},
+	
 	renderMainTblWithParent: function(obj) {
 		this.currentObjective = obj;
 
-		this.$el.find("#mainTbl").html(this.mainTblTemplate({}));
+		// render Loading...
+		
+		this.renderSpiningLoad();
 		
 		// first find the activities
 		// and put them in the table 
@@ -599,6 +605,7 @@ var MainCtrView = Backbone.View.extend({
 		this.activities.fetch({
 			success : _.bind(function() {
 			
+				this.$el.find("#mainTbl").html(this.mainTblTemplate({}));				
 				var json = this.activities.toJSON();
 				var html = this.mainTblTbodyTemplate(json);
 				
