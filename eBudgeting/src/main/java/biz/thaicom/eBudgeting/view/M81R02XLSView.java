@@ -369,7 +369,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 										   "from v_gl " +
 										   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
 										   "and fiscal_year = " + fiscalYear + " " +
-										   "and activitycode = '" + rs.getInt(5) + "' " +
+										   "and activitycode like '" + rs.getString(5) + "' " +
 										   "group by date2fmonth(gl_trans_docdate) " +
 										   "order by 1 ");
 
