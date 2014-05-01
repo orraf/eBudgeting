@@ -54,7 +54,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		var sum=0.0;
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseInt($(el).val());
+			sum += parseFloat($(el).val());
 		});
 		          
 		if(sum != this.currentTargetReport.get('targetValue') ) {

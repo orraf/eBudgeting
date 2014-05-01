@@ -231,9 +231,15 @@ public class ObjectiveRestController {
 	}
 
 	@RequestMapping(value="/Objective/fiscalYear/{fiscalYear}/findByActivityTargetReportOfCurrentUser/NoReportCurrentMonth", method=RequestMethod.GET)
-	public @ResponseBody List<Objective> findByActivityTargetReportOfCurrentUserNoReportCurrentMonth(
+	public @ResponseBody List<String> findByActivityTargetReportOfCurrentUserNoReportCurrentMonth(
 			@Activeuser ThaicomUserDetail currentUser, @PathVariable Integer fiscalYear) {
-		return entityService.findObjectiveByActivityTargetReportOfOrganizationAndFiscalYearNoReportCurrentMonth(currentUser.getWorkAt(), fiscalYear);
+		List<Objective> objectives = entityService.findObjectiveByActivityTargetReportOfOrganizationAndFiscalYearNoReportCurrentMonth(currentUser.getWorkAt(), fiscalYear);
+		
+		List<String> objNames = new ArrayList<String>();
+		for(Objective obj : objectives) {
+			objNames.add(obj.getName());
+		}
+		return objNames;
 	}
 	
 	@RequestMapping(value="/Objective/{id}/saveOwners", method=RequestMethod.POST)

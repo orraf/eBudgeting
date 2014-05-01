@@ -33,7 +33,7 @@
 		</div>
 
 		<div id="mainCtr">
-
+			<div>Loading <img src="<c:url value='/resources/graphics/spinner_bar.gif'/>"/></div>
 		</div>
 
 	</div>

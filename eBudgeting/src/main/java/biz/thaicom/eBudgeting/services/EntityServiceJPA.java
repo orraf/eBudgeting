@@ -4818,6 +4818,10 @@ public class EntityServiceJPA implements EntityService {
 		ActivityTargetReport atr = activityTargetReportRepository.findOneAndFetchReportById(id);
 		atr.getActivityPerformance().getMonthlyBudgetReports().size();
 		atr.setLatestResult(activityTargetResultRepository.findByLatestTimeStamp(atr));
+		
+		// we don't need the full target.reports here 
+		atr.getTarget().setReports(null);
+		
 		return atr;
 	}
 
@@ -4912,43 +4916,59 @@ public class EntityServiceJPA implements EntityService {
 		
 		List<ActivityTargetReport> noReports = new ArrayList<ActivityTargetReport> ();
 		
-		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(workAt.getId(), fiscalYear);
-		for(ActivityTargetReport report: reports) {
-			// if this has no result in this fiscalBudget 
-			Long numResult = activityTargetResultRepository.countResultByReportIdAndFiscalMonthAndBgtResult(report, fiscalMonth);
+		logger.debug("fiscalMonth: " + fiscalMonth);
+		
+		//List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(workAt.getId(), fiscalYear);
+		List<Object[]> reportsAndObjectivId = activityTargetReportRepository.findAllByOwner_idAndFiscalYearNoFetch(workAt.getId(), fiscalYear);
+		
+		List<Long> reports = new ArrayList<Long>();
+		Map<Long, Long> objectiveIds = new HashMap<Long, Long>();
+		
+		for(Object[] reportAndObjectiveId : reportsAndObjectivId) {
+			reports.add((Long) reportAndObjectiveId[0]);
 			
-			if(numResult == 0) {
-				noReports.add(report);
+			objectiveIds.put((Long) reportAndObjectiveId[0], (Long) reportAndObjectiveId[1]);
+		}
+		
+		
+		List<Object[]> resultCount = activityTargetResultRepository.countResultByReportIdAndFiscalMonthAndBgtResult(reports, fiscalMonth);
+		logger.debug("reports[0].id: " + reports.get(0) );
+		logger.debug("fiscalMonth: "+ fiscalMonth );
+		logger.debug("resutlCount.size: " + resultCount.size() );
+		
+		// now any report not in this result count is no Report!
+		Hashtable<Long, Long> hasResultCount = new Hashtable<Long, Long>();
+		for(Object[] result : resultCount) {
+			hasResultCount.put(((Long) result[1]),(Long) result[1]); 
+		}
+		
+		List<Long> noReportIds = new ArrayList<Long>();
+		
+		for(Long reportId : reports) {
+			if(!hasResultCount.containsKey(reportId)) {
+				noReportIds.add(reportId);
 			}
 		}
 		
-		List<Objective> objectives = new ArrayList<Objective>();
-		for(ActivityTargetReport report: noReports){
-			Objective obj = report.getTarget().getActivity().getForObjective();
-			if(!objectives.contains(obj)) {
-				objectives.add(obj);
+//		for(ActivityTargetReport report: reports) {
+//			// if this has no result in this fiscalBudget 
+//			Long numResult = activityTargetResultRepository.countResultByReportIdAndFiscalMonthAndBgtResult(report, fiscalMonth);
+//			
+//			if(numResult == 0) {
+//				noReports.add(report);
+//			}
+//		}
+		
+		List<Long> objIds = new ArrayList<Long>();
+		for(Long reportId: noReportIds){
+			// now get objective id associate with report
+			if(objectiveIds.containsKey(reportId)) {
+				objIds.add(objectiveIds.get(reportId));
 			}
-			
-			if(obj.getFilterActivities() == null) {
-				obj.setFilterActivities(new ArrayList<Activity> ());
-			}
-			
-			if(!obj.getFilterActivities().contains(report.getTarget().getActivity())) {
-				obj.getFilterActivities().add(report.getTarget().getActivity());
-			}
-			
-			if(report.getTarget().getActivity().getFilterTargets() == null) {
-				report.getTarget().getActivity().setFilterTargets(new ArrayList<ActivityTarget>());
-			}
-			
-			//we don't need all report here!
-			report.getTarget().setReports(null);
-			
-			report.getTarget().setFilterReport(report);
-			report.getTarget().getUnit().getId();
-			
-			report.getTarget().getActivity().getFilterTargets().add(report.getTarget());
 		}
+		
+		List<Objective> objectives = objectiveRepository.findAllObjectiveByIds(objIds);
+		
 		
 		return objectives;
 	}
@@ -4963,7 +4983,16 @@ public class EntityServiceJPA implements EntityService {
 //		}
 		
 		
+		logger.debug("searchOrg: " + searchOrg.getId());
+		
 		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(searchOrg.getId(), fiscalYear);
+		
+		List<ActivityTargetResult> latestResults = activityTargetResultRepository.findLatestTimeStampByReport(reports);
+		Map<Long, ActivityTargetResult> reportLatestResultMap = new HashMap<Long, ActivityTargetResult>();
+		for(ActivityTargetResult result : latestResults) {
+			reportLatestResultMap.put(result.getReport().getId(), result);
+		}
+		
 		
 		List<Objective> objectives = new ArrayList<Objective>();
 		
@@ -4998,15 +5027,20 @@ public class EntityServiceJPA implements EntityService {
 			
 			report.getTarget().getActivity().getFilterTargets().add(report.getTarget());
 			
-			logger.debug("reportId : " + report.getId());
+//			logger.debug("reportId : " + report.getId());
 			
-			report.setLatestResult(activityTargetResultRepository.findByLatestTimeStamp(report));
+			//report.setLatestResult(activityTargetResultRepository.findByLatestTimeStamp(report));
 			
 			
-			if(report.getLatestResult() == null ) {
-				 logger.debug("LatestResult is null");
+			if(reportLatestResultMap.containsKey(report.getId()) ) {
+				ActivityTargetResult latest = reportLatestResultMap.get(report.getId());
+//				logger.debug("LatestResult ID: " + latest.getId() + " @ " + latest.getTimestamp() );
+				report.setLatestResult(latest);
 			} else {
-				logger.debug("LatestResult: " + report.getLatestResult().getId() + " : " + report.getLatestResult().getTimestamp() );
+				
+//				logger.debug("LatestResult is null");
+				report.setLatestResult(null);
+				
 			}
 		}
 		
@@ -5163,6 +5197,11 @@ public class EntityServiceJPA implements EntityService {
 		
 			atr.getReport().getActivityPerformance().getMonthlyBudgetReports().size();
 			atr.getReport().getMonthlyReports().size();
+
+			// no need to fetch all reports!
+			atr.getReport().getTarget().setReports(null);
+			
+			logger.debug(" atr.getId()2: " + atr.getId());
 		} else {
 			return null;
 		}

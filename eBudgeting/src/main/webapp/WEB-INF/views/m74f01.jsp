@@ -176,7 +176,7 @@
 
 
 <script id="loadingTemplate" type="text/x-handler-template">
-	<div>Loading <img src="<c:url value='/resources/graphics/spinner_bar.gif'/>"/></div>
+	<div style="margin-top: 30px;"><strong>Loading {{name}} </strong><img src="<c:url value='/resources/graphics/spinner_bar.gif'/>"/></div>
 </script>
 
 

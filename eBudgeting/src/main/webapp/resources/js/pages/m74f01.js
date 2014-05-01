@@ -20,6 +20,9 @@ var BudgetProposalSelectionView = Backbone.View.extend({
 		var objectiveId = $(e.target).parents('li').attr('data-id');
 		var objective = Objective.findOrCreate(objectiveId);
 		
+		// show Loading...
+		mainTblView.showLoading(objective);
+		
 		mainTblView.renderWithObjective(objective);
 	},
 	render: function() {
@@ -193,6 +196,11 @@ var MainTblView = Backbone.View.extend({
 		"click .assignTargetLnk" : "assignTarget"
 	},
 	
+	showLoading:function(obj) {
+		// show Loading...
+		$("#mainTbl").html(this.loadingTpl({name: obj.get("name")}));
+	},
+	
 	assignTarget: function(e) {
 		var targetId = $(e.target).parents('li').attr('data-id');
 		var activityTargetReport = ActivityTargetReport.findOrCreate(targetId);
@@ -250,6 +258,7 @@ var MainTblView = Backbone.View.extend({
 	renderWithObjective: function(obj) {
 		this.objective = obj;
 		this.childObjectives = new ObjectiveCollection();
+		
 		this.childObjectives.fetch({
 			url: appUrl('/Objective/getChildrenAndloadActivityAndOwnerId/'
 					+obj.get('id')+'/' + organizationId),

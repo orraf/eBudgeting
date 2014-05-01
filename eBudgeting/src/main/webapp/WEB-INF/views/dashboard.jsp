@@ -33,7 +33,7 @@
     <h4 style="padding-bottom: 10px;">เดือนนี้มีกิจกรรมที่ยังไม่ได้รายงานผล!</h4>
     	<ul>
 			{{#each this}}
-				<li> {{name}} </li>
+				<li> {{this}} </li>
 			{{/each}}
 		<ul>
 </div>
@@ -345,13 +345,13 @@ $(document).ready(function() {
 	 	
 	
 	// now find objective which hasn't report
-	var noReports = new ObjectiveCollection();
-	noReports.fetch({
+	
+	$.ajax({
 		url: appUrl('/Objective/fiscalYear/' + fiscalYear + '/findByActivityTargetReportOfCurrentUser/NoReportCurrentMonth'),
-		success: function() {
-			if(noReports.length > 0) {
-				var json = noReports.toJSON();
-				var html= alertNoReportTemplate(json);
+		success: function(data, textStatus, jqXHR) {
+			if(data.length > 0) {
+				
+				var html= alertNoReportTemplate(data);
 				
 				$("#messageBox").html(html);
 			}

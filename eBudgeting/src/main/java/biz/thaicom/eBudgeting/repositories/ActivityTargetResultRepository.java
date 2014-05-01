@@ -2,6 +2,7 @@ package biz.thaicom.eBudgeting.repositories;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +19,14 @@ public interface ActivityTargetResultRepository extends JpaRepository<ActivityTa
 			"	AND result.timestamp = " +
 			"		(SELECT max(result1.timestamp) FROM ActivityTargetResult result1 WHERE  result1.report = ?1) ")
 	ActivityTargetResult findByLatestTimeStamp(ActivityTargetReport report);
+	
+	@Query("SELECT result "
+			+ "FROM ActivityTargetResult result "
+			+ "WHERE result.timestamp = "
+			+ "	(SELECT max(result1.timestamp) FROM ActivityTargetResult result1 WHERE  result.report = result1.report) "
+			+ "	and result.report in (?1) ")
+	List<ActivityTargetResult> findLatestTimeStampByReport(List<ActivityTargetReport> reports);
+	
 
 	@Query(""
 			+ "SELECT result "
@@ -70,6 +79,16 @@ public interface ActivityTargetResultRepository extends JpaRepository<ActivityTa
 	Long countResultByReportIdAndFiscalMonthAndBgtResult(ActivityTargetReport report,
 			Integer fiscalMonth);
 
+	@Query(""
+			+ "SELECT count(result), result.report.id "
+			+ "FROM ActivityTargetResult result "
+			+ "WHERE result.report.id in (?1) AND "
+			+ "		result.budgetFiscalMonth = ?2 "
+			+ "GROUP BY result.report.id ")
+	List<Object[]> countResultByReportIdAndFiscalMonthAndBgtResult(List<Long> report,
+			Integer fiscalMonth);
+
+	
 	Collection<? extends ActivityTargetResult> findByReport(
 			ActivityTargetReport deleteReport);
 
