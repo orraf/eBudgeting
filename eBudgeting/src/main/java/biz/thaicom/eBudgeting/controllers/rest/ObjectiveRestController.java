@@ -236,8 +236,11 @@ public class ObjectiveRestController {
 		List<Objective> objectives = entityService.findObjectiveByActivityTargetReportOfOrganizationAndFiscalYearNoReportCurrentMonth(currentUser.getWorkAt(), fiscalYear);
 		
 		List<String> objNames = new ArrayList<String>();
-		for(Objective obj : objectives) {
-			objNames.add(obj.getName());
+		
+		if(objectives != null && objectives.size() > 0) {
+			for(Objective obj : objectives) {
+				objNames.add(obj.getName());
+			}
 		}
 		return objNames;
 	}

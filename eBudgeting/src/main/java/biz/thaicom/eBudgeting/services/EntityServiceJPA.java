@@ -4930,25 +4930,31 @@ public class EntityServiceJPA implements EntityService {
 			objectiveIds.put((Long) reportAndObjectiveId[0], (Long) reportAndObjectiveId[1]);
 		}
 		
+		logger.debug("reports:  " + reports.toString());
+		List<Objective> objectives = null;
 		
-		List<Object[]> resultCount = activityTargetResultRepository.countResultByReportIdAndFiscalMonthAndBgtResult(reports, fiscalMonth);
-		logger.debug("reports[0].id: " + reports.get(0) );
-		logger.debug("fiscalMonth: "+ fiscalMonth );
-		logger.debug("resutlCount.size: " + resultCount.size() );
+		if(reports.size() > 0) {
 		
-		// now any report not in this result count is no Report!
-		Hashtable<Long, Long> hasResultCount = new Hashtable<Long, Long>();
-		for(Object[] result : resultCount) {
-			hasResultCount.put(((Long) result[1]),(Long) result[1]); 
-		}
-		
-		List<Long> noReportIds = new ArrayList<Long>();
-		
-		for(Long reportId : reports) {
-			if(!hasResultCount.containsKey(reportId)) {
-				noReportIds.add(reportId);
+			List<Object[]> resultCount = activityTargetResultRepository.countResultByReportIdAndFiscalMonthAndBgtResult(reports, fiscalMonth);
+			logger.debug("reports[0].id: " + reports.get(0) );
+			logger.debug("fiscalMonth: "+ fiscalMonth );
+			logger.debug("resutlCount.size: " + resultCount.size() );
+			
+			// now any report not in this result count is no Report!
+			Hashtable<Long, Long> hasResultCount = new Hashtable<Long, Long>();
+			for(Object[] result : resultCount) {
+				hasResultCount.put(((Long) result[1]),(Long) result[1]); 
 			}
-		}
+			
+			List<Long> noReportIds = new ArrayList<Long>();
+			
+			for(Long reportId : reports) {
+				if(!hasResultCount.containsKey(reportId)) {
+					noReportIds.add(reportId);
+				}
+			}
+
+		
 		
 //		for(ActivityTargetReport report: reports) {
 //			// if this has no result in this fiscalBudget 
@@ -4959,16 +4965,16 @@ public class EntityServiceJPA implements EntityService {
 //			}
 //		}
 		
-		List<Long> objIds = new ArrayList<Long>();
-		for(Long reportId: noReportIds){
-			// now get objective id associate with report
-			if(objectiveIds.containsKey(reportId)) {
-				objIds.add(objectiveIds.get(reportId));
+			List<Long> objIds = new ArrayList<Long>();
+			for(Long reportId: noReportIds){
+				// now get objective id associate with report
+				if(objectiveIds.containsKey(reportId)) {
+					objIds.add(objectiveIds.get(reportId));
+				}
 			}
+			
+			objectives = objectiveRepository.findAllObjectiveByIds(objIds); 
 		}
-		
-		List<Objective> objectives = objectiveRepository.findAllObjectiveByIds(objIds);
-		
 		
 		return objectives;
 	}
@@ -4986,11 +4992,14 @@ public class EntityServiceJPA implements EntityService {
 		logger.debug("searchOrg: " + searchOrg.getId());
 		
 		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(searchOrg.getId(), fiscalYear);
-		
-		List<ActivityTargetResult> latestResults = activityTargetResultRepository.findLatestTimeStampByReport(reports);
+		List<ActivityTargetResult> latestResults = new ArrayList<ActivityTargetResult>();
 		Map<Long, ActivityTargetResult> reportLatestResultMap = new HashMap<Long, ActivityTargetResult>();
-		for(ActivityTargetResult result : latestResults) {
-			reportLatestResultMap.put(result.getReport().getId(), result);
+		if(reports.size() > 0) {
+		
+			latestResults = activityTargetResultRepository.findLatestTimeStampByReport(reports);
+			for(ActivityTargetResult result : latestResults) {
+				reportLatestResultMap.put(result.getReport().getId(), result);
+			}
 		}
 		
 		
@@ -5177,6 +5186,10 @@ public class EntityServiceJPA implements EntityService {
 		for(ActivityTargetResult atr : atrList) {
 			atr.getReport().getActivityPerformance().getMonthlyBudgetReports().size();
 			atr.getReport().getMonthlyReports().size();
+			
+			// no need to get all reports!
+			atr.getReport().getTarget().setReports(null);
+			
 		}
 		
 		return atrList;
@@ -5201,6 +5214,7 @@ public class EntityServiceJPA implements EntityService {
 			// no need to fetch all reports!
 			atr.getReport().getTarget().setReports(null);
 			
+			
 			logger.debug(" atr.getId()2: " + atr.getId());
 		} else {
 			return null;
@@ -5213,7 +5227,12 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public ActivityTargetResult findActivityTargetResultById(Long id) {
 		
-		return activityTargetResultRepository.findOne(id);
+		ActivityTargetResult result = activityTargetResultRepository.findOne(id);
+		
+		// no need to reference back
+		result.setReport(null);
+		
+		return result;
 	}
 
 	@Override

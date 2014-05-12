@@ -199,19 +199,21 @@ public class ActivityRestController {
 	}
 	
 	@RequestMapping(value="/ActivityTargetResult/", method=RequestMethod.POST) 
-	public @ResponseBody ActivityTargetResult saveActivityTargetResult(
+	public @ResponseBody String saveActivityTargetResult(
 			@RequestBody JsonNode node,
 			@Activeuser ThaicomUserDetail currentUser){
-		return entityService.saveActivityTargetResult(node, currentUser);
+		entityService.saveActivityTargetResult(node, currentUser);
+		return "success";
 	}
 	
 	@RequestMapping(value="/ActivityTargetResult/{id}", method=RequestMethod.PUT) 
-	public @ResponseBody ActivityTargetResult updateActivityTargetResult(
+	public @ResponseBody String updateActivityTargetResult(
 			@RequestBody JsonNode node,
 			@PathVariable Long id,
 			@Activeuser ThaicomUserDetail currentUser){
 		logger.debug("calling PUT");
-		return entityService.saveActivityTargetResult(node, currentUser);
+		entityService.saveActivityTargetResult(node, currentUser);
+		return "success";
 	}
 	
 	@ExceptionHandler(value=Exception.class)

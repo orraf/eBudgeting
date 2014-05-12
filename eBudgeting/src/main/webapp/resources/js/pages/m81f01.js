@@ -31,20 +31,40 @@ var ModalView = Backbone.View.extend({
 	
 	showBudgetResult: function(e) {
 		var fiscalMonth = $(e.target).parents('tr').attr('data-fiscalmonth');
+		var monthlyBudgetResultId = $(e.target).parents('td').attr('data-id');
+		var targetResultId = $(e.target).attr('data-id');
 		
 		var latestResult = this.currentTargetReport.get('latestResult');
+		
+		
+		
 		if(latestResult != null && latestResult.get('budgetFiscalMonth') == fiscalMonth && 
 					latestResult.get('resultBudgetType') == true ) {
+			console.log("latest result!");
+			
 			this.currentTargetResult = latestResult;
+			
+			var monthlyBudget = MonthlyBudgetReport.find(monthlyBudgetResultId);
+			monthlyBudget.set('targetResultId', this.currentTargetResult.get('id') );
+			
 			this.renderBudgetResult(fiscalMonth, this.currentTargetResult.get('id'));
-		} else {
+			
+		} else if(targetResultId == null) {
 			this.currentTargetResult = new ActivityTargetResult();
 			this.currentTargetResult.fetch({
 				url: appUrl('/ActivityTargetResult/findBgtResultByReport/' + this.currentTargetReport.get('id') + '/fiscalMonth/' + fiscalMonth),
 				success: _.bind(function(model, response, options) {
+					var monthlyBudget = MonthlyBudgetReport.find(monthlyBudgetResultId);
+					monthlyBudget.set('targetResultId', this.currentTargetResult.get('id') );
+					
 					this.renderBudgetResult(fiscalMonth, model.get('id'));
+					
 				}, this)
 			});
+		} else {
+			console.log("need to find " + targetResultId);
+			this.currentTargetResult = ActivityTargetResult.find(targetResultId);
+			this.renderBudgetResult(fiscalMonth, targetResultId);
 		}
 		
 		return false;
@@ -79,12 +99,19 @@ var ModalView = Backbone.View.extend({
 		this.render();
 	},
 	saveResult: function(e) {
+		var report = this.currentTargetReport;
+		
+		
 		if(this.currentTargetResult.get("resultBudgetType") == true) {
-			this.currentTargetResult.set('budgetResult',this.$el.find('#budgetResult').val());
-			this.currentTargetResult.set('budgetFiscalMonth', this.$el.find('#budgetFiscalMonth').val());
+			this.currentTargetResult.set('budgetResult',parseFloat(this.$el.find('#budgetResult').val()));
+			this.currentTargetResult.set('budgetFiscalMonth',  parseInt(this.$el.find('#budgetFiscalMonth').val()));
+			
+			var monthlyFiscal = report.get('activityPerformance').get('monthlyBudgetReports').at(this.currentTargetResult.get('budgetFiscalMonth'));
+			monthlyFiscal.set('budgetResult', this.currentTargetResult.get('budgetResult'));
+			
 		} else {
 			this.currentTargetResult.set('reportedResultDate', this.$el.find('#reportedResultDate').val());
-			this.currentTargetResult.set('result', this.$el.find('#result').val());
+			this.currentTargetResult.set('result', parseFloat(this.$el.find('#result').val()));
 		}
 		this.currentTargetResult.set('remark', this.$el.find('#remark').val());
 		
@@ -94,6 +121,8 @@ var ModalView = Backbone.View.extend({
 				alert("บันทึกการรายงานผลเรียบร้อยแล้ว");
 				this.currentTargetReport.set('latestResult', this.currentTargetResult);
 				this.currentTargetResult.get('report').get('target').set('filterReport', this.currentTargetReport);
+				// and update the monthly accordingly
+				
 				this.render();
 			},this),
 			error: function(model, xhr, options) {
@@ -323,6 +352,15 @@ var MainCtrView = Backbone.View.extend({
 		
 		report.fetch({
 			success: _.bind(function() {
+				// now setup the latest result!
+				var latestResult = report.get('latestResult');
+				
+				if(latestResult.get('resultBudgetType') == true) {
+					report.get('monthlyReports').at(latestResult.get('budgetFiscalMonth'))
+						.set('targetResultId',latestResult.get('id'));
+					
+				}
+				
 				this.modalView.renderWithReport(report);
 				report.get('target').set('filterReport', report);
 			},this)
