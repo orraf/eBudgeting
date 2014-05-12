@@ -355,7 +355,7 @@ var MainCtrView = Backbone.View.extend({
 				// now setup the latest result!
 				var latestResult = report.get('latestResult');
 				
-				if(latestResult.get('resultBudgetType') == true) {
+				if(latestResult != null &&  latestResult.get('resultBudgetType') == true) {
 					report.get('monthlyReports').at(latestResult.get('budgetFiscalMonth'))
 						.set('targetResultId',latestResult.get('id'));
 					
