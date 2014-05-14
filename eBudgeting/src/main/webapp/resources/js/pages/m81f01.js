@@ -40,8 +40,6 @@ var ModalView = Backbone.View.extend({
 		
 		if(latestResult != null && latestResult.get('budgetFiscalMonth') == fiscalMonth && 
 					latestResult.get('resultBudgetType') == true ) {
-			console.log("latest result!");
-			
 			this.currentTargetResult = latestResult;
 			
 			var monthlyBudget = MonthlyBudgetReport.find(monthlyBudgetResultId);
@@ -100,7 +98,8 @@ var ModalView = Backbone.View.extend({
 	},
 	saveResult: function(e) {
 		var report = this.currentTargetReport;
-		
+		console.log("XXXXX");
+		console.dir(this.currentTargetResult.toJSON());
 		
 		if(this.currentTargetResult.get("resultBudgetType") == true) {
 			this.currentTargetResult.set('budgetResult',parseFloat(this.$el.find('#budgetResult').val()));
@@ -111,7 +110,40 @@ var ModalView = Backbone.View.extend({
 			
 		} else {
 			this.currentTargetResult.set('reportedResultDate', this.$el.find('#reportedResultDate').val());
-			this.currentTargetResult.set('result', parseFloat(this.$el.find('#result').val()));
+			
+			var oldResult = this.currentTargetResult.get('result');
+			if(oldResult == null) oldResult = 0.0;
+			var newResult = parseFloat(this.$el.find('#result').val());
+			var adjustResult = newResult - oldResult;
+			console.log("this.currentTargetResult.get('result') : " + oldResult);
+			console.log("newResult: " + newResult);
+			
+			
+			if(this.currentTargetResult.get('budgetFiscalMonth') == null) {
+				// we have to calculate ourself here
+				var resultDate = this.$el.find('#reportedResultDate').val();
+				
+				var month = parseInt(resultDate.substring(3,5));
+				this.currentTargetResult.set('budgetFiscalMonth', (month+2)%12 );
+							
+			}
+			
+			var monthlyAct = report.get('monthlyReports').at(this.currentTargetResult.get('budgetFiscalMonth'));
+			
+			if(monthlyAct.get('activityResult') != null) {
+				console.log('old result = ' + monthlyAct.get('activityResult'));
+				console.log('adjustresult = ' + adjustResult);
+				
+				monthlyAct.set('activityResult', monthlyAct.get('activityResult') + adjustResult);
+			} else {
+				monthlyAct.set('activityResult', adjustResult);
+			}
+			
+			 
+			
+			this.currentTargetResult.set('result', newResult);
+			
+			
 		}
 		this.currentTargetResult.set('remark', this.$el.find('#remark').val());
 		
@@ -146,6 +178,7 @@ var ModalView = Backbone.View.extend({
 		this.$el.find('.modal-body').html(html);
 		
 		this.currentTargetResult.url = appUrl('/ActivityTargetResult/' + this.currentTargetResult.get('id'));
+		
 	},
 	
 	inputResult: function(e) {
@@ -356,9 +389,8 @@ var MainCtrView = Backbone.View.extend({
 				var latestResult = report.get('latestResult');
 				
 				if(latestResult != null &&  latestResult.get('resultBudgetType') == true) {
-					report.get('monthlyReports').at(latestResult.get('budgetFiscalMonth'))
+					report.get('activityPerformance').get('monthlyBudgetReports').at(latestResult.get('budgetFiscalMonth'))
 						.set('targetResultId',latestResult.get('id'));
-					
 				}
 				
 				this.modalView.renderWithReport(report);

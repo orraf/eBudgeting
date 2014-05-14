@@ -435,15 +435,20 @@ Handlebars.registerHelper("formatNumberBgtLink", function(result) {
 	 	return "-";
 	} 
 	
-	var formatedStr = addCommas(result.budgetResult);
-	var dataId = "";
-	if(result.targetResultId != null) {
-		dataId = "data-id='" + result.targetResultId + "' ";
-	}
+	formatedStr = addCommas(result.budgetResult);
+	dataIdStr = " ";
 	
-	return "<a href='#' class='budgetResultLnk' " + dataId + ">" + formatedStr + "</a>";
+	if(result.targetResultId != null) {
+		dataIdStr = "data-id='" + result.targetResultId + "' ";
+		
+	}
+	var str ="<a href='#' class='budgetResultLnk' " + dataIdStr + ">" + formatedStr + "</a>"; 
+	
+	return str;
 	
 });
+
+
 	var fiscalYear = parseInt("${fiscalYear}");
 	
 	var mainCtrView = null;
