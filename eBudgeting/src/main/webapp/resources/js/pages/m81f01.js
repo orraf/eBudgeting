@@ -97,9 +97,11 @@ var ModalView = Backbone.View.extend({
 		this.render();
 	},
 	saveResult: function(e) {
+		// first disable this button!
+		$(e.target).attr('disabled','disabled');
+		$(e.target).html('กำลังบันทึกผล...');
+		
 		var report = this.currentTargetReport;
-		console.log("XXXXX");
-		console.dir(this.currentTargetResult.toJSON());
 		
 		if(this.currentTargetResult.get("resultBudgetType") == true) {
 			this.currentTargetResult.set('budgetResult',parseFloat(this.$el.find('#budgetResult').val()));
