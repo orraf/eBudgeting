@@ -4267,7 +4267,9 @@ public class EntityServiceJPA implements EntityService {
 		
 		for(Activity activity : list) {
 			activity.getForObjective().getId();
-			activity.getTargets().size();
+			for(ActivityTarget t :activity.getTargets()) {
+				t.setReports(null);
+			}
 			activity.getChildren().size();
 			activity.getOwner().getId();
 			if(activity.getRegulator() != null) {
@@ -4276,9 +4278,16 @@ public class EntityServiceJPA implements EntityService {
 			if(activity.getChildren().size() > 0) {
 				for(Activity child : activity.getChildren()) {
 					child.getTargets().size();
+					for(ActivityTarget t :child.getTargets()) {
+						t.setReports(null);
+					}
+					
 					if(child.getChildren() != null && child.getChildren().size() > 0 ) {
 						for(Activity grandChild : child.getChildren()) {
 							grandChild.getTargets().size();
+							for(ActivityTarget t :grandChild.getTargets()) {
+								t.setReports(null);
+							}
 						}
 					}
 				}
@@ -4781,15 +4790,22 @@ public class EntityServiceJPA implements EntityService {
 		
 		for(Activity parent : parentList) {
 			flatList.add(parent);
+			for(ActivityTarget t : parent.getTargets()) {
+				t.setReports(null);
+			}
 			if(parent.getChildren() != null && parent.getChildren().size() > 0 ) {
 				for(Activity child : parent.getChildren()) {
-					child.getTargets().size();
+					for(ActivityTarget t : child.getTargets()) {
+						t.setReports(null);
+					}
 					child.getOwner().getId();
 					child.getRegulator().getId();
 					flatList.add(child);
 					if(child.getChildren() != null && child.getChildren().size() >0) {
 						for(Activity grandChild : child.getChildren()) {
-							grandChild.getTargets().size();
+							for(ActivityTarget t : grandChild.getTargets()) {
+								t.setReports(null);
+							}
 							
 							grandChild.getOwner().getId();
 							grandChild.getRegulator().getId();
