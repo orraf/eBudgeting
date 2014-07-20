@@ -3088,7 +3088,8 @@ public class EntityServiceJPA implements EntityService {
 			Organization workAt, Integer fiscalYear) {
 		
 		Organization searchOrg = workAt;
-		if(workAt.getType() == OrganizationType.แผนกในจังหวัด) {
+		if(workAt.getType() == OrganizationType.แผนกในจังหวัด || 
+				workAt.getType() == OrganizationType.แผนกในอำเภอ) {
 			searchOrg = workAt.getParent();
 		}
 		
