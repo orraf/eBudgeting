@@ -5005,6 +5005,11 @@ public class EntityServiceJPA implements EntityService {
 //			searchOrg = searchOrg.getParent();
 //		}
 		
+		if(searchOrg.getType() == OrganizationType.แผนกในอำเภอ) {
+			searchOrg = searchOrg.getParent();
+		}
+		
+		
 		
 		logger.debug("searchOrg: " + searchOrg.getId());
 		
