@@ -178,6 +178,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		int j = 0;
 		int s1 = 0;
 		int s2 = 0;
+		double d2 = 0.0;
 		
 		logger.debug(st01);
 		
@@ -458,23 +459,25 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 								+ "group by t1.fiscalmonth order by t1.fiscalmonth";
 						Statement st5 = connection.createStatement();
 						ResultSet rs5 = st5.executeQuery(st05);
+						logger.debug(st05);
 						j = 3;
 						s1 = 0;
 						s2 = 0;
+						d2 = 0.0;
 						while(rs5.next()) {
 							Cell rscj1 = rows1.getCell(j);
 							rscj1.setCellValue(rs5.getInt(2));
 							Cell rscj2 = rows02.getCell(j);
-							rscj2.setCellValue(rs5.getInt(3));
+							rscj2.setCellValue(rs5.getDouble(3));
 							
 							s1 = s1 + rs5.getInt(2);
-							s2 = s2 + rs5.getInt(3);
+							d2 = d2 + rs5.getDouble(3);
 							j = j+1;
 						}
 						Cell rscs1 = rows1.getCell(15);
 						rscs1.setCellValue(s1);
 						Cell rscs2 = rows02.getCell(15);
-						rscs2.setCellValue(s2);
+						rscs2.setCellValue(d2);
 						
 						i = i+2;
 						
