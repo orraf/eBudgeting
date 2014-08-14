@@ -790,36 +790,6 @@ public class ExcelReportsController {
 		return "m81r06.xls";
 	}
 
-	@RequestMapping("/m81r07.xls/{fiscalYear}/file/m81r07.xls")
-	public String excelM81R07(@PathVariable Integer fiscalYear, Model model, 
-			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
-		
-		model.addAttribute("fiscalYear", fiscalYear);
-		
-		Objective root = entityService.findObjectivesByFiscalyearAndTypeIdForM81R07Report(fiscalYear);
-		model.addAttribute("rootObjective", root);
-		
-		Iterable<Object[]> sumBudgetPlans = entityService.findAllSumBudgetPlanByFiscalYear(fiscalYear);
-		model.addAttribute("sumBudgetPlans", sumBudgetPlans);
-		
-		Iterable<Object[]> sumBudgetUseds = entityService.findAllSumBudgetUsedByFiscalYear(fiscalYear);
-		model.addAttribute("sumBudgetUseds", sumBudgetUseds);
-		
-		logger.debug("Calling findAllSumMonthlyBudgetByFiscalYear");
-		Iterable<Object[]> sumMonthlyBudgets = entityService.findAllSumMonthlyBudgetByFiscalYear(fiscalYear);
-		model.addAttribute("sumMonthlyBudgets", sumMonthlyBudgets);
-		
-		
-		Cookie cookie = new Cookie("fileDownload", "true");
-		cookie.setPath("/");
-		response.addCookie(cookie);
-		
-		
-		return "m81r07_new.xls";
-		
-		//return "m81r07.xls";
-	}
-	
 	@RequestMapping("/m81r08.xls/{fiscalYear}/file/m81r08.xls")
 	public String excelM81R08(@PathVariable Integer fiscalYear, Model model, 
 			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
@@ -968,6 +938,36 @@ public class ExcelReportsController {
 		model.addAttribute("fiscalYear", 2556);
 		
 		return "track1.xls";
+	}
+
+	@RequestMapping("/m81r07.xls/{fiscalYear}/file/m81r07.xls")
+	public String excelM81R07(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
+		
+		model.addAttribute("fiscalYear", fiscalYear);
+		
+		Objective root = entityService.findObjectivesByFiscalyearAndTypeIdForM81R07Report(fiscalYear);
+		model.addAttribute("rootObjective", root);
+		
+		Iterable<Object[]> sumBudgetPlans = entityService.findAllSumBudgetPlanByFiscalYear(fiscalYear);
+		model.addAttribute("sumBudgetPlans", sumBudgetPlans);
+		
+		Iterable<Object[]> sumBudgetUseds = entityService.findAllSumBudgetUsedByFiscalYear(fiscalYear);
+		model.addAttribute("sumBudgetUseds", sumBudgetUseds);
+		
+		logger.debug("Calling findAllSumMonthlyBudgetByFiscalYear");
+		Iterable<Object[]> sumMonthlyBudgets = entityService.findAllSumMonthlyBudgetByFiscalYear(fiscalYear);
+		model.addAttribute("sumMonthlyBudgets", sumMonthlyBudgets);
+		
+		
+		Cookie cookie = new Cookie("fileDownload", "true");
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		
+		
+		return "m81r07_new.xls";
+		
+		//return "m81r07.xls";
 	}
 
 }

@@ -59,6 +59,7 @@ public interface ActivityPerformanceRepository extends
 			+ "FROM ActivityPerformance performance "
 			+ "	 	INNER JOIN performance.activity activity "
 			+ "WHERE activity.forObjective.fiscalYear = ?1 "
+			+ "		and performance.targetReport.reportLevel = 1 "
 			+ "GROUP BY activity.forObjective.id "
 			+ "")
 	public Iterable<Object[]> findSumBudgetAllocatedByFiscalYear(Integer fiscalYear);
