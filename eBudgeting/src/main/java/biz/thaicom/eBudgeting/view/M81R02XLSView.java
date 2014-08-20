@@ -254,13 +254,24 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				}
 
 				Statement st4 = connection.createStatement();
-				ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
+/*				ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
 									   "from v_gl " +
 									   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
 									   "and fiscal_year = " + fiscalYear + " " +
 									   "and gl_trans_plan = '" + rs.getString(5) + "' " +
 									   "group by date2fmonth(gl_trans_docdate) " +
 									   "order by 1 ");
+*/
+				ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
+												 "from v_gl " +
+												 "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
+												 "and fiscal_year = " + fiscalYear + " " +
+												 "and activitycode in (select code from pln_objective " +
+												 						"where id <> " + rs.getInt(3) + " " +
+												 						"connect by prior id = parent_pln_objective_id " +
+												 						"start with id = " + rs.getInt(3) + ") " +
+												 "group by date2fmonth(gl_trans_docdate) " +
+												 "order by 1 ");
 
 				s1 = 0;
 				while (rs4.next()) {
