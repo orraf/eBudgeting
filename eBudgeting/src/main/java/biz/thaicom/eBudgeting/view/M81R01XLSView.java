@@ -239,7 +239,8 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 				ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0), ltrim(to_char(sum(amt),'999,999,999,990.99')) amt " +
 									   "from v_gl " +
 									   "where fiscal_year = " + fiscalYear + " " +
-									   "and activitycode like '" + rs.getString(5) + "' " +
+									   "	and activitycode like '" + rs.getString(5) + "' " +
+									   "	and ORG_ID = " + currentUser.getWorkAt().getId() + " " +
 									   "group by date2fmonth(gl_trans_docdate) " +
 									   "order by 1 ");
 

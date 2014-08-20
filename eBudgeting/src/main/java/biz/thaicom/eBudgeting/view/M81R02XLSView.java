@@ -250,7 +250,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				
 				for (j=3;j<16;j++) {
 					Cell rscj = rows.createCell(j);
-					rscj.setCellStyle(styles.get("cellnumbercenter"));
+					rscj.setCellStyle(styles.get("cellnumber2Ditgitcenter"));
 				}
 
 				Statement st4 = connection.createStatement();
@@ -273,16 +273,16 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 												 "group by date2fmonth(gl_trans_docdate) " +
 												 "order by 1 ");
 
-				s1 = 0;
+				Double d1 = 0.0;
 				while (rs4.next()) {
 					Cell rscj = rows.getCell(rs4.getInt(1)+2);
-					rscj.setCellValue(rs4.getInt(2));
-					s1 = s1 + rs4.getInt(2);
+					rscj.setCellValue(rs4.getDouble(2));
+					d1 = d1 + rs4.getDouble(2);
 				}
 				rs4.close();
 				st4.close();
 				rsc3 = rows.getCell(15);
-				rsc3.setCellValue(s1);
+				rsc3.setCellValue(d1);
 
 				i = i+2;
 				
@@ -768,7 +768,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
         style.setAlignment(CellStyle.ALIGN_CENTER);
         style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
         style.setWrapText(true);
-        style.setDataFormat(format.getFormat("#,##0"));
+        style.setDataFormat(format.getFormat("General"));
         style.setBorderRight(CellStyle.BORDER_THIN);
         style.setRightBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderLeft(CellStyle.BORDER_THIN);
@@ -779,6 +779,22 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cellnumbercenter", style);
+        
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setWrapText(true);
+        style.setDataFormat(format.getFormat("General"));
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setAlignment(CellStyle.ALIGN_LEFT);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cellnumber2Ditgitcenter", style);
 
         style = wb.createCellStyle();
         style.setVerticalAlignment(CellStyle.VERTICAL_TOP);

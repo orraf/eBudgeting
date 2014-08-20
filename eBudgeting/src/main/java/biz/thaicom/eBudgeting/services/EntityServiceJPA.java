@@ -5721,7 +5721,11 @@ public class EntityServiceJPA implements EntityService {
 	public List<AssetAllocation> findAssetAllocationByForObjectiveIdAndOperator(
 			Long objectiveId, Organization operator) {
 		
-		if(operator.isSubSection()) {
+		logger.debug("---" + operator.getType());
+		
+		if(operator.getType() == OrganizationType.ส่วนในจังหวัด ||
+			operator.getType() == OrganizationType.แผนกในจังหวัด ||
+			operator.getType() == OrganizationType.แผนกในอำเภอ) {
 			operator = operator.getParent();
 		}
 		
