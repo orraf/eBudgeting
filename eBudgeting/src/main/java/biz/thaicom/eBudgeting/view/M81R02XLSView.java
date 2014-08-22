@@ -176,8 +176,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 
 		int i = 4;
 		int j = 0;
-		int s1 = 0;
-		int s2 = 0;
+		double s1 = 0.0;
+		double s2 = 0.0;
 		double d2 = 0.0;
 		
 		logger.debug(st01);
@@ -210,7 +210,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				
 				for (j=3;j<16;j++) {
 					Cell rscj = rows.createCell(j);
-					rscj.setCellStyle(styles.get("cellnumbercenter"));
+					rscj.setCellStyle(styles.get("cellnumber2"));
 				}
 
 				Statement st3 = connection.createStatement();
@@ -245,12 +245,12 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				rsc1.setCellStyle(styles.get("cellcenter"));
 				
 				rsc2 = rows.createCell(2);
-				rsc2.setCellValue("ผลการใช้เงิน");
+				rsc2.setCellValue("ผลการใช้เงิน (G)");
 				rsc2.setCellStyle(styles.get("cellcenter"));
 				
 				for (j=3;j<16;j++) {
 					Cell rscj = rows.createCell(j);
-					rscj.setCellStyle(styles.get("cellnumber2Ditgitcenter"));
+					rscj.setCellStyle(styles.get("cellnumber2"));
 				}
 
 				Statement st4 = connection.createStatement();
@@ -315,7 +315,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 					
 					for (j=3;j<16;j++) {
 						Cell rscj = rows.createCell(j);
-						rscj.setCellStyle(styles.get("cellnumbercenter"));
+						rscj.setCellStyle(styles.get("cellnumber2"));
 					}
 
 					Statement st3 = connection.createStatement();
@@ -350,11 +350,11 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					ResultSet rs3 = st3.executeQuery(st03);
 
 					j = 3;
-					s1 = 0;
+					s1 = 0.0;
 					while (rs3.next()) {
 						Cell rscj = rows.getCell(j);
-						rscj.setCellValue(rs3.getInt(2));
-						s1 = s1 + rs3.getInt(2);
+						rscj.setCellValue(rs3.getDouble(2));
+						s1 = s1 + rs3.getDouble(2);
 						j = j+1;
 					}
 					rs3.close();
@@ -368,12 +368,12 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					rsc1.setCellStyle(styles.get("cellcenter"));
 					
 					rsc2 = rows.createCell(2);
-					rsc2.setCellValue("ผลการใช้เงิน");
+					rsc2.setCellValue("ผลการใช้เงิน (G)");
 					rsc2.setCellStyle(styles.get("cellcenter"));
 					
 					for (j=3;j<16;j++) {
 						Cell rscj = rows.createCell(j);
-						rscj.setCellStyle(styles.get("cellnumbercenter"));
+						rscj.setCellStyle(styles.get("cellnumber2"));
 					}
 
 					Statement st4 = connection.createStatement();
@@ -385,11 +385,11 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 										   "group by date2fmonth(gl_trans_docdate) " +
 										   "order by 1 ");
 
-					s1 = 0;
+					s1 = 0.0;
 					while (rs4.next()) {
 						Cell rscj = rows.getCell(rs4.getInt(1)+2);
-						rscj.setCellValue(rs4.getInt(2));
-						s1 = s1 + rs4.getInt(2);
+						rscj.setCellValue(rs4.getDouble(2));
+						s1 = s1 + rs4.getDouble(2);
 					}
 					rs4.close();
 					st4.close();
@@ -438,7 +438,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						for (j=3;j<16;j++) {
 							Cell rscj01 = rows1.createCell(j);
-							rscj01.setCellStyle(styles.get("cellnumbercenter"));
+							rscj01.setCellStyle(styles.get("cellnumber"));
 
 						}
 
@@ -455,7 +455,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						for (j=3;j<16;j++) {
 							Cell rscj02 = rows02.createCell(j);
-							rscj02.setCellStyle(styles.get("cellnumbercenter"));
+							rscj02.setCellStyle(styles.get("cellnumber"));
 
 						}
 						
@@ -472,8 +472,8 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						ResultSet rs5 = st5.executeQuery(st05);
 						logger.debug(st05);
 						j = 3;
-						s1 = 0;
-						s2 = 0;
+						s1 = 0.0;
+						s2 = 0.0;
 						d2 = 0.0;
 						while(rs5.next()) {
 							Cell rscj1 = rows1.getCell(j);
@@ -505,7 +505,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						for (j=3;j<16;j++) {
 							Cell rscj = rows1.createCell(j);
-							rscj.setCellStyle(styles.get("cellnumbercenter"));
+							rscj.setCellStyle(styles.get("cellnumber"));
 
 						}
 
@@ -522,7 +522,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						for (j=3;j<16;j++) {
 							Cell rscj = rows2.createCell(j);
-							rscj.setCellStyle(styles.get("cellnumbercenter"));
+							rscj.setCellStyle(styles.get("cellnumber"));
 
 						}
 						
@@ -753,7 +753,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
         style.setAlignment(CellStyle.ALIGN_RIGHT);
         style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
         style.setWrapText(true);
-        style.setDataFormat(format.getFormat("#,##0.00"));
+        style.setDataFormat(format.getFormat("#,##0"));
         style.setBorderRight(CellStyle.BORDER_THIN);
         style.setRightBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderLeft(CellStyle.BORDER_THIN);
@@ -763,6 +763,21 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cellnumber", style);
+
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_RIGHT);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setWrapText(true);
+        style.setDataFormat(format.getFormat("#,##0.00"));
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cellnumber2", style);
 
         style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_CENTER);

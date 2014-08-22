@@ -149,7 +149,7 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 		
 		int i = 4;
 		int j = 0;
-		int s1 = 0;
+		double s1 = 0.0;
 		int s2 = 0;
 		int s3 = 0;
 		int s4 = 0;
@@ -181,7 +181,7 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 				
 				for (j=3;j<17;j++) {
 					Cell rscj = rows.createCell(j);
-					rscj.setCellStyle(styles.get("cellcenter"));
+					rscj.setCellStyle(styles.get("cellcenternumber1"));
 				}
 
 				Statement st3 = connection.createStatement();
@@ -212,12 +212,12 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 				rsc1.setCellStyle(styles.get("cellcenter"));
 				
 				rsc2 = rows.createCell(2);
-				rsc2.setCellValue("ผลการใช้เงิน");
+				rsc2.setCellValue("ผลการใช้เงิน (G)");
 				rsc2.setCellStyle(styles.get("cellcenter"));
 				
 				for (j=3;j<17;j++) {
 					Cell rscj = rows.createCell(j);
-					rscj.setCellStyle(styles.get("cellcenter"));
+					rscj.setCellStyle(styles.get("cellcenternumber2"));
 				}
 
 				Statement st4 = connection.createStatement();
@@ -239,11 +239,11 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 									   "group by date2fmonth(gl_trans_docdate) " +
 									   "order by 1 ");
 
-				s1 = 0;
+				s1 = 0.0;
 				while (rs4.next()) {
 					Cell rscj = rows.getCell(rs4.getInt(1)+2);
 					rscj.setCellValue(rs4.getString(3));
-					s1 = s1 + rs4.getInt(2);
+					s1 = s1 + rs4.getDouble(2);
 				}
 				rs4.close();
 				st4.close();
@@ -279,7 +279,7 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 					
 					for (j=3;j<17;j++) {
 						Cell rscj = rows1.createCell(j);
-						rscj.setCellStyle(styles.get("cellcenter"));
+						rscj.setCellStyle(styles.get("cellcenternumber1"));
 
 					}
 
@@ -294,7 +294,7 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 					
 					for (j=3;j<17;j++) {
 						Cell rscj = rows2.createCell(j);
-						rscj.setCellStyle(styles.get("cellcenter"));
+						rscj.setCellStyle(styles.get("cellcenternumber1"));
 
 					}
 					
@@ -377,19 +377,19 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 		sheet.setColumnWidth(0, 15000);
 		sheet.setColumnWidth(1, 8000);
 		sheet.setColumnWidth(2, 5000);
-		sheet.setColumnWidth(3, 3000);
-		sheet.setColumnWidth(4, 3000);
-		sheet.setColumnWidth(5, 3000);
-		sheet.setColumnWidth(6, 3000);
-		sheet.setColumnWidth(7, 3000);
-		sheet.setColumnWidth(8, 3000);
-		sheet.setColumnWidth(9, 3000);
-		sheet.setColumnWidth(10, 3000);
-		sheet.setColumnWidth(11, 3000);
-		sheet.setColumnWidth(12, 3000);
-		sheet.setColumnWidth(13, 3000);
-		sheet.setColumnWidth(14, 3000);
-		sheet.setColumnWidth(15, 3000);
+		sheet.setColumnWidth(3, 3500);
+		sheet.setColumnWidth(4, 3500);
+		sheet.setColumnWidth(5, 3500);
+		sheet.setColumnWidth(6, 3500);
+		sheet.setColumnWidth(7, 3500);
+		sheet.setColumnWidth(8, 3500);
+		sheet.setColumnWidth(9, 3500);
+		sheet.setColumnWidth(10, 3500);
+		sheet.setColumnWidth(11, 3500);
+		sheet.setColumnWidth(12, 3500);
+		sheet.setColumnWidth(13, 3500);
+		sheet.setColumnWidth(14, 3500);
+		sheet.setColumnWidth(15, 3500);
 		sheet.createFreezePane( 3, 4 );
 	}
 	
@@ -516,6 +516,36 @@ public class M81R03XLSView extends AbstractPOIExcelView {
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cellcenter", style);
+
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setWrapText(true);
+        style.setDataFormat(format.getFormat("#,##0"));
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cellcenternumber1", style);
+
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setWrapText(true);
+        style.setDataFormat(format.getFormat("#,##0.00"));
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cellcenternumber2", style);
 
         style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_RIGHT);
