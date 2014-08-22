@@ -252,12 +252,12 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 
 				i = i+2;
 				Statement st1 = connection.createStatement();
-				ResultSet rs1 = st1.executeQuery("select t1.code, t1.name, t1.id, '1' type, t3.id target_id, '  (เป้าหมาย '|| ltrim(to_char(sum(t3.targetvalue),'999,999,999,999')) ||' '||t4.name||')' target " +
+				ResultSet rs1 = st1.executeQuery("select t1.code, t1.name, t1.id, '1' type, t3.id target_id, '  (เป้าหมาย '|| ltrim(to_char(sum(t3.targetvalue),'999,999,999,999')) ||' '||t4.name||')' target, t4.id unit_id " +
 												 "from pln_activity t1, pln_activitytarget t3, pln_targetunit t4 " +
 												 "where t1.id = t3.activity_pln_activity_id " +
 												 "and t3.unit_pln_targetunit_id = t4.id " +
 												 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
-												 "group by t1.code, t1.name, t1.id, t3.id, t4.name " +
+												 "group by t1.code, t1.name, t1.id, t3.id, t4.name, t4.id " +
 												 "order by 1,4 ");
 				int actId = 0;	 
 				while (rs1.next()) {
@@ -279,7 +279,11 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 					
 					for (j=3;j<17;j++) {
 						Cell rscj = rows1.createCell(j);
-						rscj.setCellStyle(styles.get("cellcenternumber1"));
+						if (rs1.getInt(7)==2 || rs1.getInt(7)==3 || rs1.getInt(7)==9) {
+							rscj.setCellStyle(styles.get("cellcenternumber2"));
+						} else {
+							rscj.setCellStyle(styles.get("cellcenternumber1"));
+						}
 
 					}
 
@@ -294,7 +298,11 @@ public class M81R03XLSView extends AbstractPOIExcelView {
 					
 					for (j=3;j<17;j++) {
 						Cell rscj = rows2.createCell(j);
-						rscj.setCellStyle(styles.get("cellcenternumber1"));
+						if (rs1.getInt(7)==2 || rs1.getInt(7)==3 || rs1.getInt(7)==9) {
+							rscj.setCellStyle(styles.get("cellcenternumber2"));
+						} else {
+							rscj.setCellStyle(styles.get("cellcenternumber1"));
+						}
 
 					}
 					

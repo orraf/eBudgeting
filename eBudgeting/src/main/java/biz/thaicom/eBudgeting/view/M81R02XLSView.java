@@ -403,7 +403,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					
 					
 					Statement st1 = connection.createStatement();
-					String st1Sql = "select distinct t1.code, t1.name, t1.id, t5.owner_hrx_organization_id, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t5.targetvalue,'999,999,999,999'))||' '||t4.name||')' target " +
+					String st1Sql = "select distinct t1.code, t1.name, t1.id, t5.owner_hrx_organization_id, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t5.targetvalue,'999,999,999,999'))||' '||t4.name||')' target, t4.id unit_id " +
 							 "from pln_activitytargetreport t5, pln_activity t1, pln_activitytarget t3, pln_targetunit t4 " +
 	 						 "where t5.target_pln_acttarget_id = t3.id " +
 							 "	and t5.owner_hrx_organization_id = " + searchOrg.getId() +
@@ -438,7 +438,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						for (j=3;j<16;j++) {
 							Cell rscj01 = rows1.createCell(j);
-							rscj01.setCellStyle(styles.get("cellnumber"));
+							rscj01.setCellStyle(styles.get("cellnumber2"));
 
 						}
 
@@ -455,7 +455,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						for (j=3;j<16;j++) {
 							Cell rscj02 = rows02.createCell(j);
-							rscj02.setCellStyle(styles.get("cellnumber"));
+							rscj02.setCellStyle(styles.get("cellnumber2"));
 
 						}
 						
@@ -505,7 +505,12 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						for (j=3;j<16;j++) {
 							Cell rscj = rows1.createCell(j);
-							rscj.setCellStyle(styles.get("cellnumber"));
+							if (rs1.getInt(8)==2 || rs1.getInt(8)==3 || rs1.getInt(8)==9) {
+								rscj.setCellStyle(styles.get("cellnumber2"));
+							} else {
+								rscj.setCellStyle(styles.get("cellnumber"));
+							}
+							
 
 						}
 
@@ -522,7 +527,11 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						for (j=3;j<16;j++) {
 							Cell rscj = rows2.createCell(j);
-							rscj.setCellStyle(styles.get("cellnumber"));
+							if (rs1.getInt(8)==2 || rs1.getInt(8)==3 || rs1.getInt(8)==9) {
+								rscj.setCellStyle(styles.get("cellnumber2"));
+							} else {
+								rscj.setCellStyle(styles.get("cellnumber"));
+							}
 
 						}
 						
