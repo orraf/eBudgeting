@@ -191,11 +191,23 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 			
 			if (rs.getString(5).length() == 7) {
 				Statement st0 = connection.createStatement();
-				ResultSet rs0 = st0.executeQuery("select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(amountallocated),'999,999,999,999')), '...')||' บาท)' " +
-												 "from bgt_budgetproposal " +
-												 "where objective_id = " + rs.getInt(3) + " " +
-												 "and organization_id = " + searchOrg.getId() + " ");
+				String stmt;
+				if (searchOrg.getId().toString().substring(5, 9).equals("0000") ) {
+					stmt = "select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(amountallocated),'999,999,999,999')), '...')||' บาท)' " +
+													 "from bgt_budgetproposal " +
+													 "where objective_id = " + rs.getInt(3) + " " +
+													 "and organization_id = " + searchOrg.getId() + " ";
+					
+				} else {
+					stmt = "select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(budgetallocated),'999,999,999,999')), '...')||' บาท)' " +
+													 "from pln_activity t1, pln_activityperformance t3 " +
+													 "where t1.id = t3.activity_pln_activity_id " +
+													 "and t1.id in (select id from PLN_ACTIVITY where obj_pln_objective_id in (select id from pln_objective connect by prior id = parent_pln_objective_id start with id = " + rs.getInt(3) + "))" +
+													 "and t3.owner_hrx_organization_id = " + searchOrg.getId() + " ";
+					
+				}
 				
+				ResultSet rs0 = st0.executeQuery(stmt);
 				Cell rsc1 = rows.createCell(1);
 				if (rs0.next()) {
 					rsc1.setCellValue(rs0.getString(1));
@@ -289,11 +301,18 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 			} else {
 				if (rs.getInt(2) == 1) {
 					Statement st0 = connection.createStatement();
+/*
 					String st02 = "select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(budgetallocated),'999,999,999,999')), '...')||' บาท)' " +
 							 "from pln_activity t1, pln_activityperformance t3 " +
 							 "where t1.id = t3.activity_pln_activity_id " +
 							 "and t1.id in (select id from PLN_ACTIVITY connect by prior id = PARENT_PLN_ACTIVITY_ID start with OBJ_PLN_OBJECTIVE_ID =" + rs.getInt(3) + ")" +
 							 "and t3.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with parent_hrx_organization_id = " + searchOrg.getId() + ") ";							
+*/					
+					String st02 = "select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(budgetallocated),'999,999,999,999')), '...')||' บาท)' " +
+							 "from pln_activity t1, pln_activityperformance t3 " +
+							 "where t1.id = t3.activity_pln_activity_id " +
+							 "and t1.id in (select id from PLN_ACTIVITY where OBJ_PLN_OBJECTIVE_ID =" + rs.getInt(3) + ")" +
+							 "and t3.owner_hrx_organization_id = " + searchOrg.getId() + " ";							
 					
 					logger.debug(st02);
 					
@@ -403,7 +422,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					
 					
 					Statement st1 = connection.createStatement();
-					String st1Sql = "select distinct t1.code, t1.name, t1.id, t5.owner_hrx_organization_id, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t5.targetvalue,'999,999,999,999'))||' '||t4.name||')' target, t4.id unit_id " +
+					String st1Sql = "select distinct t1.code, t1.name, t1.id, t5.owner_hrx_organization_id, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(decode(t4.id, 2, to_char(t5.targetvalue,'999,999,999,999.99'), 3, to_char(t5.targetvalue,'999,999,999,999.99'), 9, to_char(t5.targetvalue,'999,999,999,999.99'), to_char(t5.targetvalue,'999,999,999,999')))||' '||t4.name||')' target, t4.id unit_id " +
 							 "from pln_activitytargetreport t5, pln_activity t1, pln_activitytarget t3, pln_targetunit t4 " +
 	 						 "where t5.target_pln_acttarget_id = t3.id " +
 							 "	and t5.owner_hrx_organization_id = " + searchOrg.getId() +
@@ -411,6 +430,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 							 "	and t3.unit_pln_targetunit_id = t4.id " +
 							 "	and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
 							 "order by 3, 5 ";
+					
 					logger.debug("YYYYYYY");
 					logger.debug(st1Sql);
 					
@@ -426,12 +446,13 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						if (rs1.getInt(3)!=actId) {
 							rsc11.setCellValue(rs.getString(4)+rs1.getString(2));
 							actId = rs1.getInt(3);
-							rsc11.setCellStyle(styles.get("cellleft"));
 						}
+						rsc11.setCellStyle(styles.get("cellleft"));
+						Cell rsc112 = rows1.createCell(1);
+						rsc112.setCellStyle(styles.get("cellcenter"));
 						
 						// here we have to do แผนการใช้เงิน/ผลการใช้เงิน
 						// now แผน/ผลการใช้เงินของกิจกรรม
-							
 						Cell rsc013 = rows1.createCell(2);
 						rsc013.setCellValue("แผนการใช้เงิน");
 						rsc013.setCellStyle(styles.get("cellcenter"));
@@ -555,19 +576,19 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						
 						
 						j = 3;
-						s1 = 0;
-						s2 = 0;
+						s1 = 0.0;
+						s2 = 0.0;
 						if(rs1.getInt(3) == 2900 ) {
 							logger.debug(">>>>>>>>>>: rs2:");
 							logger.debug(rs2SQL);
 						}
 						while (rs2.next()) {
 							Cell rscj1 = rows1.getCell(j);
-							rscj1.setCellValue(rs2.getInt(2));
+							rscj1.setCellValue(rs2.getDouble(2));
 							Cell rscj2 = rows2.getCell(j);
-							rscj2.setCellValue(rs2.getInt(3));
-							s1 = s1 + rs2.getInt(2);
-							s2 = s2 + rs2.getInt(3);
+							rscj2.setCellValue(rs2.getDouble(3));
+							s1 = s1 + rs2.getDouble(2);
+							s2 = s2 + rs2.getDouble(3);
 							j = j+1;
 						}
 						rs2.close();
@@ -578,6 +599,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						rscs22.setCellValue(s2);
 						
 						i = i+2;
+							
 					}
 					rs1.close();
 					st1.close();
