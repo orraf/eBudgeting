@@ -422,6 +422,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					
 					
 					Statement st1 = connection.createStatement();
+/* แก้ไขการแสดงกิจกรรม ให้แสดงกิจกรรมทุกระดับเป็น Tree Walk
 					String st1Sql = "select distinct t1.code, t1.name, t1.id, t5.owner_hrx_organization_id, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(decode(t4.id, 2, to_char(t5.targetvalue,'999,999,999,999.99'), 3, to_char(t5.targetvalue,'999,999,999,999.99'), 9, to_char(t5.targetvalue,'999,999,999,999.99'), to_char(t5.targetvalue,'999,999,999,999')))||' '||t4.name||')' target, t4.id unit_id " +
 							 "from pln_activitytargetreport t5, pln_activity t1, pln_activitytarget t3, pln_targetunit t4 " +
 	 						 "where t5.target_pln_acttarget_id = t3.id " +
@@ -430,7 +431,19 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 							 "	and t3.unit_pln_targetunit_id = t4.id " +
 							 "	and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
 							 "order by 3, 5 ";
+*/
 					
+					String st1Sql = "select code, lpad(' ', (level-1) * 5, ' ')||t1.name name, id, t2.owner_hrx_organization_id, nvl(t2.own,0) own, t2.target_id, '   (เป้าหมาย '|| ltrim(decode(t2.unit_id, 2, to_char(t2.targetvalue,'999,999,999,999.99'), 3, to_char(t2.targetvalue,'999,999,999,999.99'), 9, to_char(t2.targetvalue,'999,999,999,999.99'), to_char(t2.targetvalue,'999,999,999,999')))||' '||t2.name||')' target, t2.unit_id, nvl((select distinct 0 from pln_activity where parent_pln_activity_id = t1.id), 1) leaf " +
+									 "from pln_activity t1, (select d2.activity_pln_activity_id, d1.owner_hrx_organization_id, d2.id target_id, d1.targetvalue, d3.id unit_id, d3.name, 1 own " +
+									 						"from pln_activitytargetreport d1, pln_activitytarget d2, pln_targetunit d3 " +
+									 						"where d1.target_pln_acttarget_id = d2.id " +
+									 						"and d2.unit_pln_targetunit_id = d3.id " +
+									 						"and d1.owner_hrx_organization_id = " + searchOrg.getId() + ") t2 " +
+			 						 "where t1.id = t2.activity_pln_activity_id (+) " +
+									 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
+									 "connect by prior t1.id = t1.parent_pln_activity_id " +
+									 "start with t1.parent_pln_activity_id is null " +
+									 "order siblings by t1.code ";
 					logger.debug("YYYYYYY");
 					logger.debug(st1Sql);
 					
@@ -441,165 +454,195 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					while (rs1.next()) {
 						Long targetId=rs1.getLong("target_id");
 						
-						Row rows1 = sheet.createRow(i);
-						Cell rsc11 = rows1.createCell(0);
-						if (rs1.getInt(3)!=actId) {
-							rsc11.setCellValue(rs.getString(4)+rs1.getString(2));
-							actId = rs1.getInt(3);
-						}
-						rsc11.setCellStyle(styles.get("cellleft"));
-						Cell rsc112 = rows1.createCell(1);
-						rsc112.setCellStyle(styles.get("cellcenter"));
-						
-						// here we have to do แผนการใช้เงิน/ผลการใช้เงิน
-						// now แผน/ผลการใช้เงินของกิจกรรม
-						Cell rsc013 = rows1.createCell(2);
-						rsc013.setCellValue("แผนการใช้เงิน");
-						rsc013.setCellStyle(styles.get("cellcenter"));
-						
-						for (j=3;j<16;j++) {
-							Cell rscj01 = rows1.createCell(j);
-							rscj01.setCellStyle(styles.get("cellnumber2"));
-
-						}
-
-						Row rows02 = sheet.createRow(i+1);
-						Cell rsc021 = rows02.createCell(0);
-						rsc021.setCellStyle(styles.get("cellleft"));
-						
-						Cell rsc022 = rows02.createCell(1);
-						rsc022.setCellStyle(styles.get("cellcenter"));
-						
-						Cell rsc023 = rows02.createCell(2);
-						rsc023.setCellValue("ผลการใช้เงิน");
-						rsc023.setCellStyle(styles.get("cellcenter"));
-						
-						for (j=3;j<16;j++) {
-							Cell rscj02 = rows02.createCell(j);
-							rscj02.setCellStyle(styles.get("cellnumber2"));
-
-						}
-						
-						String st05 = "select t1.fiscalmonth, nvl(sum(t1.budgetplan),0), nvl(sum(t1.BUDGETRESULT),0) " 
-								+ "from pln_monthlybgtreport t1, pln_activityperformance t2, PLN_ACTIVITYTARGETREPORT t3," +
-								"		pln_activitytarget t4 "
-								+ "where t1.performance_pln_actper_id = t2.id "
-								+ " 	and t2.id = t3.performance_pln_actper_id " 
-								+ "		and t3.target_pln_acttarget_id = t4.id "	
-								+ "  	and t4.id = " + targetId
-								+ " 	and t2.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = "+ searchOrg.getId() +") " 
-								+ "group by t1.fiscalmonth order by t1.fiscalmonth";
-						Statement st5 = connection.createStatement();
-						ResultSet rs5 = st5.executeQuery(st05);
-						logger.debug(st05);
-						j = 3;
-						s1 = 0.0;
-						s2 = 0.0;
-						d2 = 0.0;
-						while(rs5.next()) {
-							Cell rscj1 = rows1.getCell(j);
-							rscj1.setCellValue(rs5.getInt(2));
-							Cell rscj2 = rows02.getCell(j);
-							rscj2.setCellValue(rs5.getDouble(3));
+						if (rs1.getInt(5)==1 || rs1.getInt(9)==0) {
+							Row rows1 = sheet.createRow(i);
+							Cell rsc11 = rows1.createCell(0);
+							if (rs1.getInt(3)!=actId) {
+								rsc11.setCellValue(rs.getString(4)+rs1.getString(2));
+								actId = rs1.getInt(3);
+							}
+							rsc11.setCellStyle(styles.get("cellleft"));
+							Cell rsc112 = rows1.createCell(1);
+							rsc112.setCellStyle(styles.get("cellcenter"));
 							
-							s1 = s1 + rs5.getInt(2);
-							d2 = d2 + rs5.getDouble(3);
-							j = j+1;
-						}
-						Cell rscs1 = rows1.getCell(15);
-						rscs1.setCellValue(s1);
-						Cell rscs2 = rows02.getCell(15);
-						rscs2.setCellValue(d2);
-						
-						i = i+2;
-						
-						rows1 = sheet.createRow(i);
-						
-						
-						Cell rsc12 = rows1.createCell(1);
-						rsc12.setCellValue(rs1.getString(7));
-						rsc12.setCellStyle(styles.get("cellcenter"));
+							// here we have to do แผนการใช้เงิน/ผลการใช้เงิน
+							// now แผน/ผลการใช้เงินของกิจกรรม
+							if (rs1.getInt(9)==1) {
+								Cell rsc013 = rows1.createCell(2);
+								rsc013.setCellValue("แผนการใช้เงิน");
+								rsc013.setCellStyle(styles.get("cellcenter"));
+								
+								for (j=3;j<16;j++) {
+									Cell rscj01 = rows1.createCell(j);
+									rscj01.setCellStyle(styles.get("cellnumber2"));
 
-						Cell rsc13 = rows1.createCell(2);
-						rsc13.setCellValue("แผนงาน");
-						rsc13.setCellStyle(styles.get("cellcenter"));
-						
-						for (j=3;j<16;j++) {
-							Cell rscj = rows1.createCell(j);
-							if (rs1.getInt(8)==2 || rs1.getInt(8)==3 || rs1.getInt(8)==9) {
-								rscj.setCellStyle(styles.get("cellnumber2"));
+								}
+
+								Row rows02 = sheet.createRow(i+1);
+								Cell rsc021 = rows02.createCell(0);
+								rsc021.setCellStyle(styles.get("cellleft"));
+								
+								Cell rsc022 = rows02.createCell(1);
+								rsc022.setCellStyle(styles.get("cellcenter"));
+								
+								Cell rsc023 = rows02.createCell(2);
+								rsc023.setCellValue("ผลการใช้เงิน");
+								rsc023.setCellStyle(styles.get("cellcenter"));
+								
+								for (j=3;j<16;j++) {
+									Cell rscj02 = rows02.createCell(j);
+									rscj02.setCellStyle(styles.get("cellnumber2"));
+
+								}
+								
+								String st05 = "select t1.fiscalmonth, nvl(sum(t1.budgetplan),0), nvl(sum(t1.BUDGETRESULT),0) " 
+										+ "from pln_monthlybgtreport t1, pln_activityperformance t2, PLN_ACTIVITYTARGETREPORT t3," +
+										"		pln_activitytarget t4 "
+										+ "where t1.performance_pln_actper_id = t2.id "
+										+ " 	and t2.id = t3.performance_pln_actper_id " 
+										+ "		and t3.target_pln_acttarget_id = t4.id "	
+										+ "  	and t4.id = " + targetId
+										+ " 	and t2.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = "+ searchOrg.getId() +") " 
+										+ "group by t1.fiscalmonth order by t1.fiscalmonth";
+								Statement st5 = connection.createStatement();
+								ResultSet rs5 = st5.executeQuery(st05);
+								logger.debug(st05);
+								j = 3;
+								s1 = 0.0;
+								s2 = 0.0;
+								d2 = 0.0;
+								while(rs5.next()) {
+									Cell rscj1 = rows1.getCell(j);
+									rscj1.setCellValue(rs5.getInt(2));
+									Cell rscj2 = rows02.getCell(j);
+									rscj2.setCellValue(rs5.getDouble(3));
+									
+									s1 = s1 + rs5.getInt(2);
+									d2 = d2 + rs5.getDouble(3);
+									j = j+1;
+								}
+								Cell rscs1 = rows1.getCell(15);
+								rscs1.setCellValue(s1);
+								Cell rscs2 = rows02.getCell(15);
+								rscs2.setCellValue(d2);
+								
+								i = i+2;
+								
+								rows1 = sheet.createRow(i);
+								
+								
+								Cell rsc12 = rows1.createCell(1);
+								rsc12.setCellValue(rs1.getString(7));
+								rsc12.setCellStyle(styles.get("cellcenter"));
+
+								Cell rsc13 = rows1.createCell(2);
+								rsc13.setCellValue("แผนงาน");
+								rsc13.setCellStyle(styles.get("cellcenter"));
+								
+								for (j=3;j<16;j++) {
+									Cell rscj = rows1.createCell(j);
+									if (rs1.getInt(8)==2 || rs1.getInt(8)==3 || rs1.getInt(8)==9) {
+										rscj.setCellStyle(styles.get("cellnumber2"));
+									} else {
+										rscj.setCellStyle(styles.get("cellnumber"));
+									}
+									
+
+								}
+
+								Row rows2 = sheet.createRow(i+1);
+								Cell rsc21 = rows2.createCell(0);
+								rsc21.setCellStyle(styles.get("cellleft"));
+								
+								Cell rsc22 = rows2.createCell(1);
+								rsc22.setCellStyle(styles.get("cellcenter"));
+								
+								Cell rsc23 = rows2.createCell(2);
+								rsc23.setCellValue("ผลงาน");
+								rsc23.setCellStyle(styles.get("cellcenter"));
+								
+								for (j=3;j<16;j++) {
+									Cell rscj = rows2.createCell(j);
+									if (rs1.getInt(8)==2 || rs1.getInt(8)==3 || rs1.getInt(8)==9) {
+										rscj.setCellStyle(styles.get("cellnumber2"));
+									} else {
+										rscj.setCellStyle(styles.get("cellnumber"));
+									}
+
+								}
+								
+								Statement st2 = connection.createStatement();
+								ResultSet rs2;
+								String rs2SQL ="select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
+
+										 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
+										     "(select id from hrx_organization " +
+										        "connect by prior id = parent_hrx_organization_id " +
+										        "start with id = "+ searchOrg.getId() +") t4 " +
+										 "where t1.report_pln_acttargetreport_id = t2.id " +
+									     "and t2.target_pln_acttarget_id = t3.id " +
+										 "and t1.owner_hrx_organization_id = t4.id " +
+										 "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
+										 " and t3.id = " + rs1.getInt(6) +
+										 " group by t1.fiscalmonth order by t1.fiscalmonth ";
+								rs2 = st2.executeQuery(rs2SQL);
+
+								
+								
+								
+								j = 3;
+								s1 = 0.0;
+								s2 = 0.0;
+								if(rs1.getInt(3) == 2900 ) {
+									logger.debug(">>>>>>>>>>: rs2:");
+									logger.debug(rs2SQL);
+								}
+								while (rs2.next()) {
+									Cell rscj1 = rows1.getCell(j);
+									rscj1.setCellValue(rs2.getDouble(2));
+									Cell rscj2 = rows2.getCell(j);
+									rscj2.setCellValue(rs2.getDouble(3));
+									s1 = s1 + rs2.getDouble(2);
+									s2 = s2 + rs2.getDouble(3);
+									j = j+1;
+								}
+								rs2.close();
+								st2.close();
+								Cell rscs11 = rows1.getCell(15);
+								rscs11.setCellValue(s1);
+								Cell rscs22 = rows2.getCell(15);
+								rscs22.setCellValue(s2);
+								
+								i = i+2;
 							} else {
-								rscj.setCellStyle(styles.get("cellnumber"));
+								Statement st6 = connection.createStatement();
+								ResultSet rs6;
+								String rs6SQL = "select count(*) " +
+												"from pln_activitytargetreport s1, pln_activitytarget s2, (select id from pln_activity " +
+																											"connect by prior id = parent_pln_activity_id " +
+																											"start with id = " + rs1.getInt(3) + ") s3 " +
+												"where s1.target_pln_acttarget_id = s2.id " +
+												"and s2.activity_pln_activity_id = s3.id " +
+												"and s1.owner_hrx_organization_id = " + searchOrg.getId() + " ";
+								rs6 = st6.executeQuery(rs6SQL);
+
+								while (rs6.next()) {
+									if (rs6.getInt(1) > 0) {
+										for (j=1;j<16;j++) {
+											Cell rscj = rows1.createCell(j);
+											rscj.setCellStyle(styles.get("cellleft"));
+
+										}
+										i = i+1;								
+									} else {
+										rsc11.setCellValue("");
+									}
+								}
+
 							}
 							
-
-						}
-
-						Row rows2 = sheet.createRow(i+1);
-						Cell rsc21 = rows2.createCell(0);
-						rsc21.setCellStyle(styles.get("cellleft"));
-						
-						Cell rsc22 = rows2.createCell(1);
-						rsc22.setCellStyle(styles.get("cellcenter"));
-						
-						Cell rsc23 = rows2.createCell(2);
-						rsc23.setCellValue("ผลงาน");
-						rsc23.setCellStyle(styles.get("cellcenter"));
-						
-						for (j=3;j<16;j++) {
-							Cell rscj = rows2.createCell(j);
-							if (rs1.getInt(8)==2 || rs1.getInt(8)==3 || rs1.getInt(8)==9) {
-								rscj.setCellStyle(styles.get("cellnumber2"));
-							} else {
-								rscj.setCellStyle(styles.get("cellnumber"));
-							}
-
 						}
 						
-						Statement st2 = connection.createStatement();
-						ResultSet rs2;
-						String rs2SQL ="select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
-
-								 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
-								     "(select id from hrx_organization " +
-								        "connect by prior id = parent_hrx_organization_id " +
-								        "start with id = "+ searchOrg.getId() +") t4 " +
-								 "where t1.report_pln_acttargetreport_id = t2.id " +
-							     "and t2.target_pln_acttarget_id = t3.id " +
-								 "and t1.owner_hrx_organization_id = t4.id " +
-								 "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
-								 " and t3.id = " + rs1.getInt(6) +
-								 " group by t1.fiscalmonth order by t1.fiscalmonth ";
-						rs2 = st2.executeQuery(rs2SQL);
-
-						
-						
-						
-						j = 3;
-						s1 = 0.0;
-						s2 = 0.0;
-						if(rs1.getInt(3) == 2900 ) {
-							logger.debug(">>>>>>>>>>: rs2:");
-							logger.debug(rs2SQL);
-						}
-						while (rs2.next()) {
-							Cell rscj1 = rows1.getCell(j);
-							rscj1.setCellValue(rs2.getDouble(2));
-							Cell rscj2 = rows2.getCell(j);
-							rscj2.setCellValue(rs2.getDouble(3));
-							s1 = s1 + rs2.getDouble(2);
-							s2 = s2 + rs2.getDouble(3);
-							j = j+1;
-						}
-						rs2.close();
-						st2.close();
-						Cell rscs11 = rows1.getCell(15);
-						rscs11.setCellValue(s1);
-						Cell rscs22 = rows2.getCell(15);
-						rscs22.setCellValue(s2);
-						
-						i = i+2;
-							
 					}
 					rs1.close();
 					st1.close();
