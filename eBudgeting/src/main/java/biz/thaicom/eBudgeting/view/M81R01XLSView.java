@@ -175,13 +175,22 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 			
 			if (rs.getInt(2) == 1) {
 				Statement st0 = connection.createStatement();
+/* แก้ไขเนื่องจากแสดงยอดจัดสรรผิด
 				ResultSet rs0 = st0.executeQuery("select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(budgetallocated),'999,999,999,999')), '...')||' บาท)' " +
 												 "from pln_activity t1, pln_activityperformance t3, s_user t2 " +
 												 "where t1.owner_hrx_organization = t2.dept_id " +
 												 "and t1.id = t3.activity_pln_activity_id " +
 												 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
 												 "and t2.login = '" + currentUser.getUsername() + "' ");
-				
+*/				
+				ResultSet rs0 = st0.executeQuery("select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(t2.budgetallocated),'999,999,999,999')), '...')||' บาท)' " +
+												 "from pln_activity t1, pln_activityperformance t2 " +
+												 "where t1.id = t2.activity_pln_activity_id " +
+												 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
+												 "and t2.owner_hrx_organization_id in (select id from hrx_organization " +
+												 										"connect by prior id = parent_hrx_organization_id " +
+												 										"start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) ");
+
 				Cell rsc1 = rows.createCell(1);
 				if (rs0.next()) {
 					rsc1.setCellValue(rs0.getString(1));
@@ -196,18 +205,21 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 				
 				for (j=3;j<16;j++) {
 					Cell rscj = rows.createCell(j);
-					rscj.setCellStyle(styles.get("cellcenter"));
+					rscj.setCellStyle(styles.get("cellnumber2"));
 				}
 
 				Statement st3 = connection.createStatement();
-				ResultSet rs3 = st3.executeQuery("select t1.fiscalmonth, sum(t1.budgetplan), ltrim(to_char(sum(t1.budgetplan),'999,999,999,999')) " +
+				ResultSet rs3 = st3.executeQuery("select t1.fiscalmonth, sum(t1.budgetplan), ltrim(to_char(sum(t1.budgetplan),'999,999,999,990.00')) " +
 												 "from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activity t3 " +
 											  	 "where t1.performance_pln_actper_id = t2.id " +
 												 "and t2.activity_pln_activity_id = t3.id " +
-												 "and t3.obj_pln_objective_id = " + rs.getInt(3) + 
-												 " group by t1.fiscalmonth " +
+											  	 "and t2.owner_hrx_organization_id in (select id from hrx_organization " + 
+											  	 										"connect by prior id = parent_hrx_organization_id " +
+											  	 										"start with id = (select dept_id from s_user where login = '" + currentUser.getUsername() + "')) " +
+												 "and t3.obj_pln_objective_id = " + rs.getInt(3) + " " +
+												 "group by t1.fiscalmonth " +
 												 "order by t1.fiscalmonth ");
-
+				
 				j = 3;
 				s1 = 0;
 				while (rs3.next()) {
@@ -227,12 +239,12 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 				rsc1.setCellStyle(styles.get("cellcenter"));
 				
 				rsc2 = rows.createCell(2);
-				rsc2.setCellValue("ผลการใช้เงิน");
+				rsc2.setCellValue("ผลการใช้เงิน (G)");
 				rsc2.setCellStyle(styles.get("cellcenter"));
 				
 				for (j=3;j<16;j++) {
 					Cell rscj = rows.createCell(j);
-					rscj.setCellStyle(styles.get("cellcenter"));
+					rscj.setCellStyle(styles.get("cellnumber2"));
 				}
 
 				Statement st4 = connection.createStatement();
@@ -372,7 +384,7 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 		sheet.setColumnWidth(12, 3000);
 		sheet.setColumnWidth(13, 3000);
 		sheet.setColumnWidth(14, 3000);
-		sheet.setColumnWidth(14, 3000);
+		sheet.setColumnWidth(15, 4000);
 		sheet.createFreezePane( 3, 4 );
 	}
 	
@@ -528,6 +540,21 @@ public class M81R01XLSView extends AbstractPOIExcelView {
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cellnumber", style);
+
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_RIGHT);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setWrapText(true);
+        style.setDataFormat(format.getFormat("#,##0.00"));
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cellnumber2", style);
 
         style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_LEFT);
