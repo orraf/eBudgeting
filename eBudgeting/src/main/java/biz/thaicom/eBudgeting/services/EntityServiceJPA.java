@@ -6326,7 +6326,9 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<ActivityTargetReport> findActivityTargetReportByOwnerOrRegulator(
 			Organization workAt, Integer fiscalYear) {
-		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByActivityOwnerOrRegulatorAndFiscalYear(workAt, fiscalYear);
+		logger.debug("findActivityTargetReportByOwnerOrRegulator: " + OrganizationType.getChildrenQueryString(workAt));
+		List<ActivityTargetReport> reports = activityTargetReportRepository
+				.findAllByActivityOwnerOrRegulatorAndFiscalYear(OrganizationType.getChildrenQueryString(workAt), fiscalYear);
 		return reports;
 	}
 

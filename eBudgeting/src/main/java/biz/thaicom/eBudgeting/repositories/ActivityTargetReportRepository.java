@@ -97,13 +97,13 @@ public interface ActivityTargetReportRepository extends
 			+ "		INNER JOIN FETCH obj3.parent obj4 "
 			+ "		INNER JOIN FETCH obj4.parent obj5 "
 			+ "		INNER JOIN FETCH obj5.parent obj6 "
-			+ "WHERE ( activity.regulator = ?1 "
-			+ "				OR activity.owner = ?1 ) "
+			+ "WHERE ( report.owner.code like ?1 "
+			+ "	) "
 			+ "		AND activity.forObjective.fiscalYear = ?2 "
 			+ "		AND report.reportLevel = 1 "
 			+ "ORDER BY obj6.code asc, obj5.code asc, obj4.code asc, obj3.code asc, obj2.code asc, obj1.code asc, activity.code asc,"
 			+ "		target.id asc ")
 	public List<ActivityTargetReport> findAllByActivityOwnerOrRegulatorAndFiscalYear(
-			Organization org, Integer fiscalYear);
+			String org, Integer fiscalYear);
 
 }
