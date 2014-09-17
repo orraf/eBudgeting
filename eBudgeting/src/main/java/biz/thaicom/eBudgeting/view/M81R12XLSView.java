@@ -259,7 +259,7 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 				List<Double> budgetUsages = activityCodeMap.get(กิจกรรม.getCode());
 				obj1Row.createCell(2).setCellValue("ผลการใช้เงิน (G)");
 				
-				for(int j=0;i<12;i++) {
+				for(int j=0;j<12;j++) {
 					obj1Row.createCell(j+3).setCellValue(budgetUsages.get((9+j)%12));
 				}
 			}
