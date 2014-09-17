@@ -1,9 +1,5 @@
 package biz.thaicom.eBudgeting.view;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,8 +21,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
-
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Activity;
@@ -58,6 +52,29 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 		
 		@SuppressWarnings("unchecked")
 		List<ActivityTargetReport> reports = (List<ActivityTargetReport>) model.get("reports");
+		
+		@SuppressWarnings("unchecked")
+		List<Object[]> sumFromG = (List<Object[]>) model.get("sumFromG");
+		
+		Map<String, List<Double>> activityCodeMap = new HashMap<String, List<Double>>();
+		
+		for(Object[] obj : sumFromG) {
+			List<Double> budgetUsages;
+			
+			if(!activityCodeMap.containsKey((String) obj[0])) {
+				budgetUsages = new ArrayList<Double>();
+				for(int i=0; i<12; i++) {
+					budgetUsages.add(0.0);
+				}
+				activityCodeMap.put((String)obj[0], budgetUsages);
+			} else {
+				budgetUsages = activityCodeMap.get(obj[0]); 
+			}
+			
+			budgetUsages.set(((Integer) obj[1])-1, (Double) obj[2]) ;
+			logger.debug("xxxxxxxxxxxxxxxxxxxxxxxxxxx: " + (String)obj[0] +
+					"saving month:"  + (((Integer) obj[1])-1)  + " with value " + (Double) obj[2] );
+		}
 		
 		Organization searchOrg = (Organization) model.get("searchOrg");
 		Map<String, CellStyle> styles = createStyles(workbook);
@@ -156,7 +173,7 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 		}
 		for(ActivityTargetReport report : reports) {
 			if(! prevReport.getTarget().getId().equals(report.getTarget().getId())) {
-				logger.debug("new Target with id: " + report.getTarget().getId());
+//				logger.debug("new Target with id: " + report.getTarget().getId());
 				// new Target
 				prevSum =  ActivityTargetReport.createEmptyReport(report.getTarget());
 				sumReports.add(prevSum);
@@ -229,12 +246,23 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 			
 			obj1Row = sheet.createRow(rowNum++);
 			obj1Name = obj1Row.createCell(0);
-			obj1Name.setCellValue(getIndent(2) + แผนปฏิบัติการ.getName());
+			obj1Name.setCellValue(getIndent(2) + แผนปฏิบัติการ.getName() + " (" + แผนปฏิบัติการ.getCode() +")");
+			
+			
+			
 			
 			obj1Row = sheet.createRow(rowNum++);
 			obj1Name = obj1Row.createCell(0);
-			obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName());
+			obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName() + " (" + กิจกรรม.getCode() +")");
 			
+			if(activityCodeMap.containsKey(กิจกรรม.getCode())) {
+				List<Double> budgetUsages = activityCodeMap.get(กิจกรรม.getCode());
+				obj1Row.createCell(2).setCellValue("ผลการใช้เงิน (G)");
+				
+				for(int j=0;i<12;i++) {
+					obj1Row.createCell(j+3).setCellValue(budgetUsages.get((9+j)%12));
+				}
+			}
 			
 //			obj1Row = sheet.createRow(rowNum++);
 //			obj1Name = obj1Row.createCell(0);
@@ -331,7 +359,17 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 				กิจกรรม = currentกิจกรรม;
 				obj1Row = sheet.createRow(rowNum++);
 				obj1Name = obj1Row.createCell(0);
-				obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName());
+				obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName() + "(" + กิจกรรม.getCode() + ")");
+				
+				if(activityCodeMap.containsKey(กิจกรรม.getCode())) {
+					List<Double> budgetUsages = activityCodeMap.get(กิจกรรม.getCode());
+					obj1Row.createCell(2).setCellValue("ผลการใช้เงิน (G)");
+					
+					for(int j=0;j<12;j++) {
+						logger.debug("code: "+ กิจกรรม.getCode()  +" outputing row: " + (j+3) + ":" + budgetUsages.get((9+j)%12)); 
+						obj1Row.createCell(j+3).setCellValue(budgetUsages.get((9+j)%12));
+					}
+				}
 			}
 			
 			if(!currentกิจกรรมย่อย.getId().equals(กิจกรรมย่อย.getId())) {

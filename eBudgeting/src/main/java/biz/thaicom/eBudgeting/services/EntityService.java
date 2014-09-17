@@ -472,6 +472,10 @@ public interface EntityService {
 	public AssetCategory deleteAssetCategory(Long id);
 	public List<AssetCategory> findAssetCategoryAll();
 	
+	// G
+	public List<Object[]> findSumMonthlyFromGByFiscalYearAndOwnerLike(
+			Integer fiscalYear, Organization workAt);
+	
 	
 
 	

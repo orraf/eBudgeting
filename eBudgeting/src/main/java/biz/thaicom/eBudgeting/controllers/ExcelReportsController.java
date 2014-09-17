@@ -584,6 +584,10 @@ public class ExcelReportsController {
 		List<ActivityTargetReport> reports = entityService.findActivityTargetReportByOwnerOrRegulator(
 				currentUser.getWorkAt(), fiscalYear);
 		
+		List<Object[]> sumFromG = entityService.findSumMonthlyFromGByFiscalYearAndOwnerLike(fiscalYear, currentUser.getWorkAt());
+		
+		model.addAttribute("sumFromG", sumFromG);
+		
 		model.addAttribute("reports", reports);
 		
 		Cookie cookie = new Cookie("fileDownload", "true");

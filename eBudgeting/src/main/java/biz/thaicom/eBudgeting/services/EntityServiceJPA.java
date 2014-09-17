@@ -6332,6 +6332,26 @@ public class EntityServiceJPA implements EntityService {
 		return reports;
 	}
 
+	@Override
+	public List<Object[]> findSumMonthlyFromGByFiscalYearAndOwnerLike(
+			Integer fiscalYear, Organization workAt) {
+
+		String query = OrganizationType.getChildrenQueryStringOnlyProvince(workAt);
+		
+		List<Organization> orgs = organizationRepository
+				.findAllCodeLike(query);
+		
+		ArrayList<Long> ids = new ArrayList<Long>();
+		for(Organization o : orgs) {
+			ids.add(o.getId());
+		}
+		
+		List<Object[]> sum = budgetUsageFromExternalRepository
+				.findMonthlyBudgetUsageByfiscalYearAndOrgLike(fiscalYear, ids);
+		
+		return sum;
+	}
+
 
 
 	
