@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Activity;
@@ -202,6 +203,9 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 		Activity กิจกรรมเสริม = null;
 		Activity กิจกรรมสนับสนุน = null;
 		
+		Row rowLast_แผนปฏิบัติการ = null;
+		Double[] sumแผนปฏิบัติการ = new Double[12];
+		
 		
 		
 		if(sumReports.size() > 0) {
@@ -244,26 +248,47 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 			obj1Name = obj1Row.createCell(0);
 			obj1Name.setCellValue(getIndent(1) + กิจกรรมหลัก.getName());
 			
-			obj1Row = sheet.createRow(rowNum++);
-			obj1Name = obj1Row.createCell(0);
-			obj1Name.setCellValue(getIndent(2) + แผนปฏิบัติการ.getName() + " (" + แผนปฏิบัติการ.getCode() +")");
-			
-			
-			
 			
 			obj1Row = sheet.createRow(rowNum++);
 			obj1Name = obj1Row.createCell(0);
-			obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName() + " (" + กิจกรรม.getCode() +")");
+			obj1Name.setCellValue(getIndent(2) + แผนปฏิบัติการ.getName());
+			obj1Name.setCellStyle(styles.get("แผนปฏิบัติการ"));
+			obj1Name = obj1Row.createCell(1);
+			obj1Name.setCellValue("");
+			obj1Name.setCellStyle(styles.get("แผนปฏิบัติการ"));
+			obj1Name = obj1Row.createCell(2);
+			obj1Name.setCellValue("ผลการใช้เงิน (G)");
+			obj1Name.setCellStyle(styles.get("แผนปฏิบัติการ"));
+			
+			rowLast_แผนปฏิบัติการ = obj1Row;
+			
+			
+			logger.debug("currentRow: " + rowNum);
+			obj1Row = sheet.createRow(rowNum++);
+			obj1Name = obj1Row.createCell(0);
+			logger.debug("First Row: " +  getIndent(3) + กิจกรรม.getName());
+			obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName() + " [" + กิจกรรม.getCode() +"]");
 			
 			if(activityCodeMap.containsKey(กิจกรรม.getCode())) {
 				List<Double> budgetUsages = activityCodeMap.get(กิจกรรม.getCode());
 				obj1Row.createCell(2).setCellValue("ผลการใช้เงิน (G)");
 				
+				Double sum = 0.0;
+				Cell aCell;
 				for(int j=0;j<12;j++) {
-					obj1Row.createCell(j+3).setCellValue(budgetUsages.get((9+j)%12));
+					aCell = obj1Row.createCell(j+3);
+					aCell.setCellStyle(styles.get("cellnumbercenter"));
+					aCell.setCellValue(budgetUsages.get((9+j)%12));
+					sum+=budgetUsages.get((9+j)%12);
+					
+					sumแผนปฏิบัติการ[j] = budgetUsages.get((9+j)%12);
 				}
+				aCell = obj1Row.createCell(15);
+				aCell.setCellStyle(styles.get("cellnumbercenter"));
+				aCell.setCellValue(sum);
 			}
 			
+			rowNum++;
 //			obj1Row = sheet.createRow(rowNum++);
 //			obj1Name = obj1Row.createCell(0);
 //			obj1Name.setCellValue(getIndent(4) + กิจกรรมย่อย.getName());	
@@ -353,22 +378,58 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 				obj1Row = sheet.createRow(rowNum++);
 				obj1Name = obj1Row.createCell(0);
 				obj1Name.setCellValue(getIndent(2) + แผนปฏิบัติการ.getName());
+				obj1Name.setCellStyle(styles.get("แผนปฏิบัติการ"));
+				obj1Name = obj1Row.createCell(1);
+				obj1Name.setCellValue("");
+				obj1Name.setCellStyle(styles.get("แผนปฏิบัติการ"));
+				obj1Name = obj1Row.createCell(2);
+				obj1Name.setCellValue("ผลการใช้เงิน (G)");
+				obj1Name.setCellStyle(styles.get("แผนปฏิบัติการ"));
+				
+				// put sum in the last แผนปฏิบัติการ
+				Cell aCell;
+				Double sum = 0.0;
+				for(int j=0;j<12;j++) {
+					aCell = rowLast_แผนปฏิบัติการ.createCell(j+3);
+					aCell.setCellStyle(styles.get("cellnumbercenter"));
+					aCell.setCellValue(sumแผนปฏิบัติการ[j]);
+					sum+=sumแผนปฏิบัติการ[j];
+					
+					// now reset value
+					sumแผนปฏิบัติการ[j] = 0.0;
+ 				}
+				aCell = rowLast_แผนปฏิบัติการ.createCell(15);
+				aCell.setCellStyle(styles.get("cellnumbercenter"));
+				aCell.setCellValue(sum);
+				
+				rowLast_แผนปฏิบัติการ=obj1Row;
+				
+				
 			}
 
 			if(!currentกิจกรรม.getId().equals(กิจกรรม.getId())) {
 				กิจกรรม = currentกิจกรรม;
 				obj1Row = sheet.createRow(rowNum++);
 				obj1Name = obj1Row.createCell(0);
-				obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName() + "(" + กิจกรรม.getCode() + ")");
+				obj1Name.setCellValue(getIndent(3) + กิจกรรม.getName() + " [" + กิจกรรม.getCode() + "]");
 				
 				if(activityCodeMap.containsKey(กิจกรรม.getCode())) {
 					List<Double> budgetUsages = activityCodeMap.get(กิจกรรม.getCode());
 					obj1Row.createCell(2).setCellValue("ผลการใช้เงิน (G)");
 					
+					Double sum = 0.0;
+					Cell aCell;
 					for(int j=0;j<12;j++) {
-						logger.debug("code: "+ กิจกรรม.getCode()  +" outputing row: " + (j+3) + ":" + budgetUsages.get((9+j)%12)); 
-						obj1Row.createCell(j+3).setCellValue(budgetUsages.get((9+j)%12));
+						aCell = obj1Row.createCell(j+3);
+						aCell.setCellStyle(styles.get("cellnumbercenter"));
+						aCell.setCellValue(budgetUsages.get((9+j)%12));
+						sum+=budgetUsages.get((9+j)%12);
+						
+						sumแผนปฏิบัติการ[j] += budgetUsages.get((9+j)%12);
 					}
+					aCell = obj1Row.createCell(15);
+					aCell.setCellStyle(styles.get("cellnumbercenter"));
+					aCell.setCellValue(sum);
 				}
 			}
 			
@@ -468,6 +529,23 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 			
 			
 		}
+		
+		// put sum in the last แผนปฏิบัติการ
+		Cell aCell;
+		Double sum = 0.0;
+		for(int j=0;j<12;j++) {
+			aCell = rowLast_แผนปฏิบัติการ.createCell(j+3);
+			aCell.setCellStyle(styles.get("cellnumbercenter"));
+			aCell.setCellValue(sumแผนปฏิบัติการ[j]);
+			sum+=sumแผนปฏิบัติการ[j];
+			
+			// now reset value
+			sumแผนปฏิบัติการ[j] = 0.0;
+			}
+		aCell = rowLast_แผนปฏิบัติการ.createCell(15);
+		aCell.setCellStyle(styles.get("cellnumbercenter"));
+		aCell.setCellValue(sum);
+		
 		
 //		
 //		Statement st = connection.createStatement();
@@ -965,6 +1043,11 @@ public class M81R12XLSView extends AbstractPOIExcelView {
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("groupleft", style);
 
+        style = wb.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        styles.put("แผนปฏิบัติการ", style);
+        
         style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_RIGHT);
         style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
