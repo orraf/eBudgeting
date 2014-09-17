@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Activity;
 import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.MonthlyActivityReport;
@@ -81,7 +82,9 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 
 		Row secondRow = sheet.createRow(2);
 		Cell cell21 = secondRow.createCell(0);
-		if(searchOrg.isSubSection()) {
+		if(OrganizationType.getType(searchOrg) == OrganizationType.ส่วนในจังหวัด ||
+				OrganizationType.getType(searchOrg) == OrganizationType.แผนกในจังหวัด || 
+				OrganizationType.getType(searchOrg) == OrganizationType.แผนกในอำเภอ) {
 			cell21.setCellValue("หน่วยงาน " + searchOrg.getName() + " " + searchOrg.getParent().getName());
 		} else {
 			cell21.setCellValue("หน่วยงาน " + searchOrg.getName());
