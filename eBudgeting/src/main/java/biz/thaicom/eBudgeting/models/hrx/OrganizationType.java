@@ -69,6 +69,16 @@ public enum OrganizationType {
     	}
     }
     
+    public static String getChildrenQueryStringOnlyProvince(Organization org) {
+    	String query = "";
+    	if(OrganizationType.getType(org) == OrganizationType.จังหวัด) {
+    		query += org.getCode().substring(0, 2);
+    		query += "000%";
+    	}
+    	
+    	return query;
+    }
+    
     public static String getChildrenQueryString(Organization org) {
     	String orgCode = org.getCode();
     	if(orgCode != null) {

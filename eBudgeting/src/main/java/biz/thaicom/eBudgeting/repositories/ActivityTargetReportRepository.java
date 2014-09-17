@@ -100,7 +100,7 @@ public interface ActivityTargetReportRepository extends
 			+ "WHERE ( report.owner.code like ?1 "
 			+ "	) "
 			+ "		AND activity.forObjective.fiscalYear = ?2 "
-			+ "		AND report.reportLevel = 1 "
+			+ "		AND report.reportLevel = 2 "
 			+ "ORDER BY obj6.code asc, obj5.code asc, obj4.code asc, obj3.code asc, obj2.code asc, obj1.code asc, activity.code asc,"
 			+ "		target.id asc ")
 	public List<ActivityTargetReport> findAllByActivityOwnerOrRegulatorAndFiscalYear(

@@ -59,12 +59,8 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 		@SuppressWarnings("unchecked")
 		List<ActivityTargetReport> reports = (List<ActivityTargetReport>) model.get("reports");
 		
-		
-		
 		Organization searchOrg = (Organization) model.get("searchOrg");
-		
-		
-        Map<String, CellStyle> styles = createStyles(workbook);
+		Map<String, CellStyle> styles = createStyles(workbook);
 
         Objective root = (Objective) model.get("root");
 		Integer fiscalYear = (Integer) model.get("fiscalYear");
