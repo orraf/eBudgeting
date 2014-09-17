@@ -85,7 +85,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				OrganizationType.getType(searchOrg) == OrganizationType.แผนก) {
 			cell21.setCellValue("หน่วยงาน " + searchOrg.getName() + " " + searchOrg.getParent().getName());
 			
-			if(OrganizationType.getType(searchOrg) != OrganizationType.ส่วน) {
+			if(OrganizationType.getType(searchOrg) != OrganizationType.ส่วนในจังหวัด) {
 				searchOrg = searchOrg.getParent();
 			}
 		} else {
