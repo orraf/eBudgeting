@@ -82,9 +82,13 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 
 		Row secondRow = sheet.createRow(2);
 		Cell cell21 = secondRow.createCell(0);
+		
+		logger.debug("=======================OrganizationType : " + OrganizationType.getType(searchOrg));
+		
 		if(OrganizationType.getType(searchOrg) == OrganizationType.ส่วนในจังหวัด ||
 				OrganizationType.getType(searchOrg) == OrganizationType.แผนกในจังหวัด || 
-				OrganizationType.getType(searchOrg) == OrganizationType.แผนกในอำเภอ) {
+				OrganizationType.getType(searchOrg) == OrganizationType.แผนกในอำเภอ || 
+				OrganizationType.getType(searchOrg) == OrganizationType.แผนก) {
 			cell21.setCellValue("หน่วยงาน " + searchOrg.getName() + " " + searchOrg.getParent().getName());
 		} else {
 			cell21.setCellValue("หน่วยงาน " + searchOrg.getName());
