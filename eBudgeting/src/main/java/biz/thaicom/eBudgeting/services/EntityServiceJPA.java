@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -4833,7 +4834,15 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public ActivityTargetReport findActivityTargetReportById(Long id) {
 		ActivityTargetReport atr = activityTargetReportRepository.findOneAndFetchReportById(id);
-		atr.getActivityPerformance().getMonthlyBudgetReports().size();
+		if(atr.getActivityPerformance().getMonthlyBudgetReports().size() > 12) {
+			// we need to return just the first one
+			MonthlyBudgetReport[] reports = new MonthlyBudgetReport[12];
+			for(MonthlyBudgetReport monthReport : atr.getActivityPerformance().getMonthlyBudgetReports()) {
+				reports[monthReport.getFiscalMonth() % 12] = monthReport; 
+			}
+			atr.getActivityPerformance().setMonthlyBudgetReports(new ArrayList<MonthlyBudgetReport>(Arrays.asList(reports)));			
+		};
+
 		atr.setLatestResult(activityTargetResultRepository.findByLatestTimeStamp(atr));
 		
 		// we don't need the full target.reports here 
@@ -4889,21 +4898,37 @@ public class EntityServiceJPA implements EntityService {
 		// now do this with the performance
 		if(report.getActivityPerformance().getMonthlyBudgetReports() == null ||
 				report.getActivityPerformance().getMonthlyBudgetReports().size() != 12) {
-			report.getActivityPerformance().setMonthlyBudgetReports(new ArrayList<MonthlyBudgetReport>());
 			
+			
+			// we'll have to remove all of them!
+			List<MonthlyBudgetReport> oldMonthlyReport = report.getActivityPerformance().getMonthlyBudgetReports();
+			for(MonthlyBudgetReport bgtReport : oldMonthlyReport) {
+				bgtReport.setActivityPerformance(null);
+			}
+			monthlyBudgetReportRepository.delete(oldMonthlyReport);
+			
+			
+			report.getActivityPerformance().setMonthlyBudgetReports(new ArrayList<MonthlyBudgetReport>());
 			List<MonthlyBudgetReport> monthlyReports = report.getActivityPerformance().getMonthlyBudgetReports();
+			activityPerformanceRepository.save(report.getActivityPerformance());
+			
 			for(Integer i=0; i<12; i++) {
 				MonthlyBudgetReport monthly = new MonthlyBudgetReport();
 				monthly.setFiscalMonth(i);
 				monthly.setOwner(report.getOwner());
 				monthly.setActivityPerformance(report.getActivityPerformance());
 				
+				monthlyBudgetReportRepository.save(monthly);
+				
 				monthlyReports.add(monthly);
 			}
+			
+			activityPerformanceRepository.save(report.getActivityPerformance());
 		}
 		
 		for(JsonNode monthlyNode : node.get("activityPerformance").get("monthlyBudgetReports")) {
 			Integer month = monthlyNode.get("fiscalMonth").asInt();
+			logger.debug(" saving month: " + month); 
 			MonthlyBudgetReport monthly = report.getActivityPerformance().getMonthlyBudgetReports().get(month);
 			if(monthlyNode.get("budgetPlan")!=null) {
 				monthly.setBudgetPlan(monthlyNode.get("budgetPlan").asDouble());
