@@ -5015,7 +5015,11 @@ public class EntityServiceJPA implements EntityService {
 				}
 			}
 			
-			objectives = objectiveRepository.findAllObjectiveByIds(objIds); 
+			logger.debug("objIds.size() == " + objIds.size()); 
+			
+			if(objIds.size() > 0) {
+				objectives = objectiveRepository.findAllObjectiveByIds(objIds);
+			}
 		}
 		
 		return objectives;
