@@ -6371,6 +6371,9 @@ public class EntityServiceJPA implements EntityService {
 				.findAllCodeLike(query);
 		
 		ArrayList<Long> ids = new ArrayList<Long>();
+		
+		ids.add(workAt.getId());
+		
 		for(Organization o : orgs) {
 			ids.add(o.getId());
 		}
