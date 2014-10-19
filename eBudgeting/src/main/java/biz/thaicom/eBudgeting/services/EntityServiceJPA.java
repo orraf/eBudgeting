@@ -6209,7 +6209,9 @@ public class EntityServiceJPA implements EntityService {
 			Integer fiscalYear, ThaicomUserDetail currentUser) {
 	
 		Organization searchOrg = currentUser.getWorkAt();
-		if(searchOrg.getType() == OrganizationType.แผนก) {
+		if(searchOrg.getType() == OrganizationType.แผนก || 
+				searchOrg.getType() == OrganizationType.ส่วนในจังหวัด || 
+				searchOrg.getType() == OrganizationType.แผนกในจังหวัด) {
 			searchOrg = searchOrg.getParent();
 		}
 		
