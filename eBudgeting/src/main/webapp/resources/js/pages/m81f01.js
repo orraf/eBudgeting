@@ -151,10 +151,11 @@ var ModalView = Backbone.View.extend({
 		
 		
 		this.currentTargetResult.save(null, {
-			success: _.bind(function() {
+			success: _.bind(function(model, response, options) {
 				alert("บันทึกการรายงานผลเรียบร้อยแล้ว");
 				this.currentTargetReport.set('latestResult', this.currentTargetResult);
 				this.currentTargetResult.get('report').get('target').set('filterReport', this.currentTargetReport);
+				this.currentTargetResult.set('id', parseInt(response));
 				// and update the monthly accordingly
 				
 				this.render();

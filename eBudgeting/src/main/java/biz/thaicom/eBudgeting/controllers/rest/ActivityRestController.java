@@ -199,11 +199,11 @@ public class ActivityRestController {
 	}
 	
 	@RequestMapping(value="/ActivityTargetResult/", method=RequestMethod.POST) 
-	public @ResponseBody String saveActivityTargetResult(
+	public @ResponseBody Long saveActivityTargetResult(
 			@RequestBody JsonNode node,
 			@Activeuser ThaicomUserDetail currentUser){
-		entityService.saveActivityTargetResult(node, currentUser);
-		return "success";
+		ActivityTargetResult result = entityService.saveActivityTargetResult(node, currentUser);
+		return result.getId();
 	}
 	
 	@RequestMapping(value="/ActivityTargetResult/{id}", method=RequestMethod.PUT) 

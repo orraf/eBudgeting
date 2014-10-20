@@ -5148,6 +5148,7 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		ActivityTargetReport report = activityTargetReportRepository.findOne(getJsonNodeId(node.get("report")));
+		
 		result.setReport(report);
 		result.setTimestamp(new Date());
 		result.setPerson(currentUser.getPerson());

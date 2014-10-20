@@ -1141,19 +1141,19 @@ public class GenericViewController {
 		Integer fy = setFiscalYearFromSession(model, session);
 		model.addAttribute("rootPage", false);
 		
-		logger.debug("fiscalYear :" + session.getAttribute("fiscalYear"));
+		logger.debug("fiscalYear :" + session.getAttribute("currentRootFY"));
 		
 		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
 		model.addAttribute("parentCurrentOrganizationId", parentOrg.getId());
 		
 		//check the budgetSignOff
-		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
-				fy, currentUser.getWorkAt());
+		//BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
+		//		fy, currentUser.getWorkAt());
 		
-		if(bso != null && bso.getLock1Person() != null) {
+		//if(bso != null && bso.getLock1Person() != null) {
 			// should not be able to edit!
-			model.addAttribute("readOnly", true);
-		}
+		//	model.addAttribute("readOnly", true);
+		//	}
 		
 		return "m73f01";
 	}
@@ -1171,13 +1171,13 @@ public class GenericViewController {
 		model.addAttribute("workAtId", currentUser.getWorkAt().getId());
 		
 		//check the budgetSignOff
-		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
-				fy, currentUser.getWorkAt());
-		
-		if(bso != null && bso.getLock1Person() != null) {
+//		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
+//				fy, currentUser.getWorkAt());
+//		
+//		if(bso != null && bso.getLock1Person() != null) {
 			// should not be able to edit!
-			model.addAttribute("readOnly", true);
-		}
+//			model.addAttribute("readOnly", true);
+//		}
 		
 		return "m73f02";
 	}
