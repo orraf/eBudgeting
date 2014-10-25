@@ -554,20 +554,16 @@ public class EntityServiceJPA implements EntityService {
 			BudgetLevel level = budgetTypeRepository.findBudgetLevelNumber(budgetType.getParentLevel());
 			budgetType.setLevel(level);
 			
-			Integer prevLineNumber = null;
 			if(parent.getChildren().size() > 0) {
 				BudgetType lastIndexType = parent.getChildren().get(parent.getChildren().size()-1);
 				budgetType.setIndex(lastIndexType.getIndex()+1);
 				
-				prevLineNumber = lastIndexType.getLineNumber();
 				
 			} else {
 				budgetType.setIndex(0);
 				
-				prevLineNumber = parent.getLineNumber();
 			}
 			
-			budgetType.setLineNumber(prevLineNumber+1);
 			
 			// now the code
 			logger.debug("level " + level.getId());
@@ -577,7 +573,6 @@ public class EntityServiceJPA implements EntityService {
 			
 			
 			// and the last piece will be lineNumber 
-			budgetTypeRepository.incrementLineNumber(prevLineNumber);
 		} else {
 			budgetType = budgetTypeRepository.findOne(node.get("id").asLong());
 		}
@@ -1902,37 +1897,6 @@ public class EntityServiceJPA implements EntityService {
 				
 			} 
 			
-			if(parent.getLineNumber() != null) {
-				
-				if(objective.getLineNumber() != null) {
-					objectiveRepository.removeFiscalyearLineNumberAt(objective.getFiscalYear(), objective.getLineNumber(), allDescendant.size()+1);
-				}
-				
-				Integer maxLineNumber = null;
-				
-				if(parent.getChildren().size() == 0) {
-					logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>parent LineNumber Before: " + parent.getLineNumber());
-					parent = objectiveRepository.findOne(parentId);
-					logger.debug("parent LineNumber After: " + parent.getLineNumber());
-					maxLineNumber = parent.getLineNumber();
-				} else {
-					maxLineNumber = objectiveRepository.findMaxLineNumberChildrenOf(parent);
-					logger.debug("++++ objectiveRepository.findMaxLineNumberChildrenOf: " + maxLineNumber);
-				}
-				
-				objectiveRepository.insertFiscalyearLineNumberAt(objective.getFiscalYear(), maxLineNumber+allDescendant.size()+1, maxLineNumber+allDescendant.size()+1);
-				objective.setLineNumber(maxLineNumber+1);
-				
-				// now we should set the Line number of all descendant
-				objective.calculateAndSetLineNumberForChildren();
-				
-				// now save all descendant 
-				for(Objective descendant : allDescendant) {
-					objectiveRepository.save(descendant);
-				}
-				
-			}
-			
 			
 			objective.setParent(parent);
 			parent.setIsLeaf(false);
@@ -1945,30 +1909,14 @@ public class EntityServiceJPA implements EntityService {
 			
 			objective.setParentLevel(2);
 			objective.setParentPath("." + root.getId().toString() + ".");
-			if(objective.getLineNumber() == null) {
-				// we'll have to find out this line number  
-				Integer maxLineNumber = objectiveRepository.findMaxLineNumberFiscalYear(objective.getFiscalYear());
-				if(maxLineNumber != null) {
-					objective.setLineNumber(maxLineNumber+1);
-				} else {
-					objective.setLineNumber(1);
-				}
-			}
-			
 		} else{
 			// parent is null 
 			objective.setParent(null);
 			objective.setParentPath(".");
 			objective.setParentLevel(1);
 
-			if(objective.getLineNumber() != null) {
-				objectiveRepository.removeFiscalyearLineNumberAt(objective.getFiscalYear(), objective.getLineNumber(), allDescendant.size()+1);
-				objective.setLineNumber(null);
-			}
-			
 			// now save all descendant 
 			for(Objective descendant : allDescendant) {
-				descendant.setLineNumber(null);
 				objectiveRepository.save(descendant);
 			}
 			

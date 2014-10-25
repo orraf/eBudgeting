@@ -28,7 +28,7 @@
 	
 	<script src="<c:url value='/resources/jslibs/modernizr.custom.16652.js'/>"></script>
 	
-	<script src="<c:url value='/resources/jslibs/jqueryui-1.9.2/js/jquery-1.8.3.js'/>"></script>
+	<script src="<c:url value='/resources/jslibs/jquery-1.11.1.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/jqueryui-1.9.2/js/jquery-ui-1.9.2.custom.min.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/jquery.ui.datepicker-th.js'/>"></script>
 	<script src="<c:url value='/resources/jslibs/jquery.ui.datepicker.ext.be.js'/>"></script>
@@ -55,6 +55,20 @@
 </head>
 
 <body>
+	<div id="errorModal" class="modal wideModal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<span style="font-weight: bold;"></span>
+			</div>
+			<div class="modal-body" style="max-height: 800px;">
+				
+			</div>
+			</div>
+		</div>
+	</div>		
+
 	<c:choose>
 		<c:when test="${adminPage == true}">
 			<div id="container-header" class="container">
@@ -78,6 +92,18 @@
 		<tiles:insertAttribute name="footer" />
 	</div>
 	
+	<script id="errorModalBodyTemplate" type="text/x-handlebars-template">
+		<div>
+			<b>Error Timestamp : </b> {{timestamp}}
+		</div>
+		<div>
+			<b>Error Message : </b> {{message}}
+		</div>
+		<div>
+			<b>Stack Trace : </b>
+			<pre class="pre-scrollable" style="font-size:0.75em;">{{stackTrace}}</pre>
+		</div>
+	</script>
 	
 <script type="text/javascript">
 $(document).ready(function() {
@@ -88,7 +114,17 @@ $(document).ready(function() {
 			alert('Session Timeout,  Please Log in again');
 			window.location.reload();
 		} else {
-			alert("Error Status Code: " + jqXHR.status + " " + jqXHR.statusText + "\n" + jqXHR.responseText);	
+			$('#errorModal').find('.modal-header span').html("<h3>Error Status Code: " + jqXHR.status + " " + jqXHR.statusText +"</h3>");
+			
+			var json =jqXHR.responseJSON;
+			
+			console.log(jqXHR);
+			
+			var errorTemplate = Handlebars.compile($("#errorModalBodyTemplate").html());
+			
+			$('#errorModal').find('.modal-body').html(errorTemplate(json));
+			
+			$('#errorModal').modal({show: true, backdrop: 'static', keyboard: false});	
 		}
 		
 	});

@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.controllers.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,14 +26,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Throwables;
 
+import biz.thaicom.eBudgeting.controllers.error.RESTError;
 import biz.thaicom.eBudgeting.models.bgt.BudgetCommonType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.bgt.FiscalBudgetType;
 import biz.thaicom.eBudgeting.models.bgt.FormulaColumn;
 import biz.thaicom.eBudgeting.models.bgt.FormulaStrategy;
 import biz.thaicom.eBudgeting.models.webui.PageUI;
-
 import biz.thaicom.eBudgeting.services.EntityService;
 
 @SuppressWarnings("unused")
@@ -353,24 +354,19 @@ public class BudgetTypeRestController {
 	}
 	
 	
-	@ExceptionHandler(value=EntityNotFoundException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public @ResponseBody Boolean handleEntityNotFoundExeption(final EntityNotFoundException e, 
-			final HttpServletRequest request) {
-		logger.error(e.toString());
-		Boolean success = false;
-		return success;
-	}
-	
 	@ExceptionHandler(value=Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public @ResponseBody String handleException(final Exception e, final HttpServletRequest request) {
-		logger.error(e.toString());
-		e.printStackTrace();
-		return "failed: " + e.toString();
-		
+	public @ResponseBody RESTError handleException(final Exception e, final HttpServletRequest request) {
+    	RESTError error = new RESTError();
+    	error.setMessage(e.getMessage());
+    	
+    	String trace = Throwables.getStackTraceAsString(e);
+        error.setStackTrace(trace);
+        
+        error.setDate(new Date());
+        
+        return error;
 	}
-	
 	
 
 }

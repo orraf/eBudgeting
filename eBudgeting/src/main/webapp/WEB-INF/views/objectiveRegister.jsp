@@ -128,7 +128,7 @@
 <script id="objectiveRowTemplate" type="text/x-handelbars-template">
 <td id="td-{{id}}"><a href="#td-{{id}}" class="editObjective menuEdit"><i class="icon-edit icon-blue"></i></a>				
 	<a href="#td-{{id}}" class="deleteObjective menuDelete"><i class="icon-trash icon-red"></i></a> </td>
-	<td> ({{id}}) {{code}} </td>
+	<td> {{code}} </td>
 	<td> {{name}} </td>
 
 	{{#if hasUnit}}
@@ -136,12 +136,12 @@
 	{{/if}}
 
 	{{#if hasParent}}
-	<td class="parentLink">({{parent.id}}) {{parent.code}} {{parent.name}} </td>
+	<td class="parentLink">[{{parent.code}}] {{parent.name}} </td>
 	{{/if}}	
 	
 	{{#if hasRelatedType}}
 	{{#each relations}}
-		<td>{{#if parent}} ({{parent.id}}) [{{parent.code}}] {{parent.name}} {{/if}}</td>
+		<td>{{#if parent}} [{{parent.code}}] {{parent.name}} {{/if}}</td>
 	{{/each}}
 	{{/if}}
 	
