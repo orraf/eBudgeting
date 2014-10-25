@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="PLN_ACTIVITYTARGETREPORT")
 @SequenceGenerator(name="PLN_ACTIVITYTARGETREPORT_SEQ", sequenceName="PLN_ACTIVITYTARGETREPORT_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=ActivityTargetReport.class)
 public class ActivityTargetReport implements Serializable {
 	
 	

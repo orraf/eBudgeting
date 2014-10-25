@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="BGT_FISCALBUDGETYPE")
 @SequenceGenerator(name="BGT_FISCALBUDGETYPE_SEQ", sequenceName="BGT_FISCALBUDGETYPE_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id",scope=FiscalBudgetType.class)
 public class FiscalBudgetType implements Serializable {
 
 	/**

@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @SequenceGenerator(
 		name="BGT_PROPOSALSTRATEGY_SEQ", 
 		sequenceName="BGT_PROPOSALSTRATEGY_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id",scope = ProposalStrategy.class)
 public class ProposalStrategy implements Serializable {
 
 	/**

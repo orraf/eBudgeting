@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="PLN_TARGETVALUEALLOCRECORD")
 @SequenceGenerator(name="PLN_TARGETVALUEALLOCRECORD_SEQ", sequenceName="PLN_TARGETVALUEALLOCRECORD_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=TargetValueAllocationRecord.class)
 public class TargetValueAllocationRecord implements Serializable {
 
 	

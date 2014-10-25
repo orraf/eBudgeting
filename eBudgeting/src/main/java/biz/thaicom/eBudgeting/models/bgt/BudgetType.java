@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="BGT_BUDGETTYPE")
 @SequenceGenerator(name="BGT_BUDGETTYPE_SEQ", sequenceName="BGT_BUDGETTYPE_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=BudgetType.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BudgetType implements Serializable {
 

@@ -21,7 +21,7 @@ import biz.thaicom.eBudgeting.models.pln.Objective;
 @Entity
 @Table(name="BGT_RESERVEDBUDGET")
 @SequenceGenerator(name="BGT_RESERVEDBUDGET_SEQ", sequenceName="BGT_RESERVEDBUDGET_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=ReservedBudget.class)
 public class ReservedBudget implements Serializable{
 
 	/**

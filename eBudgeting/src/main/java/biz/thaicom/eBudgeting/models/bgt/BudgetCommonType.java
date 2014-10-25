@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="BGT_BUDGETCOMMONTYPE")
 @SequenceGenerator(name="BGT_BUDGETCOMMONTYPE_SEQ", sequenceName="BGT_BUDGETCOMMONTYPE_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=BudgetCommonType.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BudgetCommonType implements Serializable {
 

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="BGT_ALLOCATIONRECORD")
 @SequenceGenerator(name="BGT_ALLOCATIONRECORD_SEQ", sequenceName="BGT_ALLOCATIONRECORD_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=AllocationRecord.class)
 public class AllocationRecord implements Serializable{
 	
 	/**

@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="HRX_ORGANIZATION")
 @SequenceGenerator(name="HRX_ORGANIZATION_SEQ", sequenceName="HRX_ORGANIZATION_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Organization.class)
 public class Organization implements Serializable {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Organization.class);

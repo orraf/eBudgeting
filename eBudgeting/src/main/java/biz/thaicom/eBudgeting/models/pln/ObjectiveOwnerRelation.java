@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="PLN_OBJECTIVEOWNERRELATION")
 @SequenceGenerator(name="PLN_OBJOWNERRELATION_SEQ", sequenceName="PLN_OBJOWNERRELATION_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope = ObjectiveOwnerRelation.class)
 public class ObjectiveOwnerRelation implements Serializable {
 
 	/**

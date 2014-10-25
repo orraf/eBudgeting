@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @SequenceGenerator(
 		name="BGT_REQUESTCOLUMN_SEQ", 
 		sequenceName="BGT_REQUESTCOLUMN_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope=RequestColumn.class)
 public class RequestColumn implements Serializable {
 
 	/**

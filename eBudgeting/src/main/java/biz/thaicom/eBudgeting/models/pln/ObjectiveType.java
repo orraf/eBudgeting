@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="PLN_OBJECTIVETYPE")
 @SequenceGenerator(name="PLN_OBJECTIVETYPE_SEQ", sequenceName="PLN_OBJECTIVETYPE_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=ObjectiveType.class)
 public class ObjectiveType implements Serializable {
 	
 	

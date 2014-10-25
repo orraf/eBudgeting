@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="BGT_ASSETBUDGETPLAN")
 @SequenceGenerator(name="BGT_ASSETBUDGETPLAN_SEQ", sequenceName="BGT_ASSETBUDGETPLAN_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=AssetBudget.class)
 public class AssetBudgetPlan implements Serializable{
 
 	/**

@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @SequenceGenerator(
 		name="BGT_FORMULASTRATEGY_SEQ", 
 		sequenceName="BGT_FORMULASTRATEGY_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id",scope=FormulaStrategy.class)
 public class FormulaStrategy  implements Serializable{
 
 	/**

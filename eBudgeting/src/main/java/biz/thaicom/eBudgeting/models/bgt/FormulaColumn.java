@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name = "BGT_FORMULACOLUMN")
 @SequenceGenerator(name = "BGT_FORMULACOLUMN_SEQ", sequenceName = "BGT_FORMULACOLUMN_SEQ", allocationSize = 1)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope=FormulaColumn.class)
 public class FormulaColumn implements Serializable {
 
 	/**

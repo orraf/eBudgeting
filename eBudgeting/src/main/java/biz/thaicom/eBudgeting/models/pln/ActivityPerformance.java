@@ -25,7 +25,7 @@ import biz.thaicom.eBudgeting.models.hrx.Organization;
 @Entity
 @Table(name="PLN_ACTIVITYPERFORMANCE")
 @SequenceGenerator(name="PLN_ACTIVITYPERFORMANCE_SEQ", sequenceName="PLN_ACTIVITYPERFORMANCE_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=ActivityPerformance.class)
 public class ActivityPerformance implements Serializable{
 
 	/**

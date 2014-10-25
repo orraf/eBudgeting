@@ -46,7 +46,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="PLN_OBJECTIVE")
 @SequenceGenerator(name="PLN_OBJECTIVE_SEQ", sequenceName="PLN_OBJECTIVE_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Objective.class)
 public class Objective implements Serializable, Comparable<Objective> {
 	private static final Logger logger = LoggerFactory.getLogger(Objective.class);
 	

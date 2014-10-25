@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="BGT_ASSETMETHODSTEP")
 @SequenceGenerator(name="BGT_ASSETMETHODSTEP_SEQ", sequenceName="BGT_ASSETMETHODSTEP_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=AssetMethodStep.class)
 public class AssetMethodStep implements Serializable {
 
 	

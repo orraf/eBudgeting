@@ -21,7 +21,7 @@ import biz.thaicom.eBudgeting.models.hrx.Organization;
 @Entity
 @Table(name="PLN_MONTHLYACTREPORT")
 @SequenceGenerator(name="PLN_MONTHLYACTREPORT_SEQ", sequenceName="PLN_MONTHLYACTREPORT_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=MonthlyActivityReport.class)
 public class MonthlyActivityReport implements Serializable {
 
 	

@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Entity
 @Table(name="PLN_OBJECTIVEDETAIL")
 @SequenceGenerator(name="PLN_OBJECTIVEDETAIL_SEQ", sequenceName="PLN_OBJECTIVEDETAIL_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=ObjectiveDetail.class)
 public class ObjectiveDetail implements Serializable {
 
 	private static final Logger logger = LoggerFactory.getLogger(ObjectiveDetail.class);

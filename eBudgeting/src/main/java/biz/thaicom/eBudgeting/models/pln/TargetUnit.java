@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="PLN_TARGETUNIT")
 @SequenceGenerator(name="PLN_TARGETUNIT_SEQ", sequenceName="PLN_TARGETUNIT_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=TargetUnit.class)
 public class TargetUnit implements Serializable{
 
 	/**

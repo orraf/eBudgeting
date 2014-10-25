@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="PLN_ACTIVITY")
 @SequenceGenerator(name="PLN_ACTIVITY_SEQ", sequenceName="PLN_ACTIVITY_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Activity.class)
 public class Activity implements Serializable, Comparable<Activity> {
 	
 	/**

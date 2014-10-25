@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="PLN_OBJECTIVERELATIONS")
 @SequenceGenerator(name="PLN_OBJECTIVERELATIONS_SEQ", sequenceName="PLN_OBJECTIVERELATIONS_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=ObjectiveRelations.class)
 public class ObjectiveRelations implements Serializable{
 
 	private static final long serialVersionUID = 5327046941515367599L;

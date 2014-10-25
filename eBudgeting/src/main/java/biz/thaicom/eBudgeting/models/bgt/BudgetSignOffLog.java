@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="BGT_BUDGETSIGNOFFLOG")
 @SequenceGenerator(name="BGT_BUDGETSIGNOFFLOG_SEQ", sequenceName="BGT_BUDGETSIGNOFFLOG_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope = BudgetSignOffLog.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BudgetSignOffLog implements Serializable {
 

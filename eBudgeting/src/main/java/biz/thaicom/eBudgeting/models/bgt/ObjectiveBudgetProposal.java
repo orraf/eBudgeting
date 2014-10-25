@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="BGT_OBJBUDGETPROPOSAL")
 @SequenceGenerator(name="BGT_OBJBUDGETPROPOSAL_SEQ", sequenceName="BGT_OBJBUDGETPROPOSAL_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id",scope=ObjectiveBudgetProposal.class)
 public class ObjectiveBudgetProposal implements Serializable {
 
 	private static final Logger logger = LoggerFactory.getLogger(ObjectiveBudgetProposal.class);

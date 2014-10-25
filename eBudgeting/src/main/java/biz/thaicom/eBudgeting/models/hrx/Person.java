@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="HRX_PERSON")
 @SequenceGenerator(name="HRX_PERSON_SEQ", sequenceName="HRX_PERSON_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Person.class)
 public class Person implements Serializable{
 
 	/**

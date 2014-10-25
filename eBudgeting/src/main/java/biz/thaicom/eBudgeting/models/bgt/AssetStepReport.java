@@ -14,13 +14,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import biz.thaicom.eBudgeting.controllers.rest.AssetRestController;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="BGT_ASSETSTEPREPORT")
 @SequenceGenerator(name="BGT_ASSETSTEPREPORT_SEQ", sequenceName="BGT_ASSETSTEPREPORT_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=AssetStepReport.class)
 public class AssetStepReport implements Serializable {
 
 	
