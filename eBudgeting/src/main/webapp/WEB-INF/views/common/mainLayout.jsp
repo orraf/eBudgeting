@@ -114,6 +114,8 @@ $(document).ready(function() {
 			alert('Session Timeout,  Please Log in again');
 			window.location.reload();
 		} else {
+			$('.modal').modal('hide');
+			
 			$('#errorModal').find('.modal-header span').html("<h3>Error Status Code: " + jqXHR.status + " " + jqXHR.statusText +"</h3>");
 			
 			var json =jqXHR.responseJSON;
