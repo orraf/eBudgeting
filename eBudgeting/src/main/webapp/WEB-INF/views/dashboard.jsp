@@ -191,6 +191,8 @@ var menuJson = [{
 			name: "m82r01: รายงานการตรวจสอบความเชื่อมโยง", parent: 'm82r', code: "m82r01", link: "page/m82r01/", group: ["PMS_USER", "PMS_BGT", "PMS_INV"]
 		}, {
 			name: "m82r02: รายงานผังองค์กร", parent: 'm82r', code: "m82r02", link: "page/m82r02/", group: ["PMS_USER", "PMS_BGT", "PMS_INV"]
+		}, {
+			name: "m82r03: รายงานตรวจสอบการจัดสรรงบประมาณของจังหวัด", parent: 'm82r', code: "m82r03",link: "m82r03.xls/"+fiscalYear+"/file/m82r03.xls", type: "download", group: ["PMS_USER", "PMS_BGT", "PMS_BGT_ADMIN"]
 		}]
 	}]
 }];

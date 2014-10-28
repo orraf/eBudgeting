@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
+import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
 import biz.thaicom.eBudgeting.models.bgt.BudgetType;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
@@ -975,5 +977,39 @@ public class ExcelReportsController {
 		
 		//return "m81r07.xls";
 	}
-
+	
+	@RequestMapping("/m82r03.xls/{fiscalYear}/file/m82r03.xls")
+	public String excelM82R03(@PathVariable Integer fiscalYear, Model model, 
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
+		
+		HashMap<String, Double> ผลจัดสรรMap = new HashMap<String, Double>();
+		
+		Long[] typeIds = {103L, 104L, 105L, 106L};
+		ArrayList<Long> typeIdList = new ArrayList<Long>(Arrays.asList(typeIds));
+		
+		List<Objective> objectiveList = entityService.findObjectivesByFiscalyearAndTypeIdList(fiscalYear, typeIdList);
+		List<Objective> ผลผลิต = new ArrayList<Objective>();
+		Iterable<Object[]> ผลรวมจัดสรร  = entityService.findAllSumBudgetPlanByFiscalYearAndOwnerId(fiscalYear);
+		
+		for(Objective o : objectiveList) {
+			logger.debug(o.getName() + o.getType().getId());
+			
+			if(o.getType().getId().equals(103L)) {
+				ผลผลิต.add(o);
+			}
+		}
+		
+		for(Object[] iter : ผลรวมจัดสรร) {
+			String objectiveIdAndOwnerId = iter[0].toString() + "-" + iter[1].toString();
+			Double sumBudget = (Double) iter[2];
+			
+			ผลจัดสรรMap.put(objectiveIdAndOwnerId, sumBudget);
+		}
+		
+		model.addAttribute("ผลผลิต", ผลผลิต);
+		model.addAttribute("ผลจัดสรรMap", ผลจัดสรรMap);
+		model.addAttribute("fiscalYear", fiscalYear);
+		
+		return "m82r03.xls";
+	}
 }

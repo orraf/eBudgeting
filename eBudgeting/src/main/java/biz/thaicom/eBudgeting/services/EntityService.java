@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -127,6 +128,8 @@ public interface EntityService {
 	
 	public List<Objective> findObjectivesByFiscalyearAndTypeId(
 			Integer fiscalYear, Long typeId);
+	public List<Objective> findObjectivesByFiscalyearAndTypeIdList(
+			Integer fiscalYear, ArrayList<Long> typeIdList);
 	public Objective updateObjectiveParent(Long id, Long parentId);
 	public Objective objectiveAddReplaceUnit(Long id, Long unitId);
 	
@@ -224,6 +227,8 @@ public interface EntityService {
 	public BudgetProposal deleteBudgetProposal(Long id);
 	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
 			Integer fiscalYear, Long ownerId);
+	public List<BudgetProposal> findBudgetProposalByFiscalYear(
+			Integer fiscalYear);
 	
 	
 	//ProposalStrategy
@@ -395,6 +400,8 @@ public interface EntityService {
 	public List<Activity> findActivityByRegularAndObjectiveId(
 			Organization workAt, Long objectiveId);
 	
+	
+	
 	//ActivityTargetReport
 	public List<ActivityTargetReport> findActivityTargetReportByTargetId(
 			Long targetId);
@@ -475,6 +482,10 @@ public interface EntityService {
 	// G
 	public List<Object[]> findSumMonthlyFromGByFiscalYearAndOwnerLike(
 			Integer fiscalYear, Organization workAt);
+	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYearAndOwnerId(
+			Integer fiscalYear);
+
+
 	
 	
 

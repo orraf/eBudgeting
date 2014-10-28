@@ -3121,6 +3121,28 @@ public class EntityServiceJPA implements EntityService {
 		return objs;
 	}
 	
+	
+	
+	@Override
+	public List<Objective> findObjectivesByFiscalyearAndTypeIdList(
+			Integer fiscalYear, ArrayList<Long> typeIdList) {
+		List<Objective> objs = objectiveRepository.findAllByFiscalYearAndTypeIds(fiscalYear, typeIdList);
+		for(Objective obj : objs){
+			obj.getTargets().size();
+			if(obj.getType().getParent() != null) {
+				obj.getType().getParent().getName();
+			}
+			if(obj.getProposals().size() > 0) {
+				for(BudgetProposal p : obj.getProposals()) {
+					p.getOwner().getId();
+				}
+			}
+		}
+		
+		return objs;
+
+	}
+
 	@Override
 	public Page<Objective> findObjectivesByFiscalyearAndTypeId(
 			Integer fiscalYear, Long typeId, Pageable pageable) {
@@ -5500,7 +5522,15 @@ public class EntityServiceJPA implements EntityService {
 	}
 	
 	
+	
 
+
+	@Override
+	public List<BudgetProposal> findBudgetProposalByFiscalYear(
+			Integer fiscalYear) {
+		List<BudgetProposal> proposals = budgetProposalRepository.findBudgetProposalByFiscalYear(fiscalYear);
+		return proposals;
+	}
 
 	@Override
 	public BudgetProposal deleteBudgetProposal(Long id) {
@@ -6206,6 +6236,12 @@ public class EntityServiceJPA implements EntityService {
 	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYear(
 			Integer fiscalYear) {
 		return activityPerformanceRepository.findSumBudgetAllocatedByFiscalYear(fiscalYear);
+	}
+	
+	@Override
+	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYearAndOwnerId(
+			Integer fiscalYear) {
+		return activityPerformanceRepository.findSumBudgetAllocatedByFiscalYearAndOwnerId(fiscalYear);
 	}
 
 	@Override

@@ -103,5 +103,9 @@
  		<property name="dataSource" ref="dataSource"></property>
  	</bean>
 
+
+	<bean id="m82r03.xls" class="biz.thaicom.eBudgeting.view.M82R03XLSView"> 	
+ 		
+ 	</bean>
 	
 </beans>

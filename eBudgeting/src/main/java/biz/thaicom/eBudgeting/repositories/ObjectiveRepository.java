@@ -1,5 +1,6 @@
 package biz.thaicom.eBudgeting.repositories;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -136,6 +137,19 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			"ORDER BY objective.code asc ")
 	public List<Objective> findAllByFiscalYearAndType_id(Integer fiscalYear,
 			Long typeId);
+	
+	
+	@Query("" +
+			"SELECT objective " +
+			"FROM Objective objective " +
+			"	INNER JOIN FETCH objective.type type " +
+			"	INNER JOIN FETCH objective.parent parent " +
+			"WHERE objective.fiscalYear=?1 " +
+			"	AND objective.type.id in (?2) " +
+			"ORDER BY objective.code asc ")
+	public List<Objective> findAllByFiscalYearAndTypeIds(Integer fiscalYear,
+			ArrayList<Long> typeIdList);
+
 	
 	@Query("" +
 			"SELECT objective " +
@@ -349,6 +363,7 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			+ "	INNER JOIN FETCH obj.parent "
 			+ "WHERE obj.parentPath like ?2 or obj.id = ?1 ")
 	public List<Objective> findAllLeftJoinChildrenByParentIdLike(Long ObjId, String pranenId);
+
 
 
 }
