@@ -1000,10 +1000,12 @@ public class ExcelReportsController {
 		}
 		
 		for(Object[] iter : ผลรวมจัดสรร) {
-			String objectiveIdAndOwnerId = iter[0].toString() + "-" + iter[1].toString();
-			Double sumBudget = (Double) iter[2];
+			if(iter[0] != null && iter[1] != null) {
+				String objectiveIdAndOwnerId = iter[0].toString() + "-" + iter[1].toString();
+				Double sumBudget = (Double) iter[2];
 			
-			ผลจัดสรรMap.put(objectiveIdAndOwnerId, sumBudget);
+				ผลจัดสรรMap.put(objectiveIdAndOwnerId, sumBudget);
+			}
 		}
 		
 		model.addAttribute("ผลผลิต", ผลผลิต);
