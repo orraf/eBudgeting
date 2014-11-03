@@ -91,11 +91,14 @@ public class M82R03XLSView extends AbstractPOIExcelView {
 					
 					String listOfOk = "";
 					String listOfNg = "";
+					String listOfZero = "";
 					
 					for(BudgetProposal proposal : o_แผนปฏิบัติงาน.getProposals()) {
 						String key = o_แผนปฏิบัติงาน.getId() + "-" + proposal.getOwner().getId();
 						Double ผลจัดสรร = ผลจัดสรรMap.get(key);
-						if(ผลจัดสรร != null && ผลจัดสรร.equals(proposal.getAmountAllocated()) ) {
+						if(ผลจัดสรร  == null || ผลจัดสรร == 0.0) {
+							listOfZero += ", " + proposal.getOwner().getAbbr();
+						} else if ( ผลจัดสรร.equals(proposal.getAmountAllocated()) ) {
 							// listOfOk += ", " + proposal.getOwner().getAbbr() + "(" + proposal.getAmountAllocated()+ "/"+ ผลจัดสรร+ ")";
 							listOfOk += ", " + proposal.getOwner().getAbbr();
 						} else {
@@ -122,12 +125,24 @@ public class M82R03XLSView extends AbstractPOIExcelView {
 					cell = row.createCell(1);
 					
 					cell.setCellStyle(styles.get("cellLightOrgangeColor"));
-					cell.setCellValue("หน่วยงานที่ยังไม่ได้ทำการจัดสรรงบประมาณหรือยังจัดสรรไม่เสร็จ");
+					cell.setCellValue("หน่วยงานที่ยังทำการจัดสรรงบประมาณไม่เสร็จ");
 					if(listOfNg.length() > 0) {
 						listOfNg = listOfNg.substring(2);
 					}
 					cell = row.createCell(2);
 					cell.setCellValue(listOfNg);
+					
+					row = sheet.createRow(rowNum++);
+					cell = row.createCell(0);
+					cell = row.createCell(1);
+					
+					cell.setCellStyle(styles.get("cellLightOrgangeColor"));
+					cell.setCellValue("หน่วยงานที่ยังไม่ได้ทำการจัดสรรงบประมาณ");
+					if(listOfZero.length() > 0) {
+						listOfZero = listOfZero.substring(2);
+					}
+					cell = row.createCell(2);
+					cell.setCellValue(listOfZero);
 					
 				}
 			}
