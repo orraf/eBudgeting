@@ -620,7 +620,7 @@ var MainCtrView = Backbone.View.extend({
 				return false;
 			}
 			
-			var answer = confirm("คุณต้องการลบกิจกรรมย่อย " + activity.get('name') + " ?" );
+			var answer = confirm("คุณต้องการลบกิจกรรมย่อย " + activity.get('name') + " รายงานการใช้จ่ายงบประมาณและเป้าหมายทั้งหมดจะถูกลบไปด้วย ?" );
 			if(answer == true ) {
 				activity.destroy({
 					success: _.bind(function() {

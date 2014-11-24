@@ -89,7 +89,7 @@ public interface ActivityTargetResultRepository extends JpaRepository<ActivityTa
 			Integer fiscalMonth);
 
 	
-	Collection<? extends ActivityTargetResult> findByReport(
-			ActivityTargetReport deleteReport);
+	List<ActivityTargetResult> findByReport(
+			ActivityTargetReport report);
 
 }

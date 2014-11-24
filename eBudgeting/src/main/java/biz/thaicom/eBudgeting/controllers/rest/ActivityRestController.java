@@ -94,9 +94,9 @@ public class ActivityRestController {
 	}
 	
 	@RequestMapping(value="/Activity/{id}", method=RequestMethod.DELETE)
-	public @ResponseBody Activity deleteActivity(
+	public @ResponseBody Long deleteActivity(
 			@PathVariable Long id) {
-		return entityService.deleteActivity(id);
+		return entityService.deleteActivity(id).getId();
 	}
 	
 

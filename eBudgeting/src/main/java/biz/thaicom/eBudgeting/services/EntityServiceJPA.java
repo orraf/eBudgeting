@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -4433,6 +4434,11 @@ public class EntityServiceJPA implements EntityService {
 					
 					for(ActivityTargetReport atr : atrList) {
 						ActivityPerformance ap =  atr.getActivityPerformance();
+						
+						List<ActivityTargetResult> results= activityTargetResultRepository.findByReport(atr);
+						
+						activityTargetResultRepository.delete(results);
+						
 						ap.getMonthlyBudgetReports();
 						atr.getMonthlyReports();
 						
@@ -4504,8 +4510,10 @@ public class EntityServiceJPA implements EntityService {
 				// this report is parent?
 				List<ActivityTargetReport> level2Report = new ArrayList<ActivityTargetReport>();
 				for(ActivityTargetReport r : oldList) {
-					if(r.getOwner().getParent().getId() == report.getOwner().getId()) {
+					if(r.getOwner().getParent().getId() == report.getOwner().getId() 
+							&& r.getReportLevel() == 2) {
 						level2Report.add(r);
+						logger.debug("find level2Report : " + r.getId());
 					}
 				}
 				
