@@ -253,7 +253,7 @@ public class ObjectiveRestController {
 	@RequestMapping(value="/Objective/{id}/saveOwners", method=RequestMethod.POST)
 	public @ResponseBody List<Organization> saveObjectiveOwners(
 			@PathVariable Long id,
-			@RequestParam(value="ownerIds[]") Long ownerIds[] ){
+			@RequestParam(required=false, value="ownerIds[]") Long ownerIds[] ){
 		return entityService.saveObjectiveOwners(id, ownerIds);
 	}
 

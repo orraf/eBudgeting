@@ -469,6 +469,11 @@ var ModalView = Backbone.View.extend({
 					$('#organizationOwnerTbl').find('tbody').html(html);
 					
 					//refresh the other list
+					var json = {};
+					if(this.organizationSearchList != null) {
+						json = this.organizationSearchList.toJSON();
+					}
+					
 					var html=this.organizationOwnerSearchTbodyTemplate(this.organizationSearchList.toJSON());
 					$('#organizationOwnerSearchTbl').find('tbody').html(html);
 				}

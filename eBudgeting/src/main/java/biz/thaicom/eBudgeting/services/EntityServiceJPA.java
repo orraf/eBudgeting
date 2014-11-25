@@ -4184,8 +4184,15 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Organization> saveObjectiveOwners(Long id, Long[] ownerIds) {
 		if(ownerIds == null || ownerIds.length == 0) {
-			// nothing to do here
-			return null;
+			// probably means no owner for now
+			ObjectiveOwnerRelation owr = objectiveOwnerRelationRepository.findByObjective_Id(id);
+			if(owr!=null) {
+				owr.setOwners(null);
+				objectiveOwnerRelationRepository.save(owr);
+				
+				return null;
+				
+			}
 		}
 		
 		ObjectiveOwnerRelation owr = objectiveOwnerRelationRepository.findByObjective_Id(id);
