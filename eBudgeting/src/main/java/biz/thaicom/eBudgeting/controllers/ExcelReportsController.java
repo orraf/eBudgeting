@@ -1001,7 +1001,7 @@ public class ExcelReportsController {
 		
 		for(Object[] iter : ผลรวมจัดสรร) {
 			if(iter[0] != null && iter[1] != null) {
-				String objectiveIdAndOwnerId = iter[0].toString() + "-" + iter[1].toString();
+				String objectiveIdAndOwnerId = iter[0].toString() + "-1" + iter[1].toString() + "0000";
 				Double sumBudget = (Double) iter[2];
 			
 				ผลจัดสรรMap.put(objectiveIdAndOwnerId, sumBudget);
