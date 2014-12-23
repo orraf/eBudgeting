@@ -66,31 +66,32 @@ public class ActivityRestController {
 	}
 	
 	@RequestMapping(value="/Activity/{id}", method=RequestMethod.PUT)
-	public @ResponseBody Activity updateActivity(
+	public @ResponseBody Long updateActivity(
 			@PathVariable Long id,
 			@RequestBody JsonNode node) {
-		entityService.updateActivity(node);
+		Activity activity = entityService.updateActivity(node);
 		
 		// we're not updating the model!
-		return null;
+		return activity.getId();
 	}
 	
 	@RequestMapping(value="/Activity/", method=RequestMethod.POST)
-	public @ResponseBody Activity saveActivity(
+	public @ResponseBody Long saveActivity(
 			@RequestBody JsonNode node,
 			@Activeuser ThaicomUserDetail currentUser) {
 		
 		Organization parent = entityService.findOrganizationParentOf(currentUser.getWorkAt());
+		Activity activity;
 		if(parent.getId() == 0L) {
-			entityService.saveActivity(node, currentUser.getWorkAt());	
+			activity = entityService.saveActivity(node, currentUser.getWorkAt());	
 		} else {
-			entityService.saveActivity(node, parent);
+			activity = entityService.saveActivity(node, parent);
 		}
 		
 		
 		
 		// we're not updating the model!
-		return null;
+		return activity.getId();
 	}
 	
 	@RequestMapping(value="/Activity/{id}", method=RequestMethod.DELETE)
