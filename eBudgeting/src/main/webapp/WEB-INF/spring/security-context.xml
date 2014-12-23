@@ -42,7 +42,7 @@
 	
 	</http>
 	
-	<beans:bean id="thaicomAuthenticationProvider" class="biz.thaicom.security.services.ThaicomAuthenticationProvider"></beans:bean>
+	
 	<beans:bean id="thaicomUserDetailService" class="biz.thaicom.security.services.ThaicomUserDetailService"></beans:bean>
 	
 	

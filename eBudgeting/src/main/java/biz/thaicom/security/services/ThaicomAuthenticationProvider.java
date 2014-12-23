@@ -22,16 +22,20 @@ public class ThaicomAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication)
 			throws AuthenticationException {
-		logger.debug("Trying to authenticate:" + authentication.getName() + " with Credentials: " + authentication.getCredentials());
+		logger.error("Trying to authenticate:" + authentication.getName() + " with Credentials: " + authentication.getCredentials());
 		
-		 List<GrantedAuthority> AUTHORITIES = new ArrayList<GrantedAuthority>();
+//		 List<GrantedAuthority> AUTHORITIES = new ArrayList<GrantedAuthority>();
 	        
-	        if (userRepository.findByUsernameAndPassword(authentication.getName(),(String) authentication.getCredentials()) != null ) {
-	        	
-	        	return new UsernamePasswordAuthenticationToken(authentication.getName(), authentication.getCredentials(), AUTHORITIES);
-	        } else {
-	            return null;
-	        }
+//	        if (userRepository.findByUsernameAndPassword(
+//	        		authentication.getName().toLowerCase(),
+//	        		((String) authentication.getCredentials()).toLowerCase()) != null ) {
+//	        	
+//	        	return new UsernamePasswordAuthenticationToken(authentication.getName().toLowerCase(), authentication.getCredentials(), AUTHORITIES);
+//	        } else {
+//	            return null;
+//	        }
+		 
+		 return null;
 	}
 
 	@Override

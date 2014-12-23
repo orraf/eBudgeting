@@ -12,7 +12,8 @@ import biz.thaicom.security.models.User;
 public interface UserRepository extends PagingAndSortingRepository<User, Long>,
 		JpaSpecificationExecutor<User> {
 
-	public User findByUsernameAndPassword(String userName, String password);
+//	public User findByUsernameAndPassword(String userName, String password);
+	
 	public User findByUsername(String username);
 	
 	@Query("SELECT g "

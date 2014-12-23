@@ -33,9 +33,9 @@ public class ThaicomUserDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException {
-		logger.debug("loading information userName: " + userName);
+		logger.debug("loading information userName: " + userName.toLowerCase());
 		
-		User user = userRepository.findByUsername(userName);
+		User user = userRepository.findByUsername(userName.toLowerCase());
 		if(user != null) {
 			if(user.getPerson().getWorkAt().getParent() != null) {
 				user.getPerson().getWorkAt().getParent().getId();
