@@ -48,6 +48,14 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		this.$el.modal('hide');
 	},
 	saveAssignTarget: function(e) {
+		// check first if we've already click this button
+		if($('#saveAssignTargetBtn').attr('disabled') == 'disabled') {
+			return false;
+		}
+		
+		$('#saveAssignTargetBtn').attr('disabled','disabled');
+		$('#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+		
 		var sum=0.0;
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
@@ -59,7 +67,7 @@ var AssignTargetValueModalView = Backbone.View.extend({
 //			return;
 //		}
  		
- 		$('#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
+ 		
  		// we should be ready to save the 
  		var payload = new Array();
  		
@@ -91,7 +99,9 @@ var AssignTargetValueModalView = Backbone.View.extend({
  			contentType: "application/json",
  			success: _.bind(function(){
  				alert('บันทึกเรียบร้อยแล้ว');
+ 				$('#saveAssignTargetBtn').attr('disabled',null);
  				$('#saveAssignTargetBtn').html('บันทึกข้อมูล');
+ 				
  				this.cancelAssignTarget();
  			},this)
  		});
