@@ -1115,13 +1115,13 @@ public class GenericViewController {
 		model.addAttribute("fiscalYears", fiscalYears);
 		
 		//check the budgetSignOff
-		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
-				fy, currentUser.getWorkAt());
-		
-		if(bso != null && bso.getLock1Person() != null) {
-			// should not be able to edit!
-			model.addAttribute("readOnly", true);
-		}
+//		BudgetSignOff bso = entityService.findBudgetSignOffByFiscalYearAndOrganization(
+//				fy, currentUser.getWorkAt());
+//		
+//		if(bso != null && bso.getLock1Person() != null) {
+//			// should not be able to edit!
+//			model.addAttribute("readOnly", true);
+//		}
 		
 		return "m71f01";
 	}
