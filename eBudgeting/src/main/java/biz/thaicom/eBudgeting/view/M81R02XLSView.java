@@ -303,7 +303,50 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				rsc3 = rows.getCell(15);
 				rsc3.setCellValue(d1);
 
-				i = i+2;
+				/**  เพิ่มผลรวมการใช้เงิน  **/
+				rows = sheet.createRow(i+2);
+
+				rsc1 = rows.createCell(1);
+				rsc1.setCellStyle(styles.get("cellcenter"));
+				
+				rsc2 = rows.createCell(2);
+				rsc2.setCellValue("รวมผลการใช้เงิน");
+				rsc2.setCellStyle(styles.get("groupcenter"));
+				
+				for (j=3;j<16;j++) {
+					Cell rscj = rows.createCell(j);
+					rscj.setCellStyle(styles.get("groupnumber2"));
+				}
+
+				st4 = connection.createStatement();
+				rs4 = st4.executeQuery("select t2.fiscalmonth, nvl(sum(t2.budgetresult),0) " +
+									   "from pln_activity t1, (select d2.activity_pln_activity_id, d1.owner_hrx_organization_id, d4.fiscalmonth, d4.budgetresult " +
+								                                "from pln_activitytargetreport d1, pln_activitytarget d2, pln_activityperformance d3, pln_monthlybgtreport d4, " +
+								                                    "(select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") d5 " +
+								                                "where d1.target_pln_acttarget_id = d2.id " + 
+								                                "and d1.performance_pln_actper_id = d3.id " + 
+								                                "and d3.id = d4.performance_pln_actper_id " +
+								                                "and d1.owner_hrx_organization_id = d5.id) t2 " +
+									   "where t1.id = t2.activity_pln_activity_id (+) " +
+									   "and t1.obj_pln_objective_id in (select id from pln_objective " +
+																	   "connect by prior id = parent_pln_objective_id " +
+																	   "start with id = " + rs.getInt(3) + ") " +
+									   "connect by prior t1.id = t1.parent_pln_activity_id " + 
+									   "start with t1.parent_pln_activity_id is null " +
+									   "group by t2.fiscalmonth order by t2.fiscalmonth ");
+
+				s1 = 0.0;
+				while (rs4.next()) {
+					Cell rscj = rows.getCell(rs4.getInt(1)+3);
+					rscj.setCellValue(rs4.getDouble(2));
+					s1 = s1 + rs4.getDouble(2);
+				}
+				rs4.close();
+				st4.close();
+				rsc3 = rows.getCell(15);
+				rsc3.setCellValue(s1);
+
+				i = i+3;
 				
 			} else {
 				if (rs.getInt(2) == 1) {
@@ -422,11 +465,48 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					rsc3 = rows.getCell(15);
 					rsc3.setCellValue(s1);
 
-					i = i+2;
+/**  เพิ่มผลรวมการใช้เงิน  **/
+					rows = sheet.createRow(i+2);
+
+					rsc1 = rows.createCell(1);
+					rsc1.setCellStyle(styles.get("cellcenter"));
 					
+					rsc2 = rows.createCell(2);
+					rsc2.setCellValue("รวมผลการใช้เงิน");
+					rsc2.setCellStyle(styles.get("groupcenter"));
 					
-					
-					
+					for (j=3;j<16;j++) {
+						Cell rscj = rows.createCell(j);
+						rscj.setCellStyle(styles.get("groupnumber2"));
+					}
+
+					st4 = connection.createStatement();
+					rs4 = st4.executeQuery("select t2.fiscalmonth, nvl(sum(t2.budgetresult),0) " +
+										   "from pln_activity t1, (select d2.activity_pln_activity_id, d1.owner_hrx_organization_id, d4.fiscalmonth, d4.budgetresult " +
+									                                "from pln_activitytargetreport d1, pln_activitytarget d2, pln_activityperformance d3, pln_monthlybgtreport d4, " +
+									                                    "(select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") d5 " +
+									                                "where d1.target_pln_acttarget_id = d2.id " + 
+									                                "and d1.performance_pln_actper_id = d3.id " + 
+									                                "and d3.id = d4.performance_pln_actper_id " +
+									                                "and d1.owner_hrx_organization_id = d5.id) t2 " +
+										   "where t1.id = t2.activity_pln_activity_id (+) " +
+										   "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
+										   "connect by prior t1.id = t1.parent_pln_activity_id " + 
+										   "start with t1.parent_pln_activity_id is null " +
+										   "group by t2.fiscalmonth order by t2.fiscalmonth ");
+
+					s1 = 0.0;
+					while (rs4.next()) {
+						Cell rscj = rows.getCell(rs4.getInt(1)+3);
+						rscj.setCellValue(rs4.getDouble(2));
+						s1 = s1 + rs4.getDouble(2);
+					}
+					rs4.close();
+					st4.close();
+					rsc3 = rows.getCell(15);
+					rsc3.setCellValue(s1);
+
+					i = i+3;
 					
 					Statement st1 = connection.createStatement();
 /* แก้ไขการแสดงกิจกรรม ให้แสดงกิจกรรมทุกระดับเป็น Tree Walk
@@ -581,7 +661,6 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 								Statement st2 = connection.createStatement();
 								ResultSet rs2;
 								String rs2SQL ="select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
-
 										 "from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
 										     "(select id from hrx_organization " +
 										        "connect by prior id = parent_hrx_organization_id " +
@@ -771,6 +850,23 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
         styles.put("groupright", style);
 
         style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER );
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style.setWrapText(true);
+      /*  style.setFont(groupFont);  */
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("groupcenter", style);
+
+        style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_RIGHT);
         style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
         style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -787,6 +883,24 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("groupnumber", style);
+
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_RIGHT);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex() );
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style.setWrapText(true);
+        style.setDataFormat(format.getFormat("#,##0.00"));
+      /*  style.setFont(groupFont); */
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("groupnumber2", style);
 
         style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_LEFT);
