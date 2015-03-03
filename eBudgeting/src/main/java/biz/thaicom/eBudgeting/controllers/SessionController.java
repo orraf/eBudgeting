@@ -1,6 +1,8 @@
 package biz.thaicom.eBudgeting.controllers;
 
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -22,6 +24,11 @@ public class SessionController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SessionController.class);
 	
+	@RequestMapping(value = "/Session/currentTime", method = RequestMethod.POST)
+	public @ResponseBody String getCurrentTime() {
+		Date currentTime = new Date();
+		return currentTime.toString();
+	}
 	
 	@RequestMapping(value = "/Session/changeCurrentRootFY", method = RequestMethod.GET)
 	public @ResponseBody String changeCurrentRootFY(@RequestParam Integer newFiscalYear, HttpSession session) {

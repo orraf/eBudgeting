@@ -106,6 +106,15 @@
 	</script>
 	
 <script type="text/javascript">
+$(function () {
+	 setInterval(SessionRefresh, 900000); // 15 mins 
+});
+
+function SessionRefresh() {
+    $.post(appUrl("/Session/currentTime"), null, function () {
+    });
+}
+
 $(document).ready(function() {
    // register Global error handling here .. if there isn't one
    
