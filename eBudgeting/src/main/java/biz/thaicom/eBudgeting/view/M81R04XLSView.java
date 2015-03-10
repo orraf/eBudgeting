@@ -141,6 +141,12 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			}
 		}
 		
+		int i = 3;
+		int j = 0;
+		int s1 = 0;
+		int s2 = 0;
+		int orgId = 0;	 
+
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
 		String sql = "select t4.id, t4.name, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t1.targetvalue,'999,999,999,999'))||' '||t3.name||')' target " +
@@ -164,11 +170,6 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 										"and t5.activity_pln_activity_id = " + activity.getId() +
 										" and t6.parent_hrx_organization_id = 0 " +
 */
-		int i = 3;
-		int j = 0;
-		int s1 = 0;
-		int s2 = 0;
-		int orgId = 0;	 
 		while (rs.next()) {
 			Row rows = sheet.createRow(i);
 			
@@ -180,17 +181,15 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			rsc10.setCellStyle(styles.get("cellleft"));
 
 			Cell rsc11 = rows.createCell(1);
-			rsc11.setCellValue(rs.getString(5));
 			rsc11.setCellStyle(styles.get("cellcenter"));
 
 			Cell rsc12 = rows.createCell(2);
-			if (rs.getString(3).equals("1")) rsc12.setCellValue("แผนงาน");
-			else rsc12.setCellValue("แผนการใช้เงิน");
+			rsc12.setCellValue("แผนการใช้เงิน");
 			rsc12.setCellStyle(styles.get("cellcenter"));
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows.createCell(j);
-				rscj.setCellStyle(styles.get("cellcenter"));
+				rscj.setCellStyle(styles.get("cellnumber"));
 
 			}
 
@@ -200,45 +199,25 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			Cell rsc22 = rows2.createCell(1);
 			rsc22.setCellStyle(styles.get("cellcenter"));
 			Cell rsc23 = rows2.createCell(2);
-			if (rs.getString(3).equals("1")) rsc23.setCellValue("ผลงาน");
-			else rsc23.setCellValue("ผลการใช้เงิน");
+			rsc23.setCellValue("ผลการใช้เงิน");
 			rsc23.setCellStyle(styles.get("cellcenter"));
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows2.createCell(j);
-				rscj.setCellStyle(styles.get("cellcenter"));
+				rscj.setCellStyle(styles.get("cellnumber"));
 
 			}
 
 			Statement st2 = connection.createStatement();
 			ResultSet rs2;
-			if (rs.getString(3).equals("1")) {
-				String rs2SQL = "select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
-						"from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
-						"(select id from hrx_organization " +
-						   "connect by prior id = parent_hrx_organization_id " +
-						   "start with id = " + rs.getInt(1) + ") t4 " +
-						"where t1.report_pln_acttargetreport_id = t2.id " +
-						"and t2.target_pln_acttarget_id = t3.id " +
-						"and t2.owner_hrx_organization_id = t4.id " + 
-						"and t3.activity_pln_activity_id = " + activity.getId() +
-						" and t3.unit_pln_targetunit_id = " + rs.getInt(4) +
-						" group by t1.fiscalmonth order by t1.fiscalmonth ";
-				rs2 = st2.executeQuery(rs2SQL);
-		
-			}
-			else {
-				String rs2SQL = "select t1.fiscalmonth, sum(t1.budgetplan), sum(t1.budgetresult) " +
-						   "from pln_monthlybgtreport t1, pln_activityperformance t2 " +
-					  	   "where t1.performance_pln_actper_id = t2.id " +
-						   "and t2.activity_pln_activity_id = " + activity.getId() + 
-						   " and t2.owner_hrx_organization_id = " + rs.getInt(1) +
-						   " group by t1.fiscalmonth order by t1.fiscalmonth ";
-				rs2 = st2.executeQuery(rs2SQL);
+			String rs2SQL = "select t1.fiscalmonth, nvl(sum(t1.budgetplan),0), nvl(sum(t1.budgetresult),0) " +
+					   "from pln_monthlybgtreport t1, pln_activityperformance t2 " +
+				  	   "where t1.performance_pln_actper_id = t2.id " +
+					   "and t2.activity_pln_activity_id = " + activity.getId() + 
+					   " and t2.owner_hrx_organization_id = " + rs.getInt(1) +
+					   " group by t1.fiscalmonth order by t1.fiscalmonth ";
+			rs2 = st2.executeQuery(rs2SQL);
 				
-				
-			}
-
 			j = 3;
 			s1 = 0;
 			s2 = 0;
@@ -252,16 +231,115 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 				j = j+1;
 			}
 			rs2.close();
-			Cell rscs1 = rows.getCell(j);
-
+			Cell rscs1 = rows.getCell(15);
 			rscs1.setCellValue(s1);
-			Cell rscs2 = rows2.getCell(j);
+			Cell rscs2 = rows2.getCell(15);
 			rscs2.setCellValue(s2);
 
-			i = i+2;
+			Row rows3 = sheet.createRow(i+2);
+			Cell rsc31 = rows3.createCell(0);
+			rsc31.setCellStyle(styles.get("cellleft"));
+			Cell rsc32 = rows3.createCell(1);
+			rsc32.setCellValue(rs.getString(5));
+			rsc32.setCellStyle(styles.get("cellcenter"));
+			Cell rsc33 = rows3.createCell(2);
+			rsc33.setCellValue("แผนงาน");
+			rsc33.setCellStyle(styles.get("cellcenter"));
+
+			for (j=3;j<16;j++) {
+				Cell rscj = rows3.createCell(j);
+				rscj.setCellStyle(styles.get("cellnumber"));
+
+			}
+
+			Row rows4 = sheet.createRow(i+3);
+			Cell rsc41 = rows4.createCell(0);
+			rsc41.setCellStyle(styles.get("cellleft"));
+			Cell rsc42 = rows4.createCell(1);
+			rsc42.setCellStyle(styles.get("cellcenter"));
+			Cell rsc43 = rows4.createCell(2);
+			rsc43.setCellValue("ผลงาน");
+			rsc43.setCellStyle(styles.get("cellcenter"));
+
+			for (j=3;j<16;j++) {
+				Cell rscj = rows4.createCell(j);
+				rscj.setCellStyle(styles.get("cellnumber"));
+
+			}
+
+			Statement st3 = connection.createStatement();
+			ResultSet rs3;
+			String rs3SQL = "select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
+					"from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3, " +
+					"(select id from hrx_organization " +
+					   "connect by prior id = parent_hrx_organization_id " +
+					   "start with id = " + rs.getInt(1) + ") t4 " +
+					"where t1.report_pln_acttargetreport_id = t2.id " +
+					"and t2.target_pln_acttarget_id = t3.id " +
+					"and t2.owner_hrx_organization_id = t4.id " + 
+					"and t3.activity_pln_activity_id = " + activity.getId() +
+					" and t3.unit_pln_targetunit_id = " + rs.getInt(4) +
+					" group by t1.fiscalmonth order by t1.fiscalmonth ";
+			rs3 = st3.executeQuery(rs3SQL);
+		
+			j = 3;
+			s1 = 0;
+			s2 = 0;
+			while (rs3.next()) {
+				Cell rscj1 = rows3.getCell(j);
+				rscj1.setCellValue(rs3.getInt(2));
+				Cell rscj2 = rows4.getCell(j);
+				rscj2.setCellValue(rs3.getInt(3));
+				s1 = s1 + rs3.getInt(2);
+				s2 = s2 + rs3.getInt(3);
+				j = j+1;
+			}
+			rs3.close();
+			Cell rscs3 = rows3.getCell(15);
+			rscs3.setCellValue(s1);
+			Cell rscs4 = rows4.getCell(15);
+			rscs4.setCellValue(s2);
+
+			i = i+4;
 			
 		}
 
+/*
+		Row rows5 = sheet.createRow(i+4);
+		Cell rsc51 = rows5.createCell(0);
+		rsc51.setCellStyle(styles.get("cellleft"));
+		Cell rsc52 = rows5.createCell(1);
+		rsc52.setCellStyle(styles.get("cellcenter"));
+		Cell rsc53 = rows5.createCell(2);
+		rsc53.setCellValue("ผลการใช้เงิน (G)");
+		rsc53.setCellStyle(styles.get("groupcenter"));
+
+		for (j=3;j<16;j++) {
+			Cell rscj = rows5.createCell(j);
+			rscj.setCellStyle(styles.get("groupnumber"));
+
+		}
+
+		Statement st3 = connection.createStatement();
+		ResultSet rs3 = st3.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
+				 "from v_gl " +
+				 "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
+				 "and fiscal_year = " + fiscalYear + " " +
+				 "and activitycode = " + activity.getForObjective().getCode() + " " +
+				 "group by date2fmonth(gl_trans_docdate) " +
+				 "order by 1 ");
+
+		Double d1 = 0.0;
+		while (rs3.next()) {
+			Cell rscj = rows5.getCell(rs3.getInt(1)+2);
+			rscj.setCellValue(rs3.getDouble(2));
+			d1 = d1 + rs3.getDouble(2);
+		}
+		rs3.close();
+		st3.close();
+		rsc53 = rows5.getCell(15);
+		rsc53.setCellValue(d1);
+*/		
 		Row rowE = sheet.createRow(i);
 		Cell re = rowE.createCell(0);
 		re.setCellStyle(styles.get("celltop"));
@@ -272,19 +350,20 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 		sheet.setColumnWidth(0, 15000);
 		sheet.setColumnWidth(1, 8000);
 		sheet.setColumnWidth(2, 5000);
-		sheet.setColumnWidth(3, 3000);
-		sheet.setColumnWidth(4, 3000);
-		sheet.setColumnWidth(5, 3000);
-		sheet.setColumnWidth(6, 3000);
-		sheet.setColumnWidth(7, 3000);
-		sheet.setColumnWidth(8, 3000);
-		sheet.setColumnWidth(9, 3000);
-		sheet.setColumnWidth(10, 3000);
-		sheet.setColumnWidth(11, 3000);
-		sheet.setColumnWidth(12, 3000);
-		sheet.setColumnWidth(13, 3000);
-		sheet.setColumnWidth(14, 3000);
-		sheet.setColumnWidth(14, 3000);
+		sheet.setColumnWidth(3, 3500);
+		sheet.setColumnWidth(4, 3500);
+		sheet.setColumnWidth(5, 3500);
+		sheet.setColumnWidth(6, 3500);
+		sheet.setColumnWidth(7, 3500);
+		sheet.setColumnWidth(8, 3500);
+		sheet.setColumnWidth(9, 3500);
+		sheet.setColumnWidth(10, 3500);
+		sheet.setColumnWidth(11, 3500);
+		sheet.setColumnWidth(12, 3500);
+		sheet.setColumnWidth(13, 3500);
+		sheet.setColumnWidth(14, 3500);
+		sheet.setColumnWidth(14, 3500);
+		sheet.setColumnWidth(15, 3500);
 		sheet.createFreezePane( 3, 3 );
 	}
 	
@@ -367,13 +446,30 @@ public class M81R04XLSView extends AbstractPOIExcelView {
         styles.put("groupright", style);
 
         style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style.setWrapText(true);
+      /*  style.setFont(groupFont);  */
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("groupcenter", style);
+
+        style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_RIGHT);
         style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
         style.setFillPattern(CellStyle.SOLID_FOREGROUND);
         style.setWrapText(true);
         style.setDataFormat(format.getFormat("#,##0"));
-        style.setFont(groupFont);
+      /*  style.setFont(groupFont); */
         style.setBorderRight(CellStyle.BORDER_THIN);
         style.setRightBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderLeft(CellStyle.BORDER_THIN);
