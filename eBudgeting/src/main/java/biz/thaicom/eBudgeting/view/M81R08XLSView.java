@@ -1,6 +1,5 @@
 package biz.thaicom.eBudgeting.view;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,15 +25,12 @@ import org.apache.poi.ss.util.WorkbookUtil;
 import biz.thaicom.eBudgeting.models.bgt.AssetAllocation;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethodStep;
-import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
-import biz.thaicom.eBudgeting.models.pln.Activity;
-import biz.thaicom.eBudgeting.models.pln.Objective;
 
 public class M81R08XLSView extends AbstractPOIExcelView {
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:sss");
-	private static SimpleDateFormat df = new SimpleDateFormat("d/M/yyyy", new Locale("th", "TH"));
+	private static SimpleDateFormat sdf = new SimpleDateFormat("d MMM yy", new Locale("th", "TH"));
+	private static SimpleDateFormat df = new SimpleDateFormat("d MMM yyyy", new Locale("th", "TH"));
 	
 	@Override
 	protected Workbook createWorkbook() {
@@ -54,6 +50,8 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 		@SuppressWarnings("unchecked")
 		HashMap<AssetMethod, List<AssetAllocation>> assetMap = (HashMap<AssetMethod, List<AssetAllocation>>)model.get("assetMap");
 		
+		Organization org = (Organization)model.get("org");
+		
 		String sheetName = WorkbookUtil.createSafeSheetName("งบลงทุนที่ยังไม่มีการบันทึกวิธีการจัดหา");
 		
 		Sheet sheet = workbook.createSheet(sheetName);
@@ -62,31 +60,47 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 		Row row;
 		Cell cell;
 		sheet.setColumnWidth(0, 17500);
-		sheet.setColumnWidth(1, 2500);
-		sheet.setColumnWidth(2, 2500);
+		sheet.setColumnWidth(1, 3200);
+		sheet.setColumnWidth(2, 3200);
+		sheet.setColumnWidth(3, 1800);
+		sheet.setColumnWidth(4, 4000);
+		sheet.setColumnWidth(5, 4000);
 		
 		Row firstRow = sheet.createRow(rowNum++);
 		Cell cell0 = firstRow.createCell(0);
-		cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+		cell0.setCellValue("รายงานสรุปผลการใช้จ่ายงบลงทุน หน่วยงาน: " + org.getName() );
+		cell0.setCellStyle(styles.get("title"));
+		
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue("วันที่รายงาน: " +  df.format(new Date()));
+		cell.setCellStyle(styles.get("title"));
 		
 		row = sheet.createRow(rowNum++);
 		cell = row.createCell(colNum++);
 		cell.setCellValue("ชื่อครุภัณฑ์-สิ่งก่อสร้าง");
+		cell.setCellStyle(styles.get("header"));
 		
 		cell = row.createCell(colNum++);
 		cell.setCellValue("หน่วยงานเจ้าของ");
-		 
+		cell.setCellStyle(styles.get("header"));
+		
 		cell = row.createCell(colNum++);
 		cell.setCellValue("หน่วยงานดำเนินการ");
-		 
+		cell.setCellStyle(styles.get("header"));
+		
 		cell = row.createCell(colNum++);
 		cell.setCellValue("จำนวน");
+		cell.setCellStyle(styles.get("header"));
+		
 		
 		cell = row.createCell(colNum++);
 		cell.setCellValue("งบต่อหน่วย");
-		 
+		cell.setCellStyle(styles.get("header")); 
+		
 		cell = row.createCell(colNum++);
 		cell.setCellValue("รวมงบได้รับ");
+		cell.setCellStyle(styles.get("header"));
 		
 		for(AssetAllocation alloc : noMethodAllocs) {
 
@@ -94,12 +108,15 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 			row = sheet.createRow(rowNum++);
 			cell = row.createCell(colNum++);
 			cell.setCellValue(alloc.getAssetBudget().getName());
+			cell.setCellStyle(styles.get("cellleft"));
+			
 			cell = row.createCell(colNum++);
 			if(alloc.getOwner() == null) {
 				cell.setCellValue("ยังไม่ได้ระบุ");
 			} else {
 				cell.setCellValue(alloc.getOwner().getAbbr());
 			}
+			cell.setCellStyle(styles.get("cellleft"));
 			
 			cell = row.createCell(colNum++);
 			
@@ -108,77 +125,130 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 			} else {
 				cell.setCellValue(alloc.getOperator().getAbbr());
 			}
+			cell.setCellStyle(styles.get("cellleft"));
 			
 			cell = row.createCell(colNum++);
 			cell.setCellValue(alloc.getQuantity());
+			cell.setCellStyle(styles.get("cellcenter"));
 			
 			cell = row.createCell(colNum++);
 			cell.setCellValue(alloc.getUnitBudget());
+			cell.setCellStyle(styles.get("cellnumber"));
 			
 			cell = row.createCell(colNum++);
 			cell.setCellValue(alloc.getUnitBudget() * alloc.getQuantity());
+			cell.setCellStyle(styles.get("cellnumber"));
 			
 		}
 		
 		for(AssetMethod method: assetMap.keySet()){
-			sheet = workbook.createSheet(method.getName());
-			sheet.setColumnWidth(0, 17500);
-			sheet.setColumnWidth(1, 2500);
-			sheet.setColumnWidth(2, 2500);
-			rowNum = 0;
-			colNum = 0;
-			
-			firstRow = sheet.createRow(rowNum++);
-			cell0 = firstRow.createCell(0);
-			cell0.setCellValue("วันที่พิมพ์รายงาน: " +  printTimeFormat.format(new Date()) );
+			if(assetMap.get(method).size() > 0 ) {
+
+				sheet = workbook.createSheet(method.getName());
+
+				
+				
+				
+				sheet.setColumnWidth(0, 17500);
+				sheet.setColumnWidth(1, 3200);
+				sheet.setColumnWidth(2, 3200);
+				sheet.setColumnWidth(3, 1800);
+				sheet.setColumnWidth(4, 4000);
+				sheet.setColumnWidth(5, 4000);
+				sheet.setColumnWidth(6, 4000);
+				sheet.setColumnWidth(7, 4000);
+				rowNum = 0;
+				colNum = 0;
+				
+				row = sheet.createRow(rowNum++);
+				cell = row.createCell(0);
+				cell.setCellValue("รายงานสรุปผลการใช้จ่ายงบลงทุน หน่วยงาน: " + org.getName() );
+				cell.setCellStyle(styles.get("title"));
+				
+				row = sheet.createRow(rowNum++);
+				cell = row.createCell(0);
+				cell.setCellValue("วันที่รายงาน: " +  df.format(new Date()));
+				cell.setCellStyle(styles.get("title"));
 			 
 			
-			 row = sheet.createRow(rowNum++);
-			 Row row2 = sheet.createRow(rowNum++);
+				row = sheet.createRow(rowNum++);
+				Row row2 = sheet.createRow(rowNum++);
+			 
 			 cell = row.createCell(colNum++);
 			 cell.setCellValue("ชื่อครุภัณฑ์-สิ่งก่อสร้าง");
-			
+			 cell.setCellStyle(styles.get("header"));
+			 sheet.addMergedRegion(new CellRangeAddress(rowNum-2, rowNum-1, colNum-1, colNum-1));
+			 
 			 cell = row.createCell(colNum++);
 			 cell.setCellValue("หน่วยงานเจ้าของ");
+			 cell.setCellStyle(styles.get("header"));
+			 sheet.addMergedRegion(new CellRangeAddress(rowNum-2, rowNum-1, colNum-1, colNum-1));
 			 
 			 cell = row.createCell(colNum++);
 			 cell.setCellValue("หน่วยงานดำเนินการ");
+			 cell.setCellStyle(styles.get("header"));
+			 sheet.addMergedRegion(new CellRangeAddress(rowNum-2, rowNum-1, colNum-1, colNum-1));
 			 
 			 cell = row.createCell(colNum++);
 			 cell.setCellValue("จำนวน");
-			
+			 cell.setCellStyle(styles.get("header"));
+			 sheet.addMergedRegion(new CellRangeAddress(rowNum-2, rowNum-1, colNum-1, colNum-1));
+			 
 			 cell = row.createCell(colNum++);
 			 cell.setCellValue("งบต่อหน่วย");
+			 cell.setCellStyle(styles.get("header"));
+			 sheet.addMergedRegion(new CellRangeAddress(rowNum-2, rowNum-1, colNum-1, colNum-1));
 			 
 			 cell = row.createCell(colNum++);
 			 cell.setCellValue("รวมงบได้รับ");
+			 cell.setCellStyle(styles.get("header"));
+			 sheet.addMergedRegion(new CellRangeAddress(rowNum-2, rowNum-1, colNum-1, colNum-1));
 			 
 			 cell = row.createCell(colNum);
 			 cell.setCellValue("งบที่ทำสัญญา (แผน)");
+			 cell.setCellStyle(styles.get("header"));
+			 sheet.addMergedRegion(new CellRangeAddress(rowNum-2, rowNum-2, colNum, colNum+1));
 			 
 			 cell = row2.createCell(colNum++);
 			 cell.setCellValue("แผน");
-
+			 cell.setCellStyle(styles.get("header"));
+			 
 			 cell = row2.createCell(colNum++);
 			 cell.setCellValue("ผล");
+			 cell.setCellStyle(styles.get("header"));
 			 
 			 
 			 //logger.debug(method.getName() + " :" + method.getSteps().size());
 			 for(AssetMethodStep step : method.getSteps()) {
 				 cell = row.createCell(colNum);
 				 cell.setCellValue(step.getName() + "เริ่ม");
+				 cell.setCellStyle(styles.get("header"));
+				 sheet.addMergedRegion(new CellRangeAddress(rowNum-2, rowNum-2, colNum, colNum+1));
+				 
 				 cell = row2.createCell(colNum++);
 				 cell.setCellValue("แผน");
+				 cell.setCellStyle(styles.get("header"));
+				 sheet.setColumnWidth(colNum-1, 2500);
+				 
 				 cell = row2.createCell(colNum++);
 				 cell.setCellValue("ผล");
+				 cell.setCellStyle(styles.get("header"));
+				 sheet.setColumnWidth(colNum-1, 2500);
 				 
 				 cell = row.createCell(colNum);
 				 cell.setCellValue(step.getName() + "สิ้นสุด");
+				 cell.setCellStyle(styles.get("header"));
+				 sheet.addMergedRegion(new CellRangeAddress(rowNum-2, rowNum-2, colNum, colNum+1));
+				 
 				 cell = row2.createCell(colNum++);
 				 cell.setCellValue("แผน");
+				 cell.setCellStyle(styles.get("header"));
+				 sheet.setColumnWidth(colNum-1, 2500);
+				 
 				 cell = row2.createCell(colNum++);
 				 cell.setCellValue("ผล");
-				 
+				 cell.setCellStyle(styles.get("header"));
+				 sheet.setColumnWidth(colNum-1, 2500);
 			 }
 			 
 			
@@ -189,12 +259,15 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 					
 					cell = row.createCell(colNum++);
 					cell.setCellValue(alloc.getAssetBudget().getName());
+					cell.setCellStyle(styles.get("cellleft"));
+					
 					cell = row.createCell(colNum++);
 					if(alloc.getOwner() == null) {
 						cell.setCellValue("ยังไม่ได้ระบุ");
 					} else {
 						cell.setCellValue(alloc.getOwner().getAbbr());
 					}
+					cell.setCellStyle(styles.get("cellleft"));
 					
 					cell = row.createCell(colNum++);
 					
@@ -203,24 +276,30 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 					} else {
 						cell.setCellValue(alloc.getOperator().getAbbr());
 					}
+					cell.setCellStyle(styles.get("cellleft"));
 					
 					cell = row.createCell(colNum++);
 					cell.setCellValue(alloc.getQuantity());
+					cell.setCellStyle(styles.get("cellcenter"));
 					
 					cell = row.createCell(colNum++);
 					cell.setCellValue(alloc.getUnitBudget());
+					cell.setCellStyle(styles.get("cellnumber"));
 					
 					cell = row.createCell(colNum++);
 					cell.setCellValue(alloc.getUnitBudget() * alloc.getQuantity());
+					cell.setCellStyle(styles.get("cellnumber"));
 					
 					cell = row.createCell(colNum++);
 					if(alloc.getContractedBudgetPlan() != null) {
 						cell.setCellValue(alloc.getContractedBudgetPlan());
+						cell.setCellStyle(styles.get("cellnumber"));
 					}
 					
 					cell = row.createCell(colNum++);
 					if(alloc.getContractedBudgetActual() != null) {
 						cell.setCellValue(alloc.getContractedBudgetActual());
+						cell.setCellStyle(styles.get("cellnumber"));
 					}
 					
 					int i = 0;
@@ -230,29 +309,37 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 						
 							cell = row.createCell(colNum++);
 							cell.setCellValue("ไม่ระบุ");
+							cell.setCellStyle(styles.get("cellcenter"));
 							
 							cell = row.createCell(colNum++);
 							cell.setCellValue("ไม่ระบุ");
+							cell.setCellStyle(styles.get("cellcenter"));
 							
 							cell = row.createCell(colNum++);
 							cell.setCellValue("ไม่ระบุ");
+							cell.setCellStyle(styles.get("cellcenter"));
 							
 							cell = row.createCell(colNum++);
 							cell.setCellValue("ไม่ระบุ");
+							cell.setCellStyle(styles.get("cellcenter"));
 							
 						} else {
 						
 							cell = row.createCell(colNum++);
 							cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getPlanBegin()));
+							cell.setCellStyle(styles.get("cellcenter"));
 							
 							cell = row.createCell(colNum++);
 							cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualBegin()));
+							cell.setCellStyle(styles.get("cellcenter"));
 							
 							cell = row.createCell(colNum++);
 							cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getPlanEnd()));
+							cell.setCellStyle(styles.get("cellcenter"));
 							
 							cell = row.createCell(colNum++);
 							cell.setCellValue(formatDate(alloc.getAssetStepReports().get(i).getActualEnd()));
+							cell.setCellStyle(styles.get("cellcenter"));
 							
 						}
 						//logger.debug("i: " + i);
@@ -261,7 +348,7 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 					
 					
 				}
-			
+			}
 		}
 	}
 	
@@ -272,7 +359,7 @@ public class M81R08XLSView extends AbstractPOIExcelView {
     		return "ไม่ระบุ";
     	}
     	
-		return df.format(date);
+		return sdf.format(date);
 	}
 
 	private static Map<String, CellStyle> createStyles(Workbook wb){
@@ -325,8 +412,44 @@ public class M81R08XLSView extends AbstractPOIExcelView {
         style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_LEFT);
         style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        style.setFont(cellFont);
+        style.setWrapText(true);
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cellleft", style);
+
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setWrapText(true);
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cellcenter", style);
+
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_RIGHT);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setWrapText(true);
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cellright", style);
 
        
         style = wb.createCellStyle();
@@ -337,6 +460,20 @@ public class M81R08XLSView extends AbstractPOIExcelView {
         style.setFont(cellFont);
         styles.put("cellRoseColor", style);
 
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_RIGHT);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setWrapText(true);
+        style.setDataFormat(format.getFormat("#,##0.00"));
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cellnumber", style);
         
         return styles;
     }

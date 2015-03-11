@@ -863,6 +863,7 @@ public class ExcelReportsController {
 		
 		model.addAttribute("assetMap", assetMap);
 		model.addAttribute("noMethodAllocs", noMethodAllocs);
+		model.addAttribute("org", currentUser.getWorkAt());
 		
 		Cookie cookie = new Cookie("fileDownload", "true");
 		cookie.setPath("/");
