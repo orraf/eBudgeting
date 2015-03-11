@@ -185,6 +185,8 @@ var menuJson = [{
 	    	name: "m81r09: รายงานการสรุปรายการครุภัณฑ์ (ทั้ง สกย.)", code: "m81r09", parent: 'm81r', link: "m81r09.xls/"+fiscalYear+"/file/m81r09.xls", id: 'm81r09', type: "download", group: ["PMS_USER", "PMS_PLAN"]
 	    }, {
 	    	name: "m81r10: รายงานการสรุปรายการครุภัณฑ์ (เฉพาะรายการที่รับผิดชอบ)", code: "m81r10", parent: 'm81r', link: "m81r10.xls/"+fiscalYear+"/file/m81r10.xls", id: 'm81r10', type: "download", group: ["PMS_USER", "PMS_USER1", "PMS_USER2", "PMS_USER3"]
+	    }, {
+	    	name: "m81r11: รายงานการสรุปผลการเบิกจ่ายงบลงทุน (เฉพาะรายการที่รับผิดชอบ)", code: "m81r11", parent: 'm81r', link: "m81r11.xls/"+fiscalYear+"/file/m81r11.xls", id: 'm81r11', type: "download", group: ["PMS_USER", "PMS_USER1", "PMS_USER2", "PMS_USER3"]
 	    }]
 	},{
 		name: "รายงานการตรวจสอบ (m82r)", code: "m82", parent: 'mr', menus : [{
