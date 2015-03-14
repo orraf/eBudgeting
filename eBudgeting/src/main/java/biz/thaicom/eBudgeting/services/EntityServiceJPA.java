@@ -4430,6 +4430,8 @@ public class EntityServiceJPA implements EntityService {
 	public Activity deleteActivity(Long id) {
 		Activity activity = activityRepository.findOne(id);
 		
+		
+		
 			// now find all children
 		if(activity.getChildren() != null && activity.getChildren().size() > 0) {
 			return null; 
@@ -4438,7 +4440,8 @@ public class EntityServiceJPA implements EntityService {
 			if(activity.getTargets() != null) {
 				for(ActivityTarget target : activity.getTargets()) {
 					List<ActivityTargetReport> atrList = activityTargetReportRepository.findAllByTarget_id(target.getId());
-					List<ActivityPerformance> aps = new ArrayList<ActivityPerformance>();
+					
+					
 					for(ActivityTargetReport atr : atrList) {
 						ActivityPerformance ap =  atr.getActivityPerformance();
 						
@@ -4452,19 +4455,30 @@ public class EntityServiceJPA implements EntityService {
 						monthlyActivityReportRepository.delete(atr.getMonthlyReports());
 						monthlyBudgetReportRepository.delete(ap.getMonthlyBudgetReports());
 						
-						aps.add(ap);
-						
-						
 						
 					}
 					
 					activityTargetReportRepository.delete(atrList);
-					activityPerformanceRepository.delete(aps);
+					
 					
 				}
 				
-				activityTargetRepository.delete(activity.getTargets());
+				
+				
 			}
+			
+			List<ActivityPerformance> aps = new ArrayList<ActivityPerformance>();
+			// now find all activityperformance 
+			aps = activityPerformanceRepository.findAllByActivity(activity);
+			
+			String s = "";
+			for(ActivityPerformance ap: aps) {
+				s += ap.getId() + " ";
+			}
+			logger.debug("deleting activity performace id: " + s);
+			activityPerformanceRepository.delete(aps);
+			
+			activityTargetRepository.delete(activity.getTargets());
 			
 			activityRepository.delete(activity);
 		}

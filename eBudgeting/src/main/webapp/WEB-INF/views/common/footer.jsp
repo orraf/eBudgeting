@@ -4,5 +4,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <div style="font-size: 0.75em; text-align: center;">
-Build #<fmt:message key="application.buildNumber"/>-<fmt:message key="application.buildTimestamp"/>
+Build #<fmt:message key="application.buildNumber"/>-<fmt:message key="application.buildTimestamp"/>  Connected to <fmt:message key="application.database"/>
 </div>
