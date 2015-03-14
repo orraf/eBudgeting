@@ -52,8 +52,12 @@ var ModalView = Backbone.View.extend({
 			this.currentTargetResult.fetch({
 				url: appUrl('/ActivityTargetResult/findBgtResultByReport/' + this.currentTargetReport.get('id') + '/fiscalMonth/' + fiscalMonth),
 				success: _.bind(function(model, response, options) {
+					console.log('success');
+					
 					var monthlyBudget = MonthlyBudgetReport.find(monthlyBudgetResultId);
 					monthlyBudget.set('targetResultId', this.currentTargetResult.get('id') );
+					
+					
 					
 					this.renderBudgetResult(fiscalMonth, model.get('id'));
 					
@@ -153,8 +157,11 @@ var ModalView = Backbone.View.extend({
 		this.currentTargetResult.save(null, {
 			success: _.bind(function(model, response, options) {
 				alert("บันทึกการรายงานผลเรียบร้อยแล้ว");
+				console.log('222222');
 				this.currentTargetReport.set('latestResult', this.currentTargetResult);
+				console.log('333333');
 				this.currentTargetResult.get('report').get('target').set('filterReport', this.currentTargetReport);
+				console.log('444444');
 				this.currentTargetResult.set('id', parseInt(response));
 				// and update the monthly accordingly
 				
@@ -213,6 +220,9 @@ var ModalView = Backbone.View.extend({
 	
 	renderBudgetResult: function(fiscalMonth, targetResultId) {
 		
+		console.log("111111");
+		
+		
 		if(targetResultId == null) {
 		
 			this.currentTargetResult = new ActivityTargetResult();
@@ -261,13 +271,18 @@ var ModalView = Backbone.View.extend({
 			json.month[0].disabled = false;
 			
 			json.result = this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(fiscalMonth).get('budgetResult');
-			json.remark = this.currentTargetResult.get('remark');
+			if(this.currentTargetResult != null) {
+				json.remark = this.currentTargetResult.get('remark');
+			} else {
+				json.remark = '';
+			}
 			json.activityResultId = this.currentTargetReport.get('activityPerformance').get('monthlyBudgetReports').at(fiscalMonth).get('id');
 		
 		}
 		
 		
 		this.$el.find('.modal-header span').html("บันทึกผลการใช้จ่ายงบประมาณ: "+ this.currentTargetReport.get('target').get('activity').get('name'));
+		
 		
 		var html = this.resultBudgetInputTemplate(json);
 		this.$el.find('.modal-body').html(html);
@@ -283,9 +298,13 @@ var ModalView = Backbone.View.extend({
 
 			
 			var json = this.currentTargetReport.toJSON();
+			
+			console.log('XXXX');
+			
 			var html = this.targetReportModalTemplate(json);
 			this.$el.find('.modal-body').html(html);
 			
+			console.log('ZZZZZ');
 			var monthly = this.currentTargetReport.get("monthlyReports");
 			var budgetMontly = this.currentTargetReport.get("activityPerformance").get("monthlyBudgetReports");
 			

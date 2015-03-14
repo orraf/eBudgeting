@@ -5271,7 +5271,7 @@ public class EntityServiceJPA implements EntityService {
 			
 			logger.debug(" atr.getId()2: " + atr.getId());
 		} else {
-			return null;
+			return new ActivityTargetResult();
 		}
 		
 		

@@ -67,6 +67,11 @@ public interface ActivityTargetReportRepository extends
 	public List<Object[]> findAllByOwner_idAndFiscalYearNoFetch(Long ownerId, Integer fiscalYear);
 	
 	
+	@Query(""
+			+ "SELECT report " 
+			+ "FROM ActivityTargetReport report "
+			+ "WHERE  report.target.id= ?1 and report.reportLevel = ?2 "
+			+ "ORDER BY report.owner.id asc ")
 	public List<ActivityTargetReport> findAllByTarget_idAndReportLevel(
 			Long targetId, int reportLevel);
 

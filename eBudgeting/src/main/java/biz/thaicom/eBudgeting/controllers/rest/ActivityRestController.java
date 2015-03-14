@@ -211,13 +211,13 @@ public class ActivityRestController {
 	}
 	
 	@RequestMapping(value="/ActivityTargetResult/{id}", method=RequestMethod.PUT) 
-	public @ResponseBody String updateActivityTargetResult(
+	public @ResponseBody Long updateActivityTargetResult(
 			@RequestBody JsonNode node,
 			@PathVariable Long id,
 			@Activeuser ThaicomUserDetail currentUser){
 		logger.debug("calling PUT");
-		entityService.saveActivityTargetResult(node, currentUser);
-		return "success";
+		ActivityTargetResult atr = entityService.saveActivityTargetResult(node, currentUser);
+		return atr.getId();
 	}
 	
 	@ExceptionHandler(value=Exception.class)
