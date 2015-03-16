@@ -120,9 +120,12 @@ var AssignAssetPlanModal = Backbone.View.extend({
 			type: "POST",
 			url: appUrl('/AssetAllocation/saveAssetResult/' + this.currentAssetAllocation.get('id')),
 			data: JSON.stringify(this.currentAssetAllocation.toJSON()),
-			success: function() {
+			success: _.bind(function() {
 				alert("บันทึกข้อมูลเสร็จแล้ว");
-			},
+				//closed the modal
+				this.cancel();
+				
+			},this),
 			dataType: "json",
 			contentType: "application/json; charset=UTF-8"
 		});
