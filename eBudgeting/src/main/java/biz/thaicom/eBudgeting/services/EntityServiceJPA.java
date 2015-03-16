@@ -6226,7 +6226,7 @@ public class EntityServiceJPA implements EntityService {
 			searchOrg = searchOrg.getParent();
 		}
 		
-		List<AssetAllocation> assetAllocations = assetAllocationRepository.findAlByFiscalyearAndOwner(fiscalYear, searchOrg);
+		List<AssetAllocation> assetAllocations = assetAllocationRepository.findAlByFiscalyearAndOwnerOrOperator(fiscalYear, searchOrg);
 		
 		for(AssetAllocation alloc : assetAllocations) {
 			alloc.getAssetBudgetPlans().size();

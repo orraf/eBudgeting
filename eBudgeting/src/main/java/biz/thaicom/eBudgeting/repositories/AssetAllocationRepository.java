@@ -61,8 +61,8 @@ public interface AssetAllocationRepository extends JpaRepository<AssetAllocation
 			"	INNER JOIN FETCH assetAllocation.budgetType " +
 			"	INNER JOIN FETCH assetAllocation.assetBudget " +
 			"WHERE assetAllocation.fiscalYear = ?1 "
-			+ "AND (assetAllocation.owner = ?2  or assetAllocation.owner.parent = ?2)")
-	List<AssetAllocation> findAlByFiscalyearAndOwner(Integer fiscalYear,
+			+ "AND (assetAllocation.owner = ?2  or assetAllocation.owner.parent = ?2 or assetAllocation.operator = ?2)")
+	List<AssetAllocation> findAlByFiscalyearAndOwnerOrOperator(Integer fiscalYear,
 			Organization workAt);
 
 }
