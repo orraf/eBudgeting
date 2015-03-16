@@ -160,7 +160,7 @@ public class M81R10XLSView extends AbstractPOIExcelView {
 				+ "	and t2.assetkind_id = t3.id "
 				+ "	and t3.typeid = t4.id "
 				+ " and t3.groupid = t5.id "
-				+ " and t1.hrx_owner_id = t6.id "
+				+ " and (t1.hrx_owner_id = t6.id OR t1.hrx_operator_id = t6.id) "
 			    + "	and t6.parent_hrx_organization_id = t8.id "
 				+ "	and t1.fiscalyear = " + fiscalYear + " " 
 			    + "	and t2.ASSETCATEGORY_ID  = t7.id(+) "
