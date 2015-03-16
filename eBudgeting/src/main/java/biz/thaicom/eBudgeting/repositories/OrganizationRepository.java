@@ -11,8 +11,20 @@ import biz.thaicom.eBudgeting.models.hrx.Organization;
 public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 		PagingAndSortingRepository<Organization, Long> {
 
+	@Query(""
+			+ "SELECT org "
+			+ "FROM Organization org "
+			+ "WHERE org.name like ?1 "
+			+ "		AND org.inActive = 'N'"
+			+ "ORDER BY org.name asc ")
 	public List<Organization> findAllByNameLikeOrderByNameAsc(String name);
 
+	@Query(""
+			+ "SELECT org "
+			+ "FROM Organization org "
+			+ "WHERE (org.name like ?1 AND org.code like ?2) "
+			+ "		AND org.inActive = 'N'"
+			+ "ORDER BY org.name asc ")
 	public List<Organization> findAllByNameLikeAndCodeLikeOrderByNameAsc(String name, String code);
 
 	
@@ -23,6 +35,13 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			"")
 	public List<Organization> findAllByOwningObjective(Long objectiveId);
 
+	@Query(""
+			+ "SELECT org "
+			+ "FROM Organization org "
+			+ "WHERE org.parent.id like ?2 "
+			+ "		AND org.name like ?1 "
+			+ "		AND org.inActive = 'N'"
+			+ "ORDER BY org.name asc ")
 	public List<Organization> findAllByNameLikeAndParent_IdOrderByNameAsc(
 			String query, Long parentId);
 
@@ -32,6 +51,7 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			"WHERE organization.parent.id = 0 " +
 //			"	AND organization.id > 110000000 " +
 			"	AND organization.name like ?1 " +
+			"		AND organization.inActive = 'N'" +
 			"ORDER BY organization.code asc ")
 	public List<Organization> findAllByProvinces(String query);
 	
@@ -40,6 +60,7 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			+ " FROM Organization org "
 			+ " WHERE org.parent.id=0 "
 			+ " 	AND org.id > 110000000 "
+			+ "		AND org.inActive = 'N'" 
 			+ " ORDER BY org.id ")
 	public List<Organization> findAllProvinces();
 
@@ -48,6 +69,7 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			"FROM Organization organization " +
 			"WHERE organization.parent.id = 0 " +
 			"	AND organization.name like ?1 " +
+			"	AND organization.inActive = 'N'" +
 			"ORDER BY organization.code asc ") 
 	public List<Organization> findAllTopLevelByNameLike(String query);
 
@@ -61,6 +83,7 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			+ "SELECT org "
 			+ "FROM Organization org "
 			+ "	LEFT JOIN FETCH org.children "
+			+ "WHERE org.inActive='N' "
 			+ " ORDER BY org.id asc")
 	public List<Organization> findAllLeftJoinChildren();
 
@@ -75,12 +98,14 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			+ "FROM Organization org "
 			+ "WHERE org.parent.id=0 "
 			+ " 	AND org.id < 110000000 "
+			+ " AND org.inActive = 'N' "
 			+ "ORDER BY org.id asc")
 	public List<Organization> findAll_ฝ่าย();
 
 	@Query(""
 			+ "SELECT org "
 			+ "FROM Organization org "
-			+ "WHERE org.code like ?1 ")
+			+ "WHERE org.code like ?1 "
+			+ " AND org.inActive = 'N' ")
 	public List<Organization> findAllCodeLike(String queryOrg);
 }

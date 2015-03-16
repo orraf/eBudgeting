@@ -56,6 +56,9 @@ public class Organization implements Serializable {
 	@Basic
 	private String code;
 	
+	@Basic
+	private Character inActive;
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="PARENT_HRX_ORGANIZATION_ID")
 	private Organization parent;
@@ -124,6 +127,14 @@ public class Organization implements Serializable {
 		return OrganizationType.getType(this);
 	}
 	
+	public Character getInActive() {
+		return inActive;
+	}
+
+	public void setInActive(Character inActive) {
+		this.inActive = inActive;
+	}
+
 	// ถ้าเป็นระดับแผนก return true;
 	public Boolean isSubSection() {
 		OrganizationType myType =  this.getType();
