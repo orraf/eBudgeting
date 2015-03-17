@@ -4110,11 +4110,19 @@ public class EntityServiceJPA implements EntityService {
 		Organization org = organizationRepository.findOne(workAt.getId());
 		returnList.add(org);
 		if(org.getParent().getId() == 0L ) {
-			returnList.addAll(org.getChildren());
-			returnList.size();
+			
+			for(Organization child : org.getChildren()) {
+				if(child.getInActive().equals('N')) {
+					returnList.add(child);
+				}
+			}			
 		} else {
 			Organization parent = org.getParent();
-			returnList.addAll(parent.getChildren());
+			for(Organization child : parent.getChildren()) {
+				if(child.getInActive().equals('N')) {
+					returnList.add(child);
+				}
+			}
 			returnList.size();
 		}
 		return returnList;
@@ -4148,7 +4156,14 @@ public class EntityServiceJPA implements EntityService {
 		
 		Organization org = organizationRepository.findOneById(id);
 		if(org!=null && org.getChildren() != null) {
-			org.getChildren().size();
+			List<Organization> children = new ArrayList<Organization>();
+			for(Organization child : org.getChildren()) {
+				if(child.getInActive().equals('N')) {
+					children.add(child);
+				}
+			}
+			
+			org.setChildren(children);
 		} else {
 			logger.debug("org is null");
 		}

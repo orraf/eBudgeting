@@ -80,8 +80,14 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 			@Activeuser ThaicomUserDetail currentUser 
 			) {
 		Organization org = entityService.findOrganizationById(id);
+		List<Organization> children = new ArrayList<Organization>();
+		for(Organization child : org.getChildren()) {
+			if(child.getInActive().equals('N')) {
+				children.add(child);
+			}
+		}
 		
-		return org.getChildren();
+		return children;
 	}
 	
 	
@@ -96,7 +102,12 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 		
 		list.add(org);
 		
-		list.addAll(org.getChildren());
+		for(Organization child : org.getChildren()) {
+			if(child.getInActive().equals('N')) {
+				list.add(child);
+			}
+		}
+		
 		//list.addAll(entityService.findOrganizationByTop(query));
 		list.addAll(entityService.findOrganizationByProvinces(query));
 		
