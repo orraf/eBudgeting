@@ -68,7 +68,13 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 		
 		Row firstRow = sheet.createRow(rowNum++);
 		Cell cell0 = firstRow.createCell(0);
-		cell0.setCellValue("รายงานสรุปผลการใช้จ่ายงบลงทุน หน่วยงาน: " + org.getName() );
+		if(org == null) {
+			cell0.setCellValue("รายงานสรุปผลการใช้จ่ายงบลงทุน" );
+		} else {
+			cell0.setCellValue("รายงานสรุปผลการใช้จ่ายงบลงทุน หน่วยงาน: " + org.getName() );
+		}
+		
+		
 		cell0.setCellStyle(styles.get("title"));
 		
 		row = sheet.createRow(rowNum++);
@@ -162,7 +168,11 @@ public class M81R08XLSView extends AbstractPOIExcelView {
 				
 				row = sheet.createRow(rowNum++);
 				cell = row.createCell(0);
-				cell.setCellValue("รายงานสรุปผลการใช้จ่ายงบลงทุน หน่วยงาน: " + org.getName() );
+				if(org == null) {
+					cell.setCellValue("รายงานสรุปผลการใช้จ่ายงบลงทุน" );
+				} else {
+					cell.setCellValue("รายงานสรุปผลการใช้จ่ายงบลงทุน หน่วยงาน: " + org.getName() );
+				}
 				cell.setCellStyle(styles.get("title"));
 				
 				row = sheet.createRow(rowNum++);
