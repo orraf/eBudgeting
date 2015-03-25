@@ -74,7 +74,7 @@ public class ObjectiveRestController {
 			@PathVariable Integer fiscalYear) {
 		
 		return entityService.findOneRootObjectiveByFiscalyear(fiscalYear);
-	};
+	}
 	
 	
 	@RequestMapping(value="/Objective/rootEager/{fiscalYear}", method=RequestMethod.GET)

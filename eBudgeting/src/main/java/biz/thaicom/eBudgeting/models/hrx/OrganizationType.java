@@ -14,6 +14,7 @@ public enum OrganizationType {
     
     public static OrganizationType getType(Organization org) {
     	String orgCode = org.getCode();
+    	String first2Digit = org.getCode().substring(0, 2);
     	if(orgCode != null) {
     		if(orgCode.matches("01\\d\\d0000")){
     			return OrganizationType.ฝ่าย;
@@ -23,6 +24,10 @@ public enum OrganizationType {
     			return OrganizationType.แผนก;
     		} else if(orgCode.matches("\\d\\d000000")) {
     			return OrganizationType.จังหวัด;
+    		} else if ( (first2Digit.equals("41") || first2Digit.equals("32") ) && 
+    				(orgCode.matches("\\d\\d\\d\\d0000")))  {
+    			// กรณี นครศรี และ สงขลา
+    			return OrganizationType.จังหวัด;		    		
     		} else if (orgCode.matches("\\d\\d001\\d00")) {
     			return OrganizationType.ศูนย์ปฏิบัติการ;
     		} else if (orgCode.matches("\\d\\d000\\d00")) {
