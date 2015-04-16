@@ -51,20 +51,20 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		mainTblView.updateSumTable();
 	},
 	saveAssignTarget: function(e) {
-		var sum=0.0;
+		var sum= new BigNumber(0.0);
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseFloat($(el).val());
+			sum = sum.plus($(el).val());
 		});
 		          
-		if(sum != this.currentTargetReport.get('targetValue') ) {
+		if( !sum.equals(this.currentTargetReport.get('targetValue')) ) {
 			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
 			return;
 		}
  		
-		sum = 0;
+		sum = new BigNumber(0.0);;
 		_.forEach(this.$el.find("input.budgetAllocated"), function(el) {
-			sum += parseFloat($(el).val());
+			sum = sum.plus($(el).val());
 		});
 		
  		this.$el.find('a#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');

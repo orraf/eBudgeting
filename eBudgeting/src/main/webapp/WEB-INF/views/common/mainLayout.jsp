@@ -35,6 +35,8 @@
 	<script src="<c:url value='/resources/jslibs/jquery.fileDownload-1.4.2.js'/>"></script>
 	
 	<script src="<c:url value='/resources/jslibs/lodash-1.3.1.min.js'/>"></script>
+	
+	<script src="<c:url value='/webjars/bignumber/2.0.0/bignumber.min.js'/>"></script>
 	<!-- 
 	<script src="<c:url value='/resources/jslibs/underscore-1.5.1.min.js'/>"></script>
 	 -->
