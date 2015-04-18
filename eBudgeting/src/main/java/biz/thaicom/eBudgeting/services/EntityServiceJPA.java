@@ -5835,6 +5835,15 @@ public class EntityServiceJPA implements EntityService {
 			asset.setEstimatedCost(node.get("estimatedCost").asDouble());
 		}
 		
+		if(node.get("contractNo") != null  && !node.get("contractNo").asText().isEmpty()) {
+			if(node.get("contractNo").asText().equals("null")) {
+				asset.setContractNo(null);
+			} else {
+				asset.setContractNo(node.get("contractNo").asText());
+			}
+		}
+		
+		
 		AssetMethod assetMethod = assetMethodRepository.findOne(getJsonNodeId(node.get("assetMethod")));
 		Boolean newMethod;
 		if(asset.getAssetMethod() != assetMethod){
@@ -5981,8 +5990,12 @@ public class EntityServiceJPA implements EntityService {
 						plan.setActualInstallmentDate(null);
 					}
 					
-					if(planNode.get("remark") != null) {
-						plan.setRemark(planNode.get("remark").asText());
+					if(planNode.get("remark") != null && !planNode.get("remark").asText().isEmpty()) {
+						if(planNode.get("remark").asText().equals("null")) {
+							plan.setRemark(null);
+						} else {
+							plan.setRemark(planNode.get("remark").asText());
+						}
 					}
 					
 				}

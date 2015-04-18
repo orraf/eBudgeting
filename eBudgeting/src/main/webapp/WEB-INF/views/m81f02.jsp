@@ -180,6 +180,8 @@
 	<form class="form-horizontal">
 {{#if assetMethod}}
 		<div id="contractDiv" class="span10" style="margin-bottom: 10px">
+			ระบุเลขที่สัญญา : <input type="text" value="{{contractNo}}" placeholder="..." data-field="contractNo" class="span2 assetBudgetAllocationTxt" id="contractNo">
+			<br/>
 			จำนวนเงินตามสัญญา: 
 				แผน {{formatNumber contractedBudgetPlan}} บาท
 				/

@@ -77,7 +77,11 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	
 	assetBudgetAllocationChange: function(e) {
 		var dataField = $(e.target).attr('data-field');
-		this.currentAssetAllocation.set(dataField, parseFloat($(e.target).val()));
+		if(dataField == 'contractedBudgetActual') {
+			this.currentAssetAllocation.set(dataField, parseFloat($(e.target).val()));
+		} else {
+			this.currentAssetAllocation.set(dataField, $(e.target).val());
+		}
 	},
 	
 	assetBudgetPlanChange: function(e) {
