@@ -484,6 +484,7 @@ public interface EntityService {
 			Integer fiscalYear, Organization workAt);
 	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYearAndOwnerId(
 			Integer fiscalYear);
+	public Double findAssetAllocatoinBudgetSigendByPO(String poNumber);
 
 
 	

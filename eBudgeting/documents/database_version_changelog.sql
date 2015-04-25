@@ -1399,5 +1399,13 @@ alter table BGT_BUDGETPROPOSAL
         
 -- version 25
 -- Modified Date: APRIL 19, 2013
+update app_info set db_version=25;
 alter table BGT_ASSETALLOCATION
 	add (contractNo varchar2(255 char));
+
+-- version 26
+-- Modified Date: APRIL 26, 2013
+update app_info set db_version=26;
+alter table BGT_ASSETALLOCATION
+	add (contractBudgetSigned number(19,2));
+	

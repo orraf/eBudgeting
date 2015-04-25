@@ -21,4 +21,12 @@ public interface AssetBudgetRepository extends JpaRepository<AssetBudget, Long> 
 			+ "WHERE assetBudget.category = ?1 ")
 	public void removeCategory(AssetCategory category);
 	
+	
+	@Query(""
+			+ "SELECT po.poContract, sum(po.assetAmount)"
+			+ "FROM AssetPOExternal po "
+			+ "WHERE po.poContract like ?1 "
+			+ "GROUP BY po.poContract "
+			+ "")
+	public List<Object[]> findAssetAmountByPoNumber(String poNumber);
 }

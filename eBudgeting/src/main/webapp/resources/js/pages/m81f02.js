@@ -69,7 +69,25 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		"change input.datepickerTxt" : "changeInputDatepicker",
 		"click #cancelBtn" : "cancel",
 		"change .assetBudgetPlanTxt" : "assetBudgetPlanChange",
-		"change .assetBudgetAllocationTxt" : "assetBudgetAllocationChange"
+		"change .assetBudgetAllocationTxt" : "assetBudgetAllocationChange",
+		"click #findAmountByContractPoBTN" : "clickFindAmountByContractPoBTN"
+	},
+	
+	clickFindAmountByContractPoBTN: function(e) {
+		var contractNo= $('#contractNo').val();
+		console.log(contractNo);
+		
+		$.post(appUrl("/AssetAllocation/findBudgetSignedByPO"), {
+			poNumber : contractNo
+		}).done(function(data) {
+			if((data.result != null)) {
+				$('#contractedBudgetActual').val(data.result);
+			} else {
+				alert("ไม่พบหมายเลขสัญญา " + contractNo);
+			}
+		});
+		
+		return false;
 	},
 	cancel:function(e) {
 		this.$el.modal('hide');

@@ -54,6 +54,10 @@ public class AssetAllocation implements Serializable{
 	@Basic
 	private String contractNo;
 	
+	@Basic
+	private Double contractBudgetSigned;
+	
+	
 	/**
 	 * วันที่เริ่มสัญญา (แผน)
 	 */
@@ -274,6 +278,14 @@ public class AssetAllocation implements Serializable{
 
 	public String getContractNo() {
 		return contractNo;
+	}
+
+	public Double getContractBudgetSigned() {
+		return contractBudgetSigned;
+	}
+
+	public void setContractBudgetSigned(Double contractBudgetSigned) {
+		this.contractBudgetSigned = contractBudgetSigned;
 	}
 	
 	

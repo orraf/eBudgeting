@@ -5814,6 +5814,18 @@ public class EntityServiceJPA implements EntityService {
 		return methods;
 	}
 
+	
+	
+	@Override
+	public Double findAssetAllocatoinBudgetSigendByPO(String poNumber) {
+		List<Object[]> result = assetBudgetRepository.findAssetAmountByPoNumber(poNumber);
+		if(result == null || result.size() == 0) {
+			return null;
+		}
+		
+		return (Double) result.get(0)[1];
+	}
+
 	@Override
 	public String saveAssetAllocationPlan(JsonNode node, Boolean saveResult) {
 		
@@ -5841,6 +5853,10 @@ public class EntityServiceJPA implements EntityService {
 			} else {
 				asset.setContractNo(node.get("contractNo").asText());
 			}
+		}
+		
+		if(node.get("contractBudgetSigned") != null && node.get("contractBudgetSigned").asDouble() != 0.0f ) {
+			asset.setContractBudgetSigned(node.get("contractBudgetSigned").asDouble());
 		}
 		
 		
