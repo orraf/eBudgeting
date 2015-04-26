@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.services;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -6317,6 +6318,18 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYearAndOwnerId(
 			Integer fiscalYear) {
+//		List<Object[]> results = activityTargetReportRepository.findAllSumTargetValueReportLevel2ByFiscalYear(fiscalYear);
+//		for(Object[] obj: results) {
+//			String s2="null", s3="null";
+//			if(obj[2] != null) {
+//				s2= "" +((BigDecimal) obj[2]).doubleValue();
+//			} 
+//			if(obj[3] != null) {
+//				s3= "" +((BigDecimal) obj[3]).doubleValue();
+//			}
+//			
+//			logger.debug("++++++++++++++++++++++++++" + ((BigDecimal)obj[0]).intValue() + ", " + ((BigDecimal) obj[1]).intValue() + ", " + s2 + ", " + s3 );
+//		}
 		return activityPerformanceRepository.findSumBudgetAllocatedByFiscalYearAndOwnerId(fiscalYear);
 	}
 
