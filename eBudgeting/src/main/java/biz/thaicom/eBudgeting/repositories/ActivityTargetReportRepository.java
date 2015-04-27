@@ -66,6 +66,43 @@ public interface ActivityTargetReportRepository extends
 			" 	AND objective.fiscalYear = ?2 ")
 	public List<Object[]> findAllByOwner_idAndFiscalYearNoFetch(Long ownerId, Integer fiscalYear);
 	
+	@Query(value = ""
+//			+ "	SELECT report.target.activity.forObjective.id, report.owner.parent.id, sum(report.targetValue) "
+//			+ "		FROM 	ActivityTargetReport report "
+//			+ "		WHERE 	report.target.activity.forObjective.fiscalYear = ?1 AND"
+//			+ "				report.reportLevel=2 "
+//			+ "		GROUP BY report.target.activity.forObjective.id, report.owner.parent.id "
+//			+ "SELECT report1.owner.id, report1.target.id, report1.targetValue, report2.sum_target "
+//			+ "FROM ActivityTargetReport report1, "
+//			+ "	( 	SELECT report.target.id target_id, report.owner.parent.id parent_id, sum(report.targetValue) sum_target "
+//			+ "		FROM 	ActivityTargetReport report "
+//			+ "		WHERE 	report.target.activity.forObjective.fiscalYear = ?1 AND"
+//			+ "				report.reportLevel=2 "
+//			+ "		GROUP BY report.target.id, report.owner.parent.id) report2 "
+//			+ "WHERE "
+//			+ "		report1.target.id = report2.target_id AND "
+//			+ "		report1.owner.id = report2.parent_id "
+			+ "SELECT report1.OWNER_HRX_ORGANIZATION_ID, report1.TARGET_PLN_ACTTARGET_ID, report1.TARGETVALUE, report2.sum_target "
+			+ "FROM PLN_ACTIVITYTARGETREPORT report1, "
+			+ "	(	SELECT parent.id parent_id, target.id target_id, sum(report.targetvalue) sum_target"
+			+ "		FROM PLN_ACTIVITYTARGETREPORT  report, PLN_ACTIVITYTARGET target,"
+			+ "			PLN_ACTIVITY activity, pln_objective objective, HRX_ORGANIZATION org, HRX_ORGANIZATION parent"
+			+ "		WHERE report.OWNER_HRX_ORGANIZATION_ID = org.id AND"
+			+ "			org.PARENT_HRX_ORGANIZATION_ID = parent.id AND"
+			+ "			report.TARGET_PLN_ACTTARGET_ID = target.id AND"
+			+ "			target.ACTIVITY_PLN_ACTIVITY_ID = activity.id AND"
+			+ "			activity.OBJ_PLN_OBJECTIVE_ID = objective.id AND"
+			+ "			objective.FISCALYEAR = ?1 AND  REPORTLEVEL=2 "
+			+ "		GROUP BY target.id, parent.id)	report2 "
+			+ "WHERE "
+			+ "		report1.TARGET_PLN_ACTTARGET_ID = report2.target_id (+) AND "
+			+ "		report1.OWNER_HRX_ORGANIZATION_ID = report2.parent_id (+)"
+			+ ""
+			+ ""
+			+ "",
+			nativeQuery = true)
+	public List<Object[]> findAllSumTargetValueReportLevel2ByFiscalYear(Integer fiscalYear);
+	
 	
 	@Query(""
 			+ "SELECT report " 

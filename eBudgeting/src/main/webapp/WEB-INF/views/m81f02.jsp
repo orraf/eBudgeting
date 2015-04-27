@@ -180,12 +180,15 @@
 	<form class="form-horizontal">
 {{#if assetMethod}}
 		<div id="contractDiv" class="span10" style="margin-bottom: 10px">
+			ระบุเลขที่สัญญา : <input type="text" value="{{contractNo}}" placeholder="..." data-field="contractNo" class="span2 assetBudgetAllocationTxt" id="contractNo">
+			<a href="#" class="btn btn-deafult" id="findAmountByContractPoBTN">ค้นหาจำนวนเงินตามสัญญา</a>
+			<br/><br/>
 			จำนวนเงินตามสัญญา: 
 				แผน {{formatNumber contractedBudgetPlan}} บาท
 				/
 				ผล 
 				<div class="input-append">
-					<input type="text" value="{{contractedBudgetActual}}" placeholder="..." data-field="contractedBudgetActual" class="span2 assetBudgetAllocationTxt" id="contractedBudgetActual"><span class="add-on">บาท</span>
+					<input type="text" value="{{contractedBudgetActual}}" placeholder="..." data-field="contractedBudgetActual" class="span2 assetBudgetAllocationTxt" id="contractedBudgetActual" readonly="readonly"><span class="add-on">บาท</span>
 				</div> 
 
 		</div>

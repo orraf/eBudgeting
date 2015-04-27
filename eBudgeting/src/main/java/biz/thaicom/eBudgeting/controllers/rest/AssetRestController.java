@@ -124,6 +124,19 @@ public class AssetRestController {
 		return entityService.findAssetAllocationById(id);
 	}
 	
+	@RequestMapping(value="/AssetAllocation/findBudgetSignedByPO", method=RequestMethod.POST)
+	public @ResponseBody JsonNode findBudgetSignedByPO(
+			@RequestParam String poNumber) {
+		
+		Double result = entityService.findAssetAllocatoinBudgetSigendByPO(poNumber);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode rootNode = mapper.createObjectNode(); // will be of type ObjectNode
+		
+		((ObjectNode) rootNode).put("result", result);
+		return rootNode;
+	}
+	
 	@RequestMapping(value="/AssetAllocation/", method=RequestMethod.POST)
 	public @ResponseBody JsonNode saveAssetAllocation(
 			@RequestBody JsonNode node) {

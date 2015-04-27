@@ -1,6 +1,7 @@
 package biz.thaicom.eBudgeting.services;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -5814,6 +5815,18 @@ public class EntityServiceJPA implements EntityService {
 		return methods;
 	}
 
+	
+	
+	@Override
+	public Double findAssetAllocatoinBudgetSigendByPO(String poNumber) {
+		List<Object[]> result = assetBudgetRepository.findAssetAmountByPoNumber(poNumber);
+		if(result == null || result.size() == 0) {
+			return null;
+		}
+		
+		return (Double) result.get(0)[1];
+	}
+
 	@Override
 	public String saveAssetAllocationPlan(JsonNode node, Boolean saveResult) {
 		
@@ -5834,6 +5847,19 @@ public class EntityServiceJPA implements EntityService {
 		if(node.get("estimatedCost") != null) {
 			asset.setEstimatedCost(node.get("estimatedCost").asDouble());
 		}
+		
+		if(node.get("contractNo") != null  && !node.get("contractNo").asText().isEmpty()) {
+			if(node.get("contractNo").asText().equals("null")) {
+				asset.setContractNo(null);
+			} else {
+				asset.setContractNo(node.get("contractNo").asText());
+			}
+		}
+		
+		if(node.get("contractBudgetSigned") != null && node.get("contractBudgetSigned").asDouble() != 0.0f ) {
+			asset.setContractBudgetSigned(node.get("contractBudgetSigned").asDouble());
+		}
+		
 		
 		AssetMethod assetMethod = assetMethodRepository.findOne(getJsonNodeId(node.get("assetMethod")));
 		Boolean newMethod;
@@ -5981,8 +6007,12 @@ public class EntityServiceJPA implements EntityService {
 						plan.setActualInstallmentDate(null);
 					}
 					
-					if(planNode.get("remark") != null) {
-						plan.setRemark(planNode.get("remark").asText());
+					if(planNode.get("remark") != null && !planNode.get("remark").asText().isEmpty()) {
+						if(planNode.get("remark").asText().equals("null")) {
+							plan.setRemark(null);
+						} else {
+							plan.setRemark(planNode.get("remark").asText());
+						}
 					}
 					
 				}
@@ -6288,6 +6318,18 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYearAndOwnerId(
 			Integer fiscalYear) {
+//		List<Object[]> results = activityTargetReportRepository.findAllSumTargetValueReportLevel2ByFiscalYear(fiscalYear);
+//		for(Object[] obj: results) {
+//			String s2="null", s3="null";
+//			if(obj[2] != null) {
+//				s2= "" +((BigDecimal) obj[2]).doubleValue();
+//			} 
+//			if(obj[3] != null) {
+//				s3= "" +((BigDecimal) obj[3]).doubleValue();
+//			}
+//			
+//			logger.debug("++++++++++++++++++++++++++" + ((BigDecimal)obj[0]).intValue() + ", " + ((BigDecimal) obj[1]).intValue() + ", " + s2 + ", " + s3 );
+//		}
 		return activityPerformanceRepository.findSumBudgetAllocatedByFiscalYearAndOwnerId(fiscalYear);
 	}
 

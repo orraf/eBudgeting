@@ -33,6 +33,7 @@
   </appender> 
 
   <logger name="biz.thaicom" level="${config.logback.level}" />
+   <logger name="com.oracle" level="${config.logback.level}" />
   
   <!-- 
   <logger name="org.springframework.orm.jpa.support" level="${config.logback.level}" />
