@@ -331,6 +331,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 									   "and t1.obj_pln_objective_id in (select id from pln_objective " +
 																	   "connect by prior id = parent_pln_objective_id " +
 																	   "start with id = " + rs.getInt(3) + ") " +
+									   "and t2.fiscalmonth is not null " +
 									   "connect by prior t1.id = t1.parent_pln_activity_id " + 
 									   "start with t1.parent_pln_activity_id is null " +
 									   "group by t2.fiscalmonth order by t2.fiscalmonth ");
@@ -491,6 +492,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 									                                "and d1.owner_hrx_organization_id = d5.id) t2 " +
 										   "where t1.id = t2.activity_pln_activity_id (+) " +
 										   "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
+										   "and t2.fiscalmonth is not null " +
 										   "connect by prior t1.id = t1.parent_pln_activity_id " + 
 										   "start with t1.parent_pln_activity_id is null " +
 										   "group by t2.fiscalmonth order by t2.fiscalmonth ");
