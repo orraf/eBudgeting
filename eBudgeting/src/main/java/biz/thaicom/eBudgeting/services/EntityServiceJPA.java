@@ -6315,8 +6315,10 @@ public class EntityServiceJPA implements EntityService {
 		return activityPerformanceRepository.findSumBudgetAllocatedByFiscalYear(fiscalYear);
 	}
 	
+
+	
 	@Override
-	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYearAndOwnerId(
+	public Iterable<Object[]> findAllSumTargetValueByFiscalYearAndOwnerId(
 			Integer fiscalYear) {
 //		List<Object[]> results = activityTargetReportRepository.findAllSumTargetValueReportLevel2ByFiscalYear(fiscalYear);
 //		for(Object[] obj: results) {
@@ -6330,6 +6332,15 @@ public class EntityServiceJPA implements EntityService {
 //			
 //			logger.debug("++++++++++++++++++++++++++" + ((BigDecimal)obj[0]).intValue() + ", " + ((BigDecimal) obj[1]).intValue() + ", " + s2 + ", " + s3 );
 //		}
+		
+		List<Object[]> results = activityTargetReportRepository.findAllSumTargetValueReportLevel2ByFiscalYear(fiscalYear);
+		return results;
+	}
+	
+	@Override
+	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYearAndOwnerId(
+			Integer fiscalYear) {
+
 		return activityPerformanceRepository.findSumBudgetAllocatedByFiscalYearAndOwnerId(fiscalYear);
 	}
 

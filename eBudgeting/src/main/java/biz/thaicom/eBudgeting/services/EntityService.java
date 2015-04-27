@@ -303,6 +303,8 @@ public interface EntityService {
 	public TargetValue saveTargetValue(JsonNode node, Organization workAt) throws 	Exception;
 	public void saveLotsTargetValue(JsonNode node);
 	
+	public Iterable<Object[]> findAllSumTargetValueByFiscalYearAndOwnerId(Integer fiscalYear);
+	
 	//TargetValueAllocationRecord
 	public TargetValueAllocationRecord saveTargetValueAllocationRecord(JsonNode node,
 			Organization workAt);
