@@ -48,6 +48,7 @@ import biz.thaicom.eBudgeting.models.bgt.AssetCategory;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
+import biz.thaicom.eBudgeting.models.bgt.AssetPOExternal;
 import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.bgt.AssetType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetCommonType;
@@ -5817,14 +5818,16 @@ public class EntityServiceJPA implements EntityService {
 
 	
 	
-	@Override
-	public Double findAssetAllocatoinBudgetSigendByPO(String poNumber) {
-		List<Object[]> result = assetBudgetRepository.findAssetAmountByPoNumber(poNumber);
-		if(result == null || result.size() == 0) {
-			return null;
-		}
+
+	
+		@Override
+	public List<AssetPOExternal> findAssetAllocatoinBudgetSigendByPOAndFiscalYearAndOrgId(
+			String poNumber, Integer fiscalYear, Long orgId) {
+	
+		List<AssetPOExternal> result = assetBudgetRepository.findAssetAllocatoinBudgetSigendByPOAndFiscalYear(
+				poNumber, fiscalYear);
 		
-		return (Double) result.get(0)[1];
+		return result;
 	}
 
 	@Override

@@ -34,6 +34,7 @@ import biz.thaicom.eBudgeting.models.bgt.AssetCategory;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
+import biz.thaicom.eBudgeting.models.bgt.AssetPOExternal;
 import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.bgt.AssetType;
 import biz.thaicom.eBudgeting.models.pln.TargetUnit;
@@ -124,17 +125,16 @@ public class AssetRestController {
 		return entityService.findAssetAllocationById(id);
 	}
 	
-	@RequestMapping(value="/AssetAllocation/findBudgetSignedByPO", method=RequestMethod.POST)
-	public @ResponseBody JsonNode findBudgetSignedByPO(
-			@RequestParam String poNumber) {
+	@RequestMapping(value="/AssetAllocation/fy/{fiscalYear}/findBudgetSignedByPO", method=RequestMethod.POST)
+	public @ResponseBody List<AssetPOExternal> findBudgetSignedByPO(
+			@PathVariable Integer fiscalYear,
+			@RequestParam String poNumber,
+			@Activeuser ThaicomUserDetail currentUser) {
 		
-		Double result = entityService.findAssetAllocatoinBudgetSigendByPO(poNumber);
+		List<AssetPOExternal> result = entityService.findAssetAllocatoinBudgetSigendByPOAndFiscalYearAndOrgId(poNumber, fiscalYear, currentUser.getWorkAt().getId());
 		
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode rootNode = mapper.createObjectNode(); // will be of type ObjectNode
-		
-		((ObjectNode) rootNode).put("result", result);
-		return rootNode;
+	
+		return result;
 	}
 	
 	@RequestMapping(value="/AssetAllocation/", method=RequestMethod.POST)

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import biz.thaicom.eBudgeting.models.bgt.AssetBudget;
 import biz.thaicom.eBudgeting.models.bgt.AssetCategory;
+import biz.thaicom.eBudgeting.models.bgt.AssetPOExternal;
 
 public interface AssetBudgetRepository extends JpaRepository<AssetBudget, Long> {
 
@@ -29,4 +30,14 @@ public interface AssetBudgetRepository extends JpaRepository<AssetBudget, Long> 
 			+ "GROUP BY po.poContract "
 			+ "")
 	public List<Object[]> findAssetAmountByPoNumber(String poNumber);
+
+	@Query(""
+			+ "SELECT po "
+			+ "FROM AssetPOExternal po "
+			+ "WHERE po.poContract like ?1 "
+			+ "	AND po.fiscalYear = ?2 "
+			+ "ORDER BY faCode asc"
+			+ "")
+	public List<AssetPOExternal> findAssetAllocatoinBudgetSigendByPOAndFiscalYear(
+			String poNumber, Integer fiscalYear);
 }
