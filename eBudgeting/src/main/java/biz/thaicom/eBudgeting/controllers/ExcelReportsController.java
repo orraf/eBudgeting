@@ -1,5 +1,6 @@
 package biz.thaicom.eBudgeting.controllers;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -984,6 +985,7 @@ public class ExcelReportsController {
 			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
 		
 		HashMap<String, Double> ผลจัดสรรMap = new HashMap<String, Double>();
+		HashMap<String, Double> ผลเป้าหมายMap = new HashMap<String, Double>();
 		
 		Long[] typeIds = {103L, 104L, 105L, 106L};
 		ArrayList<Long> typeIdList = new ArrayList<Long>(Arrays.asList(typeIds));
@@ -991,6 +993,9 @@ public class ExcelReportsController {
 		List<Objective> objectiveList = entityService.findObjectivesByFiscalyearAndTypeIdList(fiscalYear, typeIdList);
 		List<Objective> ผลผลิต = new ArrayList<Objective>();
 		Iterable<Object[]> ผลรวมจัดสรร  = entityService.findAllSumBudgetPlanByFiscalYearAndOwnerId(fiscalYear);
+		
+		
+		
 		
 		for(Objective o : objectiveList) {
 			logger.debug(o.getName() + o.getType().getId());
@@ -1009,8 +1014,16 @@ public class ExcelReportsController {
 			}
 		}
 		
+		Iterable<Object[]> ผลรวมเป้าหมาย  = entityService.findAllSumTargetValueByFiscalYearAndOwnerId(fiscalYear);
+		for(Object[] iter : ผลรวมเป้าหมาย) {
+			String objectiveIdAndOwnerId = iter[0].toString() + "-" + iter[1].toString();
+			Double diffTargetValue = ((BigDecimal) iter[2]).doubleValue() - ((BigDecimal) iter[3]).doubleValue();
+			ผลเป้าหมายMap.put(objectiveIdAndOwnerId, diffTargetValue);
+ 		}
+		
 		model.addAttribute("ผลผลิต", ผลผลิต);
 		model.addAttribute("ผลจัดสรรMap", ผลจัดสรรMap);
+		model.addAttribute("ผลเป้าหมายMap", ผลเป้าหมายMap);
 		model.addAttribute("fiscalYear", fiscalYear);
 		
 		return "m82r03.xls";

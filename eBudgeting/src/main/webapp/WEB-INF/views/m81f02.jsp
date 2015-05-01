@@ -181,8 +181,8 @@
 {{#if assetMethod}}
 		<div id="contractDiv" class="span10" style="margin-bottom: 10px">
 			ระบุเลขที่สัญญา : <input type="text" value="{{contractNo}}" placeholder="..." data-field="contractNo" class="span2 assetBudgetAllocationTxt" id="contractNo">
-			<a href="#" class="btn btn-deafult" id="findAmountByContractPoBTN">ค้นหาจำนวนเงินตามสัญญา</a>
-			<br/><br/>
+			<a href="#" class="btn btn-deafult" id="findAmountByContractPoBTN">ค้นหาจำนวนเงินตามสัญญา</a><span id="poSearchWaitSpn"></span>
+			<br/><div id="resultPODiv"></div><br/>
 			จำนวนเงินตามสัญญา: 
 				แผน {{formatNumber contractedBudgetPlan}} บาท
 				/
@@ -207,7 +207,28 @@
 </div>
 
 </script>
-
+<script id="resultPODivTemplate" type="text/x-handler-template">
+<table class="table table-condensed">
+	<thead>
+		<tr>
+			<th style="text-align:left;width: 20px;"></th>
+			<th style="text-align:left;width: 100px;">เลขที่สัญญา</th>
+			<th style="text-align:left;">ชื่อรายการที่จัดซื้อ</th>
+			<th style="text-align:left;width: 200px;">จำนวนเงินที่จัดซื้อ</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each items}}
+		<tr>
+			<td><input type="checkbox" data-amount="{{assetAmount}}" class="poItem"></td>
+			<td>{{poContract}}</td>
+			<td>{{faCodeName}}</td>
+			<td>{{formatNumber assetAmount}}</td>
+		</tr>
+		{{/each}}
+	</tbody>
+</table>
+</script>
 <script id="budgetPlanTemplate" type="text/x-handler-template">
 	<div>
 		<strong>จำนวนงวดการเบิกจ่าย : {{length}} งวด</strong>

@@ -61,6 +61,7 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	
 	budgetPlanTemplate: Handlebars.compile($("#budgetPlanTemplate").html()),
 	budgetPlanTblTemplate: Handlebars.compile($("#budgetPlanTblTemplate").html()),
+	resultPODivTemplate :  Handlebars.compile($("#resultPODivTemplate").html()),
 	
 	el : "#assignAssetPlanModal",
 	
@@ -70,22 +71,37 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		"click #cancelBtn" : "cancel",
 		"change .assetBudgetPlanTxt" : "assetBudgetPlanChange",
 		"change .assetBudgetAllocationTxt" : "assetBudgetAllocationChange",
-		"click #findAmountByContractPoBTN" : "clickFindAmountByContractPoBTN"
+		"click #findAmountByContractPoBTN" : "clickFindAmountByContractPoBTN",
+		"click .poItem" : "clickPOItem"
 	},
 	
+	clickPOItem: function(e) {
+		var sum = new BigNumber(0);
+		
+		_.forEach($('.poItem:checked'), function(poItem) {
+			sum = sum.plus(new BigNumber($(poItem).attr('data-amount')));
+		});
+		
+		$('#contractedBudgetActual').val(sum.toNumber());
+		
+	},
 	clickFindAmountByContractPoBTN: function(e) {
 		var contractNo= $('#contractNo').val();
-		console.log(contractNo);
-		
-		$.post(appUrl("/AssetAllocation/findBudgetSignedByPO"), {
+		this.$el.find('#poSearchWaitSpn').html("<div><img src='" + appUrl('/resources/graphics/loading.gif') + "'/></div>"); 
+		this.$el.find('#resultPODiv').empty();
+		$.post(appUrl("/AssetAllocation/fy/"+fiscalYear+"/findBudgetSignedByPO"), {
 			poNumber : contractNo
-		}).done(function(data) {
-			if((data.result != null)) {
-				$('#contractedBudgetActual').val(data.result);
+		}).done(_.bind(function(data) {
+			if((data != null)) {
+				var json = {}
+				json.items = data;
+				this.$el.find('#poSearchWaitSpn').empty();
+				this.$el.find('#resultPODiv').html(this.resultPODivTemplate(json));
+				
 			} else {
 				alert("ไม่พบหมายเลขสัญญา " + contractNo);
 			}
-		});
+		},this));
 		
 		return false;
 	},

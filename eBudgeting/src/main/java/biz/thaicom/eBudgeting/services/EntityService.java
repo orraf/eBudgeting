@@ -18,6 +18,7 @@ import biz.thaicom.eBudgeting.models.bgt.AssetCategory;
 import biz.thaicom.eBudgeting.models.bgt.AssetGroup;
 import biz.thaicom.eBudgeting.models.bgt.AssetKind;
 import biz.thaicom.eBudgeting.models.bgt.AssetMethod;
+import biz.thaicom.eBudgeting.models.bgt.AssetPOExternal;
 import biz.thaicom.eBudgeting.models.bgt.AssetStepReport;
 import biz.thaicom.eBudgeting.models.bgt.AssetType;
 import biz.thaicom.eBudgeting.models.bgt.BudgetCommonType;
@@ -303,6 +304,8 @@ public interface EntityService {
 	public TargetValue saveTargetValue(JsonNode node, Organization workAt) throws 	Exception;
 	public void saveLotsTargetValue(JsonNode node);
 	
+	public Iterable<Object[]> findAllSumTargetValueByFiscalYearAndOwnerId(Integer fiscalYear);
+	
 	//TargetValueAllocationRecord
 	public TargetValueAllocationRecord saveTargetValueAllocationRecord(JsonNode node,
 			Organization workAt);
@@ -484,7 +487,8 @@ public interface EntityService {
 			Integer fiscalYear, Organization workAt);
 	public Iterable<Object[]> findAllSumBudgetPlanByFiscalYearAndOwnerId(
 			Integer fiscalYear);
-	public Double findAssetAllocatoinBudgetSigendByPO(String poNumber);
+	public List<AssetPOExternal> findAssetAllocatoinBudgetSigendByPOAndFiscalYearAndOrgId(
+			String poNumber, Integer fiscalYear, Long id);
 
 
 	

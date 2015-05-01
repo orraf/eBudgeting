@@ -48,6 +48,9 @@ public class M82R03XLSView extends AbstractPOIExcelView {
 		@SuppressWarnings("unchecked")
 		HashMap<String, Double> ผลจัดสรรMap  = (HashMap<String, Double>)model.get("ผลจัดสรรMap");
 		
+		@SuppressWarnings("unchecked")
+		HashMap<String, Double> ผลเป้าหมายMap  = (HashMap<String, Double>)model.get("ผลเป้าหมายMap");
+		
 		Integer fiscalYear = (Integer) model.get("fiscalYear");
 		
 		@SuppressWarnings("unchecked")
@@ -93,9 +96,13 @@ public class M82R03XLSView extends AbstractPOIExcelView {
 					String listOfNg = "";
 					String listOfZero = "";
 					
+					String listOfTargetOk = "";
+					String listOfTargetNg = "";
+					
 					for(BudgetProposal proposal : o_แผนปฏิบัติงาน.getProposals()) {
 						String key = o_แผนปฏิบัติงาน.getId() + "-" + proposal.getOwner().getId();
 						Double ผลจัดสรร = ผลจัดสรรMap.get(key);
+						Double ผลเป้าหมาย = ผลเป้าหมายMap.get(key);
 						if(ผลจัดสรร  == null || ผลจัดสรร == 0.0) {
 							listOfZero += ", " + proposal.getOwner().getAbbr();
 						} else if ( ผลจัดสรร.equals(proposal.getAmountAllocated()) ) {
@@ -105,6 +112,12 @@ public class M82R03XLSView extends AbstractPOIExcelView {
 							//Double print = ผลจัดสรร!=null?ผลจัดสรร:0.0;
 							//listOfNg += ", " + proposal.getOwner().getAbbr() + "(" + proposal.getAmountAllocated()+ "/"+ print+ ")";
 							listOfNg += ", " + proposal.getOwner().getAbbr();
+						}
+						
+						if(ผลเป้าหมาย == null || ผลเป้าหมาย != 0.0) {
+							listOfTargetNg += ", " + proposal.getOwner().getAbbr();
+						} else {
+							listOfTargetOk += ", " + proposal.getOwner().getAbbr();
 						}
 						
 					}
@@ -146,6 +159,32 @@ public class M82R03XLSView extends AbstractPOIExcelView {
 					}
 					cell = row.createCell(2);
 					cell.setCellValue(listOfZero);
+					
+					
+					row = sheet.createRow(rowNum++);
+					cell = row.createCell(0);
+					cell = row.createCell(1);
+					
+					cell.setCellStyle(styles.get("cellLightGreenColor"));
+					cell.setCellValue("หน่วยงานที่ยังทำการจัดสรรเป้าหมายเสร็จแล้ว");
+					if(listOfTargetOk.length() > 0) {
+						listOfTargetOk = listOfTargetOk.substring(2);
+					}
+					cell = row.createCell(2);
+					cell.setCellValue(listOfTargetOk);
+					
+					row = sheet.createRow(rowNum++);
+					cell = row.createCell(0);
+					cell = row.createCell(1);
+					
+					cell.setCellStyle(styles.get("cellLightOrgangeColor"));
+					cell.setCellValue("หน่วยงานที่ยังทำการจัดสรรเป้าหมายไม่เสร็จ");
+					if(listOfTargetNg.length() > 0) {
+						listOfTargetNg = listOfTargetNg.substring(2);
+					}
+					cell = row.createCell(2);
+					cell.setCellValue(listOfTargetNg);
+					
 					
 				}
 			}
