@@ -304,42 +304,147 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			
 		}
 
-/*
-		Row rows5 = sheet.createRow(i+4);
-		Cell rsc51 = rows5.createCell(0);
-		rsc51.setCellStyle(styles.get("cellleft"));
-		Cell rsc52 = rows5.createCell(1);
-		rsc52.setCellStyle(styles.get("cellcenter"));
-		Cell rsc53 = rows5.createCell(2);
-		rsc53.setCellValue("ผลการใช้เงิน (G)");
-		rsc53.setCellStyle(styles.get("groupcenter"));
+		Statement st4 = connection.createStatement();
+		ResultSet rs4;
+		String rs4SQL = "select t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(sum(t1.targetvalue),'999,999,999,999'))||' '||t3.name||')' target " +
+					    "from pln_activitytargetreport t1, pln_activitytarget t2, pln_targetunit t3, hrx_organization t4 " +
+					    "where t1.target_pln_acttarget_id = t2.id " +
+						"and t1.owner_hrx_organization_id = t4.id " +
+						"and t2.unit_pln_targetunit_id = t3.id " +
+						"and t2.activity_pln_activity_id = " + activity.getId() +
+						" and t4.parent_hrx_organization_id =  "  + searchOrg.getId() +
+						"group by t3.id, t3.name ";
+		
+		rs4 = st4.executeQuery(rs4SQL);
+		while (rs4.next()) {
+			Row rows5 = sheet.createRow(i);
+			Cell rsc50 = rows5.createCell(0);
+			if (rs4.isFirst()) {
+				rsc50.setCellValue("ยอดรวม");
+				rsc50.setCellStyle(styles.get("celltop"));
+			} else {
+				rsc50.setCellStyle(styles.get("cellleft"));
+			}
 
-		for (j=3;j<16;j++) {
-			Cell rscj = rows5.createCell(j);
-			rscj.setCellStyle(styles.get("groupnumber"));
+			Cell rsc51 = rows5.createCell(1);
+			rsc51.setCellStyle(styles.get("cellcenter"));
 
+			Cell rsc52 = rows5.createCell(2);
+			rsc52.setCellValue("แผนการใช้เงิน");
+			rsc52.setCellStyle(styles.get("cellcenter"));
+
+			for (j=3;j<16;j++) {
+				Cell rscj = rows5.createCell(j);
+				rscj.setCellStyle(styles.get("cellnumber"));
+
+			}
+
+			Row rows6 = sheet.createRow(i+1);
+			Cell rsc61 = rows6.createCell(0);
+			rsc61.setCellStyle(styles.get("cellleft"));
+			Cell rsc62 = rows6.createCell(1);
+			rsc62.setCellStyle(styles.get("cellcenter"));
+			Cell rsc63 = rows6.createCell(2);
+			rsc63.setCellValue("ผลการใช้เงิน");
+			rsc63.setCellStyle(styles.get("cellcenter"));
+
+			for (j=3;j<16;j++) {
+				Cell rscj = rows6.createCell(j);
+				rscj.setCellStyle(styles.get("cellnumber"));
+
+			}
+
+			Statement st5 = connection.createStatement();
+			ResultSet rs5;
+			String rs5SQL = "select t1.fiscalmonth, nvl(sum(t1.budgetplan),0), nvl(sum(t1.budgetresult),0) " +
+					   "from pln_monthlybgtreport t1, pln_activityperformance t2 " +
+				  	   "where t1.performance_pln_actper_id = t2.id " +
+					   "and t2.activity_pln_activity_id = " + activity.getId() + 
+					   " group by t1.fiscalmonth order by t1.fiscalmonth ";
+			rs5 = st5.executeQuery(rs5SQL);
+				
+			j = 3;
+			s1 = 0;
+			s2 = 0;
+			while (rs5.next()) {
+				Cell rscj1 = rows5.getCell(j);
+				rscj1.setCellValue(rs5.getInt(2));
+				Cell rscj2 = rows6.getCell(j);
+				rscj2.setCellValue(rs5.getInt(3));
+				s1 = s1 + rs5.getInt(2);
+				s2 = s2 + rs5.getInt(3);
+				j = j+1;
+			}
+			rs5.close();
+			Cell rscs1 = rows5.getCell(15);
+			rscs1.setCellValue(s1);
+			Cell rscs2 = rows6.getCell(15);
+			rscs2.setCellValue(s2);
+
+			Row rows3 = sheet.createRow(i+2);
+			Cell rsc31 = rows3.createCell(0);
+			rsc31.setCellStyle(styles.get("cellleft"));
+			Cell rsc32 = rows3.createCell(1);
+			rsc32.setCellValue(rs4.getString(2));
+			rsc32.setCellStyle(styles.get("cellcenter"));
+			Cell rsc33 = rows3.createCell(2);
+			rsc33.setCellValue("แผนงาน");
+			rsc33.setCellStyle(styles.get("cellcenter"));
+
+			for (j=3;j<16;j++) {
+				Cell rscj = rows3.createCell(j);
+				rscj.setCellStyle(styles.get("cellnumber"));
+
+			}
+
+			Row rows4 = sheet.createRow(i+3);
+			Cell rsc41 = rows4.createCell(0);
+			rsc41.setCellStyle(styles.get("cellleft"));
+			Cell rsc42 = rows4.createCell(1);
+			rsc42.setCellStyle(styles.get("cellcenter"));
+			Cell rsc43 = rows4.createCell(2);
+			rsc43.setCellValue("ผลงาน");
+			rsc43.setCellStyle(styles.get("cellcenter"));
+
+			for (j=3;j<16;j++) {
+				Cell rscj = rows4.createCell(j);
+				rscj.setCellStyle(styles.get("cellnumber"));
+
+			}
+
+			Statement st3 = connection.createStatement();
+			ResultSet rs3;
+			String rs3SQL = "select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
+					"from pln_monthlyactreport t1, pln_activitytargetreport t2, pln_activitytarget t3 " +
+					"where t1.report_pln_acttargetreport_id = t2.id " +
+					"and t2.target_pln_acttarget_id = t3.id " +
+					"and t3.activity_pln_activity_id = " + activity.getId() +
+					" and t3.unit_pln_targetunit_id = " + rs4.getInt(1) +
+					" group by t1.fiscalmonth order by t1.fiscalmonth ";
+			rs3 = st3.executeQuery(rs3SQL);
+		
+			j = 3;
+			s1 = 0;
+			s2 = 0;
+			while (rs3.next()) {
+				Cell rscj1 = rows3.getCell(j);
+				rscj1.setCellValue(rs3.getInt(2));
+				Cell rscj2 = rows4.getCell(j);
+				rscj2.setCellValue(rs3.getInt(3));
+				s1 = s1 + rs3.getInt(2);
+				s2 = s2 + rs3.getInt(3);
+				j = j+1;
+			}
+			rs3.close();
+			Cell rscs3 = rows3.getCell(15);
+			rscs3.setCellValue(s1);
+			Cell rscs4 = rows4.getCell(15);
+			rscs4.setCellValue(s2);
+
+			i = i+4;
 		}
-
-		Statement st3 = connection.createStatement();
-		ResultSet rs3 = st3.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
-				 "from v_gl " +
-				 "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
-				 "and fiscal_year = " + fiscalYear + " " +
-				 "and activitycode = " + activity.getForObjective().getCode() + " " +
-				 "group by date2fmonth(gl_trans_docdate) " +
-				 "order by 1 ");
-
-		Double d1 = 0.0;
-		while (rs3.next()) {
-			Cell rscj = rows5.getCell(rs3.getInt(1)+2);
-			rscj.setCellValue(rs3.getDouble(2));
-			d1 = d1 + rs3.getDouble(2);
-		}
-		rs3.close();
-		st3.close();
-		rsc53 = rows5.getCell(15);
-		rsc53.setCellValue(d1);
-*/		
+		rs4.close();
+		
 		Row rowE = sheet.createRow(i);
 		Cell re = rowE.createCell(0);
 		re.setCellStyle(styles.get("celltop"));
