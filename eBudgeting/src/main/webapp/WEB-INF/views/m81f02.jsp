@@ -222,7 +222,7 @@
 		<tr>
 			<td><input type="checkbox" data-amount="{{assetAmount}}" class="poItem"></td>
 			<td>{{poContract}}</td>
-			<td>{{faCodeName}}</td>
+			<td>{{faCodeName}} ({{receiveOrgName}})</td>
 			<td>{{formatNumber assetAmount}}</td>
 		</tr>
 		{{/each}}

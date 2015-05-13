@@ -39,6 +39,9 @@ public class AssetPOExternal implements Serializable{
 	@Column(name="V_FISCAL_YEAR")
 	private Integer fiscalYear;
 
+	@Column(name="V_RECEIVE_RCCODENAME")
+	private String receiveOrgName;
+	
 	public String getFaCode() {
 		return faCode;
 	}
@@ -78,6 +81,23 @@ public class AssetPOExternal implements Serializable{
 	public void setFaCodeName(String faCodeName) {
 		this.faCodeName = faCodeName;
 	}
+
+	public Integer getFiscalYear() {
+		return fiscalYear;
+	}
+
+	public void setFiscalYear(Integer fiscalYear) {
+		this.fiscalYear = fiscalYear;
+	}
+
+	public String getReceiveOrgName() {
+		return receiveOrgName;
+	}
+
+	public void setReceiveOrgName(String receiveOrgName) {
+		this.receiveOrgName = receiveOrgName;
+	}
+	
 	
 	
 	

@@ -83,6 +83,7 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		});
 		
 		$('#contractedBudgetActual').val(sum.toNumber());
+		this.currentAssetAllocation.set('contractedBudgetActual', parseFloat(sum.toNumber()));
 		
 	},
 	clickFindAmountByContractPoBTN: function(e) {
@@ -111,7 +112,7 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	
 	assetBudgetAllocationChange: function(e) {
 		var dataField = $(e.target).attr('data-field');
-		if(dataField == 'contractedBudgetActual') {
+		if(dataField == '') {
 			this.currentAssetAllocation.set(dataField, parseFloat($(e.target).val()));
 		} else {
 			this.currentAssetAllocation.set(dataField, $(e.target).val());
