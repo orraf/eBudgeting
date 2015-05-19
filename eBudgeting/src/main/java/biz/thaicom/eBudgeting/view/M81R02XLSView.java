@@ -186,6 +186,12 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		double s1 = 0.0;
 		double s2 = 0.0;
 		double d2 = 0.0;
+		String org;
+		if (searchOrg.getId().toString().substring(5, 6).equals("0")) {
+			org = searchOrg.getId().toString().substring(0, 5).concat("0000");			
+		} else {
+			org = searchOrg.getCode();
+		}
 		
 		logger.debug(st01);
 		
@@ -283,7 +289,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 */
 				ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
 												 "from v_gl " +
-												 "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
+												 "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + org + ") " +
 												 "and fiscal_year = " + fiscalYear + " " +
 												 "and activitycode in (select code from pln_objective " +
 												 						"where id <> " + rs.getInt(3) + " " +
@@ -449,7 +455,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					Statement st4 = connection.createStatement();
 					ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
 										   "from v_gl " +
-										   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
+										   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + org + ") " +
 										   "and fiscal_year = " + fiscalYear + " " +
 										   "and activitycode like '" + rs.getString(5) + "' " +
 										   "group by date2fmonth(gl_trans_docdate) " +
