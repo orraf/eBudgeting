@@ -145,7 +145,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 		int j = 0;
 		int s1 = 0;
 		int s2 = 0;
-		int orgId = 0;	 
+		int orgId = 0;
 
 		PreparedStatement ps = null;
 		Statement st = connection.createStatement();
@@ -156,7 +156,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 					"and t2.unit_pln_targetunit_id = t3.id " +
 					"and t2.activity_pln_activity_id = " + activity.getId() +
 					" and t4.parent_hrx_organization_id =  "  + searchOrg.getId() +
-					" order by 1, 3 ";
+					" order by 1, 4 ";
 		
 		ResultSet rs = st.executeQuery(sql);
 
@@ -174,11 +174,11 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			Row rows = sheet.createRow(i);
 			
 			Cell rsc10 = rows.createCell(0);
+			rsc10.setCellStyle(styles.get("cellleft"));
 			if (rs.getInt(1)!=orgId) {
 				rsc10.setCellValue(rs.getString(2));
 				orgId = rs.getInt(1);
 			}
-			rsc10.setCellStyle(styles.get("cellleft"));
 
 			Cell rsc11 = rows.createCell(1);
 			rsc11.setCellStyle(styles.get("cellcenter"));
@@ -211,11 +211,14 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			Statement st2 = connection.createStatement();
 			ResultSet rs2;
 			String rs2SQL = "select t1.fiscalmonth, nvl(sum(t1.budgetplan),0), nvl(sum(t1.budgetresult),0) " +
-					   "from pln_monthlybgtreport t1, pln_activityperformance t2 " +
-				  	   "where t1.performance_pln_actper_id = t2.id " +
-					   "and t2.activity_pln_activity_id = " + activity.getId() + 
-					   " and t2.owner_hrx_organization_id = " + rs.getInt(1) +
-					   " group by t1.fiscalmonth order by t1.fiscalmonth ";
+						   "from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activitytargetreport t3, pln_activitytarget t4 " +
+					  	   "where t1.performance_pln_actper_id = t2.id " +
+					  	   "and t2.id = t3.performance_pln_actper_id " +
+					  	   "and t3.target_pln_acttarget_id = t4.id " +	
+						   "and t2.activity_pln_activity_id = " + activity.getId() + 
+						   "and t4.unit_pln_targetunit_id = " + rs.getInt(4) +
+						   " and t2.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + rs.getInt(1) + ") " +
+						   " group by t1.fiscalmonth order by t1.fiscalmonth ";
 			rs2 = st2.executeQuery(rs2SQL);
 				
 			j = 3;
@@ -235,7 +238,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			rscs1.setCellValue(s1);
 			Cell rscs2 = rows2.getCell(15);
 			rscs2.setCellValue(s2);
-
+			
 			Row rows3 = sheet.createRow(i+2);
 			Cell rsc31 = rows3.createCell(0);
 			rsc31.setCellStyle(styles.get("cellleft"));
@@ -322,12 +325,10 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			if (rs4.isFirst()) {
 				rsc50.setCellValue("ยอดรวม");
 				rsc50.setCellStyle(styles.get("celltop"));
+
 			} else {
 				rsc50.setCellStyle(styles.get("cellleft"));
 			}
-
-			Cell rsc51 = rows5.createCell(1);
-			rsc51.setCellStyle(styles.get("cellcenter"));
 
 			Cell rsc52 = rows5.createCell(2);
 			rsc52.setCellValue("แผนการใช้เงิน");
@@ -357,10 +358,13 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			Statement st5 = connection.createStatement();
 			ResultSet rs5;
 			String rs5SQL = "select t1.fiscalmonth, nvl(sum(t1.budgetplan),0), nvl(sum(t1.budgetresult),0) " +
-					   "from pln_monthlybgtreport t1, pln_activityperformance t2 " +
-				  	   "where t1.performance_pln_actper_id = t2.id " +
-					   "and t2.activity_pln_activity_id = " + activity.getId() + 
-					   " group by t1.fiscalmonth order by t1.fiscalmonth ";
+						    "from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activitytargetreport t3, pln_activitytarget t4 " +
+					  	    "where t1.performance_pln_actper_id = t2.id " +
+					  	    "and t2.id = t3.performance_pln_actper_id " +
+					  	    "and t3.target_pln_acttarget_id = t4.id " +	
+						    "and t2.activity_pln_activity_id = " + activity.getId() + 
+						    "and t4.unit_pln_targetunit_id = " + rs4.getInt(1) +
+						    " group by t1.fiscalmonth order by t1.fiscalmonth ";
 			rs5 = st5.executeQuery(rs5SQL);
 				
 			j = 3;
@@ -382,6 +386,9 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			rscs2.setCellValue(s2);
 
 			Row rows3 = sheet.createRow(i+2);
+			Cell rsc51 = rows5.createCell(1);
+			rsc51.setCellStyle(styles.get("cellcenter"));
+
 			Cell rsc31 = rows3.createCell(0);
 			rsc31.setCellStyle(styles.get("cellleft"));
 			Cell rsc32 = rows3.createCell(1);
