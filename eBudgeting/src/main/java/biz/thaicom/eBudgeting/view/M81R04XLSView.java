@@ -143,8 +143,8 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 		
 		int i = 3;
 		int j = 0;
-		int s1 = 0;
-		int s2 = 0;
+		double s1 = 0.0;
+		double s2 = 0.0;
 		int orgId = 0;
 
 		PreparedStatement ps = null;
@@ -189,7 +189,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows.createCell(j);
-				rscj.setCellStyle(styles.get("cellnumber"));
+				rscj.setCellStyle(styles.get("cellnumber2"));
 
 			}
 
@@ -204,7 +204,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows2.createCell(j);
-				rscj.setCellStyle(styles.get("cellnumber"));
+				rscj.setCellStyle(styles.get("cellnumber2"));
 
 			}
 
@@ -222,15 +222,15 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			rs2 = st2.executeQuery(rs2SQL);
 				
 			j = 3;
-			s1 = 0;
-			s2 = 0;
+			s1 = 0.0;
+			s2 = 0.0;
 			while (rs2.next()) {
 				Cell rscj1 = rows.getCell(j);
-				rscj1.setCellValue(rs2.getInt(2));
+				rscj1.setCellValue(rs2.getDouble(2));
 				Cell rscj2 = rows2.getCell(j);
-				rscj2.setCellValue(rs2.getInt(3));
-				s1 = s1 + rs2.getInt(2);
-				s2 = s2 + rs2.getInt(3);
+				rscj2.setCellValue(rs2.getDouble(3));
+				s1 = s1 + rs2.getDouble(2);
+				s2 = s2 + rs2.getDouble(3);
 				j = j+1;
 			}
 			rs2.close();
@@ -251,7 +251,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows3.createCell(j);
-				rscj.setCellStyle(styles.get("cellnumber"));
+				rscj.setCellStyle(styles.get("cellnumber2"));
 
 			}
 
@@ -266,7 +266,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows4.createCell(j);
-				rscj.setCellStyle(styles.get("cellnumber"));
+				rscj.setCellStyle(styles.get("cellnumber2"));
 
 			}
 
@@ -286,15 +286,15 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			rs3 = st3.executeQuery(rs3SQL);
 		
 			j = 3;
-			s1 = 0;
-			s2 = 0;
+			s1 = 0.0;
+			s2 = 0.0;
 			while (rs3.next()) {
 				Cell rscj1 = rows3.getCell(j);
-				rscj1.setCellValue(rs3.getInt(2));
+				rscj1.setCellValue(rs3.getDouble(2));
 				Cell rscj2 = rows4.getCell(j);
-				rscj2.setCellValue(rs3.getInt(3));
-				s1 = s1 + rs3.getInt(2);
-				s2 = s2 + rs3.getInt(3);
+				rscj2.setCellValue(rs3.getDouble(3));
+				s1 = s1 + rs3.getDouble(2);
+				s2 = s2 + rs3.getDouble(3);
 				j = j+1;
 			}
 			rs3.close();
@@ -336,7 +336,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows5.createCell(j);
-				rscj.setCellStyle(styles.get("cellnumber"));
+				rscj.setCellStyle(styles.get("cellnumber2"));
 
 			}
 
@@ -351,7 +351,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows6.createCell(j);
-				rscj.setCellStyle(styles.get("cellnumber"));
+				rscj.setCellStyle(styles.get("cellnumber2"));
 
 			}
 
@@ -368,15 +368,15 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			rs5 = st5.executeQuery(rs5SQL);
 				
 			j = 3;
-			s1 = 0;
-			s2 = 0;
+			s1 = 0.0;
+			s2 = 0.0;
 			while (rs5.next()) {
 				Cell rscj1 = rows5.getCell(j);
-				rscj1.setCellValue(rs5.getInt(2));
+				rscj1.setCellValue(rs5.getDouble(2));
 				Cell rscj2 = rows6.getCell(j);
-				rscj2.setCellValue(rs5.getInt(3));
-				s1 = s1 + rs5.getInt(2);
-				s2 = s2 + rs5.getInt(3);
+				rscj2.setCellValue(rs5.getDouble(3));
+				s1 = s1 + rs5.getDouble(2);
+				s2 = s2 + rs5.getDouble(3);
 				j = j+1;
 			}
 			rs5.close();
@@ -400,7 +400,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows3.createCell(j);
-				rscj.setCellStyle(styles.get("cellnumber"));
+				rscj.setCellStyle(styles.get("cellnumber2"));
 
 			}
 
@@ -415,7 +415,7 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 
 			for (j=3;j<16;j++) {
 				Cell rscj = rows4.createCell(j);
-				rscj.setCellStyle(styles.get("cellnumber"));
+				rscj.setCellStyle(styles.get("cellnumber2"));
 
 			}
 
@@ -431,15 +431,15 @@ public class M81R04XLSView extends AbstractPOIExcelView {
 			rs3 = st3.executeQuery(rs3SQL);
 		
 			j = 3;
-			s1 = 0;
-			s2 = 0;
+			s1 = 0.0;
+			s2 = 0.0;
 			while (rs3.next()) {
 				Cell rscj1 = rows3.getCell(j);
-				rscj1.setCellValue(rs3.getInt(2));
+				rscj1.setCellValue(rs3.getDouble(2));
 				Cell rscj2 = rows4.getCell(j);
-				rscj2.setCellValue(rs3.getInt(3));
-				s1 = s1 + rs3.getInt(2);
-				s2 = s2 + rs3.getInt(3);
+				rscj2.setCellValue(rs3.getDouble(3));
+				s1 = s1 + rs3.getDouble(2);
+				s2 = s2 + rs3.getDouble(3);
 				j = j+1;
 			}
 			rs3.close();
@@ -648,6 +648,21 @@ public class M81R04XLSView extends AbstractPOIExcelView {
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         styles.put("cellnumber", style);
+
+        style = wb.createCellStyle();
+        style.setAlignment(CellStyle.ALIGN_RIGHT);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+        style.setWrapText(true);
+        style.setDataFormat(format.getFormat("#,##0.00"));
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        styles.put("cellnumber2", style);
 
         style = wb.createCellStyle();
         style.setAlignment(CellStyle.ALIGN_LEFT);
