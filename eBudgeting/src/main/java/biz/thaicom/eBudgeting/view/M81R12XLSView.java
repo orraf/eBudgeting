@@ -199,20 +199,24 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 			if (rs.getString(5).length() == 7) {
 				Statement st0 = connection.createStatement();
 				String stmt;
-				if (searchOrg.getId().toString().substring(5, 9).equals("0000") ) {
+/*				if (searchOrg.getId().toString().substring(5, 9).equals("0000") ) {
 					stmt = "select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(amountallocated),'999,999,999,999')), '...')||' บาท)' " +
 													 "from bgt_budgetproposal " +
-													 "where objective_id = " + rs.getInt(3) + " " +
-													 "and organization_id = " + searchOrg.getId() + " ";
+													 "where objective_id in (select id from pln_objective connect by prior id = parent_pln_objective_id start with id = " + rs.getInt(3) + ") " +
+													 "and substr(organization_id, 6, 1) = '0' " +
+													 "and substr(organization_id, 7, 1) <> '0' " +
+													 "and organization_id like '" + searchOrg.getId().toString().substring(0, 4) + "%' ";
 					
-				} else {
+				} else {  */
 					stmt = "select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(budgetallocated),'999,999,999,999')), '...')||' บาท)' " +
 													 "from pln_activity t1, pln_activityperformance t3 " +
 													 "where t1.id = t3.activity_pln_activity_id " +
 													 "and t1.id in (select id from PLN_ACTIVITY where obj_pln_objective_id in (select id from pln_objective connect by prior id = parent_pln_objective_id start with id = " + rs.getInt(3) + "))" +
-													 "and t3.owner_hrx_organization_id = " + searchOrg.getId() + " ";
+													 "and substr(t3.owner_hrx_organization_id, 6, 1) = '0' " +
+													 "and substr(t3.owner_hrx_organization_id, 7, 1) <> '0' " +
+													 "and t3.owner_hrx_organization_id like '" + searchOrg.getId().toString().substring(0, 4) + "%' ";
 					
-				}
+/*				}  */
 				
 				ResultSet rs0 = st0.executeQuery(stmt);
 				Cell rsc1 = rows.createCell(1);
@@ -362,7 +366,9 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 							 "from pln_activity t1, pln_activityperformance t3 " +
 							 "where t1.id = t3.activity_pln_activity_id " +
 							 "and t1.id in (select id from PLN_ACTIVITY where OBJ_PLN_OBJECTIVE_ID =" + rs.getInt(3) + ")" +
-							 "and t3.owner_hrx_organization_id = " + searchOrg.getId() + " ";							
+							 "and substr(t3.owner_hrx_organization_id, 6, 1) = '0' " +
+							 "and substr(t3.owner_hrx_organization_id, 7, 1) <> '0' " +
+							 "and t3.owner_hrx_organization_id like '" + searchOrg.getId().toString().substring(0, 4) + "%' ";							
 					
 					logger.debug(st02);
 					
@@ -527,7 +533,9 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 									 						"from pln_activitytargetreport d1, pln_activitytarget d2, pln_targetunit d3 " +
 									 						"where d1.target_pln_acttarget_id = d2.id " +
 									 						"and d2.unit_pln_targetunit_id = d3.id " +
-									 						"and d1.owner_hrx_organization_id = " + searchOrg.getId() + ") t2 " +
+									 						"and substr(d1.owner_hrx_organization_id, 6, 1) = '0' " +
+									 						"and substr(d1.owner_hrx_organization_id, 7, 1) <> '0' " +
+									 						"and d1.owner_hrx_organization_id like '" + searchOrg.getId().toString().substring(0, 4) + "%') t2 " +
 			 						 "where t1.id = t2.activity_pln_activity_id (+) " +
 									 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
 									 "connect by prior t1.id = t1.parent_pln_activity_id " +
