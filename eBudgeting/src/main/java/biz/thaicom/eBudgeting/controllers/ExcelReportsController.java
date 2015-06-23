@@ -605,7 +605,9 @@ public class ExcelReportsController {
 	@RequestMapping("/m81r02.xls/{fiscalYear}/{searchOrgId}/file/m81r02.xls")
 	public String excelM81R02(@PathVariable Integer fiscalYear, Model model,
 			@PathVariable Long searchOrgId,
-			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response) {
+			@Activeuser ThaicomUserDetail currentUser, HttpServletResponse response,
+			@RequestParam Integer beginMonth,
+			@RequestParam Integer endMonth) {
 		
 //		List<List<Objective>> returnList = entityService.findObjectivesByFiscalyearAndTypeIdAndInitObjectiveBudgetProposal(fiscalYear, (long) 101, currentUser.getWorkAt());
 //		
@@ -651,6 +653,8 @@ public class ExcelReportsController {
 		}
 		
 		model.addAttribute("searchOrg", searchOrg);
+		model.addAttribute("beginMonth", beginMonth);
+		model.addAttribute("endMonth", endMonth);
 		
 		Cookie cookie = new Cookie("fileDownload", "true");
 		cookie.setPath("/");

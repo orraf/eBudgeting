@@ -50,7 +50,8 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		ThaicomUserDetail currentUser = (ThaicomUserDetail) model.get("currentUser");
 		
 		Organization searchOrg = (Organization) model.get("searchOrg");
-		
+		Integer beginMonth = (Integer) model.get("beginMonth");
+		Integer endMonth = (Integer) model.get("endMonth");
 		
         Map<String, CellStyle> styles = createStyles(workbook);
 
@@ -93,7 +94,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		}
 		
 		cell21.setCellStyle(styles.get("title"));
-		
+		String[] months = {"ต.ค.","พ.ย.","ธ.ค.", "ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.", "ส.ค.","ก.ย."};
 		
 		Row thirdRow = sheet.createRow(3);
 		Cell cell301 = thirdRow.createCell(0);
@@ -105,43 +106,17 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		Cell cell303 = thirdRow.createCell(2);
 		cell303.setCellValue("แผน/ผล");
 		cell303.setCellStyle(styles.get("header"));
-		Cell cell304 = thirdRow.createCell(3);
-		cell304.setCellValue("ตค." + oldYear.toString().substring(2, 4) );
-		cell304.setCellStyle(styles.get("header"));
-		Cell cell305 = thirdRow.createCell(4);
-		cell305.setCellValue("พย." + oldYear.toString().substring(2, 4) );
-		cell305.setCellStyle(styles.get("header"));
-		Cell cell306 = thirdRow.createCell(5);
-		cell306.setCellValue("ธค." + oldYear.toString().substring(2, 4) );
-		cell306.setCellStyle(styles.get("header"));
-		Cell cell307 = thirdRow.createCell(6);
-		cell307.setCellValue("มค." + fiscalYear.toString().substring(2, 4) );
-		cell307.setCellStyle(styles.get("header"));
-		Cell cell308 = thirdRow.createCell(7);
-		cell308.setCellValue("กพ." + fiscalYear.toString().substring(2, 4) );
-		cell308.setCellStyle(styles.get("header"));
-		Cell cell309 = thirdRow.createCell(8);
-		cell309.setCellValue("มีค." + fiscalYear.toString().substring(2, 4) );
-		cell309.setCellStyle(styles.get("header"));
-		Cell cell310 = thirdRow.createCell(9);
-		cell310.setCellValue("เมย." + fiscalYear.toString().substring(2, 4) );
-		cell310.setCellStyle(styles.get("header"));
-		Cell cell311 = thirdRow.createCell(10);
-		cell311.setCellValue("พค." + fiscalYear.toString().substring(2, 4) );
-		cell311.setCellStyle(styles.get("header"));
-		Cell cell312 = thirdRow.createCell(11);
-		cell312.setCellValue("มิย." + fiscalYear.toString().substring(2, 4) );
-		cell312.setCellStyle(styles.get("header"));
-		Cell cell313 = thirdRow.createCell(12);
-		cell313.setCellValue("กค." + fiscalYear.toString().substring(2, 4) );
-		cell313.setCellStyle(styles.get("header"));
-		Cell cell314 = thirdRow.createCell(13);
-		cell314.setCellValue("สค." + fiscalYear.toString().substring(2, 4) );
-		cell314.setCellStyle(styles.get("header"));
-		Cell cell315 = thirdRow.createCell(14);
-		cell315.setCellValue("กย." + fiscalYear.toString().substring(2, 4) );
-		cell315.setCellStyle(styles.get("header"));
-		Cell cell316 = thirdRow.createCell(15);
+		
+		Cell cell;
+		int curentCol = 3;
+		for(int i=beginMonth; i<endMonth+1; i++) {
+			cell = thirdRow.createCell(curentCol++);
+			cell.setCellValue(months[i] +" " +oldYear.toString().substring(2, 4) );
+			cell.setCellStyle(styles.get("header"));
+		}
+		
+		
+		Cell cell316 = thirdRow.createCell(curentCol);
 		cell316.setCellValue("รวม");
 		cell316.setCellStyle(styles.get("header"));
 
@@ -233,7 +208,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				rsc2.setCellValue("แผนการใช้เงิน");
 				rsc2.setCellStyle(styles.get("cellcenter"));
 				
-				for (j=3;j<16;j++) {
+				for (j=3;j<curentCol+1;j++) {
 					Cell rscj = rows.createCell(j);
 					rscj.setCellStyle(styles.get("cellnumber2"));
 				}
@@ -245,6 +220,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 						 "and t2.activity_pln_activity_id = t3.id " +
 					  	 "and t1.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") " +
 						 "and t3.obj_pln_objective_id in (select id from pln_objective connect by prior id = parent_pln_objective_id start with id = " + rs.getInt(3) + ") " +
+					  	 " and t1.fiscalmonth >= " + beginMonth + " AND t1.fiscalmonth <= " + endMonth + " " +
 						 "group by t1.fiscalmonth " +
 						 "order by t1.fiscalmonth ";
 				ResultSet rs3 = st3.executeQuery(st03);
@@ -261,7 +237,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				}
 				rs3.close();
 				st3.close();
-				Cell rsc3 = rows.getCell(15);
+				Cell rsc3 = rows.getCell(curentCol);
 				rsc3.setCellValue(s1);
 
 				rows = sheet.createRow(i+1);
@@ -273,7 +249,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				rsc2.setCellValue("ผลการใช้เงิน (G)");
 				rsc2.setCellStyle(styles.get("cellcenter"));
 				
-				for (j=3;j<16;j++) {
+				for (j=3;j<curentCol+1;j++) {
 					Cell rscj = rows.createCell(j);
 					rscj.setCellStyle(styles.get("cellnumber2"));
 				}
@@ -294,18 +270,19 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 												 "and activitycode in (select code from pln_objective " +
 												 						"connect by prior id = parent_pln_objective_id " +
 												 						"start with id = " + rs.getInt(3) + ") " +
+												 " and date2fmonth(gl_trans_docdate) >= "+ beginMonth + " and date2fmonth(gl_trans_docdate) <= " + endMonth + " "+
 												 "group by date2fmonth(gl_trans_docdate) " +
 												 "order by 1 ");
 
 				Double d1 = 0.0;
 				while (rs4.next()) {
-					Cell rscj = rows.getCell(rs4.getInt(1)+2);
+					Cell rscj = rows.getCell(rs4.getInt(1)+3-beginMonth);
 					rscj.setCellValue(rs4.getDouble(2));
 					d1 = d1 + rs4.getDouble(2);
 				}
 				rs4.close();
 				st4.close();
-				rsc3 = rows.getCell(15);
+				rsc3 = rows.getCell(curentCol);
 				rsc3.setCellValue(d1);
 
 				/**  เพิ่มผลรวมการใช้เงิน  **/
@@ -318,38 +295,44 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				rsc2.setCellValue("รวมผลการใช้เงิน");
 				rsc2.setCellStyle(styles.get("groupcenter"));
 				
-				for (j=3;j<16;j++) {
+				for (j=3;j<curentCol+1;j++) {
 					Cell rscj = rows.createCell(j);
 					rscj.setCellStyle(styles.get("groupnumber2"));
 				}
 
 				st4 = connection.createStatement();
-				rs4 = st4.executeQuery("select t2.fiscalmonth, nvl(sum(t2.budgetresult),0) " +
-									   "from pln_activity t1, (select d2.activity_pln_activity_id, d1.owner_hrx_organization_id, d4.fiscalmonth, d4.budgetresult " +
-								                                "from pln_activitytargetreport d1, pln_activitytarget d2, pln_activityperformance d3, pln_monthlybgtreport d4, " +
-								                                    "(select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") d5 " +
-								                                "where d1.target_pln_acttarget_id = d2.id " + 
-								                                "and d1.performance_pln_actper_id = d3.id " + 
-								                                "and d3.id = d4.performance_pln_actper_id " +
-								                                "and d1.owner_hrx_organization_id = d5.id) t2 " +
-									   "where t1.id = t2.activity_pln_activity_id (+) " +
-									   "and t1.obj_pln_objective_id in (select id from pln_objective " +
-																	   "connect by prior id = parent_pln_objective_id " +
-																	   "start with id = " + rs.getInt(3) + ") " +
-									   "and t2.fiscalmonth is not null " +
-									   "connect by prior t1.id = t1.parent_pln_activity_id " + 
-									   "start with t1.parent_pln_activity_id is null " +
-									   "group by t2.fiscalmonth order by t2.fiscalmonth ");
+				String sqlSt4 = "select t2.fiscalmonth, nvl(sum(t2.budgetresult),0) " +
+						   "from pln_activity t1, (select d2.activity_pln_activity_id, d1.owner_hrx_organization_id, d4.fiscalmonth, d4.budgetresult " +
+                           "from pln_activitytargetreport d1, pln_activitytarget d2, pln_activityperformance d3, pln_monthlybgtreport d4, " +
+                               "(select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ") d5 " +
+                           "where d1.target_pln_acttarget_id = d2.id " + 
+                           "and d1.performance_pln_actper_id = d3.id " + 
+                           "and d3.id = d4.performance_pln_actper_id " +
+                           "and d1.owner_hrx_organization_id = d5.id) t2 " +
+							  "where t1.id = t2.activity_pln_activity_id (+) " +
+							  "and t1.obj_pln_objective_id in (select id from pln_objective " +
+															   "connect by prior id = parent_pln_objective_id " +
+															   "start with id = " + rs.getInt(3) + ") " +
+							  "and t2.fiscalmonth is not null " +
+							  " and t2.fiscalmonth >= " + beginMonth + " AND t2.fiscalmonth <= " + endMonth + " " +
+							  "connect by prior t1.id = t1.parent_pln_activity_id " + 
+							  "start with t1.parent_pln_activity_id is null " +
+							  
+							  "group by t2.fiscalmonth order by t2.fiscalmonth ";
+				rs4 = st4.executeQuery(sqlSt4);
 
 				s1 = 0.0;
+				logger.debug("st4: ");
+				logger.debug(sqlSt4);
+				
 				while (rs4.next()) {
-					Cell rscj = rows.getCell(rs4.getInt(1)+3);
+					Cell rscj = rows.getCell(rs4.getInt(1)+3-beginMonth);
 					rscj.setCellValue(rs4.getDouble(2));
 					s1 = s1 + rs4.getDouble(2);
 				}
 				rs4.close();
 				st4.close();
-				rsc3 = rows.getCell(15);
+				rsc3 = rows.getCell(curentCol);
 				rsc3.setCellValue(s1);
 
 				i = i+3;
@@ -388,7 +371,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 					rsc2.setCellValue("แผนการใช้เงิน");
 					rsc2.setCellStyle(styles.get("cellcenter"));
 					
-					for (j=3;j<16;j++) {
+					for (j=3;j<curentCol+1;j++) {
 						Cell rscj = rows.createCell(j);
 						rscj.setCellStyle(styles.get("cellnumber2"));
 					}
@@ -417,6 +400,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 							"	and t3.id in (select id from PLN_ACTIVITY connect by prior id = PARENT_PLN_ACTIVITY_ID start with OBJ_PLN_OBJECTIVE_ID = " + rs.getInt(3) + ") " +
 							"	and t3.obj_pln_objective_id = " + rs.getInt(3) + 
 							"	and t2.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + searchOrg.getId() + ")" +
+							" and t1.fiscalmonth >= " + beginMonth + " AND t1.fiscalmonth <= " + endMonth + " " +
 							"group by t1.fiscalmonth " +
 							"order by t1.fiscalmonth ";
 					logger.debug("XXXXXXX");
@@ -434,7 +418,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					}
 					rs3.close();
 					st3.close();
-					Cell rsc3 = rows.getCell(15);
+					Cell rsc3 = rows.getCell(curentCol);
 					rsc3.setCellValue(s1);
 
 					rows = sheet.createRow(i+1);
@@ -446,7 +430,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					rsc2.setCellValue("ผลการใช้เงิน (G)");
 					rsc2.setCellStyle(styles.get("cellcenter"));
 					
-					for (j=3;j<16;j++) {
+					for (j=3;j<curentCol+1;j++) {
 						Cell rscj = rows.createCell(j);
 						rscj.setCellStyle(styles.get("cellnumber2"));
 					}
@@ -457,18 +441,19 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 										   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + org + ") " +
 										   "and fiscal_year = " + fiscalYear + " " +
 										   "and activitycode = '" + rs.getString(5) + "' " +
+										   " and date2fmonth(gl_trans_docdate) >=" + beginMonth + " and date2fmonth(gl_trans_docdate) <=" + endMonth + " "+
 										   "group by date2fmonth(gl_trans_docdate) " +
 										   "order by 1 ");
 
 					s1 = 0.0;
 					while (rs4.next()) {
-						Cell rscj = rows.getCell(rs4.getInt(1)+2);
+						Cell rscj = rows.getCell(rs4.getInt(1)+3-beginMonth);
 						rscj.setCellValue(rs4.getDouble(2));
 						s1 = s1 + rs4.getDouble(2);
 					}
 					rs4.close();
 					st4.close();
-					rsc3 = rows.getCell(15);
+					rsc3 = rows.getCell(curentCol);
 					rsc3.setCellValue(s1);
 
 /**  เพิ่มผลรวมการใช้เงิน  **/
@@ -481,7 +466,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					rsc2.setCellValue("รวมผลการใช้เงิน");
 					rsc2.setCellStyle(styles.get("groupcenter"));
 					
-					for (j=3;j<16;j++) {
+					for (j=3;j<curentCol+1;j++) {
 						Cell rscj = rows.createCell(j);
 						rscj.setCellStyle(styles.get("groupnumber2"));
 					}
@@ -498,19 +483,21 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 										   "where t1.id = t2.activity_pln_activity_id (+) " +
 										   "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
 										   "and t2.fiscalmonth is not null " +
+										   " and t2.fiscalmonth >= " + beginMonth + " AND t2.fiscalmonth <= " + endMonth + " " +
+
 										   "connect by prior t1.id = t1.parent_pln_activity_id " + 
 										   "start with t1.parent_pln_activity_id is null " +
 										   "group by t2.fiscalmonth order by t2.fiscalmonth ");
 
 					s1 = 0.0;
 					while (rs4.next()) {
-						Cell rscj = rows.getCell(rs4.getInt(1)+3);
+						Cell rscj = rows.getCell(rs4.getInt(1)+3-beginMonth);
 						rscj.setCellValue(rs4.getDouble(2));
 						s1 = s1 + rs4.getDouble(2);
 					}
 					rs4.close();
 					st4.close();
-					rsc3 = rows.getCell(15);
+					rsc3 = rows.getCell(curentCol);
 					rsc3.setCellValue(s1);
 
 					i = i+3;
@@ -566,7 +553,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 								rsc013.setCellValue("แผนการใช้เงิน");
 								rsc013.setCellStyle(styles.get("cellcenter"));
 								
-								for (j=3;j<16;j++) {
+								for (j=3;j<curentCol+1;j++) {
 									Cell rscj01 = rows1.createCell(j);
 									rscj01.setCellStyle(styles.get("cellnumber2"));
 
@@ -583,7 +570,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 								rsc023.setCellValue("ผลการใช้เงิน");
 								rsc023.setCellStyle(styles.get("cellcenter"));
 								
-								for (j=3;j<16;j++) {
+								for (j=3;j<curentCol+1;j++) {
 									Cell rscj02 = rows02.createCell(j);
 									rscj02.setCellStyle(styles.get("cellnumber2"));
 
@@ -597,6 +584,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 										+ "		and t3.target_pln_acttarget_id = t4.id "	
 										+ "  	and t4.id = " + targetId
 										+ " 	and t2.owner_hrx_organization_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = "+ searchOrg.getId() +") " 
+										+ " and t1.fiscalmonth >= " + beginMonth + " AND t1.fiscalmonth <= " + endMonth + " " 
 										+ "group by t1.fiscalmonth order by t1.fiscalmonth";
 								Statement st5 = connection.createStatement();
 								ResultSet rs5 = st5.executeQuery(st05);
@@ -615,9 +603,9 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 									d2 = d2 + rs5.getDouble(3);
 									j = j+1;
 								}
-								Cell rscs1 = rows1.getCell(15);
+								Cell rscs1 = rows1.getCell(curentCol);
 								rscs1.setCellValue(s1);
-								Cell rscs2 = rows02.getCell(15);
+								Cell rscs2 = rows02.getCell(curentCol);
 								rscs2.setCellValue(d2);
 								
 								i = i+2;
@@ -633,7 +621,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 								rsc13.setCellValue("แผนงาน");
 								rsc13.setCellStyle(styles.get("cellcenter"));
 								
-								for (j=3;j<16;j++) {
+								for (j=3;j<curentCol+1;j++) {
 									Cell rscj = rows1.createCell(j);
 									if (rs1.getInt(8)==2 || rs1.getInt(8)==3 || rs1.getInt(8)==9) {
 										rscj.setCellStyle(styles.get("cellnumber2"));
@@ -655,7 +643,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 								rsc23.setCellValue("ผลงาน");
 								rsc23.setCellStyle(styles.get("cellcenter"));
 								
-								for (j=3;j<16;j++) {
+								for (j=3;j<curentCol+1;j++) {
 									Cell rscj = rows2.createCell(j);
 									if (rs1.getInt(8)==2 || rs1.getInt(8)==3 || rs1.getInt(8)==9) {
 										rscj.setCellStyle(styles.get("cellnumber2"));
@@ -677,6 +665,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 										 "and t1.owner_hrx_organization_id = t4.id " +
 										 "and t3.activity_pln_activity_id = " + rs1.getInt(3) + 
 										 " and t3.id = " + rs1.getInt(6) +
+										 " and t1.fiscalmonth >= " + beginMonth + " AND t1.fiscalmonth <= " + endMonth + " " +
 										 " group by t1.fiscalmonth order by t1.fiscalmonth ";
 								rs2 = st2.executeQuery(rs2SQL);
 
@@ -701,9 +690,9 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 								}
 								rs2.close();
 								st2.close();
-								Cell rscs11 = rows1.getCell(15);
+								Cell rscs11 = rows1.getCell(curentCol);
 								rscs11.setCellValue(s1);
-								Cell rscs22 = rows2.getCell(15);
+								Cell rscs22 = rows2.getCell(curentCol);
 								rscs22.setCellValue(s2);
 								
 								i = i+2;
@@ -721,7 +710,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 
 								while (rs6.next()) {
 									if (rs6.getInt(1) > 0) {
-										for (j=1;j<16;j++) {
+										for (j=1;j<curentCol+1;j++) {
 											Cell rscj = rows1.createCell(j);
 											rscj.setCellStyle(styles.get("cellleft"));
 
@@ -741,7 +730,7 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 					st1.close();
 				}
 				else {
-					for (j=1;j<16;j++) {
+					for (j=1;j<curentCol+1;j++) {
 						Cell rscj = rows.createCell(j);
 						rscj.setCellStyle(styles.get("cellleft"));
 

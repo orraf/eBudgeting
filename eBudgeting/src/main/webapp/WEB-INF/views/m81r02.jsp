@@ -72,6 +72,46 @@
 
 <script id="mainSelectionTemplate" type="text/x-handler-template">
 <form class="form-horizontal">
+	<div id="monthDiv">
+		<div class="control-group"  style="margin-bottom:5px;">
+			<label class="control-label">ระหว่างเดือน :</label>
+			<div class="controls">
+				<select id="beginMonth" class="span5">
+					<option value='0'>ตุลาคม</option>
+					<option value='1'>พฤศจิกายน</option>
+					<option value='2'>ธันวาคม</option>
+					<option value='3'>มกราคม</option>
+					<option value='4'>กุมภาพันธ์</option>
+					<option value='5'>มีนาคม</option>
+					<option value='6'>เมษายน</option>
+					<option value='7'>พฤษภาคม</option>
+					<option value='8'>มิถุนายน</option>
+					<option value='9'>กรกฎาคม</option>
+					<option value='10'>สิงหาคม</option>
+					<option value='11'>กันยายน</option>
+				</select>
+			</div> 
+		</div>
+		<div class="control-group"  style="margin-bottom:5px;">
+			<label class="control-label">ถึงเดือน :</label>
+			<div class="controls">
+				<select id="endMonth" class="span5">
+					<option value='0'>ตุลาคม</option>
+					<option value='1'>พฤศจิกายน</option>
+					<option value='2'>ธันวาคม</option>
+					<option value='3'>มกราคม</option>
+					<option value='4'>กุมภาพันธ์</option>
+					<option value='5'>มีนาคม</option>
+					<option value='6'>เมษายน</option>
+					<option value='7'>พฤษภาคม</option>
+					<option value='8'>มิถุนายน</option>
+					<option value='9'>กรกฎาคม</option>
+					<option value='10'>สิงหาคม</option>
+					<option value='11'>กันยายน</option>
+				</select>
+			</div> 
+		</div>
+	</div>
 	<div id="provinceDiv">
 			
 	</div>

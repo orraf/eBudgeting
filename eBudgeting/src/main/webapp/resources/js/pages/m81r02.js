@@ -496,6 +496,8 @@ var MainSelectionView = Backbone.View.extend({
 	loadReport: function(e) {
 		
 		var orgId = null;
+		var beginMonth = $('#beginMonth').val();
+		var endMonth = $('#endMonth').val();
 		
 		if(this.$el.find('#amphurSlt').val() != null &&
 				this.$el.find('#amphurSlt').val() != 0 ) {
@@ -512,7 +514,7 @@ var MainSelectionView = Backbone.View.extend({
 			orgId = currentOrganizationId;
 		}
 		
-		loadReport(appUrl("/m81r02.xls/" + fiscalYear + "/" + orgId +"/file/m81r02.xls"));
+		loadReport(appUrl("/m81r02.xls/" + fiscalYear + "/" + orgId +"/file/m81r02.xls?beginMonth="+beginMonth+"&endMonth="+endMonth));
 		
 		return false;
 	},
