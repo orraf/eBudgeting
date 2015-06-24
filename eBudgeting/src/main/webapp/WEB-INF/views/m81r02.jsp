@@ -112,13 +112,16 @@
 			</div> 
 		</div>
 	</div>
+
+	{{#if isPlan}}
+
 	<div id="provinceDiv">
 			
 	</div>
 	<div id="amphurDiv">
 		
 	</div>
-
+	{{/if}}
 </form>
 	<div>
 		<button class="btn btn-primary report">แสดงรายงาน</button>
@@ -430,6 +433,7 @@
 	var objectiveCollection = null;
 	var budgetTypeSelectionView = null;
 	var rootCollection;
+	var isPlan = ${isPlan};
 	var topBudgetList = ["งบบุคลากร","งบดำเนินงาน","งบลงทุน","งบอุดหนุน","งบรายจ่ายอื่น"];
 	var currentOrganizationId = parseInt("${currentOrganizationId}");
 	var parentCurrentOrganizationId = parseInt("${parentCurrentOrganizationId}");

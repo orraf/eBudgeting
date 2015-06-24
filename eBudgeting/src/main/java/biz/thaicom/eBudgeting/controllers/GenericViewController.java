@@ -1272,11 +1272,14 @@ public class GenericViewController {
 		model.addAttribute("userGroups", userGroups);
 		
 		if(isPlan) {
-			return "m81r02";
+			model.addAttribute("isPlan", true);
 		} else {
-			return "redirect:/m81r02.xls/"+ currentfy + "/"+ currentUser.getWorkAt().getId() + "/file/m81r02.xls";
+			model.addAttribute("isPlan", false);
+//			model.addAttribute("userGroups", userGroups);
 		}
 		
+		// return "redirect:/m81r02.xls/"+ currentfy + "/"+ currentUser.getWorkAt().getId() + "/file/m81r02.xls";
+		return "m81r02";
 	}
 	
 	@RequestMapping("/page/m82r01/")
