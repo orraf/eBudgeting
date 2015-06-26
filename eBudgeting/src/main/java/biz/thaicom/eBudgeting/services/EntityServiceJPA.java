@@ -4178,8 +4178,12 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Override
 	public Organization findOrganizationParentOf(Organization org) {
+		
+		logger.debug("findOrganizationParentOf: " + org.getId());
 		Organization orgJpa = organizationRepository.findOneById(org.getId());
-		orgJpa.getParent().getId();
+		if(orgJpa.getParent() != null) {
+			orgJpa.getParent().getId();
+		}
 		return orgJpa.getParent();
 	}
 

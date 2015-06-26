@@ -111,7 +111,11 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		int curentCol = 3;
 		for(int i=beginMonth; i<endMonth+1; i++) {
 			cell = thirdRow.createCell(curentCol++);
-			cell.setCellValue(months[i] +" " +oldYear.toString().substring(2, 4) );
+			if(i < 3) {
+				cell.setCellValue(months[i] +" " +oldYear.toString().substring(2, 4) );
+			} else {
+				cell.setCellValue(months[i] +" " +fiscalYear.toString().substring(2, 4) );
+			}
 			cell.setCellStyle(styles.get("header"));
 		}
 		
@@ -162,7 +166,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		double s2 = 0.0;
 		double d2 = 0.0;
 		String org;
-		if (searchOrg.getId().toString().substring(5, 6).equals("0")) {
+		if (searchOrg.getCode().substring(4, 5).equals("0") && searchOrg.getId() > 0) {
 			org = searchOrg.getId().toString().substring(0, 5).concat("0000");			
 		} else {
 			org = searchOrg.getId().toString();
@@ -180,7 +184,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 			if (rs.getString(5).length() == 7) {
 				Statement st0 = connection.createStatement();
 				String stmt;
-				if (searchOrg.getId().toString().substring(5, 9).equals("0000") ) {
+				if (searchOrg.getId() == 0 || searchOrg.getId().toString().substring(5, 9).equals("0000") ) {
 					stmt = "select '   (จัดสรรเงิน '||nvl(ltrim(to_char(sum(amountallocated),'999,999,999,999')), '...')||' บาท)' " +
 													 "from bgt_budgetproposal " +
 													 "where objective_id = " + rs.getInt(3) + " " +

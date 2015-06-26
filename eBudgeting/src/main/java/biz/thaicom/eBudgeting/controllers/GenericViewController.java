@@ -1255,6 +1255,10 @@ public class GenericViewController {
 		Integer currentfy = setFiscalYearFromSession(model, session);
 		logger.debug("currentOrganizationId:" + currentUser.getWorkAt().getId());
 		model.addAttribute("currentOrganizationId", currentUser.getWorkAt().getId());
+		
+		Organization parentOrg = entityService.findOrganizationParentOf(currentUser.getWorkAt());
+		
+		model.addAttribute("parentCurrentOrganizationId" , parentOrg.getId()); 
 
 		String userGroups = "";
 	    String delim = "";
