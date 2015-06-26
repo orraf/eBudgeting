@@ -26,10 +26,11 @@ public class AssetPOExternal implements Serializable{
 	
 	@Column(name="V_PO_CONTRACT")
 	private String poContract;
-	
+
 	@Column(name="V_FINDNAME")
 	private String findName;
 	
+	@Id
 	@Column(name="V_FACODENAME")
 	private String faCodeName;
 	
