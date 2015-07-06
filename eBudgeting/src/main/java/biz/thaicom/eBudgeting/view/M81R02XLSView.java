@@ -274,15 +274,18 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 												 "and activitycode in (select code from pln_objective " +
 												 						"connect by prior id = parent_pln_objective_id " +
 												 						"start with id = " + rs.getInt(3) + ") " +
-												 " and date2fmonth(gl_trans_docdate) >= "+ beginMonth + " and date2fmonth(gl_trans_docdate) <= " + endMonth + " "+
+												 " and date2fmonth(gl_trans_docdate) >= "+ beginMonth + "+1 and date2fmonth(gl_trans_docdate) <= " + endMonth + "+1 "+
 												 "group by date2fmonth(gl_trans_docdate) " +
 												 "order by 1 ");
 
 				Double d1 = 0.0;
+				j = 3;
 				while (rs4.next()) {
-					Cell rscj = rows.getCell(rs4.getInt(1)+3-beginMonth);
+					/*Cell rscj = rows.getCell(rs4.getInt(1)+3-beginMonth);*/
+					Cell rscj = rows.getCell(j);
 					rscj.setCellValue(rs4.getDouble(2));
 					d1 = d1 + rs4.getDouble(2);
+					j = j + 1;
 				}
 				rs4.close();
 				st4.close();
@@ -445,15 +448,18 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 										   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + org + ") " +
 										   "and fiscal_year = " + fiscalYear + " " +
 										   "and activitycode = '" + rs.getString(5) + "' " +
-										   " and date2fmonth(gl_trans_docdate) >=" + beginMonth + " and date2fmonth(gl_trans_docdate) <=" + endMonth + " "+
+										   " and date2fmonth(gl_trans_docdate) >=" + beginMonth + "+1 and date2fmonth(gl_trans_docdate) <=" + endMonth + "+1 "+
 										   "group by date2fmonth(gl_trans_docdate) " +
 										   "order by 1 ");
 
 					s1 = 0.0;
+					j = 3;
 					while (rs4.next()) {
-						Cell rscj = rows.getCell(rs4.getInt(1)+3-beginMonth);
+						/*Cell rscj = rows.getCell(rs4.getInt(1)+3-beginMonth);*/
+						Cell rscj = rows.getCell(j);
 						rscj.setCellValue(rs4.getDouble(2));
 						s1 = s1 + rs4.getDouble(2);
+						j = j + 1;
 					}
 					rs4.close();
 					st4.close();
