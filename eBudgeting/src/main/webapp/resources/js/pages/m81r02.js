@@ -523,7 +523,7 @@ var MainSelectionView = Backbone.View.extend({
 		
 		if(this.rootChildrenObjectiveCollection != null) {
 			var json = this.rootChildrenObjectiveCollection.toJSON();
-			
+			json.isPlan = isPlan;
 			var html = this.mainSelectionTemplate(json);
 			this.$el.html(html);
 		}

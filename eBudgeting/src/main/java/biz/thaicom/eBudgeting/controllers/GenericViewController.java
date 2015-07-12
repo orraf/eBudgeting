@@ -1263,7 +1263,9 @@ public class GenericViewController {
 		String userGroups = "";
 	    String delim = "";
 	    Boolean isPlan = false;
+	    logger.debug(">>>> " + currentUser.getAuthorities());
 	 	for(GrantedAuthority a :  currentUser.getAuthorities()) {
+	 		logger.debug(a.toString());
 		    userGroups += delim + a.getAuthority();
 		    delim = ",";
 		    
@@ -1276,6 +1278,7 @@ public class GenericViewController {
 		model.addAttribute("userGroups", userGroups);
 		
 		if(isPlan) {
+			logger.debug("isPlan");
 			model.addAttribute("isPlan", true);
 		} else {
 			model.addAttribute("isPlan", false);

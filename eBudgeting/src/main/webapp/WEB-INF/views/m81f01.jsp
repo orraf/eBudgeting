@@ -403,22 +403,23 @@
 
 <script type="text/javascript">
 Handlebars.registerHelper("sumResult", function(montlyReports) {
-	var sum = 0;
+	var sum = new BigNumber(0.0);
 	_.forEach(montlyReports, function(report) {
 		if(!isNaN(report.activityResult) && report.activityResult != null) {
-			sum += parseInt(report.activityResult);
+			sum = sum.plus(new BigNumber(report.activityResult));
+			// sum += parseInt(report.activityResult);
 		}
 	});
-	return addCommas(sum);
+	return addCommas(sum.toNumber());
 });
 Handlebars.registerHelper("sumBudgetResult", function(montlyReports) {
-	var sum = 0.0;
+	var sum = new BigNumber(0.0);
 	_.forEach(montlyReports, function(report) {
 		if(report.budgetResult != null) {
-			sum += parseFloat(report.budgetResult);
+			sum = sum.plus(new BigNumber(report.budgetResult));
 		}
 	});
-	return addCommas(sum);
+	return addCommas( sum.toNumber() );
 });
 Handlebars.registerHelper("formatNumberActLink", function(result) {
 	if(result == null || isNaN(result)) {
