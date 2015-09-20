@@ -1123,6 +1123,48 @@ public class GenericViewController {
 //			model.addAttribute("readOnly", true);
 //		}
 		
+		
+		String userGroups = "";
+	    String delim = "";
+	    Boolean isPlan = false;
+	    Boolean isInv = false;
+	    logger.debug(">>>> " + currentUser.getAuthorities());
+	 	for(GrantedAuthority a :  currentUser.getAuthorities()) {
+	 		logger.debug(a.toString());
+		    userGroups += delim + a.getAuthority();
+		    delim = ",";
+		    
+		    if(a.getAuthority().toString().equals("PMS_PLAN") || a.getAuthority().toString().equals("PMS_ADMIN")){
+		    	isPlan = true;
+		    }
+		    
+		    if(a.getAuthority().toString().equals("PMS_INV")){
+		    	isInv = true;
+		    }
+		    
+		}
+		
+		model.addAttribute("userGroups", userGroups);
+		
+		if(isPlan) {
+			logger.debug("isPlan");
+			model.addAttribute("isPlan", true);
+		} else {
+			model.addAttribute("isPlan", false);
+//			model.addAttribute("userGroups", userGroups);
+		}
+		
+		if(isInv) {
+			logger.debug("isInv");
+			model.addAttribute("isInv", true);
+		} else {
+			model.addAttribute("isInv", false);
+//			model.addAttribute("userGroups", userGroups);
+		}
+		
+		
+		
+		
 		return "m71f01";
 	}
 	

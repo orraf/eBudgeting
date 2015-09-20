@@ -106,6 +106,7 @@ public class ObjectiveRestController {
 	@RequestMapping(value="/Objective/loadObjectiveAllocationRecord/{id}", method=RequestMethod.GET)
 	public @ResponseBody Objective getObjectiveLoadAllocationRecordById(
 			@PathVariable Long id, 
+			@RequestParam(required = false) boolean onlyCapitalBudget,
 			@Activeuser ThaicomUserDetail currentUser) {
 		Objective o = entityService.findOjectiveById(id);
 		if(o!=null) {
@@ -116,10 +117,23 @@ public class ObjectiveRestController {
 	}
 	
 	@RequestMapping(value="/Objective/{id}/children", method=RequestMethod.GET)
-	public @ResponseBody List<Objective> getChildrenObjectiveById(@PathVariable Long id) {
+	public @ResponseBody List<Objective> getChildrenObjectiveById(@PathVariable Long id,
+			@RequestParam(required = false) boolean onlyCapitalBudget) {
 		logger.debug("id: " + id);
 		List<Objective> list =entityService.findObjectiveChildrenByObjectiveId(id);
 
+		if(onlyCapitalBudget) {
+			List<Objective> onlyCapitalList = new ArrayList<Objective>();
+			for(Objective o : list) {
+				for(AllocationRecord r : o.getAllocationRecords()) {
+					if(r.getBudgetType().is_งบลงทุน()) {
+						onlyCapitalList.add(o);
+					}
+				}
+			}
+			list = onlyCapitalList;
+		}
+		
 		return  list;
 	}
 	 
@@ -481,9 +495,23 @@ public class ObjectiveRestController {
 	@RequestMapping(value="/ObjectiveWithAllocationRecords/{objectiveId}/children", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> getChildrenbjectiveWithAllocationRecord(
 			@PathVariable Long objectiveId,
-			@Activeuser ThaicomUserDetail currentUser
+			@Activeuser ThaicomUserDetail currentUser,
+			@RequestParam(required = false) boolean onlyCapitalBudget
 			) {
 		List<Objective> objectives = entityService.findChildrenObjectivewithAllocationRecords(objectiveId);
+		
+		if(onlyCapitalBudget) {
+			List<Objective> onlyCapitalList = new ArrayList<Objective>();
+			for(Objective o : objectives) {
+				for(AllocationRecord r : o.getAllocationRecords()) {
+					if(r.getBudgetType().is_งบลงทุน()) {
+						onlyCapitalList.add(o);
+					}
+				}
+			}
+			objectives = onlyCapitalList;
+		}
+		
 		
 		return objectives;
 		

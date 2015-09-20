@@ -911,8 +911,16 @@ var MainSelectionView = Backbone.View.extend({
 	type101SltChange : function(e) {
 		var type101Id = $(e.target).val();
 		if(type101Id != 0) {
+			
+			var data = {};
+			
+			if(isInvCbkCheked) {
+				data = {onlyCapitalBudget: true};
+			}
+			
 			this.type102Collection.fetch({
 				url: appUrl('/Objective/' + type101Id + '/children'),
+				data: data,
 				success: _.bind(function() {
 					this.type102Collection.trigger('reset');
 				}, this)
@@ -925,8 +933,14 @@ var MainSelectionView = Backbone.View.extend({
 	type102SltChange : function(e) {
 		var type102Id = $(e.target).val();
 		if(type102Id != 0) {
+			var data = {};
+			
+			if(isInvCbkCheked) {
+				data = {onlyCapitalBudget: true};
+			}
 			this.type103Collection.fetch({
 				url: appUrl('/Objective/' + type102Id + '/children'),
+				data: data,
 				success: _.bind(function() {
 					this.type103Collection.trigger('reset');
 				}, this)
@@ -942,9 +956,15 @@ var MainSelectionView = Backbone.View.extend({
 	type103SltChange : function(e) {
 		var type103Id = $(e.target).val();
 		if(type103Id != 0) {
+			var data = {};
+			
+			if(isInvCbkCheked) {
+				data = {onlyCapitalBudget: true};
+			}
 			var obj = Objective.findOrCreate(type103Id);
 			obj.url = appUrl("/Objective/loadObjectiveAllocationRecord/" + obj.get('id'));
 			obj.fetch({
+				data: data,
 				success: function(model, xhr, option) {
 					mainCtrView.renderMainTblWithParent(obj);
 				}
@@ -1002,8 +1022,15 @@ var MainSelectionView = Backbone.View.extend({
 		// now get this rootObjective Children
 		this.rootChildrenObjectiveCollection = new ObjectiveCollection();
 		
+		var data = {};
+		
+		if(isInvCbkCheked) {
+			data = {onlyCapitalBudget: true};
+		}
+		
 		this.rootChildrenObjectiveCollection.fetch({
 			url: appUrl('/Objective/' + this.rootObjective.get('id') + '/children'),
+			data: data,
 			success : _.bind(function() {
 				
 				this.render();
@@ -1165,6 +1192,30 @@ var AssetSelectionView = Backbone.View.extend({
 	}
 });
 
+var HeadLineView = Backbone.View.extend({
+	/**
+     *  @memberOf HeadLineView
+     */
+	initialize : function(options) {
+		this.parentView = options.parentView;
+	},
+	el : "#headLine",
+	events: {
+		"click input[type=checkbox]#bgtCbx" : "toggleBudget"
+	},
+	toggleBudget: function(e){
+		console.log('clicked!');
+		var bgtCbxChecked = this.$el.find('#bgtCbx').prop('checked');
+		if(bgtCbxChecked) {
+			isInvCbkCheked = true;
+		} else {
+			isInvCbkCheked = false;
+		}
+		
+		this.parentView.renderMainSelection();
+		
+	}
+});
 
 var MainCtrView = Backbone.View.extend({
 	/**
@@ -1176,6 +1227,8 @@ var MainCtrView = Backbone.View.extend({
 		
 		// puting loading sign
 		this.$el.html(this.loadingTpl());
+		
+		this.headLineView = new HeadLineView({parentView: this});
 	},
 
 	el : "#mainCtr",
@@ -1232,6 +1285,11 @@ var MainCtrView = Backbone.View.extend({
        		}
     	});
 	},
+	renderMainSelection : function() {
+		
+		this.mainSelectionView.renderInitialWith(this.rootObjective);
+		this.emptyTbl();
+	},
 	render : function() {
 		this.$el.html(this.mainCtrTemplate());
 		this.mainSelectionView = new MainSelectionView({el: "#mainCtr #mainSelection"});
@@ -1258,9 +1316,16 @@ var MainCtrView = Backbone.View.extend({
 			objectiveCollection = new ObjectiveCollection();
 			this.collection = new ObjectiveCollection();
 			
+			var data = {};
+			
+			if(isInvCbkCheked) {
+				data = {onlyCapitalBudget: true};
+			}
+			
 			objectiveCollection.url = appUrl("/ObjectiveWithAllocationRecords/" + this.currentParentObjective.get('id') + "/children");
 			
 			objectiveCollection.fetch({
+				data: data,
 				success : _.bind( function() {
 					// we will now sorted out this mess!
 					var i;

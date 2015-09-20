@@ -9,7 +9,8 @@
     			<strong>Sign Off แล้ว</strong> สามารถเปิดดูข้อมูลได้อย่างเดียว ไม่สามารถแก้ไขเพิ่มเติมได้ 
     		</div>
 	</c:if>
-	<h4>การจัดสรรงบประมาณ</h4> 
+	<div style="float:left;"><h4>การจัดสรรงบประมาณ</h4></div>
+	<div style="float:right;"><label class="checkbox"><input type="checkbox" id="bgtCbx"> แสดงเฉพาะงบลงทุน</label></div>
 </div>
 
 <div class="row">
@@ -829,6 +830,18 @@
 	Handlebars.registerHelper('next', function(val, next) {
 		return val + next;
 	});
+	
+	
+	var userGroups = '${userGroups}'.split(",");
+	var isPlan = '${isPlan}' == 'true' ? true : false;
+	var isInv = '${isInv}' == 'true' ? true : false;
+	var isInvCbkCheked = false;
+	if(!isPlan && isInv ) {
+		isInvCbkCheked = true;
+		$('#bgtCbx').prop('checked',true);
+		$('#bgtCbx').prop('disabled',true);
+	}
+	
 	
 	$(document).ready(function() {
 		
