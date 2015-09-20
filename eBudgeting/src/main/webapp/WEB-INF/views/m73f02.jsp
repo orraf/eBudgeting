@@ -111,21 +111,6 @@
 
 
 <script id="mainTblTemplate" type="text/x-handler-template">
-<div class="controls" style="margin-bottom: 15px;">
-	<div class="pull-left"> 
-		
-	</div>
-	<div class="pull-left" style="margin-left: 20px;">
-	<form class="form-search pull-left" style="margin-bottom:10px;" id="activitySearchFrm">
-		<div class="input-append">
-    		<input type="text" class="span2 search-query" id="activitySearchTxt" value="{{queryTxt}}">
-    			<button class="btn" type="submit" id="activitySearchTxt">Search</button>
-    	</div>
-    </form>
-	</div>
-	
-	<div class="clearfix"></div>
-</div>
 <table class="table table-bordered table-striped" id="mainTbl">
 	<thead>
 		<tr>
