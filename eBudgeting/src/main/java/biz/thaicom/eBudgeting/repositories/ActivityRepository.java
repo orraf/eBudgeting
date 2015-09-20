@@ -47,6 +47,18 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"ORDER BY act.code ASC ")
 	List<Activity> findAllByRegulatorAndForObejctive_Id(Organization workAt,
 			Long objectiveId);
+	
+	
+	@Query("" +
+			"SELECT act " +
+			"FROM Activity act " +
+			"	LEFT JOIN FETCH act.targets target " +
+			"	LEFT JOIN FETCH target.unit " +
+			"WHERE act.regulator =?1 AND act.forObjective.id = ?2" +
+			"	AND act.activityLevel = ?3 " +
+			"ORDER BY act.code ASC ")
+	List<Activity> findAllByRegulatorAndForObejctive_IdAndActivityLevel(Organization workAt,
+			Long objectiveId, Integer activityLevel);
 
 	@Query(""
 			+ "SELECT DISTINCT act "

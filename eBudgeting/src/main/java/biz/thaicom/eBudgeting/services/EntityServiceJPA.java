@@ -4808,7 +4808,15 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Activity> findActivityByRegularAndObjectiveId(
 			Organization workAt, Long objectiveId) {
-		List<Activity> parentList = activityRepository.findAllByRegulatorAndForObejctive_Id(workAt, objectiveId);
+		List<Activity> parentList = activityRepository.findAllByRegulatorAndForObejctive_IdAndActivityLevel(workAt, objectiveId,0);
+		
+		if(parentList.size() == 0 ) {
+			parentList = activityRepository.findAllByRegulatorAndForObejctive_IdAndActivityLevel(workAt, objectiveId,1);
+			
+			if(parentList.size() == 0 ) {
+				parentList = activityRepository.findAllByRegulatorAndForObejctive_IdAndActivityLevel(workAt, objectiveId,2);
+			}
+		}
 		
 		List<Activity> flatList = new ArrayList<Activity>();
 		
