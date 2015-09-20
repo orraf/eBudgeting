@@ -9,6 +9,9 @@
 		<h3>Login</h3>
 	</div>
 
+	<div class='well'>
+			ระบบบริหารจัดการโครงการ รองรับกับ Browser IE9+, Firefox และ Chrome
+	</div>
 
 	<form class="form-horizontal" action="<c:url value='/j_spring_security_check'/>"
 		method="POST">
@@ -41,5 +44,8 @@
 			<button type="reset" class="btn" name="_eventId_cancel">ยกเลิก</button>
 			
 		</div>
+		
+		
+		
 	</form>
 </div>
