@@ -220,7 +220,11 @@ public class Activity implements Serializable, Comparable<Activity> {
 				} else {
 					ActivityTarget grandChildTarget = grandChildTargets.get(target.getUnit());
 					grandChildTarget.setTargetValue(grandChildTarget.getTargetValue() + target.getTargetValue());
-					grandChildTarget.setBudgetAllocated(grandChildTarget.getBudgetAllocated() + target.getBudgetAllocated());
+					if (target.getBudgetAllocated() == null){
+						target.setBudgetAllocated(0.0);
+					}else {
+						grandChildTarget.setBudgetAllocated(grandChildTarget.getBudgetAllocated() + target.getBudgetAllocated());
+					}
 				}
 			}
 		}
