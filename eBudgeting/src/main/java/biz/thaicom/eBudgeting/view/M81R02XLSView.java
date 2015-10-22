@@ -271,20 +271,38 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 									   "group by date2fmonth(gl_trans_docdate) " +
 									   "order by 1 ");
 */
-				ResultSet rs4 = st4.executeQuery("select t1.mon, t2.amt from " +
-											     "(select to_number(rv_low_value) mon from cg_ref_codes " +
-											     "where rv_domain = 'MONTH' " +
-											     "and to_number(rv_low_value) between " + beginMonth + "+1 and " + endMonth + "+1 "+") t1, " +
-											     "(select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
-												 "from v_gl " +
-												 "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + org + ") " +
-												 "and fiscal_year = " + fiscalYear + " " +
-												 "and activitycode in (select code from pln_objective " +
-												 						"connect by prior id = parent_pln_objective_id " +
-												 						"start with id = " + rs.getInt(3) + ") " +
-												 "group by date2fmonth(gl_trans_docdate)) t2 " +
-												 "where t1.mon = t2.mon (+) " +
-												 "order by 1 ");
+				if (searchOrg.getCode().substring(4, 5).equals("0") && !searchOrg.getCode().substring(5, 6).equals("0") && searchOrg.getId() > 0) {
+					stmt = "select t1.mon, t2.amt from " +
+						     "(select to_number(rv_low_value) mon from cg_ref_codes " +
+						     "where rv_domain = 'MONTH' " +
+						     "and to_number(rv_low_value) between " + beginMonth + "+1 and " + endMonth + "+1 "+") t1, " +
+						     "(select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
+							 "from v_gl " +
+							 "where org_id = " + org + " " +
+							 "and fiscal_year = " + fiscalYear + " " +
+							 "and activitycode in (select code from pln_objective " +
+							 						"connect by prior id = parent_pln_objective_id " +
+							 						"start with id = " + rs.getInt(3) + ") " +
+							 "group by date2fmonth(gl_trans_docdate)) t2 " +
+							 "where t1.mon = t2.mon (+) " +
+							 "order by 1 ";
+				} else {
+					stmt = "select t1.mon, t2.amt from " +
+						     "(select to_number(rv_low_value) mon from cg_ref_codes " +
+						     "where rv_domain = 'MONTH' " +
+						     "and to_number(rv_low_value) between " + beginMonth + "+1 and " + endMonth + "+1 "+") t1, " +
+						     "(select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
+							 "from v_gl " +
+							 "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + org + ") " +
+							 "and fiscal_year = " + fiscalYear + " " +
+							 "and activitycode in (select code from pln_objective " +
+							 						"connect by prior id = parent_pln_objective_id " +
+							 						"start with id = " + rs.getInt(3) + ") " +
+							 "group by date2fmonth(gl_trans_docdate)) t2 " +
+							 "where t1.mon = t2.mon (+) " +
+							 "order by 1 ";
+				}
+				ResultSet rs4 = st4.executeQuery(stmt);
 
 				Double d1 = 0.0;
 				j = 3;
