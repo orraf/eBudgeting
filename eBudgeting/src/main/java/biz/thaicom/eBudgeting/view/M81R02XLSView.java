@@ -592,9 +592,10 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 									 						"where d1.target_pln_acttarget_id = d2.id " +
 									 						"and d2.unit_pln_targetunit_id = d3.id " +
 									 						"and d1.owner_hrx_organization_id = " + searchOrg.getId() + ") t2, " +
-									 						"(select activity_pln_activity_id, budgetallocated " +
+									 						"(select activity_pln_activity_id, sum(budgetallocated) budgetallocated " +
 									 						"from pln_activityperformance " +
-									 						"where owner_hrx_organization_id = " + searchOrg.getId() + ") t3 " +
+									 						"where owner_hrx_organization_id = " + searchOrg.getId() + " " +
+									 						"group by activity_pln_activity_id) t3 " +
 			 						 "where t1.id = t2.activity_pln_activity_id (+) " +
 									 "and t1.id = t3.activity_pln_activity_id (+) " +
 									 "and t1.obj_pln_objective_id = " + rs.getInt(3) + " " +
