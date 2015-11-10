@@ -166,6 +166,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 		double s2 = 0.0;
 		double d2 = 0.0;
 		String org;
+		String stmt;
 		if (searchOrg.getCode().substring(4, 5).equals("0") && searchOrg.getId() > 0) {
 			org = searchOrg.getId().toString().substring(0, 5).concat("0000");			
 		} else {
@@ -186,7 +187,6 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 			
 			if (rs.getString(5).length() == 7) {
 				Statement st0 = connection.createStatement();
-				String stmt;
 				
 				if (searchOrg.getId() == 0 || searchOrg.getId().toString().substring(5, 9).equals("0000") ) {
 					stmt = "select '   (จัดสรรเงินรวม '||nvl(ltrim(to_char(sum(amountallocated),'999,999,999,999')), '...')||' บาท)' " +
@@ -481,21 +481,35 @@ group by t1.fiscalmonth order by t1.fiscalmonth;
 						rscj.setCellStyle(styles.get("cellnumber2"));
 					}
 
+					if (searchOrg.getCode().substring(4, 5).equals("0") && !searchOrg.getCode().substring(5, 6).equals("0") && searchOrg.getId() > 0) {
+						stmt = "select t1.mon, t2.amt from " +
+								   "(select to_number(rv_low_value) mon from cg_ref_codes " +
+								   "where rv_domain = 'MONTH' " +
+								   "and to_number(rv_low_value) between " + beginMonth + "+1 and " + endMonth + "+1 "+") t1, " +
+								   "(select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
+								   "from v_gl " +
+								   "where org_id = " + org + " " +
+								   "and fiscal_year = " + fiscalYear + " " +
+								   "and activitycode = '" + rs.getString(5) + "' " +
+								   "group by date2fmonth(gl_trans_docdate) ) t2 " +
+								   "where t1.mon = t2.mon (+) " +
+								   "order by 1 ";
+					} else {
+						stmt = "select t1.mon, t2.amt from " +
+								   "(select to_number(rv_low_value) mon from cg_ref_codes " +
+								   "where rv_domain = 'MONTH' " +
+								   "and to_number(rv_low_value) between " + beginMonth + "+1 and " + endMonth + "+1 "+") t1, " +
+								   "(select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
+								   "from v_gl " +
+								   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + org + ") " +
+								   "and fiscal_year = " + fiscalYear + " " +
+								   "and activitycode = '" + rs.getString(5) + "' " +
+								   "group by date2fmonth(gl_trans_docdate) ) t2 " +
+								   "where t1.mon = t2.mon (+) " +
+								   "order by 1 ";
+					}
 					Statement st4 = connection.createStatement();
-					ResultSet rs4 = st4.executeQuery("select t1.mon, t2.amt from " +
-										   "(select to_number(rv_low_value) mon from cg_ref_codes " +
-										   "where rv_domain = 'MONTH' " +
-										   "and to_number(rv_low_value) between " + beginMonth + "+1 and " + endMonth + "+1 "+") t1, " +
-										   "(select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0) amt " +
-										   "from v_gl " +
-										   "where org_id in (select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = " + org + ") " +
-										   "and fiscal_year = " + fiscalYear + " " +
-										   "and activitycode = '" + rs.getString(5) + "' " +
-										   "group by date2fmonth(gl_trans_docdate) ) t2 " +
-										   "where t1.mon = t2.mon (+) " +
-										   "order by 1 ");
-
-
+					ResultSet rs4 = st4.executeQuery(stmt);
 					
 					s1 = 0.0;
 					j = 3;
