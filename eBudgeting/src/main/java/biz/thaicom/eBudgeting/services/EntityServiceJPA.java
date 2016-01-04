@@ -4729,7 +4729,13 @@ public class EntityServiceJPA implements EntityService {
 			
 			
 			Activity act = report.getTarget().getActivity();
+			act.getOwner().getId();
 			logger.debug("activity id: " + act.getId());
+			Integer countTargetReport = activityTargetReportRepository.countAllByTarget_IdAndOwner_Parent_id(report.getTarget().getId(),
+					ownerId);
+			
+			report.setReportLevel(countTargetReport);
+			
 			
 			// first put the target
 			if(act.getFilterTargets()==null) {
@@ -4738,6 +4744,7 @@ public class EntityServiceJPA implements EntityService {
 			if(!act.getFilterTargets().contains(report.getTarget())) {
 				//lazily init TargetUnit here 
 				report.getTarget().getUnit().getId();
+				
 				act.getFilterTargets().add(report.getTarget());
 			} 
 			

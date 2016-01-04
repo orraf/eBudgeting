@@ -123,6 +123,13 @@ public interface ActivityTargetReportRepository extends
 	public List<ActivityTargetReport> findAllByTarget_idAndReportLevel(
 			Long targetId, int reportLevel);
 
+	@Query(""
+			+ "SELECT count(*) "
+			+ "FROM ActivityTargetReport report "
+			+ "WHERE report.target.id=?1 and report.owner.parent.id = ?2 "
+			+ "")
+	public Integer countAllByTarget_IdAndOwner_Parent_id(Long activityTargetId, Long parentOrgId);
+	
 	public List<ActivityTargetReport> findAllByTarget_IdAndOwner_Parent_id(
 			Long activityTargetId, Long parentOrgId);
 

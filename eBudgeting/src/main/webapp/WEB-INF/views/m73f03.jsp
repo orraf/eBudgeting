@@ -36,7 +36,7 @@
     			เลือกแผนปฏิบัติการ
     			<span class="caret"></span>
     		</a>
-    		<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+			<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
     			{{#each this}}
 					<li data-id={{id}}>
 						<a href="javascript:;" class="budgetProposalSelect">
@@ -47,6 +47,9 @@
 				{{/each}}
     		</ul>
     	</div>
+		<div style="margin-top:8px;">
+			<span>ในกรณีเป้าหมายงานไม่ตรงให้ติดต่อกับเจ้าของงาน ในกรณีเงินงบประมาณไม่ตรงให้ติดต่อกับ กองงบประมาณ</span>
+		</div>
 </script>
 
 <script id="mainTblTemplate" type="text/x-handler-template">
@@ -56,9 +59,10 @@
 			<td style="width:30px;"></td>
 			<td style="width:30px;">รหัส</td>
 			<td>ชื่อกิจกรรมย่อย</td>
-			<td style="width:100px;">เป้าหมายที่ส่วนกลางกำหนด</td>
-			<td style="width:100px;">หน่วยนับ</td>
+			<td style="width:60px;padding-left:4px;padding-right:4px;">หน่วยงานเจ้าของกิจกรรม</td>
+			<td style="width:100px;padding-left:4px;padding-right:4px;">เป้าหมายที่ส่วนกลางกำหนด</td>
 			<td style="width:100px;">งบประมาณที่จัดสรร (บาท)</td>
+			<td style="width:80px;padding-left:4px;padding-right:4px;">สถานะการจัดสรร</td>
 
 		</tr>
 	</thead>
@@ -66,14 +70,17 @@
 		<tr>
 			<td colspan="5" style="text-align:right;">{{forObjective.name}} / {{budgetType.name}} ได้รับจัดสรร</td>
 			<td style="text-align:right;">{{formatNumber amountAllocated}} บาท</td>
+			<td></td>
 		</tr>
 		<tr>
 			<td colspan="5" style="text-align:right;">จัดสรรแล้ว</td>
 			<td style="text-align:right;"><span id="totalAllocatedBudget"></span></td>
+			<td></td>
 		</tr>
 		<tr>
 			<td colspan="5" style="text-align:right;">คงเหลือ</td>
 			<td style="text-align:right;"><span id="totalAllocatedBudgetLeft"></span></td>
+			<td></td>
 		</tr>
 	</tbody>
 </table>
@@ -83,6 +90,7 @@
 	<td></td>
 	<td>{{code}}</td>
 	<td>{{name}}</td>
+	<td></td>	
 	<td></td>
 	<td></td>
 	<td></td>
@@ -92,16 +100,23 @@
 <tr data-id="{{id}}">
 	<td></td>
 	<td>{{code}}</td>
-	<td><span style="padding-left:{{padding}}px;">{{name}}</span></td>
+	<td><span style="padding-left:{{padding}}px;">{{name}} </span></td>
+	<td style="text-align:center;">{{owner.abbr}}</td>
 	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each filterTargets}}
-			<li data-id="{{filterReport.id}}">{{formatNumber filterReport.targetValue}}</li>
+			<li data-id="{{filterReport.id}}">{{formatNumber filterReport.targetValue}} {{unit.name}}</li>
 		{{/each}}
 		</ul>
 	</td>
-	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
+	
+	<td>
+		<ul style="list-style-type: none;margin:0px;padding-right:10px; text-align:right;"">
 		{{#each filterTargets}}
-			<li>{{unit.name}}</li>
+			<li data-id="{{filterReport.id}}">
+				<a href="javascript:;" class="assignTargetValueLnk">	 
+					<span id="target_{{id}}-budgetAllocated" class="budgetAllocatedSpn" data-value="{{filterReport.activityPerformance.budgetAllocated}}">{{formatNumber filterReport.activityPerformance.budgetAllocated}}</span> บาท
+				</a>
+			</li>
 		{{/each}}
 		</ul>
 	</td>
@@ -109,10 +124,9 @@
 		<ul style="list-style-type: none;margin:0px;padding-right:10px; text-align:right;"">
 		{{#each filterTargets}}
 			<li data-id="{{filterReport.id}}">
-				<a href="javascript:;" class="assignTargetValueLnk">	 
-					<span id="target_{{id}}-budgetAllocated" class="budgetAllocatedSpn" data-value="{{filterReport.activityPerformance.budgetAllocated}}">{{formatNumber filterReport.activityPerformance.budgetAllocated}}</span> บาท
+					 
+					<span>{{#if filterReport.reportLevel}}จัดสรรแล้ว{{else}}รอจัดสรร{{/if}}</span>
 				
-				</a>
 			</li>
 		{{/each}}
 		</ul>
