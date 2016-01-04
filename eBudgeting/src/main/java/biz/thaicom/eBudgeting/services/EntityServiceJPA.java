@@ -3056,7 +3056,33 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Objective> findObjectiveByActivityRegulatorAndFiscalYear(
 			Organization workAt, Integer fiscalYear) {
-		return objectiveRepository.findAllByActivityRegulatorAndFiscalYear(workAt, fiscalYear);
+		List<Objective> returnList = objectiveRepository.findAllByActivityRegulatorAndFiscalYear(workAt, fiscalYear);
+		
+		for(Objective obj: returnList) {
+			
+			List<Activity> acts = activityRepository.findAllByForObjectiveParentAndOwnerOrRegulator(obj, workAt.getId());
+			logger.debug(">>>>> " +workAt.getId());
+			logger.debug(">>>>> " +acts.size());
+			Double sumBudgetAllocated = 0.0;
+			for(Activity act : acts) {
+				logger.debug(">>>>> " +act.getName());
+				for(ActivityTarget target : act.getTargets()) {
+					logger.debug(">>>>> " +target.getBudgetAllocated());
+					if(target.getBudgetAllocated() != null) {
+						sumBudgetAllocated += target.getBudgetAllocated();
+					}
+				}
+			}
+			
+			BudgetProposal p = new BudgetProposal();
+			p.setAmountAllocated(sumBudgetAllocated);
+			List<BudgetProposal> proposals = new ArrayList<BudgetProposal>();
+			proposals.add(p);
+			
+			obj.setFilterProposals(proposals);
+		}
+		
+		return returnList;
 	}
 
 	@Override

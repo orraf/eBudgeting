@@ -263,7 +263,7 @@ public interface ObjectiveRepository extends PagingAndSortingRepository<Objectiv
 			Organization workAt, Integer fiscalYear);
 
 	@Query("" +
-			"SELECT parentObjective " +
+			"SELECT distinct parentObjective " +
 			"FROM Activity activity " +
 			"	INNER JOIN activity.forObjective objective " +
 			"	INNER JOIN objective.parent parentObjective " +
