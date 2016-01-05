@@ -4758,7 +4758,7 @@ public class EntityServiceJPA implements EntityService {
 			act.getOwner().getId();
 			logger.debug("activity id: " + act.getId());
 			Integer countTargetReport = activityTargetReportRepository.countAllByTarget_IdAndOwner_Parent_id(report.getTarget().getId(),
-					ownerId);
+					ownerId).intValue();
 			
 			report.setReportLevel(countTargetReport);
 			
