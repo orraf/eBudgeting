@@ -9,8 +9,8 @@
 		<h3>Login</h3>
 	</div>
 
-	<div class='well'>
-			ระบบบริหารจัดการโครงการ รองรับกับ Browser IE9+, Firefox และ Chrome
+	<div class='alert alert-danger'>
+			<h4>ระบบบริหารจัดการโครงการ รองรับกับ Browser IE9+, Firefox และ Chrome</h4>
 	</div>
 
 	<form class="form-horizontal" action="<c:url value='/j_spring_security_check'/>"

@@ -89,7 +89,11 @@ var AssignTargetValueModalView = Backbone.View.extend({
  				// reset button
  				this.$el.find('a#saveAssignTargetBtn').html('บันทึกข้อมูล');
  				
+ 				
+ 				
  				this.cancelAssignTarget();
+ 				var reportId = this.currentTargetReport.get('id');
+ 				mainTblView.$el.find('li.reportStatus[data-id='+reportId+']').html("จัดสรรแล้ว");
  			},this)
  		});
 	},

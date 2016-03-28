@@ -47,8 +47,8 @@
 				{{/each}}
     		</ul>
     	</div>
-		<div style="margin-top:8px;">
-			<span>ในกรณีเป้าหมายงานไม่ตรงให้ติดต่อกับเจ้าของงาน ในกรณีเงินงบประมาณไม่ตรงให้ติดต่อกับ กองงบประมาณ</span>
+		<div style="margin-top:20px;" class="alert alert-danger">
+			<span>** ในกรณีเป้าหมายงานไม่ตรงให้ติดต่อกับเจ้าของงาน ในกรณีเงินงบประมาณไม่ตรงให้ติดต่อกับ กองงบประมาณ **</span>
 		</div>
 </script>
 
@@ -101,7 +101,7 @@
 	<td></td>
 	<td>{{code}}</td>
 	<td><span style="padding-left:{{padding}}px;">{{name}} </span></td>
-	<td style="text-align:center;">{{owner.abbr}}</td>
+	<td style="text-align:center;">{{owner.abbr}} ({{regulator.abbr}}) </td>
 	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each filterTargets}}
 			<li data-id="{{filterReport.id}}">{{formatNumber filterReport.targetValue}} {{unit.name}}</li>
@@ -123,7 +123,7 @@
 	<td>
 		<ul style="list-style-type: none;margin:0px;padding-right:10px; text-align:right;"">
 		{{#each filterTargets}}
-			<li data-id="{{filterReport.id}}">
+			<li class="reportStatus" data-id="{{filterReport.id}}">
 					 
 					<span>{{#if filterReport.reportLevel}}จัดสรรแล้ว{{else}}รอจัดสรร{{/if}}</span>
 				
