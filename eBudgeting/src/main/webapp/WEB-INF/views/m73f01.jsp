@@ -459,9 +459,14 @@
 	});
 	
 	Handlebars.registerHelper("addActivityBtn", function(activity) {
-		if(activity.activityLevel == 0 ) {
+		var targetLength = 0;
+		if(activity.targets != null) {
+			targetLength = activity.targets.length;
+		}
+		
+		if(activity.activityLevel == 0 && targetLength == 0 ) {
 			return "<a href='#' class='btn btn-mini btn-primary newActivitityChild'><i class='icon icon-file icon-white'></i> เพิ่มกิจกรรมเสริม</a>";
-		} else if(activity.activityLevel == 1 ){
+		} else if(activity.activityLevel == 1  && targetLength == 0 ){
 			return "<a href='#' class='btn btn-mini btn-primary newActivitityChild'><i class='icon icon-file icon-white'></i> เพิ่มกิจกรรมรายละเอียด</a>";
 		} else {
 			return "";
