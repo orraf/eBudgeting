@@ -84,6 +84,8 @@
 	<tbody>
 	</tbody>
 </table>
+
+หมายเหตุ: <i class="icon-check"></i> ทำแผนแล้ว 
 </script>
 <script id="mainTblTbodyObjectiveTemplate" type="text/x-handler-template">
 <tr data-id="{{id}}">
@@ -96,13 +98,16 @@
 </tr>
 </script>
 <script id="mainTblTbodyActivityTemplate" type="text/x-handler-template">
+{{#if showInTree}}
 <tr data-id="{{id}}">
 	<td></td>
 	<td>{{code}}</td>
 	<td><span style="padding-left:{{padding}}px;">{{name}}</span></td>
 	<td><ul style="list-style-type: none;margin:0px;padding: 0px; text-align:center;">
 		{{#each filterTargets}}
-			<li data-id="{{filterReport.id}}"><a href="javascript:;" class="assignTargetLnk">{{formatNumber filterReport.targetValue}}</a></li>
+			<li data-id="{{filterReport.id}}"><a href="javascript:;" class="assignTargetLnk">{{formatNumber filterReport.targetValue}}</a>
+				{{#if filterReport.monthlyReports}}<i class="icon-check"></i> {{/if}}
+			</li>
 		{{/each}}
 		</ul>
 	</td>
@@ -126,6 +131,7 @@
 		</ul>
 	</td>
 </tr>
+{{/if}}
 </script>
 
 <script id="mainSelectionTemplate" type="text/x-handler-template">

@@ -4772,17 +4772,23 @@ public class EntityServiceJPA implements EntityService {
 				//lazily init TargetUnit here 
 				report.getTarget().getUnit().getId();
 				
+				report.getMonthlyReports().size();
+				
 				act.getFilterTargets().add(report.getTarget());
+				act.setShowInTree(true);
 			} 
 			
 			//then check if there is anyparent
 			while(act.getParent() != null) {
-				if(act.getParent().getChildren() == null){
-					act.getParent().setChildren(new ArrayList<Activity>());
-				}
+//				if(act.getParent().getChildren() == null){
+//					act.getParent().setChildren(new ArrayList<Activity>());
+//				}
+//				
+//				act.getParent().getChildren().add(act);
 				
-				act.getParent().getChildren().add(act);
 				act = act.getParent();
+				act.setShowInTree(true);
+				
 				logger.debug("adding children to act.getParent: " + act.getChildren().size());
 			}
 			
@@ -4794,21 +4800,15 @@ public class EntityServiceJPA implements EntityService {
 				logger.debug("adding act.id: " + act.getId());
 				child.getFilterActivities().add(act);
 				
-//				Collections.sort(child.getFilterActivities(), new Comparator<Activity>() {
-//
-//					@Override
-//					public int compare(Activity arg0, Activity arg1) {
-//						// TODO Auto-generated method stub
-//						return arg0.getCode().compareTo(arg1.getCode());
-//					}
-//					
-//				});
-				
+			
 			}
 			
 			if(!childrenObjective.contains(child)) {
 				childrenObjective.add(child);
 			}
+			
+			
+			
 			
 		}
 		//now sort childrenObjective
