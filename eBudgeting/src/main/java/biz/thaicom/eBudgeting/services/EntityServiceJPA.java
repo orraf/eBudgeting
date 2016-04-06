@@ -5093,6 +5093,12 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear) {
+		return findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(workAt,fiscalYear,null);
+	}
+	
+	@Override
+	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
+			Organization workAt, Integer fiscalYear, Long objectiveId) {
 		
 		Organization searchOrg = organizationRepository.findOne(workAt.getId());
 //		if(searchOrg.isSubSection()) {
@@ -5106,8 +5112,13 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		logger.debug("searchOrg: " + searchOrg.getId());
+		List<ActivityTargetReport> reports;
+		if(objectiveId != null) {
+			reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(searchOrg.getId(), fiscalYear, objectiveId);
+		} else {
+			reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(searchOrg.getId(), fiscalYear);
+		}
 		
-		List<ActivityTargetReport> reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(searchOrg.getId(), fiscalYear);
 		List<ActivityTargetResult> latestResults = new ArrayList<ActivityTargetResult>();
 		Map<Long, ActivityTargetResult> reportLatestResultMap = new HashMap<Long, ActivityTargetResult>();
 		if(reports.size() > 0) {

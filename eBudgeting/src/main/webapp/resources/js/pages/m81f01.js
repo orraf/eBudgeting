@@ -1,3 +1,61 @@
+var BudgetProposalSelectionView = Backbone.View.extend({
+	/**
+	 * @memberOf BudgetProposalSelectionView
+	 */
+	initialize: function(options) {
+		if(options.organizationId != null) {
+			this.organizationId = options.organizationId;
+			this.organization = Organization.findOrCreate({
+				id: this.organizationId 
+			});
+			
+		}
+	},
+	objectiveSelectionTemplate: Handlebars.compile($("#objectiveSelectionTemplate").html()),
+	el: "#budgetSlt",
+	events: {
+		"click .objectiveSelect" : "objectiveSelect"
+	},
+	objectiveSelect: function(e) {
+		var objectiveId = $(e.target).parents('li').attr('data-id');
+		var objective = Objective.findOrCreate(objectiveId);
+		
+		// show Loading...
+//		mainTblView.showLoading(objective);
+//		
+//		mainTblView.renderWithObjective(objective);
+		
+		mainTblView.showLoading();
+		
+		objectiveCollection.url = appUrl('/Objective/fiscalYear/' + fiscalYear +'/'+objectiveId+'/findByActivityTargetReportOfCurrentUser');
+		objectiveCollection.fetch( {
+			success: function() {
+				mainTblView.setCollection(objectiveCollection);
+				mainTblView.render();
+			}
+		});
+	},
+	render: function() {
+		this.organization.fetch({
+			success: _.bind(function(model, response, options) {
+				this.renderSelection();
+			},this)
+		});
+		
+		return this;
+	},
+	renderSelection: function() {
+		this.rootSelection = new ObjectiveCollection();
+		this.rootSelection.url = appUrl("/Objective/currentActivityOwner/" + fiscalYear);
+		this.rootSelection.fetch({
+			success: _.bind(function() {
+				var json = this.rootSelection.toJSON();
+				var html = this.objectiveSelectionTemplate(json);
+				this.$el.html(html);
+			}, this)
+		});
+	}
+});
 var ModalView = Backbone.View.extend({
 	/**
 	 * @memberOf ModalView
@@ -382,21 +440,25 @@ var ModalView = Backbone.View.extend({
 	}
 });
 
-var MainCtrView = Backbone.View.extend({
+var MainTblView = Backbone.View.extend({
 	/**
-     *  @memberOf MainCtrView
+     *  @memberOf MainTblView
      */
 	initialize : function(options) {
 		this.modalView = new ModalView({parentView: this});	
 
 	},
 
-	el : "#mainCtr",
+	el : "#mainTbl",
 	mainCtrTemplate : Handlebars.compile($("#mainCtrTemplate").html()),
+	showLoadingTemplate : Handlebars.compile($("#showLoadingTemplate").html()),
 	
 	
 	events : {
 		"click a.showReport" : "showReportModal"
+	},
+	showLoading: function(e) {
+		this.$el.html(this.showLoadingTemplate());
 	},
 	showReportModal: function(e) {
 		var targetReportId = $(e.target).parents('tr').attr('data-id');

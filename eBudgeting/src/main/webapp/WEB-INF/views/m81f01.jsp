@@ -33,13 +33,37 @@
 		</div>
 
 		<div id="mainCtr">
-			<div>Loading <img src="<c:url value='/resources/graphics/spinner_bar.gif'/>"/></div>
+			<div id="budgetSlt"></div>
+			<div id="mainTbl"></div>
+			
 		</div>
 
 	</div>
 </div>
 
 </div>
+
+<script id="showLoadingTemplate" type="text/x-handler-template">
+	<div>Loading <img src="<c:url value='/resources/graphics/spinner_bar.gif'/>"/></div>
+</script>
+
+<script id="objectiveSelectionTemplate" type="text/x-handler-template">
+		<div class="btn-group">
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    			เลือกแผนปฏิบัติการ
+    			<span class="caret"></span>
+    		</a>
+    		<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+    			{{#each this}}
+					<li data-id={{id}}>
+						<a href="javascript:;" class="objectiveSelect">
+							[{{code}}] {{name}} 
+						</a>
+					</li>
+				{{/each}}
+    		</ul>
+    	</div>
+</script>
 
 <script id="targetReportByMonthTemplate" type="text/x-handler-template">
 <div>
@@ -453,20 +477,30 @@ Handlebars.registerHelper("formatNumberBgtLink", function(result) {
 	var fiscalYear = parseInt("${fiscalYear}");
 	
 	var mainCtrView = null;
+	var currentOrganizationId = "${workAtId}";
+	
 	var objectiveCollection = new ObjectiveCollection();
 	var e1;
 	var e2;
 	
+	var budgetProposalSelectionView = new BudgetProposalSelectionView({
+		organizationId: currentOrganizationId
+	});
+	var mainTblView = new MainTblView();
+	
 	$(document).ready(function() {
 		
-		mainCtrView = new MainCtrView();
 		
-		objectiveCollection.url = appUrl('/Objective/fiscalYear/' + fiscalYear +'/findByActivityTargetReportOfCurrentUser');
-		objectiveCollection.fetch( {
-			success: function() {
-				mainCtrView.setCollection(objectiveCollection);
-				mainCtrView.render();
-			}
-		});
+		budgetProposalSelectionView.render();
+		
+		//objectiveCollection.url = appUrl('/Objective/fiscalYear/' + fiscalYear +'/findByActivityTargetReportOfCurrentUser');
+		//objectiveCollection.fetch( {
+		//	success: function() {
+		//		mainCtrView.setCollection(objectiveCollection);
+		//		mainCtrView.render();
+		//	}
+		//});
+		
+		
 	});
 </script>

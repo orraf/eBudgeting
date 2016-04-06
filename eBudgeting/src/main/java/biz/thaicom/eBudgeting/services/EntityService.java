@@ -156,6 +156,10 @@ public interface EntityService {
 	
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear);
+	
+	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(Organization workAt,
+			Integer fiscalYear, Long objectiveId);
+	
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYearNoReportCurrentMonth(
 			Organization workAt, Integer fiscalYear);
 	public List<Objective> findObjectiveAllByFiscalYear(Integer fiscalYear);
@@ -489,6 +493,7 @@ public interface EntityService {
 			Integer fiscalYear);
 	public List<AssetPOExternal> findAssetAllocatoinBudgetSigendByPOAndFiscalYearAndOrgId(
 			String poNumber, Integer fiscalYear, Long id);
+
 
 
 	

@@ -46,6 +46,22 @@ public interface ActivityTargetReportRepository extends
 			" 	AND report.target.activity.forObjective.fiscalYear = ?2 ")
 	public List<ActivityTargetReport> findAllByOwner_idAndFiscalYear(Long ownerId, Integer fiscalYear);
 
+	
+	@Query("" +
+			"SELECT report " +
+			"FROM ActivityTargetReport report " +
+			"	LEFT JOIN FETCH report.monthlyReports monthlyReports " +
+			"	INNER JOIN FETCH report.activityPerformance performance " +
+			"	INNER JOIN FETCH report.target target " +
+			"	INNER JOIN FETCH target.activity activity " +
+			"	INNER JOIN FETCH activity.forObjective objective " +
+			"WHERE report.owner.id = ?1 " +
+			" 	AND report.target.activity.forObjective.fiscalYear = ?2 "
+			+ "	AND report.target.activity.forObjective.parent.id = ?3 ")
+	public List<ActivityTargetReport> findAllByOwner_idAndFiscalYear(Long id, Integer fiscalYear, Long objectiveId);
+
+	
+	
 	@Query("" +
 			"SELECT report.id, objective.id " +
 			"FROM ActivityTargetReport report, "
@@ -165,5 +181,6 @@ public interface ActivityTargetReportRepository extends
 			+ "		target.id asc ")
 	public List<ActivityTargetReport> findAllByActivityOwnerOrRegulatorAndFiscalYear(
 			String org, Integer fiscalYear);
+
 
 }
