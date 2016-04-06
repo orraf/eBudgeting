@@ -204,6 +204,12 @@ var AssignAssetPlanModal = Backbone.View.extend({
 			return;
 		}
 		
+		if($('#assetBudgetPlanLengthTxt').val() == 0) {
+			alert('กรุณาระบุจำนวนงวดการเบิกจ่ายงบประมาณ');
+			return;
+		}
+		
+		
 		//create stepReport
 		var stepReports = new AssetStepReportCollection();
 		for(var i=0; i<this.currentAssetMethod.get('steps').length; i++) {
