@@ -172,8 +172,6 @@ var menuJson = [{
 	    }, {
 	    	name: "m81r04: รายงานตามแผนปฏิบัติการรายกิจกรรม", code: "m81r04", parent: 'm81r', link: "page/m81r04/", group: ["PMS_USER", "PMS_USER1", "PMS_USER2", "PMS_USER3", "PMS_USER4"]
 	    }, {
-	    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", code: "m81r05", parent: 'm81r', link: "page/m81r05/",group: ["PMS_BGT_ADMIN", "PMS_PLAN", "PMS_BGT"]
-	    }, {
 	    	name: "m81r06: รายงานแผนปฏิบัติการรายเดือน - แยกตามยุทธศาสตร์", code: "m81r06", parent: 'm81r', link: "page/m81r06/", group: ["PMS_USER", "PMS_PLAN"]
 	    }, {
 	    	name: "m81r07: รายงานสรุปการใช้งบประมาณ", code: "m81r07", parent: 'm81r', link: "m81r07.xls/" + fiscalYear + "/file/m81r07.xls", type: "download", group: ["PMS_BGT_ADMIN", "PMS_BGT"]
@@ -193,7 +191,9 @@ var menuJson = [{
 			name: "m82r02: รายงานผังองค์กร", parent: 'm82r', code: "m82r02", link: "page/m82r02/", group: ["PMS_USER", "PMS_BGT", "PMS_INV"]
 		}, {
 			name: "m82r03: รายงานตรวจสอบการจัดสรรงบประมาณของจังหวัด", parent: 'm82r', code: "m82r03",link: "m82r03.xls/"+fiscalYear+"/file/m82r03.xls", type: "download", group: ["PMS_USER", "PMS_BGT", "PMS_BGT_ADMIN"]
-		}]
+		}, {
+	    	name: "m81r05: รายงานทะเบียนแผนปฏิบัติการและกิจกรรม", code: "m81r05", parent: 'm81r', link: "page/m81r05/",group: ["PMS_BGT_ADMIN", "PMS_PLAN", "PMS_BGT"]
+	    }]
 	}]
 }];
 

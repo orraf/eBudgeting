@@ -195,7 +195,7 @@
 			<div class="input-append"><input disabled type="text" id="totalResultTxt" style="width:120px;" value=""><span class="add-on">{{target.unit.name}}</span></div>
 		</div>
 		<div style="margin-left: 35px; padding-right: 20px;height:35px; float:left">
- 	 	  	<button id="resultInputBtn" class="btn btn-primary"> บันทึกผลเป้าหมาย </button>
+ 	 	  	<button id="resultInputBtn" class="btn btn-primary" {{#if disableInput}}disabled="disabled"{{/if}}> บันทึกผลเป้าหมาย </button>
 		</div>
 	</div>
 	<div class="clearfix"></div>
@@ -245,21 +245,21 @@
 				<tr data-fiscalMonth="0">
 					<td>ตุลาคม</td>
 					<td class="rightAlign" data-id="{{monthlyReports.0.id}}">{{formatNumber monthlyReports.0.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.0.id}}">{{{formatNumberActLink monthlyReports.0.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.0.id}}">{{{formatNumberActLink monthlyReports.0.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.0.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.0.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[0]}}}</td>
 				</tr>
 				<tr data-fiscalMonth="1">
 					<td>พฤศจิกายน</td>
 					<td class="rightAlign" data-id="{{monthlyReports.1.id}}">{{formatNumber monthlyReports.1.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.1.id}}">{{{formatNumberActLink monthlyReports.1.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.1.id}}">{{{formatNumberActLink monthlyReports.1.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.1.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.1.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[1]}}}</td>
 				</tr>
 				<tr data-fiscalMonth="2">
 					<td>ธันวาคม</td>
 					<td class="rightAlign" data-id="{{monthlyReports.2.id}}">{{formatNumber monthlyReports.2.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.2.id}}">{{{formatNumberActLink monthlyReports.2.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.2.id}}">{{{formatNumberActLink monthlyReports.2.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.2.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.2.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[2]}}}</td>
 				</tr>
@@ -273,21 +273,21 @@
 				<tr data-fiscalMonth="3">
 					<td>มกราคม</td>
 					<td class="rightAlign" data-id="{{monthlyReports.3.id}}">{{formatNumber monthlyReports.3.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.3.id}}">{{{formatNumberActLink monthlyReports.3.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.3.id}}">{{{formatNumberActLink monthlyReports.3.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.3.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.3.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[3]}}}</td>
 				</tr>
 				<tr data-fiscalMonth="4">
 					<td>กุมภาพันธ์</td>
 					<td class="rightAlign" data-id="{{monthlyReports.4.id}}">{{formatNumber monthlyReports.4.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.4.id}}">{{{formatNumberActLink monthlyReports.4.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.4.id}}">{{{formatNumberActLink monthlyReports.4.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.4.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.4.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[4]}}}</td>
 				</tr>
 				<tr data-fiscalMonth="5">
 					<td>มีนาคม</td>
 					<td class="rightAlign" data-id="{{monthlyReports.5.id}}">{{formatNumber monthlyReports.5.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.5.id}}">{{{formatNumberActLink monthlyReports.5.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.5.id}}">{{{formatNumberActLink monthlyReports.5.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.5.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.5.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[5]}}}</td>
 				</tr>
@@ -322,21 +322,21 @@
 				<tr data-fiscalMonth="6">
 					<td>เมษายน</td>
 					<td class="rightAlign" data-id="{{monthlyReports.6.id}}">{{formatNumber monthlyReports.6.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.6.id}}">{{{formatNumberActLink monthlyReports.6.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.6.id}}">{{{formatNumberActLink monthlyReports.6.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.6.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.6.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[6]}}}</td>
 				</tr>
 				<tr data-fiscalMonth="7">
 					<td>พฤษภาคม</td>
 					<td class="rightAlign" data-id="{{monthlyReports.7.id}}">{{formatNumber monthlyReports.7.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.7.id}}">{{{formatNumberActLink monthlyReports.7.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.7.id}}">{{{formatNumberActLink monthlyReports.7.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.7.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.7.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[7]}}}</td>
 				</tr>
 				<tr data-fiscalMonth="8">
 					<td>มิถุนายน</td>
 					<td class="rightAlign" data-id="{{monthlyReports.8.id}}">{{formatNumber monthlyReports.8.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.8.id}}">{{{formatNumberActLink monthlyReports.8.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.8.id}}">{{{formatNumberActLink monthlyReports.8.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.8.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.8.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[8]}}}</td>
 				</tr>
@@ -350,21 +350,21 @@
 				<tr data-fiscalMonth="9">
 					<td>กรกฎาคม</td>
 					<td class="rightAlign" data-id="{{monthlyReports.9.id}}">{{formatNumber monthlyReports.9.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.9.id}}">{{{formatNumberActLink monthlyReports.9.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.9.id}}">{{{formatNumberActLink monthlyReports.9.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.9.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.9.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[9]}}}</td>
 				</tr>
 				<tr data-fiscalMonth="10">
 					<td>สิงหาคม</td>
 					<td class="rightAlign" data-id="{{monthlyReports.10.id}}">{{formatNumber monthlyReports.10.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.10.id}}">{{{formatNumberActLink monthlyReports.10.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.10.id}}">{{{formatNumberActLink monthlyReports.10.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.10.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.10.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[10]}}}</td>
 				</tr>
 				<tr data-fiscalMonth="11">
 					<td>กันยายน</td>
 					<td class="rightAlign" data-id="{{monthlyReports.11.id}}">{{formatNumber monthlyReports.11.activityPlan}}</td>
-					<td class="rightAlign" data-id="{{monthlyReports.11.id}}">{{{formatNumberActLink monthlyReports.11.activityResult}}}</td>
+					<td class="rightAlign" data-id="{{monthlyReports.11.id}}">{{{formatNumberActLink monthlyReports.11.activityResult disableInput}}}</td>
 					<td class="rightAlign">{{formatNumber activityPerformance.monthlyBudgetReports.11.budgetPlan}}</td>
 					<td class="rightAlign" data-id="{{activityPerformance.monthlyBudgetReports.11.id}}">{{{formatNumberBgtLink activityPerformance.monthlyBudgetReports.[11]}}}</td>
 				</tr>
@@ -445,14 +445,22 @@ Handlebars.registerHelper("sumBudgetResult", function(montlyReports) {
 	});
 	return addCommas( sum.toNumber() );
 });
-Handlebars.registerHelper("formatNumberActLink", function(result) {
+Handlebars.registerHelper("formatNumberActLink", function(result,  disableInput) {
 	if(result == null || isNaN(result)) {
 	 	return "-";
 	} 
 	
 	var formatedStr = addCommas(result);
 	
-	return "<a href='#' class='activityResultLnk'>" + formatedStr + "</a>";
+	var html;
+	
+	if(disableInput) {
+		 html=formatedStr;
+	} else {
+		html="<a href='#' class='activityResultLnk'>" + formatedStr + "</a>";
+	}
+	
+	return html;
 	
 });
 Handlebars.registerHelper("formatNumberBgtLink", function(result) {

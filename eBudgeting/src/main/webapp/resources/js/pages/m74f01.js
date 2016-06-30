@@ -159,8 +159,24 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		
 		
 		this.$el.find('.modal-header span').html("กิจกรรม: " + this.currentActivity.get('name'));
+		var actName =this.currentActivity.get('name');
+		
 		
 		var json = this.currentTargetReport.toJSON();
+		
+		if(actName == "สำรวจรังวัด" ||
+				actName == "รับคำขอ" ||
+				actName == "อนุมัติ" ||
+				actName == "โค่น" ||
+				actName == "ปลูกแทน" ||
+				actName == "จ่ายเงินสงเคราะห์" ||
+				actName == "จ่ายวัสดุสงเคราะห์" 
+				) {
+			json.disableInput = true;
+		} else {
+			json.disableInput = false;
+		}
+		
 		var html = this.assignTargetValueModalTemplate(json);
 		this.$el.find('.modal-body').html(html);
 		

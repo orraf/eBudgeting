@@ -313,46 +313,46 @@
         </div>
         <div class="row">
 			<div class="span3">
-				ต.ค. <div class="input-append"><input type="text" data-idx="0" class="monthlyReportPlan" id="monthlyTarget0" style="width:120px;" value="{{monthlyReports.0.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+				ต.ค. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="0" class="monthlyReportPlan" id="monthlyTarget0" style="width:120px;" value="{{monthlyReports.0.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				พ.ย. <div class="input-append"><input type="text" data-idx="1" class="monthlyReportPlan" id="monthlyTarget1" style="width:120px;" value="{{monthlyReports.1.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+				พ.ย. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="1" class="monthlyReportPlan" id="monthlyTarget1" style="width:120px;" value="{{monthlyReports.1.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				ธ.ค. <div class="input-append"><input type="text" data-idx="2" class="monthlyReportPlan" id="monthlyTarget2" style="width:120px;" value="{{monthlyReports.2.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-		</div>
-        <div class="row">
-			<div class="span3">
-				ม.ค. <div class="input-append"><input type="text" data-idx="3" class="monthlyReportPlan" id="monthlyTarget3" style="width:120px;" value="{{monthlyReports.3.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				ก.พ. <div class="input-append"><input type="text" data-idx="4" class="monthlyReportPlan" id="monthlyTarget4" style="width:120px;" value="{{monthlyReports.4.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
-			</div>
-			<div class="span3">
-				มี.ค. <div class="input-append"><input type="text" data-idx="5" class="monthlyReportPlan" id="monthlyTarget5" style="width:120px;" value="{{monthlyReports.5.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+				ธ.ค. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="2" class="monthlyReportPlan" id="monthlyTarget2" style="width:120px;" value="{{monthlyReports.2.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 		</div>
         <div class="row">
 			<div class="span3">
-				เม.ย. <div class="input-append"><input type="text" data-idx="6" class="monthlyReportPlan" id="monthlyTarget6" style="width:120px;" value="{{monthlyReports.6.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+				ม.ค. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="3" class="monthlyReportPlan" id="monthlyTarget3" style="width:120px;" value="{{monthlyReports.3.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				พ.ค. <div class="input-append"><input type="text" data-idx="7" class="monthlyReportPlan" id="monthlyTarget7" style="width:120px;" value="{{monthlyReports.7.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+				ก.พ. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="4" class="monthlyReportPlan" id="monthlyTarget4" style="width:120px;" value="{{monthlyReports.4.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				มิ.ย. <div class="input-append"><input type="text" data-idx="8" class="monthlyReportPlan" id="monthlyTarget8" style="width:120px;" value="{{monthlyReports.8.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+				มี.ค. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="5" class="monthlyReportPlan" id="monthlyTarget5" style="width:120px;" value="{{monthlyReports.5.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 		</div>
         <div class="row">
 			<div class="span3">
-				ก.ค. <div class="input-append"><input type="text" data-idx="9" class="monthlyReportPlan" id="monthlyTarget9" style="width:120px;" value="{{monthlyReports.9.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+				เม.ย. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="6" class="monthlyReportPlan" id="monthlyTarget6" style="width:120px;" value="{{monthlyReports.6.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				ส.ค. <div class="input-append"><input type="text" data-idx="10" class="monthlyReportPlan" id="monthlyTarget10" style="width:120px;" value="{{monthlyReports.10.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+				พ.ค. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="7" class="monthlyReportPlan" id="monthlyTarget7" style="width:120px;" value="{{monthlyReports.7.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 			<div class="span3">
-				ก.ย. <div class="input-append"><input type="text" data-idx="11" class="monthlyReportPlan" id="monthlyTarget11" style="width:120px;" value="{{monthlyReports.11.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+				มิ.ย. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="8" class="monthlyReportPlan" id="monthlyTarget8" style="width:120px;" value="{{monthlyReports.8.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+		</div>
+        <div class="row">
+			<div class="span3">
+				ก.ค. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="9" class="monthlyReportPlan" id="monthlyTarget9" style="width:120px;" value="{{monthlyReports.9.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				ส.ค. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="10" class="monthlyReportPlan" id="monthlyTarget10" style="width:120px;" value="{{monthlyReports.10.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
+			</div>
+			<div class="span3">
+				ก.ย. <div class="input-append"><input {{#if disableInput}}disabled="disabled"{{/if}} type="text" data-idx="11" class="monthlyReportPlan" id="monthlyTarget11" style="width:120px;" value="{{monthlyReports.11.activityPlan}}"><span class="add-on">{{target.unit.name}}</span></div>
 			</div>
 		</div>
 

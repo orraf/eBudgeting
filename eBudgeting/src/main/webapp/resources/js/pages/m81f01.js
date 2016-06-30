@@ -357,12 +357,24 @@ var ModalView = Backbone.View.extend({
 			
 			var json = this.currentTargetReport.toJSON();
 			
-			console.log('XXXX');
+			var actName= this.currentTargetReport.get('target').get('activity').get('name');
+			if(actName == "สำรวจรังวัด" ||
+					actName == "รับคำขอ" ||
+					actName == "อนุมัติ" ||
+					actName == "โค่น" ||
+					actName == "ปลูกแทน" ||
+					actName == "จ่ายเงินสงเคราะห์" ||
+					actName == "จ่ายวัสดุสงเคราะห์" 
+					) {
+				json.disableInput = true;
+			} else {
+				json.disableInput = false;
+			}
+			
 			
 			var html = this.targetReportModalTemplate(json);
 			this.$el.find('.modal-body').html(html);
 			
-			console.log('ZZZZZ');
 			var monthly = this.currentTargetReport.get("monthlyReports");
 			var budgetMontly = this.currentTargetReport.get("activityPerformance").get("monthlyBudgetReports");
 			
