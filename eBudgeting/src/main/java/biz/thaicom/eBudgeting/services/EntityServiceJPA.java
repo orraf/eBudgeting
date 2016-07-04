@@ -430,7 +430,14 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Objective> findObjectiveHasBudgetAssetByFiscalYear(
 			Integer fiscalYear, Organization organization) {
-		return objectiveRepository.findAllHasBudgetAssetByFiscalYear(fiscalYear, organization);
+		
+		Long searchOrgId = organization.getId();
+		searchOrgId = (searchOrgId / 10000) * 10000;
+		
+		Organization searchOrg = organizationRepository.findOne(searchOrgId);
+		
+		
+		return objectiveRepository.findAllHasBudgetAssetByFiscalYear(fiscalYear, searchOrg);
 	}
 
 	@Override
@@ -3039,11 +3046,13 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveByActivityOwnerAndFiscalYear(
 			Organization workAt, Integer fiscalYear) {
 		
-		Organization searchOrg = workAt;
-		if(workAt.getType() == OrganizationType.แผนกในจังหวัด || 
-				workAt.getType() == OrganizationType.แผนกในอำเภอ) {
-			searchOrg = workAt.getParent();
-		}
+		
+		Long searchOrgId=workAt.getId();
+		searchOrgId = (searchOrgId / 10000) * 10000;
+		
+		Organization searchOrg = organizationRepository.findOne(searchOrgId);
+		
+		logger.debug("searchOrg: "+ searchOrg.getName());
 		
 		// now if workAt is at แผนก 
 //		if(workAt.isSubSection()) {
