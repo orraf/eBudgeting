@@ -5608,11 +5608,11 @@ public class EntityServiceJPA implements EntityService {
 		
 		if(org == null) return null;
 		
-		Long searchOrgId = ownerId;
+		// now we just trim searchOrg to จังหวัด...
+		Long searchOrgId = (ownerId/10000) * 10000;
 		
-		if(org.getType() == OrganizationType.ส่วนในจังหวัด || org.getType() == OrganizationType.แผนกในอำเภอ) {
-			searchOrgId = org.getParent().getId();
-		}
+		
+		
 		
 		List<BudgetProposal> proposals = budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, searchOrgId);
 		
