@@ -124,11 +124,11 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 		Organization org = entityService.findOrganizationById(orgId);
 		if(org == null) return null;
 		
-		Long searchId = orgId;
+		Long searchId = OrganizationType.getProvinceId(org);
 		
-		if(org.getType() == OrganizationType.ส่วนในจังหวัด) {
-			searchId = org.getParent().getId();
-		}
+//		if(org.getType() == OrganizationType.ส่วนในจังหวัด) {
+//			searchId = org.getParent().getId();
+//		}
 		
 		List<Organization> list =entityService.findOrganizationByNameAndParent_Id(query, searchId);
 

@@ -4710,8 +4710,12 @@ public class EntityServiceJPA implements EntityService {
 			searchOrgId = OrganizationType.getProvinceId(org);
 			if(searchOrgId == null) return null;
 			
-		
+			logger.debug("activityTargetId: "+ activityTargetId);
+			logger.debug("searchOrgId: "+ searchOrgId);
+			
 			 List<ActivityTargetReport> targetReports = activityTargetReportRepository.findAllByTarget_IdAndOwner_Parent_id(activityTargetId, searchOrgId);
+			 
+			 logger.debug("return targetReports.size():" + targetReports.size());
 			 
 			 // to exclude the unneccesary information
 			 for(ActivityTargetReport report : targetReports) {
@@ -4743,6 +4747,9 @@ public class EntityServiceJPA implements EntityService {
 		String objectiveIdLike = "%."+objectiveId + ".%";
 		
 		List<Objective> childrenObjective = new ArrayList<Objective>();
+		
+//		List<ActivityTargetReport> targetReports = activityTargetReportRepository
+//				.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, searchOrg.getId());
 		
 		List<ActivityTargetReport> targetReports = activityTargetReportRepository
 				.findAllByParentObjectiveIdAndOwnerId(objectiveIdLike, searchOrg.getId());
