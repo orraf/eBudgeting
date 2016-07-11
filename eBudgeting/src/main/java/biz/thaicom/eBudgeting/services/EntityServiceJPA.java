@@ -5116,14 +5116,20 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear, Long objectiveId) {
 		
-		Organization searchOrg = organizationRepository.findOne(workAt.getId());
+		Long searchOrgId = workAt.getId();
+		searchOrgId = (searchOrgId / 10000) * 10000;
+		
+		Organization searchOrg = organizationRepository.findOne(searchOrgId);
+		
+		
+		
 //		if(searchOrg.isSubSection()) {
 //			searchOrg = searchOrg.getParent();
 //		}
 		
-		if(searchOrg.getType() == OrganizationType.แผนกในอำเภอ) {
-			searchOrg = searchOrg.getParent();
-		}
+//		if(searchOrg.getType() == OrganizationType.แผนกในอำเภอ) {
+//			searchOrg = searchOrg.getParent();
+//		}
 		
 		
 		
@@ -5628,8 +5634,6 @@ public class EntityServiceJPA implements EntityService {
 		Long searchOrgId = (ownerId/10000) * 10000;
 		
 		
-		
-		
 		List<BudgetProposal> proposals = budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, searchOrgId);
 		
 		Collections.sort(proposals, new Comparator<BudgetProposal>() {
@@ -5853,13 +5857,17 @@ public class EntityServiceJPA implements EntityService {
 		
 		logger.debug("---" + operator.getType());
 		
-		if(operator.getType() == OrganizationType.ส่วนในจังหวัด ||
-			operator.getType() == OrganizationType.แผนกในจังหวัด ||
-			operator.getType() == OrganizationType.แผนกในอำเภอ) {
-			operator = operator.getParent();
-		}
+		Long searchOrgId = operator.getId();
+		searchOrgId = (searchOrgId / 10000) * 10000;
+		Organization searchOrg = organizationRepository.findOne(searchOrgId);
 		
-		return assetAllocationRepository.findAllByForObjectiveIdAndOperator(objectiveId, operator);
+//		if(operator.getType() == OrganizationType.ส่วนในจังหวัด ||
+//			operator.getType() == OrganizationType.แผนกในจังหวัด ||
+//			operator.getType() == OrganizationType.แผนกในอำเภอ) {
+//			operator = operator.getParent();
+//		}
+		
+		return assetAllocationRepository.findAllByForObjectiveIdAndOperator(objectiveId, searchOrg);
 	}
 	
 	
