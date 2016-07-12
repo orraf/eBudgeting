@@ -4773,10 +4773,11 @@ public class EntityServiceJPA implements EntityService {
 			Activity act = report.getTarget().getActivity();
 			act.getOwner().getId();
 			act.getRegulator().getId();
-			logger.debug("activity id: " + act.getId());
-			Integer countTargetReport = activityTargetReportRepository.countAllByTarget_IdAndOwner_Parent_id(report.getTarget().getId(),
-					ownerId).intValue();
 			
+			Integer countTargetReport = activityTargetReportRepository.countAllByTarget_IdAndOwner_Parent_id(report.getTarget().getId(),
+					searchOrg.getId()).intValue();
+			
+			logger.debug("activity id: " + act.getId() + "," +act.getName() +" , countTargetReport: " + countTargetReport);
 			report.setReportLevel(countTargetReport);
 			
 			
