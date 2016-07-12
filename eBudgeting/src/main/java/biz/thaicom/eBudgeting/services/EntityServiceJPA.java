@@ -5117,8 +5117,7 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear, Long objectiveId) {
 		
-		Long searchOrgId = workAt.getId();
-		searchOrgId = (searchOrgId / 10000) * 10000;
+		Long searchOrgId = OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(workAt); 
 		
 		Organization searchOrg = organizationRepository.findOne(searchOrgId);
 		
