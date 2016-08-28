@@ -56,14 +56,20 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		$('#saveAssignTargetBtn').attr('disabled','disabled');
 		$('#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
 		
-		var sum=0.0;
+		var sum= new BigNumber(0.0);
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
-			sum += parseFloat($(el).val());
+			sum = sum.plus(parseFloat($(el).val()));
 		});
 		
-		if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
+		if( !sum.equals(this.currentTarget.get('targetValue')) ) {
+		
+		// if(sum != parseInt($('#totalInputTxt').val().replace(/,/g, ''))) {
 			alert("กรุณาตรวจสอบการจัดสรร ค่าเป้าหมายที่จัดสรรให้หน่วยงานรวมแล้วไม่เท่ากับค่าเป้าหมายที่จัดสรรไว้");
+			
+			$('#saveAssignTargetBtn').attr('disabled',null);
+				$('#saveAssignTargetBtn').html('บันทึกข้อมูล');
+			
 			return;
 		}
  		
@@ -151,16 +157,18 @@ var AssignTargetValueModalView = Backbone.View.extend({
 
 	},
 	updateSumTarget: function() {
-		var sum=0.0;
+		var sum = BigNumber(0.0);
 		// now put the sum up
 		_.forEach(this.$el.find("input.proposalAllocated"), function(el) {
 			if(!isNaN(parseFloat($(el).val()))) {
-				sum += parseFloat($(el).val());
+				sum = sum.plus(parseFloat($(el).val()));
 			}
 			
 		});
 		
-		$('#sumTotalAllocated').html(addCommas(sum));
+		console.log(sum.toNumber());
+		
+		$('#sumTotalAllocated').html(addCommas(sum.toNumber()));
 
 	},
 	removeOrganizationTarget: function(e) {

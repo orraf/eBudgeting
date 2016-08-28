@@ -166,7 +166,7 @@ function round2Digit(num) {
 
 function addCommas(nStr)
 {
-	nStr = round2Digit(nStr);
+	//nStr = round2Digit(nStr);
 	nStr += '';
 	x = nStr.split('.');
 	x1 = x[0];
