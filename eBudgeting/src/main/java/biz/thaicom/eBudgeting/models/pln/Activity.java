@@ -21,6 +21,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import biz.thaicom.eBudgeting.controllers.HomeController;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.pln.Objective.Comparators;
 
@@ -32,6 +36,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @SequenceGenerator(name="PLN_ACTIVITY_SEQ", sequenceName="PLN_ACTIVITY_SEQ", allocationSize=1)
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Activity.class)
 public class Activity implements Serializable, Comparable<Activity> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Activity.class);
 	
 	/**
 	 * 
@@ -215,6 +221,10 @@ public class Activity implements Serializable, Comparable<Activity> {
 					ActivityTarget newTarget = new ActivityTarget();
 					newTarget.setUnit(target.getUnit());
 					newTarget.setTargetValue(target.getTargetValue());
+					
+					if(target.getBudgetAllocated() == null) {
+						target.setBudgetAllocated(0.0);
+					}
 					newTarget.setBudgetAllocated(target.getBudgetAllocated());
 					grandChildTargets.put(target.getUnit(), newTarget);
 				} else {
@@ -223,6 +233,7 @@ public class Activity implements Serializable, Comparable<Activity> {
 					if (target.getBudgetAllocated() == null){
 						target.setBudgetAllocated(0.0);
 					}else {
+						logger.debug("-- target: " + target.getId()  + " grandChildTarget.getBudgetAllocated: " + grandChildTarget.getBudgetAllocated());
 						grandChildTarget.setBudgetAllocated(grandChildTarget.getBudgetAllocated() + target.getBudgetAllocated());
 					}
 				}
