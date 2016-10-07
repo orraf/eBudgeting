@@ -171,6 +171,10 @@ public class ActivityTargetReport implements Serializable {
 	@Transient
 	private ActivityTargetResult latestResult;
 	
+	@Transient
+	private Integer countChildrenTargetReports;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -233,6 +237,14 @@ public class ActivityTargetReport implements Serializable {
 
 	public void setReportLevel(Integer reportLevel) {
 		this.reportLevel = reportLevel;
+	}
+	
+		public Integer getCountChildrenTargetReports() {
+		return countChildrenTargetReports;
+	}
+
+	public void setCountChildrenTargetReports(Integer countChildrenTargetReports) {
+		this.countChildrenTargetReports = countChildrenTargetReports;
 	}
 
 	public MonthlyActivityReport getFiscalReportOn(Integer fiscalMonth) {

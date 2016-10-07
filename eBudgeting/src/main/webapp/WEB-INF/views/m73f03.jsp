@@ -125,7 +125,7 @@
 		{{#each filterTargets}}
 			<li class="reportStatus" data-id="{{filterReport.id}}">
 					 
-					<span>{{#if filterReport.reportLevel}}จัดสรรแล้ว{{else}}<span style="color:red;">รอจัดสรร</span>{{/if}}</span>
+					<span>{{#if filterReport.countChildrenTargetReports}}จัดสรรแล้ว{{else}}<span style="color:red;">รอจัดสรร</span>{{/if}}</span>
 				
 			</li>
 		{{/each}}

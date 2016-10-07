@@ -49,9 +49,9 @@ public class Organization implements Serializable {
 	@Basic
 	private String abbr;
 	
-	@Basic
-	@Column(name="IDX")
-	private Integer index;
+//	@Basic
+//	@Column(name="IDX")
+//	private Integer index;
 	
 	@Basic
 	private String code;
@@ -91,13 +91,13 @@ public class Organization implements Serializable {
 		this.abbr = abbr;
 	}
 
-	public Integer getIndex() {
-		return index;
-	}
-
-	public void setIndex(Integer index) {
-		this.index = index;
-	}
+//	public Integer getIndex() {
+//		return index;
+//	}
+//
+//	public void setIndex(Integer index) {
+//		this.index = index;
+//	}
 
 	public Organization getParent() {
 		return parent;

@@ -4778,7 +4778,7 @@ public class EntityServiceJPA implements EntityService {
 					searchOrg.getId()).intValue();
 			
 			logger.debug("activity id: " + act.getId() + "," +act.getName() +" , countTargetReport: " + countTargetReport);
-			report.setReportLevel(countTargetReport);
+			report.setCountChildrenTargetReports(countTargetReport);
 			
 			
 			// first put the target
