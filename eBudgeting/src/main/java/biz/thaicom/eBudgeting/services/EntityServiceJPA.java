@@ -6060,6 +6060,7 @@ public class EntityServiceJPA implements EntityService {
 				plan.setPlanAmount(planNode.get("planAmount").asDouble());
 				
 				
+				
 				try {
 					plan.setPlanDate(df.parse(planNode.get("planDate").asText()));
 				} catch (ParseException e) {
@@ -6091,12 +6092,16 @@ public class EntityServiceJPA implements EntityService {
 						plan.setActualInstallmentDate(null);
 					}
 					
+					//logger.debug("planNode.get('remark'): " + planNode.get("remark").asText());
+					
 					if(planNode.get("remark") != null && !planNode.get("remark").asText().isEmpty()) {
 						if(planNode.get("remark").asText().equals("null")) {
 							plan.setRemark(null);
 						} else {
 							plan.setRemark(planNode.get("remark").asText());
 						}
+					} else {
+						plan.setRemark(null);
 					}
 					
 				}
