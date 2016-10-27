@@ -460,6 +460,7 @@ var MainTblView = Backbone.View.extend({
 			url: appUrl('/AssetAllocation/currentUser/forObjective/'+this.objective.get('id')),
 			success: _.bind(function(model, response, options) {
 				var json = this.objective.toJSON();
+				this.assetAllocations.length == 0?json.assetAllocation=false:json.assetAllocation=true;
 				var html = this.mainTblTemplate(json);
 				this.$el.html(html);
 				

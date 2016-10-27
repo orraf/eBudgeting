@@ -69,6 +69,9 @@
 
 <script id="mainTblTemplate" type="text/x-handler-template">
 <h4>{{name}}</h4>
+{{#unless this.assetAllocation}}
+	<div>ไม่ได้รับการจัดสรรงบลงทุนในแผนนี้</div>
+{{else}}
 <table class="table table-bordered table-striped" id="assetAllocationTbl">
 	<thead>
 		<tr>
@@ -85,6 +88,7 @@
 	<tbody>
 	</tbody>
 </table>
+{{/unless}}
 </script>
 <script id="mainTblTbodyAssetAllocationTemplate" type="text/x-handler-template">
 {{#each this}}

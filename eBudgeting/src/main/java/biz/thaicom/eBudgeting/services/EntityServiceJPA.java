@@ -5858,7 +5858,7 @@ public class EntityServiceJPA implements EntityService {
 		logger.debug("---" + operator.getType());
 		
 		Long searchOrgId = operator.getId();
-		searchOrgId = (searchOrgId / 10000) * 10000;
+		searchOrgId = (searchOrgId / 100) * 100;
 		Organization searchOrg = organizationRepository.findOne(searchOrgId);
 		
 //		if(operator.getType() == OrganizationType.ส่วนในจังหวัด ||
@@ -5867,7 +5867,7 @@ public class EntityServiceJPA implements EntityService {
 //			operator = operator.getParent();
 //		}
 		
-		return assetAllocationRepository.findAllByForObjectiveIdAndOperator(objectiveId, searchOrg);
+		return assetAllocationRepository.findAllByForObjectiveIdAndOperator(objectiveId, operator, searchOrg);
 	}
 	
 	

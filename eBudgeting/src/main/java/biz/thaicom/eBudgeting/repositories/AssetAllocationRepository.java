@@ -38,10 +38,10 @@ public interface AssetAllocationRepository extends JpaRepository<AssetAllocation
 			"	INNER JOIN FETCH assetAllocation.budgetType " +
 			"	INNER JOIN FETCH assetAllocation.assetBudget " +
 			"WHERE assetAllocation.forObjective.id = ?1 "
-			+ "	AND (assetAllocation.operator = ?2 or assetAllocation.owner = ?2) "
+			+ "	AND (assetAllocation.operator = ?2 or assetAllocation.owner = ?2 or assetAllocation.operator=?3) "
 			+ "ORDER BY assetAllocation.owner.id asc, assetAllocation.operator.id asc, assetAllocation.id asc ")
 	List<AssetAllocation> findAllByForObjectiveIdAndOperator(Long objectiveId,
-			Organization operator);
+			Organization operator, Organization searchOrg);
 
 	@Query("" +
 			"SELECT assetAllocation " +
