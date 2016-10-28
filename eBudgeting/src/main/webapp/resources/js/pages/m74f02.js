@@ -265,7 +265,7 @@ var AssignAssetPlanModal = Backbone.View.extend({
 	render: function(assetAllocation) {
 		this.currentAssetAllocation = assetAllocation;
 		
-		if(this.currentAssetAllocation.get('operator').get('id') != currentOrganizationId ) {
+		if(this.currentAssetAllocation.get('operator').get('id').toString().substr(0,7) != currentOrganizationId.substr(0,7)) {
 			this.$el.find('.modal-header span').html("แสดงแผนงบลงทุน");	
 		} else {
 			this.$el.find('.modal-header span').html("บันทึกแผนงบลงทุน");
@@ -278,7 +278,7 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		
 		//console.log(this.currentAssetAllocation.get('operator').get('id'));
 		//console.log(currentOrganizationId);
-		if(this.currentAssetAllocation.get('operator').get('id') != currentOrganizationId) {
+		if(this.currentAssetAllocation.get('operator').get('id').toString().substr(0,7) != currentOrganizationId.substr(0,7)) {
 			$('#saveAssetPlanBtn').hide();
 		} else {
 			$('#saveAssetPlanBtn').show();

@@ -383,11 +383,26 @@ var ModalView = Backbone.View.extend({
 				return;
 			}
 			
-			var q1Plan, q1Result, q2Plan, q2Result, q3Plan, q3Result, q4Plan, q4Result;
-			q1Plan = q2Plan = q3Plan = q4Plan = q1Result = q2Result = q3Result = q4Result = 0;
+			var q1Plan = new BigNumber(0.0);
+			var q1Result = new BigNumber(0.0);
+			var q1BudgetPlan = new BigNumber(0.0);
+			var q1BudgetResult = new BigNumber(0.0);
 			
-			var q1BudgetPlan, q1BudgetResult, q2BudgetPlan, q2BudgetResult, q3BudgetPlan, q3BudgetResult, q4BudgetPlan, q4BudgetResult;
-			q1BudgetPlan = q2BudgetPlan = q3BudgetPlan = q4BudgetPlan = q1BudgetResult = q2BudgetResult = q3BudgetResult = q4BudgetResult = 0;
+			var q2Plan = new BigNumber(0.0);
+			var q2Result = new BigNumber(0.0);
+			var q2BudgetPlan = new BigNumber(0.0);
+			var q2BudgetResult = new BigNumber(0.0);
+			
+			var q3Plan = new BigNumber(0.0);
+			var q3Result = new BigNumber(0.0);
+			var q3BudgetPlan = new BigNumber(0.0);
+			var q3BudgetResult = new BigNumber(0.0);
+			
+			var q4Plan = new BigNumber(0.0);
+			var q4Result = new BigNumber(0.0);
+			var q4BudgetPlan = new BigNumber(0.0);
+			var q4BudgetResult = new BigNumber(0.0);
+			
 			
 			
 			
@@ -398,52 +413,56 @@ var ModalView = Backbone.View.extend({
 					alert("กิจกรรมนี้ยังไม่ได้ทำแผนใช้จ่าย");
 					return;
 				}
+				var ap = report.get("activityPlan")==null?new BigNumber(0.0):new BigNumber(report.get("activityPlan")); 
+				var ar = report.get("activityResult")==null?new BigNumber(0.0):new BigNumber(report.get("activityResult")); 
+				var bp = budgetReport.get("budgetPlan")==null?new BigNumber(0.0):new BigNumber(budgetReport.get("budgetPlan")); 
+				var br = budgetReport.get("budgetResult")==null?new BigNumber(0.0):new BigNumber(budgetReport.get("budgetResult")); 
 				if(i<3) {
-					q1Plan += report.get("activityPlan");
-					q1Result += report.get("activityResult");
-					q1BudgetPlan += budgetReport.get("budgetPlan");
-					q1BudgetResult += budgetReport.get("budgetResult");
+					q1Plan = q1Plan.plus(ap);
+					q1Result = q1Result.plus(ar);
+					q1BudgetPlan = q1BudgetPlan.plus(bp);
+					q1BudgetResult = q1BudgetResult.plus(br);
 				} else if(i<6) {
-					q2Plan += report.get("activityPlan");
-					q2Result += report.get("activityResult");
-					q2BudgetPlan += budgetReport.get("budgetPlan");
-					q2BudgetResult += budgetReport.get("budgetResult");
+					q2Plan = q2Plan.plus(ap);
+					q2Result = q2Result.plus(ar);
+					q2BudgetPlan = q2BudgetPlan.plus(bp);
+					q2BudgetResult = q2BudgetResult.plus(br);
 				} else if(i<9) {
-					q3Plan += report.get("activityPlan");
-					q3Result += report.get("activityResult");
-					q3BudgetPlan += budgetReport.get("budgetPlan");
-					q3BudgetResult += budgetReport.get("budgetResult");
+					q3Plan = q3Plan.plus(ap);
+					q3Result = q3Result.plus(ar);
+					q3BudgetPlan = q3BudgetPlan.plus(bp);
+					q3BudgetResult = q3BudgetResult.plus(br);
 				} else {
-					q4Plan += report.get("activityPlan");
-					q4Result += report.get("activityResult");
-					q4BudgetPlan += budgetReport.get("budgetPlan");
-					q4BudgetResult += budgetReport.get("budgetResult");
+					q4Plan = q4Plan.plus(ap);
+					q4Result = q4Result.plus(ar);
+					q4BudgetPlan = q4BudgetPlan.plus(bp);
+					q4BudgetResult = q4BudgetResult.plus(br);
 				}
 			}
 			
-			this.$el.find("#Q1Plan").html("<strong>"+addCommas(q1Plan)+"</strong>");
-			this.$el.find("#Q2Plan").html("<strong>"+addCommas(q2Plan)+"</strong>");
-			this.$el.find("#Q3Plan").html("<strong>"+addCommas(q3Plan)+"</strong>");
-			this.$el.find("#Q4Plan").html("<strong>"+addCommas(q4Plan)+"</strong>");
+			this.$el.find("#Q1Plan").html("<strong>"+addCommas(q1Plan.toNumber())+"</strong>");
+			this.$el.find("#Q2Plan").html("<strong>"+addCommas(q2Plan.toNumber())+"</strong>");
+			this.$el.find("#Q3Plan").html("<strong>"+addCommas(q3Plan.toNumber())+"</strong>");
+			this.$el.find("#Q4Plan").html("<strong>"+addCommas(q4Plan.toNumber())+"</strong>");
 			
-			this.$el.find("#Q1Result").html("<strong>"+addCommas(q1Result)+"</strong>");
-			this.$el.find("#Q2Result").html("<strong>"+addCommas(q2Result)+"</strong>");
-			this.$el.find("#Q3Result").html("<strong>"+addCommas(q3Result)+"</strong>");
-			this.$el.find("#Q4Result").html("<strong>"+addCommas(q4Result)+"</strong>");
+			this.$el.find("#Q1Result").html("<strong>"+addCommas(q1Result.toNumber())+"</strong>");
+			this.$el.find("#Q2Result").html("<strong>"+addCommas(q2Result.toNumber())+"</strong>");
+			this.$el.find("#Q3Result").html("<strong>"+addCommas(q3Result.toNumber())+"</strong>");
+			this.$el.find("#Q4Result").html("<strong>"+addCommas(q4Result.toNumber())+"</strong>");
 			
-			this.$el.find("#totalResultTxt").val(addCommas(q1Result + q2Result + q3Result + q4Result));
+			this.$el.find("#totalResultTxt").val(addCommas(q1Result.plus(q2Result).plus(q3Result).plus(q4Result).toNumber()));
 			
-			this.$el.find("#Q1BudgetPlan").html("<strong>"+addCommas(q1BudgetPlan)+"</strong>");
-			this.$el.find("#Q2BudgetPlan").html("<strong>"+addCommas(q2BudgetPlan)+"</strong>");
-			this.$el.find("#Q3BudgetPlan").html("<strong>"+addCommas(q3BudgetPlan)+"</strong>");
-			this.$el.find("#Q4BudgetPlan").html("<strong>"+addCommas(q4BudgetPlan)+"</strong>");
+			this.$el.find("#Q1BudgetPlan").html("<strong>"+addCommas(q1BudgetPlan.toNumber())+"</strong>");
+			this.$el.find("#Q2BudgetPlan").html("<strong>"+addCommas(q2BudgetPlan.toNumber())+"</strong>");
+			this.$el.find("#Q3BudgetPlan").html("<strong>"+addCommas(q3BudgetPlan.toNumber())+"</strong>");
+			this.$el.find("#Q4BudgetPlan").html("<strong>"+addCommas(q4BudgetPlan.toNumber())+"</strong>");
 			
-			this.$el.find("#Q1BudgetResult").html("<strong>"+addCommas(q1BudgetResult)+"</strong>");
-			this.$el.find("#Q2BudgetResult").html("<strong>"+addCommas(q2BudgetResult)+"</strong>");
-			this.$el.find("#Q3BudgetResult").html("<strong>"+addCommas(q3BudgetResult)+"</strong>");
-			this.$el.find("#Q4BudgetResult").html("<strong>"+addCommas(q4BudgetResult)+"</strong>");
+			this.$el.find("#Q1BudgetResult").html("<strong>"+addCommas(q1BudgetResult.toNumber())+"</strong>");
+			this.$el.find("#Q2BudgetResult").html("<strong>"+addCommas(q2BudgetResult.toNumber())+"</strong>");
+			this.$el.find("#Q3BudgetResult").html("<strong>"+addCommas(q3BudgetResult.toNumber())+"</strong>");
+			this.$el.find("#Q4BudgetResult").html("<strong>"+addCommas(q4BudgetResult.toNumber())+"</strong>");
 			
-			this.$el.find("#totalBudgetResultTxt").val(addCommas(q1BudgetResult + q2BudgetResult + q3BudgetResult + q4BudgetResult));
+			this.$el.find("#totalBudgetResultTxt").val(addCommas(q1BudgetResult.plus(q2BudgetResult).plus(q3BudgetResult).plus(q4BudgetResult).toNumber()));
 			
 			this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 			return this;
