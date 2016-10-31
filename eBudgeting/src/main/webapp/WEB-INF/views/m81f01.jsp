@@ -464,7 +464,7 @@ Handlebars.registerHelper("formatNumberActLink", function(result,  disableInput)
 	
 });
 Handlebars.registerHelper("formatNumberBgtLink", function(result) {
-	if(result == null || isNaN(result.budgetResult)) {
+	if(result == null || result.budgetResult == null || isNaN(result.budgetResult)) {
 	 	return "-";
 	} 
 	

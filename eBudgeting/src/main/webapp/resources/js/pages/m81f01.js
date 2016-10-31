@@ -110,7 +110,7 @@ var ModalView = Backbone.View.extend({
 			this.currentTargetResult.fetch({
 				url: appUrl('/ActivityTargetResult/findBgtResultByReport/' + this.currentTargetReport.get('id') + '/fiscalMonth/' + fiscalMonth),
 				success: _.bind(function(model, response, options) {
-					console.log('success');
+					
 					
 					var monthlyBudget = MonthlyBudgetReport.find(monthlyBudgetResultId);
 					monthlyBudget.set('targetResultId', this.currentTargetResult.get('id') );
@@ -122,7 +122,7 @@ var ModalView = Backbone.View.extend({
 				}, this)
 			});
 		} else {
-			console.log("need to find " + targetResultId);
+			
 			this.currentTargetResult = ActivityTargetResult.find(targetResultId);
 			this.renderBudgetResult(fiscalMonth, targetResultId);
 		}
@@ -143,7 +143,7 @@ var ModalView = Backbone.View.extend({
 				
 			},this),
 			error: function(model, xhr, options) {
-				console.log(xhr);
+				
 				alert(xhr);
 				alert('error: ' + xhr);
 				
@@ -179,8 +179,7 @@ var ModalView = Backbone.View.extend({
 			if(oldResult == null) oldResult = 0.0;
 			var newResult = parseFloat(this.$el.find('#result').val());
 			var adjustResult = newResult - oldResult;
-			console.log("this.currentTargetResult.get('result') : " + oldResult);
-			console.log("newResult: " + newResult);
+			
 			
 			
 			if(this.currentTargetResult.get('budgetFiscalMonth') == null) {
@@ -195,9 +194,6 @@ var ModalView = Backbone.View.extend({
 			var monthlyAct = report.get('monthlyReports').at(this.currentTargetResult.get('budgetFiscalMonth'));
 			
 			if(monthlyAct.get('activityResult') != null) {
-				console.log('old result = ' + monthlyAct.get('activityResult'));
-				console.log('adjustresult = ' + adjustResult);
-				
 				monthlyAct.set('activityResult', monthlyAct.get('activityResult') + adjustResult);
 			} else {
 				monthlyAct.set('activityResult', adjustResult);
@@ -215,11 +211,8 @@ var ModalView = Backbone.View.extend({
 		this.currentTargetResult.save(null, {
 			success: _.bind(function(model, response, options) {
 				alert("บันทึกการรายงานผลเรียบร้อยแล้ว");
-				console.log('222222');
 				this.currentTargetReport.set('latestResult', this.currentTargetResult);
-				console.log('333333');
 				this.currentTargetResult.get('report').get('target').set('filterReport', this.currentTargetReport);
-				console.log('444444');
 				this.currentTargetResult.set('id', parseInt(response));
 				// and update the monthly accordingly
 				
@@ -278,7 +271,7 @@ var ModalView = Backbone.View.extend({
 	
 	renderBudgetResult: function(fiscalMonth, targetResultId) {
 		
-		console.log("111111");
+		
 		
 		
 		if(targetResultId == null) {
