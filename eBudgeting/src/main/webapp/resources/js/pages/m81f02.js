@@ -183,10 +183,11 @@ var AssignAssetPlanModal = Backbone.View.extend({
 		
 		//console.log(this.currentAssetAllocation.get('operator').get('id'));
 		//console.log(currentOrganizationId);
-		if(this.currentAssetAllocation.get('operator').get('id') != currentOrganizationId) {
-			$('#saveAssetPlanBtn').hide();
-		} else {
+		if(this.currentAssetAllocation.get('operator').get('id').toString().substr(0,7) == currentOrganizationId.substr(0,7) || 
+				this.currentAssetAllocation.get('owner').get('id') == currentOrganizationId ) {
 			$('#saveAssetPlanBtn').show();
+		} else {
+			$('#saveAssetPlanBtn').hide();
 		}
 		
 		
