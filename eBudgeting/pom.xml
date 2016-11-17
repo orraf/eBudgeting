@@ -6,7 +6,7 @@
 	<artifactId>eBudgeting</artifactId>
 	<name>orrafpm</name>
 	<packaging>war</packaging>
-	<version>0.0.1-BUILD-SNAPSHOT</version>
+	<version>1.0.0-RELEASE</version>
 	
 	<scm>
     	<connection>scm:git:https://github.com/orraf/eBudgeting.git</connection>
