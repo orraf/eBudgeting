@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 @Entity
-@Table(name="S_GROUP")
+@Table(name="SYN_S_GROUP")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=Group.class)
 public class Group implements Serializable {
 
@@ -45,7 +45,7 @@ public class Group implements Serializable {
 	
 
 	@OneToMany
-	@JoinTable( name="S_GROUP_LIST",
+	@JoinTable( name="SYN_S_GROUP_LIST",
         joinColumns=
             @JoinColumn(name="S_GROUP_ID"),
         inverseJoinColumns=

@@ -101,7 +101,6 @@ public interface BudgetProposalRepository extends
 			Integer fiscalYear, Long ownerId);
 
 
-
 	@Query("" +
 			"SELECT distinct proposal " +
 			"FROM BudgetProposal proposal " +

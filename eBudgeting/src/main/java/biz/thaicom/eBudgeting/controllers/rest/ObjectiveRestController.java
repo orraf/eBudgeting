@@ -38,6 +38,7 @@ import biz.thaicom.eBudgeting.models.bgt.AllocationRecord;
 import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.hrx.Organization;
 import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
+import biz.thaicom.eBudgeting.models.pln.ActivityTargetReport;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveDetail;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveName;
@@ -137,16 +138,29 @@ public class ObjectiveRestController {
 		return  list;
 	}
 	 
+	
+	// ค้นหากิจกรรม และ Load เป้าหมายและงบประมาณของกิจกรรม ในระดับ เขต
+		@RequestMapping(value="/Objective/getChildrenAndloadActivityAndOwnerId/{id}/district/{ownerId}", method=RequestMethod.GET)
+		public @ResponseBody List<Objective> getChildrenAndloadActivityDistrict(
+				@PathVariable Long id, @PathVariable Long ownerId) {
+			
+			
+			// now load all activity
+			List<Objective> list = entityService
+					.findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(id, ownerId, ActivityTargetReport.districtLevel);
+			
+			return  list;
+		}
+	
 	// ค้นหากิจกรรม และ Load เป้าหมายและงบประมาณของกิจกรรม ในระดับ จังหวัด
 	@RequestMapping(value="/Objective/getChildrenAndloadActivityAndOwnerId/{id}/province/{ownerId}", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> getChildrenAndloadActivityProvince(
 			@PathVariable Long id, @PathVariable Long ownerId) {
 		
-		Boolean provinceLevel = true;
 		
 		// now load all activity
 		List<Objective> list = entityService
-				.findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(id, ownerId, provinceLevel);
+				.findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(id, ownerId, ActivityTargetReport.provinceLevel);
 		
 		return  list;
 	}
@@ -156,11 +170,10 @@ public class ObjectiveRestController {
 	@RequestMapping(value="/Objective/getChildrenAndloadActivityAndOwnerId/{id}/{ownerId}", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> getChildrenAndloadActivity(
 			@PathVariable Long id, @PathVariable Long ownerId) {
-		Boolean provinceLevel = false;
 		
 		// now load all activity
 		List<Objective> list = entityService
-				.findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(id, ownerId, provinceLevel);
+				.findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(id, ownerId, ActivityTargetReport.amphurLevel);
 		
 		return  list;
 	}

@@ -1235,6 +1235,20 @@ public class GenericViewController {
 		
 		return "m73f03";
 	}
+	// --------------------------------------------------------------m73f04: การบันทึกกิจกรรมย่อย ระดับเขต
+		@RequestMapping("/page/m73f04/")
+		public String render_m73f04(
+				Model model,
+				HttpServletRequest request, HttpSession session,
+				@Activeuser ThaicomUserDetail currentUser) {
+			model.addAttribute("rootPage", true);
+			setFiscalYearFromSession(model, session);
+			model.addAttribute("organizationId", currentUser.getWorkAt().getId());
+			
+			return "m73f04";
+		}
+	
+	
 	// --------------------------------------------------------------m74f01: การบันทึกแผนงาน
 	@RequestMapping("/page/m74f01/")
 	public String render_m74f01(

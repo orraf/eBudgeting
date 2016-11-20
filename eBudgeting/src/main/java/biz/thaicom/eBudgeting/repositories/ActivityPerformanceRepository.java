@@ -73,6 +73,17 @@ public interface ActivityPerformanceRepository extends
 			+ "GROUP BY activity.forObjective.parent.id, SUBSTRING(performance.owner.code, 0,4) "
 			+ "")
 	public Iterable<Object[]> findSumBudgetAllocatedByFiscalYearAndOwnerId(Integer fiscalYear);
+	
+	
+	@Query(""
+			+ "SELECT activity.forObjective.parent.id, sum(performance.budgetAllocated) "
+			+ "FROM ActivityPerformance performance "
+			+ "	 	INNER JOIN performance.activity activity "
+			+ "WHERE activity.forObjective.fiscalYear = ?1 "
+			+ "		and performance.targetReport.owner.id = ?2 "
+			+ "GROUP BY activity.forObjective.parent.id "
+			+ "")
+	public Iterable<Object[]> findSumBudgetAllocatedByFiscalYearByOwnerId(Integer fiscalYear, Long OwnerId);
 
 	
 	@Query(""

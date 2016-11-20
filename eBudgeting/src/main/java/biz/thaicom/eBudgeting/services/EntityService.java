@@ -232,6 +232,8 @@ public interface EntityService {
 	public BudgetProposal deleteBudgetProposal(Long id);
 	public List<BudgetProposal> findBudgetProposalByFiscalYearAndOwner_Id(
 			Integer fiscalYear, Long ownerId);
+	public List<BudgetProposal> findBudgetProposalByFiscalYearAndProvinceOwner_Id(
+			Integer fiscalYear, Long ownerId);
 	public List<BudgetProposal> findBudgetProposalByFiscalYear(
 			Integer fiscalYear);
 	
@@ -425,7 +427,7 @@ public interface EntityService {
 	
 	
 	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
-			Long objectiveId, Long ownerId, Boolean provinceLevel);
+			Long objectiveId, Long ownerId, Integer reportLevel);
 	
 	public List<ActivityTargetReport> findActivityTargetReportByOwnerOrRegulator(
 			Organization workAt, Integer fiscalYear);

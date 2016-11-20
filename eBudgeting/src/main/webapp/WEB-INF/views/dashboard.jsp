@@ -140,6 +140,8 @@ var menuJson = [{
 		},{
 			name: "m73f02: การจัดสรรกิจกรรมย่อย (ระดับฝ่าย/กอง)", code: "m73f02", parent: 'm73', link: "page/m73f02/", group: ["PMS_USER", "PMS_USER1"]
 		},{
+			name: "m73f04: บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับเขต)", code: "m73f04", parent: 'm51', link: "page/m73f04/", group: ["PMS_USER", "PMS_USER2", "PMS_USER4"]
+		},{
 			name: "m73f03: บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับจังหวัด)", code: "m73f03", parent: 'm51', link: "page/m73f03/", group: ["PMS_USER", "PMS_USER2", "PMS_USER4"]
 		}]  
 	}, {

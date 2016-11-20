@@ -70,9 +70,9 @@ var AssignTargetValueModalView = Backbone.View.extend({
  		this.$el.find('a#saveAssignTargetBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
  		//this.$el.find('a#cancelBtn').html('<icon class="icon-refresh icon-spin"></icon> กำลังบันทึกข้อมูล...');
  		
- 		// now set reportLevel to 3
+ 		// now set reportLevel to 2
  		for(var i=0; i<this.targetReports.length; i++) {
- 			this.targetReports.at(i).set('reportLevel', 3);
+ 			this.targetReports.at(i).set('reportLevel', 2);
  		}
  		
  		// we should be ready to save the 
@@ -449,7 +449,7 @@ var BudgetProposalSelectionView = Backbone.View.extend({
 	renderSelection: function() {
 		this.budgetProposals = new BudgetProposalCollection();
 		this.budgetProposals.fetch({
-			url: appUrl('/BudgetProposal/findByFiscalyearAndProvinceOwner/' + fiscalYear + '/' + organizationId),
+			url: appUrl('/BudgetProposal/findByFiscalyearAndOwner/' + fiscalYear + '/' + organizationId),
 			success: _.bind(function(model, response, options) {
 				var json = this.budgetProposals.toJSON();
 				var html = this.budgetProposalSelectionTemplate(json);
@@ -510,7 +510,7 @@ var MainTblView = Backbone.View.extend({
 		this.childObjectives = new ObjectiveCollection();
 		this.childObjectives.fetch({
 			url: appUrl('/Objective/getChildrenAndloadActivityAndOwnerId/'
-					+proposal.get('forObjective').get('id')+'/province/' + organizationId),
+					+proposal.get('forObjective').get('id')+'/district/' + organizationId),
 			success: _.bind(function(model, response, options) {
 				var json = this.proposal.toJSON();
 				var html = this.mainTblTemplate(json);

@@ -4729,20 +4729,25 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Override
 	public List<Objective> findObjectiveLoadActivityByParentObjectiveIdAndReportLevel(
-			Long objectiveId, Long ownerId, Boolean provinceLevel) {
+			Long objectiveId, Long ownerId, Integer reportLevel) {
 		Organization searchOrg = organizationRepository.findOne(ownerId);
 		
-		if(provinceLevel == true) {
+		if(reportLevel == ActivityTargetReport.districtLevel) {
+			logger.debug("districtLevel=true and searchOrgId  = " + OrganizationType.getDistrictId(searchOrg));
+			searchOrg = organizationRepository.findOne(OrganizationType.getDistrictId(searchOrg));
+			if(searchOrg == null) return null;
+		} else if(reportLevel == ActivityTargetReport.provinceLevel){
 			logger.debug("provinceLevel=true and searchOrgId  = " + OrganizationType.getProvinceId(searchOrg));
 			searchOrg = organizationRepository.findOne(OrganizationType.getProvinceId(searchOrg));
 			if(searchOrg == null) return null;
-		} else {
+		} else if (reportLevel == ActivityTargetReport.amphurLevel){
 			logger.debug("provinceLevel=false and searchOrgId  = " + OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg));
 			if(OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg) != null) {
 				searchOrg = organizationRepository.findOne(OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg));
 			}
+			if(searchOrg == null) return null;
 		}
-		
+		logger.debug("searchOrg: " +  searchOrg.getName());
 		
 		String objectiveIdLike = "%."+objectiveId + ".%";
 		
@@ -5631,10 +5636,49 @@ public class EntityServiceJPA implements EntityService {
 		if(org == null) return null;
 		
 		// now we just trim searchOrg to จังหวัด...
-		Long searchOrgId = (ownerId/10000) * 10000;
+		Long searchOrgId = OrganizationType.getDistrictId(org);
 		
 		
 		List<BudgetProposal> proposals = budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, searchOrgId);
+		
+		Collections.sort(proposals, new Comparator<BudgetProposal>() {
+			@Override
+			public int compare(BudgetProposal o1, BudgetProposal o2) {
+				return o1.getForObjective().getCode()
+						.compareTo(o2.getForObjective().getCode());
+			}
+		});
+		
+		return proposals;
+	}
+	
+	@Override
+	public List<BudgetProposal> findBudgetProposalByFiscalYearAndProvinceOwner_Id(
+			Integer fiscalYear, Long ownerId) {
+		Organization org = organizationRepository.findOne(ownerId);
+		
+		if(org == null) return null;
+		
+		List<BudgetProposal> proposals = new ArrayList<BudgetProposal>();
+		
+		Iterable<Object[]> sumAllocated = activityPerformanceRepository.findSumBudgetAllocatedByFiscalYearByOwnerId(fiscalYear, ownerId);
+		Long id=0L;
+		for(Object[] allocated : sumAllocated) {
+			Long objId = (Long) allocated[0];
+			Objective obj = objectiveRepository.findOne(objId);
+			Double objAllocated = (Double) allocated[1];
+			
+			BudgetProposal p = new BudgetProposal();
+			p.setAmountAllocated(objAllocated);
+			p.setForObjective(obj);
+			p.setOwner(org);
+			p.setId(id++);
+			
+			proposals.add(p);
+		}
+		
+		
+		
 		
 		Collections.sort(proposals, new Comparator<BudgetProposal>() {
 			@Override

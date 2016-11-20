@@ -4,7 +4,7 @@
 
 <div class="hero-unit white">
 <div id="headLine">
-	<h4>การบันทึกการจัดสรรงบประมาณ ลงสู่ระดับกิจกรรมย่อย (ระดับจังหวัด)</h4> 
+	<h4>การบันทึกการจัดสรรงบประมาณ ลงสู่ระดับกิจกรรมย่อย (ระดับเขต)</h4> 
 </div>
 <div class="row">
 	<div class="span11">
@@ -304,7 +304,7 @@
 </script>
 
 
-<script src="<c:url value='/resources/js/pages/m73f03.js'/>"></script>
+<script src="<c:url value='/resources/js/pages/m73f04.js'/>"></script>
 
 <script type="text/javascript">
 var organizationId = "${organizationId}";

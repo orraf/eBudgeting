@@ -35,6 +35,11 @@ public class ActivityTargetReport implements Serializable {
 	 */
 	private static final long serialVersionUID = 3308743343845452601L;
 	
+	public static Integer districtLevel = 1;
+	public static Integer provinceLevel = 2;
+	public static Integer amphurLevel = 3;
+	
+	
 	public static ActivityTargetReport createEmptyReport(
 			ActivityTarget target) {
 		ActivityTargetReport report = new ActivityTargetReport();
