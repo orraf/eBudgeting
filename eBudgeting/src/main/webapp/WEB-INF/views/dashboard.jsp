@@ -142,7 +142,7 @@ var menuJson = [{
 		},{
 			name: "m73f04: บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับเขต)", code: "m73f04", parent: 'm51', link: "page/m73f04/", group: ["PMS_USER5"]
 		},{
-			name: "m73f03: บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับจังหวัด)", code: "m73f03", parent: 'm51', link: "page/m73f03/", group: ["PMS_USER2"]
+			name: "m73f03: บันทึกและถ่ายค่าเป้าหมายและงบประมาณ (ระดับจังหวัด)", code: "m73f03", parent: 'm51', link: "page/m73f03/", group: [ "PMS_USER2", "PMS_USER4"]
 		}]  
 	}, {
 		name: "การบันทึกแผนการดำเนินงานกิจกรรมย่อย (m74)",code: "m74", parent: 'm7',  menus: [{
