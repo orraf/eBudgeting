@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 @Entity
-@Table(name="SYN_S_SYSTEM")
+@Table(name="S_SYSTEM")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=System.class)
 public class System implements Serializable {
 
@@ -44,7 +44,7 @@ public class System implements Serializable {
 	private String description;
 	
 	@OneToMany
-	@JoinTable( name="SYN_S_SYSTEM_LIST",
+	@JoinTable( name="S_SYSTEM_LIST",
         joinColumns=
             @JoinColumn(name="S_SYSTEM_ID"),
         inverseJoinColumns=
