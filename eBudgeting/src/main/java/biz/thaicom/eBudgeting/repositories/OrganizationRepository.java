@@ -67,7 +67,7 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 	@Query("" +
 			"SELECT organization " +
 			"FROM Organization organization " +
-			"WHERE organization.parent.id = 0 " +
+			"WHERE (organization.parent.id = 0  or organization.code like '1____000000') " +
 			"	AND organization.name like ?1 " +
 			"	AND organization.inActive = 'N'" +
 			"ORDER BY organization.code asc ") 

@@ -56,7 +56,7 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 		return  list;
 	}
 
-	
+		
 	@RequestMapping(value="/Organization/findAllProvinces", method=RequestMethod.GET)
 	public @ResponseBody List<Organization> findAllProvinces(
 			@Activeuser ThaicomUserDetail currentUser 
@@ -155,6 +155,7 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 		return  list;
 	}
 
+	
 
 	
 	@RequestMapping(value="/Organization/code/{code}/findByName", method=RequestMethod.POST)

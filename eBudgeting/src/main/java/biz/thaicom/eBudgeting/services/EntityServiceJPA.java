@@ -5672,13 +5672,15 @@ public class EntityServiceJPA implements EntityService {
 			p.setAmountAllocated(objAllocated);
 			p.setForObjective(obj);
 			p.setOwner(org);
-			p.setId(id++);
+			p.setId(id--);
 			
 			proposals.add(p);
 		}
 		
 		
+		List<BudgetProposal> directProposals = budgetProposalRepository.findBudgetProposalByFiscalYearAndOwner_Id(fiscalYear, ownerId);
 		
+		proposals.addAll(directProposals);
 		
 		Collections.sort(proposals, new Comparator<BudgetProposal>() {
 			@Override
