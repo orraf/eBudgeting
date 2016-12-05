@@ -5598,6 +5598,8 @@ public class EntityServiceJPA implements EntityService {
 		}
 		budgetProposalRepository.save(proposal);
 		
+		logger.debug("assetAllocation.getBudgetType().getId() : " + assetAllocation.getBudgetType().getId()); 
+		
 		// then make sure we'get a new Allocation Record
 		AllocationRecord allocationRecord = allocationRecordRepository
 				.findOneByBudgetTypeAndObjectiveAndIndex(
