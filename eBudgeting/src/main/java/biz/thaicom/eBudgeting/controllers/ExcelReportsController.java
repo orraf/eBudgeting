@@ -733,9 +733,9 @@ public class ExcelReportsController {
 		
 		List<Objective> objectives = entityService.findObjectivesByFiscalyearAndTypeIdForM81R05Report(fiscalYear, orgId);
 		
-		if(orgId > 0L) {
+		//if(orgId > 0L) {
 			model.addAttribute("organization", entityService.findOrganizationById(orgId));
-		}
+		//}
 		
 		model.addAttribute("objectives", objectives);
 		
