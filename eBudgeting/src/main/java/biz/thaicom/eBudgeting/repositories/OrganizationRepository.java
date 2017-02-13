@@ -82,8 +82,8 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 	@Query(""
 			+ "SELECT org "
 			+ "FROM Organization org "
-			+ "	LEFT JOIN FETCH org.children "
-			+ "WHERE org.inActive='N' "
+			+ "	LEFT JOIN FETCH org.children child "
+			+ "WHERE org.inActive='N' AND child.inActive = 'N' "
 			+ " ORDER BY org.id asc")
 	public List<Organization> findAllLeftJoinChildren();
 
@@ -97,7 +97,8 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			+ "SELECT org "
 			+ "FROM Organization org "
 			+ "WHERE org.parent.id=0 "
-			+ " 	AND org.id < 110000000 "
+			+ " 	AND org.id <  11000000000 "
+			+ "		AND org.id > 0 " 
 			+ " AND org.inActive = 'N' "
 			+ "ORDER BY org.id asc")
 	public List<Organization> findAll_ฝ่าย();

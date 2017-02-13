@@ -42,7 +42,7 @@
 </div>
 
 <script id="organiationNodeTemplate" type="text/x-handler-template">
-<li {{#if isClearLeft}}style="clear: left"{{/if}} id="{{#if isHome}}home{{else}}{{id}}{{/if}}"><a href="#" title="({{abbr}})">{{name}}</a>
+<li {{#if isClearLeft}}style="clear: left"{{/if}} id="{{#if isHome}}home{{else}}{{id}}{{/if}}"><a href="#" title="({{abbr}})">{{name}} {{id}}</a>
 </li>
 </script>
 
