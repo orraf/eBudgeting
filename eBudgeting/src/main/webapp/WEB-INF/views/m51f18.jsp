@@ -36,6 +36,23 @@
 <form>
 	<label>ชื่อหน่วยนับ</label>
 	<input type="text" id="nameTxt" value="{{name}}">
+
+<div class="control-group">
+				<label class="control-label" for="nameTxt"> <b>สถานะการใช้งาน: </b> </label>
+				<div class="controls">
+					<label class="radio">
+  						<input type="radio" name="isActived" id="isActivedTrue" value="T" {{#if isActived}} checked{{/if}}/>
+  							ใช้งาน
+					</label>
+					<label class="radio">
+  						<input type="radio" name="isActived" id="isActivedFalse" value="F" {{#unless isActived}} checked{{/unless}}/>
+  							ไม่ใช้งาน
+					</label>
+
+				</div>
+
+			</div>
+
 </form>
 </script>
 
@@ -68,6 +85,7 @@
 		<tr>
 			<td width="20"></td>
 			<td>ชื่อทะเบียนหน่วยนับ</td>
+			<td width="100">สถานะการใช้งาน</td>
 		</tr>
 	</thead>
 	<tbody>
@@ -85,6 +103,21 @@
 					<input id="nameTxt" type='text' placeholder='...' class='span7' value="{{name}}" ></input> <br/>
 				</div>
 			</div>
+			<div class="control-group">
+				<label class="control-label" for="nameTxt"> <b>สถานะการใช้งาน: </b> </label>
+				<div class="controls">
+					<label class="radio">
+  						<input type="radio" name="optionsRadios" id="optionsRadios1" value="T" {{#if isActived}} checked{{/if}}/>
+  							ใช้งาน
+					</label>
+					<label class="radio">
+  						<input type="radio" name="optionsRadios" id="optionsRadios1" value="F" {{#unless isActived}} checked{{/unless}}/>
+  							ไม่ใช้งาน
+					</label>
+
+				</div>
+
+			</div>
 		</form>
 
 		<button class='btn btn-mini btn-info lineSave'>บันทึก</button>
@@ -97,6 +130,7 @@
 <tr data-id={{id}}>
 	<td><input type="radio" name="rowRdo" id="rdo_{{id}}" value="{{id}}"/></td>
 	<td>{{name}}</td>
+	<td style="align:center;">{{#if isActived}}ใช้งาน{{else}}<b style="color:red;">ไม่ใช้งาน</b>{{/if}}</td>
 </tr>
 {{/each}}
 </script>
@@ -147,7 +181,8 @@ $(document).ready(function() {
 				newModel = true;
 			}
 			this.currentTargetUnit.save({
-				name: this.$el.find('input[id=nameTxt]').val()
+				name: this.$el.find('input[id=nameTxt]').val(),
+				isActived: this.$el.find('#isActivedTrue').is(':checked')
 			},{
 				success : _.bind(function(model) {
 					
@@ -222,10 +257,11 @@ $(document).ready(function() {
 				newModel = true;
 			}
 			this.currentTargetUnit.save({
-				name: this.$el.find('input[id=nameTxt]').val()
+				name: this.$el.find('input[id=nameTxt]').val(),
+				isActived: this.$el.find('#isActivedTrue').is(':checked')
 			},{
 				success : _.bind(function(model) {
-					
+					console.log(this.currentTargetUnit);
 					if(newModel) {
 						targetUnits.add(model);
 					}

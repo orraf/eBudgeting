@@ -11,9 +11,10 @@ import biz.thaicom.eBudgeting.models.pln.TargetUnit;
 public interface TargetUnitRepository extends JpaSpecificationExecutor<TargetUnit>,
 		PagingAndSortingRepository<TargetUnit, Long> {
 
-	@Query("" +
-			"FROM TargetUnit " +
-			"ORDER BY name asc ")
+	@Query(""
+			+ "FROM TargetUnit "
+			+ "WHERE isActived='T' "
+			+ "ORDER BY name asc ")
 	List<TargetUnit> findAllSortedByName();
 
 }

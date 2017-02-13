@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +17,8 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import biz.thaicom.eBudgeting.models.converter.BooleanTFConverter;
 
 @Entity
 @Table(name="PLN_TARGETUNIT")
@@ -33,6 +37,10 @@ public class TargetUnit implements Serializable{
 	
 	@Basic
 	private String name;
+	
+	@Convert(converter=BooleanTFConverter.class)
+	@Column(name="ISACTIVED", length=1)
+	private Boolean isActived;
 	
 	@OneToMany(mappedBy="unit", fetch=FetchType.LAZY)
 	List<ObjectiveTarget> targets;
@@ -60,6 +68,15 @@ public class TargetUnit implements Serializable{
 	public void setTargets(List<ObjectiveTarget> targets) {
 		this.targets = targets;
 	}
+
+	public Boolean getIsActived() {
+		return isActived;
+	}
+
+	public void setIsActived(Boolean isActived) {
+		this.isActived = isActived;
+	}
+	
 	
 	
 }

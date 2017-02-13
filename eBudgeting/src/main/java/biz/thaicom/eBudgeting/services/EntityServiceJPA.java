@@ -2689,6 +2689,7 @@ public class EntityServiceJPA implements EntityService {
 		// now filling in only what we need!
 		if(tu!=null) {
 			tu.setName(node.get("name").asText());
+			tu.setIsActived(node.get("isActived").asBoolean());
 	
 			
 			return saveTargetUnits(tu);
@@ -2700,6 +2701,7 @@ public class EntityServiceJPA implements EntityService {
 	public TargetUnit saveTargetUnit(JsonNode node) {
 		TargetUnit tu = new TargetUnit();
 		tu.setName(node.get("name").asText());
+		tu.setIsActived(node.get("isActived").asBoolean());
 		return saveTargetUnits(tu);
 	}
 

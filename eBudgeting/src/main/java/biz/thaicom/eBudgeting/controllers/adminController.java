@@ -23,15 +23,15 @@ public class adminController {
 		return "admin/home";
 	}
 	
-	@RequestMapping("/admin/newDatabaseSchema") 
-	public @ResponseBody String newDatabaseSchema() {
-		databaseSchemaExport.getSchema();
-		
-		// now we want to populate data into database?
-		
-		
-		return "success";
-	}
+//	@RequestMapping("/admin/newDatabaseSchema") 
+//	public @ResponseBody String newDatabaseSchema() {
+//		databaseSchemaExport.getSchema();
+//		
+//		// now we want to populate data into database?
+//		
+//		
+//		return "success";
+//	}
 	
 	@RequestMapping("/admin/populateSampleData")
 	public @ResponseBody String populateSampleData() {
