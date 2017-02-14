@@ -1,7 +1,7 @@
 package biz.thaicom.eBudgeting.models.hrx;
 
 public enum OrganizationType {
-	อื่นๆ(0), ฝ่าย(1), ส่วน(2), แผนก(3), จังหวัด(4), อำเภอ(5), ส่วนในจังหวัด(6), แผนกในจังหวัด(7), แผนกในอำเภอ(8), ศูนย์ปฏิบัติการ(9), เขต(10); 
+	อื่นๆ(0), ฝ่าย(1), ส่วน(2), แผนก(3), จังหวัด(4), อำเภอ(5), ส่วนในจังหวัด(6), แผนกในจังหวัด(7), แผนกในอำเภอ(8), ศูนย์ปฏิบัติการ(9), เขต(10), กอง(11), กองในเขต(12); 
 	
 	private Integer value;
     private OrganizationType(int value) {
@@ -42,8 +42,14 @@ public enum OrganizationType {
     	} else if (orgCode != null && orgCode.length() == 11) {
     		if(orgCode.matches("100\\d\\d\\d\\d0000")){
     			return OrganizationType.ฝ่าย;
+    		} else if(orgCode.matches("100\\d\\d\\d\\d\\d\\d00")){
+    			return OrganizationType.กอง; 
+    		} else if(orgCode.matches("100\\d\\d\\d\\d\\d\\d\\d\\d")){
+    			return OrganizationType.แผนก; 
     		} else if(orgCode.matches("1\\d\\d00000000")){
     			return OrganizationType.เขต;
+    		} else if(orgCode.matches("1\\d\\d0000\\d\\d00")){
+    			return OrganizationType.กองในเขต;
     		} else if(orgCode.matches("1\\d\\d\\d\\d\\d\\d0000")){
     			return OrganizationType.จังหวัด;
     		} else if(orgCode.matches("1\\d\\d\\d\\d\\d\\d\\d\\d00")){

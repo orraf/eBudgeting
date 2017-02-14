@@ -2987,7 +2987,7 @@ public class EntityServiceJPA implements EntityService {
 		List<Objective> returnList = new ArrayList<Objective>();
 		
 		
-		if(org.getType() == OrganizationType.ฝ่าย  || org.getType() == OrganizationType.จังหวัด ) {
+		if(org.getType() == OrganizationType.ฝ่าย  || org.getType() == OrganizationType.จังหวัด || org.getType() == OrganizationType.กอง) {
 		
 			List<Objective> list = objectiveRepository.findAllByOwnerAndfiscalYear(org, fiscalYear);
 			List<Objective> list2 = objectiveRepository.findAllByActivityOwnerAndFiscalYear(org, fiscalYear);
@@ -3050,7 +3050,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		Long searchOrgId=workAt.getId();
-		searchOrgId = (searchOrgId / 10000) * 10000;
+		//searchOrgId = (searchOrgId / 10000) * 10000;
 		
 		Organization searchOrg = organizationRepository.findOne(searchOrgId);
 		
