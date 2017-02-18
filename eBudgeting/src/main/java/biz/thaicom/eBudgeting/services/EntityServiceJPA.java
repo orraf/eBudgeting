@@ -3031,9 +3031,12 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		for(Objective obj: returnList) {
-			
+			logger.debug("objectiveID: " + obj.getId());
 			List<BudgetProposal> proposals = 
 					budgetProposalRepository.findByForObjectiveAndOwner(obj, searhOrg);
+			
+			logger.debug("proposals size(): " +  proposals.size());
+			
 			
 			obj.setFilterProposals(proposals);
 		}
@@ -3054,7 +3057,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		Organization searchOrg = organizationRepository.findOne(searchOrgId);
 		
-		logger.debug("searchOrg: "+ searchOrg.getName());
+		logger.debug("searchOrg: "+ searchOrg.getName() + " (" + searchOrgId + ") ");
 		
 		// now if workAt is at แผนก 
 //		if(workAt.isSubSection()) {

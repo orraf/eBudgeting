@@ -21,6 +21,7 @@ public class HibernateAwareObjectMapper extends ObjectMapper {
 		Hibernate4Module hm = new Hibernate4Module();
 		hm.configure(Feature.FORCE_LAZY_LOADING, false);
 		hm.configure(Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS, true);
+		hm.configure(Feature.USE_TRANSIENT_ANNOTATION, false);
 		registerModule(hm);
 		
 	}
