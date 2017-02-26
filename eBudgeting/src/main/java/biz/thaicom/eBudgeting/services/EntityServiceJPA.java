@@ -2984,10 +2984,16 @@ public class EntityServiceJPA implements EntityService {
 		
 		logger.debug(org.getId() + ":" + org.getAbbr() + " : orgType=" + org.getType());
 		
+		if(org.getType() == OrganizationType.กอง) {
+			// set org to ฝ่าย
+			org = org.getParent();
+			logger.debug("Org now is: "  + org.getId() + ":" + org.getAbbr() + " : orgType=" + org.getType());
+		}
+		
 		List<Objective> returnList = new ArrayList<Objective>();
 		
 		
-		if(org.getType() == OrganizationType.ฝ่าย  || org.getType() == OrganizationType.จังหวัด || org.getType() == OrganizationType.กอง) {
+		if(org.getType() == OrganizationType.ฝ่าย  || org.getType() == OrganizationType.จังหวัด ) {
 		
 			List<Objective> list = objectiveRepository.findAllByOwnerAndfiscalYear(org, fiscalYear);
 			List<Objective> list2 = objectiveRepository.findAllByActivityOwnerAndFiscalYear(org, fiscalYear);
@@ -3077,19 +3083,21 @@ public class EntityServiceJPA implements EntityService {
 			List<Activity> acts = activityRepository.findAllByForObjectiveParentAndOwnerOrRegulator(obj, workAt.getId());
 			logger.debug(">>>>> " +workAt.getId());
 			logger.debug(">>>>> " +acts.size());
-			Double sumBudgetAllocated = 0.0;
+			BigDecimal sumBudgetAllocated = new BigDecimal(0.0);
+			sumBudgetAllocated.setScale(2);
 			for(Activity act : acts) {
-				logger.debug(">>>>> " +act.getName());
+				logger.debug(">>>>> " +act.getId() + ": " + act.getName());
 				for(ActivityTarget target : act.getTargets()) {
 					logger.debug(">>>>> " +target.getBudgetAllocated());
 					if(target.getBudgetAllocated() != null) {
-						sumBudgetAllocated += target.getBudgetAllocated();
+						sumBudgetAllocated = sumBudgetAllocated.add(new BigDecimal( target.getBudgetAllocated() ));
 					}
+					logger.debug("+++++++ " +sumBudgetAllocated);
 				}
 			}
 			
 			BudgetProposal p = new BudgetProposal();
-			p.setAmountAllocated(sumBudgetAllocated);
+			p.setAmountAllocated(sumBudgetAllocated.doubleValue());
 			List<BudgetProposal> proposals = new ArrayList<BudgetProposal>();
 			proposals.add(p);
 			
@@ -4737,6 +4745,11 @@ public class EntityServiceJPA implements EntityService {
 			Long objectiveId, Long ownerId, Integer reportLevel) {
 		Organization searchOrg = organizationRepository.findOne(ownerId);
 		
+		logger.debug(searchOrg.getId() + ": " + searchOrg.getName());
+		logger.debug(searchOrg.getType().toString());
+		logger.debug("reportLevel: " + reportLevel);
+		
+		
 		if(reportLevel == ActivityTargetReport.districtLevel) {
 			logger.debug("districtLevel=true and searchOrgId  = " + OrganizationType.getDistrictId(searchOrg));
 			searchOrg = organizationRepository.findOne(OrganizationType.getDistrictId(searchOrg));
@@ -4746,11 +4759,20 @@ public class EntityServiceJPA implements EntityService {
 			searchOrg = organizationRepository.findOne(OrganizationType.getProvinceId(searchOrg));
 			if(searchOrg == null) return null;
 		} else if (reportLevel == ActivityTargetReport.amphurLevel){
-			logger.debug("provinceLevel=false and searchOrgId  = " + OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg));
-			if(OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg) != null) {
-				searchOrg = organizationRepository.findOne(OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg));
+			if(searchOrg.getType() == OrganizationType.แผนก || 
+					searchOrg.getType() == OrganizationType.กอง ||
+					searchOrg.getType() == OrganizationType.ฝ่าย) {
+				
+				// do nothing here 
+			} else {
+				logger.debug("provinceLevel=false and searchOrgId  = " + OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg));
+				if(OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg) != null) {
+					searchOrg = organizationRepository.findOne(OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(searchOrg));
+				}
+				if(searchOrg == null) return null;	
 			}
-			if(searchOrg == null) return null;
+			
+			
 		}
 		logger.debug("searchOrg: " +  searchOrg.getName());
 		
