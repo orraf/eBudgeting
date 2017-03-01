@@ -5149,9 +5149,9 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear, Long objectiveId) {
 		
-		Long searchOrgId = OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(workAt); 
+		//Long searchOrgId = OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(workAt); 
 		
-		Organization searchOrg = organizationRepository.findOne(searchOrgId);
+		Organization searchOrg = organizationRepository.findOne(workAt.getId());
 		
 		
 		
@@ -5166,6 +5166,9 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		logger.debug("searchOrg: " + searchOrg.getId());
+		logger.debug(searchOrg.getId() + ": " + searchOrg.getName());
+		logger.debug(searchOrg.getType().toString());
+		
 		List<ActivityTargetReport> reports;
 		if(objectiveId != null) {
 			reports = activityTargetReportRepository.findAllByOwner_idAndFiscalYear(searchOrg.getId(), fiscalYear, objectiveId);
