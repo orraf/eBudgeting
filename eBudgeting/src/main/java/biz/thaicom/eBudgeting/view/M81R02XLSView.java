@@ -171,9 +171,10 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				+ "		 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, "
 				+ "			(select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = "+ searchOrg.getId() + ") t3 "
 				+ "			 	where t4.target_pln_acttarget_id = t5.id and t5.activity_pln_activity_id = t1.id and t1.obj_pln_objective_id = t2.id"
-				+ "					 and t4.owner_hrx_organization_id = t3.id  and t2.fiscalyear = " +fiscalYear+ ") d"
-				+ "where instr(d.objpath, '.'||to_char(m.id)||'.') > 0";
+				+ "					 and t4.owner_hrx_organization_id = t3.id  and t2.fiscalyear = " +fiscalYear+ ") d "
+				+ "where instr(d.objpath, '.'||to_char(m.id)||'.') > 0 ";
 				
+//		logger.debug(st01);
             
 
 		
@@ -192,7 +193,6 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 			org = searchOrg.getId().toString();
 		}
 		
-		logger.debug(st01);
 		
 		while (rs.next()) {
 			Row rows = sheet.createRow(i);
