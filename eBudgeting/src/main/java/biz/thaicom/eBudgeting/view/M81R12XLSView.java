@@ -164,7 +164,7 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 		}
 		
 		Statement st = connection.createStatement();
-		String st01 = "select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
+		String st99 = "select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code " +
 				   "from pln_objective m where m.id <> " + root.getId() + " and exists " +
 				   "(select 1 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, " +
                     "(select id from hrx_organization " +
@@ -179,7 +179,26 @@ public class M81R12XLSView extends AbstractPOIExcelView {
 				   "connect by prior m.id = m.parent_pln_objective_id " +
                 " start with m.id = " + rootObjectiveId 
                 + " order siblings by m.code asc";
+		
+		
+		String st01 = "select distinct m.*	"
+				+ "from (select lpad(' ',(level-4)*5)||name name, isleaf, id, nvl(lpad(' ',(level-3)*5), '     ') space, code, level "
+				+ "		from pln_objective"
+				+ "		 where id <> " + rootObjectiveId 
+				+ "		connect by prior id = parent_pln_objective_id  "
+				+ "				start with id = " + rootObjectiveId
+				+ "		 order siblings by code asc) m ,"
+				+ "		(select distinct '.'||t2.id||t2.parentpath objpath	"
+				+ "		 from pln_activitytargetreport t4, pln_activitytarget t5, pln_activity t1, pln_objective t2, "
+				+ "			(select id from hrx_organization connect by prior id = parent_hrx_organization_id start with id = "+ searchOrg.getId() + ") t3 "
+				+ "			 	where t4.target_pln_acttarget_id = t5.id and t5.activity_pln_activity_id = t1.id and t1.obj_pln_objective_id = t2.id"
+				+ "					 and t4.owner_hrx_organization_id = t3.id  and t2.fiscalyear = " +fiscalYear+ ") d "
+				+ "where instr(d.objpath, '.'||to_char(m.id)||'.') > 0 ";
+
+		
+		logger.debug(st01);
 		ResultSet rs = st.executeQuery(st01);
+		logger.debug("done executing st01");
 
 		int i = 4;
 		int j = 0;

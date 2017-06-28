@@ -174,7 +174,7 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 				+ "					 and t4.owner_hrx_organization_id = t3.id  and t2.fiscalyear = " +fiscalYear+ ") d "
 				+ "where instr(d.objpath, '.'||to_char(m.id)||'.') > 0 ";
 				
-//		logger.debug(st01);
+		logger.debug(st01);
             
 
 		

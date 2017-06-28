@@ -66,9 +66,21 @@ public enum OrganizationType {
     
     public static String getChildrenQueryStringOnlyProvince(Organization org) {
     	String query = "";
-    	if(OrganizationType.getType(org) == OrganizationType.จังหวัด) {
-    		query += org.getCode().substring(0, 2);
-    		query += "000%";
+    	String orgCode = org.getCode();
+    	
+    	if(orgCode != null && orgCode.length() == 8) {
+	    	if(OrganizationType.getType(org) == OrganizationType.จังหวัด) {
+	    		query += org.getCode().substring(0, 2);
+	    		query += "000%";
+	    	}
+    	} else if (orgCode != null && orgCode.length() == 11) {
+    		if(OrganizationType.getType(org) == OrganizationType.จังหวัด) {
+    			query += org.getCode().substring(0, 6);
+    			query += "%";
+    		} else {
+    			query += org.getCode().substring(0, 8);
+    			query += "%";
+    		}
     	}
     	
     	return query;

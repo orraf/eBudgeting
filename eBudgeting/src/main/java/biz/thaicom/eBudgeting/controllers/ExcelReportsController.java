@@ -587,6 +587,8 @@ public class ExcelReportsController {
 		List<ActivityTargetReport> reports = entityService.findActivityTargetReportByOwnerOrRegulator(
 				currentUser.getWorkAt(), fiscalYear);
 		
+		
+		logger.debug("findSumMonthlyFromGByFiscalYearAndOwnerLike with fiscalYear: " + fiscalYear  + " , and currentUser.getWorkAt(): " + currentUser.getWorkAt().getId());
 		List<Object[]> sumFromG = entityService.findSumMonthlyFromGByFiscalYearAndOwnerLike(fiscalYear, currentUser.getWorkAt());
 		
 		model.addAttribute("sumFromG", sumFromG);
@@ -598,6 +600,8 @@ public class ExcelReportsController {
 		
 		
 		response.addCookie(cookie);
+		
+		logger.debug("now generating m81r12.xls");
 		
 		return "m81r12.xls";
 	}
