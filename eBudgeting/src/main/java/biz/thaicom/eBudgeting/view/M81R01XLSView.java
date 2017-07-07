@@ -249,12 +249,12 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 
 				Statement st4 = connection.createStatement();
 				ResultSet rs4 = st4.executeQuery("select date2fmonth(gl_trans_docdate) mon, nvl(sum(amt),0), ltrim(to_char(sum(amt),'999,999,999,990.99')) amt " +
-									   "from v_gl " +
-									   "where fiscal_year = " + fiscalYear + " " +
-									   "	and activitycode like '" + rs.getString(5) + "' " +
-									   "	and ORG_ID = " + currentUser.getWorkAt().getId() + " " +
-									   "group by date2fmonth(gl_trans_docdate) " +
-									   "order by 1 ");
+												   "from v_gl " +
+												   "where fiscal_year = " + fiscalYear + " " +
+												   "and activitycode like '" + rs.getString(5) + "' " +
+												   "and ORG_ID = " + currentUser.getWorkAt().getId() + " " +
+												   "group by date2fmonth(gl_trans_docdate) " +
+												   "order by 1 ");
 
 				s1 = 0;
 				while (rs4.next()) {
@@ -267,7 +267,44 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 				rsc3 = rows.getCell(15);
 				rsc3.setCellValue(s1);
 
-				i = i+2;
+				rows = sheet.createRow(i+2);
+
+				rsc1 = rows.createCell(1);
+				rsc1.setCellStyle(styles.get("cellcenter"));
+				
+				rsc2 = rows.createCell(2);
+				rsc2.setCellValue("ผลเงิน(รวม)");
+				rsc2.setCellStyle(styles.get("cellcenter"));
+				
+				for (j=3;j<16;j++) {
+					Cell rscj = rows.createCell(j);
+					rscj.setCellStyle(styles.get("cellnumber2"));
+				}
+
+				Statement st6 = connection.createStatement();
+				ResultSet rs6 = st6.executeQuery("select t1.fiscalmonth, nvl(sum(t1.budgetresult),0) " +
+						   "from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activitytargetreport t3, pln_activitytarget t4 " +
+						   "where t1.performance_pln_actper_id = t2.id " +
+						   "and t2.id = t3.performance_pln_actper_id " +
+						   "and t3.target_pln_acttarget_id = t4.id " +
+						   "and t4.activity_pln_activity_id in (select m.id from pln_activity m, s_user d " +
+						   										"where m.owner_hrx_organization = d.dept_id " +
+						   										"and m.obj_pln_objective_id = " + rs.getInt(3) + " " +
+						   										"and d.login = '" + currentUser.getUsername() + "') " +
+						   "group by t1.fiscalmonth order by t1.fiscalmonth");
+
+				s1 = 0;
+				while (rs6.next()) {
+					Cell rscj = rows.getCell(rs6.getInt(1)+3);
+					rscj.setCellValue(rs6.getInt(2));
+					s1 = s1 + rs6.getInt(2);
+				}
+				rs6.close();
+				st6.close();
+				rsc3 = rows.getCell(15);
+				rsc3.setCellValue(s1);
+
+				i = i+3;
 				Statement st1 = connection.createStatement();
 				ResultSet rs1 = st1.executeQuery("select t1.code, t1.name, t1.id, t1.owner_hrx_organization, '1' type, t3.id target_id, '   (เป้าหมาย '|| ltrim(to_char(t3.targetvalue,'999,999,999,999'))||' '||t4.name||')' target " +
 												 "from pln_activity t1, pln_activitytarget t3, pln_targetunit t4, s_user t2 " +
@@ -316,6 +353,36 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 
 					}
 					
+					Row rows3 = sheet.createRow(i+2);
+					Cell rsc31 = rows3.createCell(0);
+					rsc31.setCellStyle(styles.get("cellleft"));
+					Cell rsc32 = rows3.createCell(1);
+					rsc32.setCellStyle(styles.get("cellcenter"));
+					Cell rsc33 = rows3.createCell(2);
+					rsc33.setCellValue("แผนเงิน");
+					rsc33.setCellStyle(styles.get("cellcenter"));
+
+					for (j=3;j<16;j++) {
+						Cell rscj = rows3.createCell(j);
+						rscj.setCellStyle(styles.get("cellnumber2"));
+
+					}
+					
+					Row rows4 = sheet.createRow(i+3);
+					Cell rsc41 = rows4.createCell(0);
+					rsc41.setCellStyle(styles.get("cellleft"));
+					Cell rsc42 = rows4.createCell(1);
+					rsc42.setCellStyle(styles.get("cellcenter"));
+					Cell rsc43 = rows4.createCell(2);
+					rsc43.setCellValue("ผลเงิน");
+					rsc43.setCellStyle(styles.get("cellcenter"));
+
+					for (j=3;j<16;j++) {
+						Cell rscj = rows4.createCell(j);
+						rscj.setCellStyle(styles.get("cellnumber2"));
+
+					}
+					
 					Statement st2 = connection.createStatement();
 					ResultSet rs2;
 					rs2 = st2.executeQuery("select t1.fiscalmonth, sum(t1.activityplan), sum(t1.activityresult) " +
@@ -345,7 +412,37 @@ public class M81R01XLSView extends AbstractPOIExcelView {
 					Cell rscs2 = rows2.getCell(j);
 					rscs2.setCellValue(s2);
 
-					i = i+2;
+					Statement st5 = connection.createStatement();
+					ResultSet rs5;
+					rs5 = st5.executeQuery("select t1.fiscalmonth, nvl(sum(t1.budgetplan),0), nvl(sum(t1.budgetresult),0) " +
+										   "from pln_monthlybgtreport t1, pln_activityperformance t2, pln_activitytargetreport t3, pln_activitytarget t4 " +
+										   "where t1.performance_pln_actper_id = t2.id " +
+										   "and t2.id = t3.performance_pln_actper_id " +
+										   "and t3.target_pln_acttarget_id = t4.id " +
+										   "and t4.activity_pln_activity_id = " + rs1.getInt(3) +
+										   " and t4.id = " + rs1.getInt(6) +
+										   "group by t1.fiscalmonth order by t1.fiscalmonth");
+							
+					j = 3;
+					s1 = 0;
+					s2 = 0;
+					while (rs5.next()) {
+						Cell rscj1 = rows3.getCell(j);
+						rscj1.setCellValue(rs5.getInt(2));
+						Cell rscj2 = rows4.getCell(j);
+						rscj2.setCellValue(rs5.getInt(3));
+						s1 = s1 + rs5.getInt(2);
+						s2 = s2 + rs5.getInt(3);
+						j = j+1;
+					}
+					rs5.close();
+					st5.close();
+					Cell rscs3 = rows3.getCell(j);
+					rscs3.setCellValue(s1);
+					Cell rscs4 = rows4.getCell(j);
+					rscs4.setCellValue(s2);
+
+					i = i+4;
 				}
 				rs1.close();
 				st1.close();
