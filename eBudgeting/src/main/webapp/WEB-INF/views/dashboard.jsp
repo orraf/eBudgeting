@@ -350,6 +350,9 @@ $(document).ready(function() {
 	
 	// now find objective which hasn't report
 	
+	/* disable for now 26 September 2017
+	
+	
 	$.ajax({
 		url: appUrl('/Objective/fiscalYear/' + fiscalYear + '/findByActivityTargetReportOfCurrentUser/NoReportCurrentMonth'),
 		success: function(data, textStatus, jqXHR) {
@@ -362,7 +365,9 @@ $(document).ready(function() {
 		}, error: function(model, xhr, options) {
 			alert("Error Status Code: " + xhr.status + " " + xhr.statusText + "\n" + xhr.responseText);
 		}
-	});
+	}); 
+	
+	*/
 	
 	
 	
