@@ -85,7 +85,7 @@
 	</tbody>
 </table>
 
-หมายเหตุ: <i class="icon-check"></i> ทำแผนแล้ว 
+หมายเหตุ: <i class="icon-check"></i> ทำแผนครบแล้ว 
 </script>
 <script id="mainTblTbodyObjectiveTemplate" type="text/x-handler-template">
 <tr data-id="{{id}}">
