@@ -212,11 +212,11 @@
     	<div style="height:35px; float:left" id="totalInputForm">
 			<div class="input-append"><input disabled type="text" id="totalBudgetResultTxt" style="width:120px;" value=""><span class="add-on">บาท</span></div>
 		</div>
-		<!-- hide for 29 September 2017 
+
 		<div style="margin-left: 35px; padding-right: 20px;height:35px; float:left">
     		<button id="resultBudgetInputBtn" class="btn btn-primary"> บันทึกผลงบประมาณ </button>
 		</div>
-		-->
+
 	</div>
 	<div class="clearfix"></div>
     
