@@ -85,7 +85,7 @@
 	</tbody>
 </table>
 
-หมายเหตุ: <i class="icon-check"></i> ทำแผนครบแล้ว 
+หมายเหตุ: ถ้ามีเครื่องหมาย <i class="icon-check"></i> ท้ายเป้าหมายแสดงว่าเป้าหมายนั้นได้จัดทำแผนแล้ว 
 </script>
 <script id="mainTblTbodyObjectiveTemplate" type="text/x-handler-template">
 <tr data-id="{{id}}">
