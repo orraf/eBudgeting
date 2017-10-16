@@ -487,8 +487,10 @@ var ModalView = Backbone.View.extend({
 	organizationOwnerSearch: function(e) {
 		var query = this.$el.find('#oraganizationOwnerQueryTxt').val();
 		
+		$('#organizationOwnerSearchTbl').find('tbody').html("<div>Loading Data <img src='" + appUrl('/resources/graphics/loading.gif') + "'/></div>");
+		
 		this.organizationSearchList = new OrganizationCollection();
-		this.organizationSearchList.url = appUrl("/Organization/code/00/findByName");
+		this.organizationSearchList.url = appUrl("/Organization/parentId/0/findByName");
 		this.organizationSearchList.fetch({
 			data: {
 				query: query
@@ -770,7 +772,7 @@ var ModalView = Backbone.View.extend({
 					owner.set('_inProposalList', true);
 				});
 				
-				
+				this.organizationOwnerSearch();
 				
 			}, this)
 		});
