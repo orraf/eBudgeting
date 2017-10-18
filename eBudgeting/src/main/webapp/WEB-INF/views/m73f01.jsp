@@ -284,8 +284,13 @@
 <script id="modalTemplate" type="text/x-handler-template">
 <div>
 <form>
-	<label>ระบุรหัส</label>
-	<input type="text" class="model" id="code" value="{{code}}" data-modelName="code"></input>
+	<div id="codeControlGroup" class="control-group">
+		<label class="control-label" for="inputCode">ระบุรหัส</label>
+		<div class="controls">
+			<input type="text" class="model" id="code" value="{{code}}" required='true' data-modelName="code"></input>
+			<span class="help-inline"></span>
+		</div>
+	</div>
 
 	<label>ระบุชื่อกิจกรรม</label>
 	<textarea rows="2" class="span5 model" id="nameTxt" data-modelName="name">{{name}}</textarea>

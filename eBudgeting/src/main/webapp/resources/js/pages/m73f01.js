@@ -389,10 +389,21 @@ var ModalView = Backbone.View.extend({
 	
 	saveModel : function(e) {
 		var regulatorId=this.$el.find('#regulatorSlt').val();
+		var code = this.$el.find('#code').val();
 		
 		if(regulatorId < 0) {
 			alert("กรุณาระบุส่วนงานที่รับผิดชอบ");
 			return;
+		}
+		
+		if(code == null || code.length == 0) {
+			alert("กรุณาระบุรหัสกิจกรรม");
+			this.$el.find('#codeControlGroup').addClass('error');
+			this.$el.find('#codeControlGroup span.help-inline').html('กรุณาระบุรหัสกิจกรรม');
+			return;
+		} else {
+			this.$el.find('#codeControlGroup').removeClass('error');
+			this.$el.find('#codeControlGroup span.help-inline').html('');
 		}
 		
 		this.currentActivity.set('regulator', Organization.findOrCreate(regulatorId));
