@@ -3116,7 +3116,8 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public List<Objective> findObjectiveChildrenByActivityTargetOwnerAndObjectiveParentId(
 			Organization workAt, Long id) {
-		
+		logger.debug("workAt.id : "  + workAt.getId());
+		logger.debug("id: " + id);
 		return objectiveRepository.findAllChildrenByActivityOwnerAndPanrentId(workAt, id);
 	}
 	

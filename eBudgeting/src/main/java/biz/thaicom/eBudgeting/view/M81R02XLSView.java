@@ -142,6 +142,9 @@ public class M81R02XLSView extends AbstractPOIExcelView {
 			rootObjectiveId = rootRs.getLong("id");
 		}
 		
+		
+		logger.debug("rootObjectiveId: " + rootObjectiveId);
+		
 		Statement st = connection.createStatement();
 		String st99 = "select lpad(' ',(level-4)*5)||m.name name, m.isleaf, m.id, nvl(lpad(' ',(level-3)*5), '     ') space, m.code, level " +
 				   "from pln_objective m where m.id <> " + root.getId() + " and exists " +
