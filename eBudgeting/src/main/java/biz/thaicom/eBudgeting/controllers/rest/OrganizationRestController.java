@@ -130,7 +130,9 @@ private static final Logger logger = LoggerFactory.getLogger(Organization.class)
 //			searchId = org.getParent().getId();
 //		}
 		
-		List<Organization> list =entityService.findOrganizationByNameAndParent_Id(query, searchId);
+		List<Organization> list = entityService.findOrganizationByNameAndParent_Id(query, searchId);
+		
+		list.add(0, org);
 
 		return  list;
 	}
