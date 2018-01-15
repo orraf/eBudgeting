@@ -5241,7 +5241,7 @@ public class EntityServiceJPA implements EntityService {
 		for(Objective obj: objectives) {
 			// now we'll find out the current budget usages!
 			Double sumUsage = budgetUsageFromExternalRepository.findBudgetUsageSummaryByCodeAndOwner(
-					obj.getCode(), searchOrg.getId());
+					obj.getCode(), searchOrg.getId(), obj.getFiscalYear());
 			
 			List<BudgetProposal> proposals = budgetProposalRepository.findByForObjectiveAndOwner(obj, searchOrg);
 			

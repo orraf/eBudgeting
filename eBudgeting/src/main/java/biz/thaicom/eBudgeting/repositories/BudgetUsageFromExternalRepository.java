@@ -14,8 +14,9 @@ public interface BudgetUsageFromExternalRepository extends PagingAndSortingRepos
 			"SELECT sum(bgt.amount) " +
 			"FROM BudgetUsageFromExternal bgt " +
 			"WHERE bgt.id.activityCode = ?1 " +
-			"	AND bgt.id.organizationId = ?2 ")
-	public Double findBudgetUsageSummaryByCodeAndOwner(String code, Long ownerId);
+			"	AND bgt.id.organizationId = ?2 "
+			+ "	AND bgt.fiscalYear = ?3 ")
+	public Double findBudgetUsageSummaryByCodeAndOwner(String code, Long ownerId, Integer fiscalYear);
 	
 	@Query(""
 			+ "SELECT bgt.id.activityCode, month(bgt.id.date), sum(bgt.amount) "
