@@ -164,11 +164,12 @@ var AssignTargetValueModalView = Backbone.View.extend({
 		
 		var json = this.currentTargetReport.toJSON();
 		
-		if(actName == "สำรวจรังวัด" ||
-				actName == "รับคำขอ" ||
-				actName == "อนุมัติ" ||
-				actName == "โค่น" ||
-				actName == "ปลูกแทน" ||
+		if(
+				//actName == "สำรวจรังวัด" ||
+				//actName == "รับคำขอ" ||
+				//actName == "อนุมัติ" ||
+				//actName == "โค่น" ||
+				//actName == "ปลูกแทน" ||
 				actName == "จ่ายเงินสงเคราะห์" ||
 				actName == "จ่ายวัสดุสงเคราะห์" 
 				) {
