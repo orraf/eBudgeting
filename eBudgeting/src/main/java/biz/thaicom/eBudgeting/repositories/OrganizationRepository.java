@@ -41,7 +41,7 @@ public interface OrganizationRepository extends JpaSpecificationExecutor<Long>,
 			+ "WHERE org.parent.id like ?2 "
 			+ "		AND org.name like ?1 "
 			+ "		AND org.inActive = 'N' "
-			+ "		AND org.name NOT LIKE 'กอง%' "
+//			+ "		AND org.name NOT LIKE 'กอง%' "
 			+ "ORDER BY org.name asc ")
 	public List<Organization> findAllByNameLikeAndParent_IdOrderByNameAsc(
 			String query, Long parentId);
