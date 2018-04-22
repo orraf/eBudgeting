@@ -30,6 +30,8 @@ import biz.thaicom.eBudgeting.models.bgt.BudgetProposal;
 import biz.thaicom.eBudgeting.models.bgt.BudgetSignOff;
 import biz.thaicom.eBudgeting.models.bgt.ObjectiveBudgetProposal;
 import biz.thaicom.eBudgeting.models.bgt.ProposalStrategy;
+import biz.thaicom.eBudgeting.models.hrx.Organization;
+import biz.thaicom.eBudgeting.models.hrx.OrganizationType;
 import biz.thaicom.eBudgeting.models.pln.Objective;
 import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.security.models.Activeuser;
@@ -83,7 +85,13 @@ public class BudgetProposalRestController {
 	public @ResponseBody List<BudgetProposal> findByFiscalyearAndProvinceOwner(
 			@PathVariable Integer fiscalYear,
 			@PathVariable Long ownerId){
-		return entityService.findBudgetProposalByFiscalYearAndProvinceOwner_Id(fiscalYear, ownerId);
+		
+		//this ownerId must be masked to be provinceID
+		
+		Long proviceId = OrganizationType.getProvinceId(ownerId);
+		
+		
+		return entityService.findBudgetProposalByFiscalYearAndProvinceOwner_Id(fiscalYear, proviceId);
 	}
 	
 	

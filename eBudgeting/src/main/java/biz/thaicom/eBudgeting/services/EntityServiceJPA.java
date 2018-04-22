@@ -4668,6 +4668,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		logger.debug("target.getActivity().getId() : " + target.getActivity().getId());
 		logger.debug("parentOrgId: " + parentOrgId);
+		logger.debug("target.getId(): " + target.getId());
 		// here we'll update the parent!
 		ActivityPerformance performance = 
 				activityPerformanceRepository.findOneByActivityAndTargetAndOwner_id(target.getActivity(), target, parentOrgId);

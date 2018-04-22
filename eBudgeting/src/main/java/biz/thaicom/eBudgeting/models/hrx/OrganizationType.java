@@ -110,6 +110,30 @@ public enum OrganizationType {
 		return Long.parseLong(org.getCode().substring(0, 3) + "00000000");
 	}
 	
+	  public static Long getProvinceId(Long orgId) {
+		  return Long.parseLong(orgId.toString().substring(0, 7) + "0000");
+		  
+//	    	if(org.getCode().startsWith("0")) {
+//	    		// จังหวัด code จะขึ้นต้น ด้วย 0
+//	    		return null;
+//	    	} else {
+//	    		String first2Digit = org.getCode().substring(0, 2);
+//	    		if(first2Digit.equals("41") || first2Digit.equals("32")) {
+//	    			// กรณี นครศรี และ สงขลา
+//	    			String first4Digit = org.getCode().substring(0, 4);
+//	    			return Long.parseLong("1" + first4Digit + "0000");
+//	    			
+//	    		} else {
+//	    			return Long.parseLong("1" + first2Digit + "000000");	
+//	    		}
+//	    		
+//	    	}
+	    	
+	    }
+
+	
+	
+	
 	  public static Long getProvinceId(Organization org) {
 		  return Long.parseLong(org.getCode().substring(0, 7) + "0000");
 		  

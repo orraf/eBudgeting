@@ -140,6 +140,9 @@ public class Organization implements Serializable {
 		OrganizationType myType =  this.getType();
 		if(myType == OrganizationType.ส่วนในจังหวัด || 
 				myType == OrganizationType.แผนก ||
+				myType == OrganizationType.กอง ||
+				myType == OrganizationType.อำเภอ ||
+				myType == OrganizationType.กองในเขต ||
 				myType == OrganizationType.แผนกในจังหวัด ||
 				myType == OrganizationType.แผนกในอำเภอ)
 			return true;
