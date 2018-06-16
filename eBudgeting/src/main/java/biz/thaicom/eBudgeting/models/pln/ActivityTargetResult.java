@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -64,9 +65,18 @@ public class ActivityTargetResult implements Serializable{
 	@JoinColumn(name="TARGETREPORT_PLN_REPORT_ID")
 	private ActivityTargetReport report;
 	
+	@Lob
+	@Column(name = "RESULT_TEXT")
+	private String resultText;
+	
+	@Lob
+	@Column(name = "PROBLEM_AND_SUGGESTION")
+	private String problemAndSuggestion;
+	
 	@Basic
 	@Column(length=1024)
 	private String remark;
+	
 	
 	@Basic
 	private Boolean removed;
@@ -157,6 +167,22 @@ public class ActivityTargetResult implements Serializable{
 
 	public void setResultBudgetType(Boolean resultBudgetType) {
 		this.resultBudgetType = resultBudgetType;
+	}
+
+	public String getResultText() {
+		return resultText;
+	}
+
+	public void setResultText(String resultText) {
+		this.resultText = resultText;
+	}
+
+	public String getProblemAndSuggestion() {
+		return problemAndSuggestion;
+	}
+
+	public void setProblemAndSuggestion(String problemAndSuggestion) {
+		this.problemAndSuggestion = problemAndSuggestion;
 	}
 	
 	

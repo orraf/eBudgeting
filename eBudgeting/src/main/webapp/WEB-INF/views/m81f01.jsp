@@ -72,6 +72,8 @@
 		<tr>
 			<td width="120">วันที่รายงาน</td>
 			<td width="100">ค่าที่รายงาน</td>
+			<td width="100">ผลการดำเนินงาน</td>
+			<td width="100">ปัญหาและอุปสรรค/ข้อเสนอแนะ</td>
 			<td>หมายเหตุ</td>
 
 		</tr>
@@ -89,7 +91,9 @@
 					{{/if}}
 
 				</td>
-	
+				<td>{{resultText}}</td>
+				<td>{{problemAndSuggestion}}</td>
+
 				<td>{{remark}}</td>
 			</tr>
 		{{/each}}			
@@ -121,6 +125,19 @@
 				<div class="input-append"><input type="text" id="result" placeholder="..." value="{{result.result}}"><span class="add-on">{{unit.name}}</span></div>
     		</div>
     	</div>
+		<div class="control-group">
+    		<label class="control-label" for="remark">ผลการดำเนินงาน</label>
+    		<div class="controls">
+    			<input type="text" id="resultText" placeholder="..." value="{{result.resultText}}">
+    		</div>
+    	</div>
+		<div class="control-group">
+    		<label class="control-label" for="remark">ปัญหาและอุปสรรค/ข้อเสนอแนะ</label>
+    		<div class="controls">
+    			<input type="text" id="problemAndSuggestion" placeholder="..." value="{{result.problemAndSuggestion}}">
+    		</div>
+    	</div>
+
     	<div class="control-group">
     		<label class="control-label" for="remark">หมายเหตุ</label>
     		<div class="controls">

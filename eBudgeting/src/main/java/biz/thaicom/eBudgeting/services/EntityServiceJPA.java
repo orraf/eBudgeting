@@ -5288,6 +5288,8 @@ public class EntityServiceJPA implements EntityService {
 		result.setTimestamp(new Date());
 		result.setPerson(currentUser.getPerson());
 		result.setRemark(node.get("remark").asText());
+		result.setResultText(node.get("resultText").asText());
+		result.setProblemAndSuggestion(node.get("problemAndSuggestion").asText());
 		result.setResultBudgetType(node.get("resultBudgetType").asBoolean());
 		if(result.getResultBudgetType() == true) {
 			result.setBudgetResult(node.get("budgetResult").asDouble());
