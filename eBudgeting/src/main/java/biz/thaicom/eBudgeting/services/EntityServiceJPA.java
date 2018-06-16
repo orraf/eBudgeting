@@ -3063,7 +3063,20 @@ public class EntityServiceJPA implements EntityService {
 		
 		Organization searchOrg = organizationRepository.findOne(searchOrgId);
 		
+		
+		
 		logger.debug("searchOrg: "+ searchOrg.getName() + " (" + searchOrgId + ") ");
+		
+		logger.debug("is Type: " + OrganizationType.getType(searchOrg));
+		
+		if(OrganizationType.getType(searchOrg) == OrganizationType.แผนกในอำเภอ || 
+				OrganizationType.getType(searchOrg) == OrganizationType.แผนก) {
+			
+			// กรณีที่ User จะทำแผนให้กับ กองในจังหวัด
+			
+			searchOrg = searchOrg.getParent();
+			
+		}
 		
 		// now if workAt is at แผนก 
 //		if(workAt.isSubSection()) {
@@ -5163,9 +5176,9 @@ public class EntityServiceJPA implements EntityService {
 //			searchOrg = searchOrg.getParent();
 //		}
 		
-//		if(searchOrg.getType() == OrganizationType.แผนกในอำเภอ) {
-//			searchOrg = searchOrg.getParent();
-//		}
+		if(searchOrg.getType() == OrganizationType.แผนกในอำเภอ) {
+			searchOrg = searchOrg.getParent();
+		}
 		
 		
 		
