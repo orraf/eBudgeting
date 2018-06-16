@@ -295,6 +295,10 @@
 	<label>ระบุชื่อกิจกรรม</label>
 	<textarea rows="2" class="span5 model" id="nameTxt" data-modelName="name">{{name}}</textarea>
 
+	<label>ระบุตัวชี้วัด</label>
+	<textarea rows="2" class="span5 model" id="nameTxt" data-modelName="indicator">{{indicator}}</textarea>
+
+
 	<label>ส่วนงานที่รับผิดชอบ</label>
 	<select id="regulatorSlt">
 

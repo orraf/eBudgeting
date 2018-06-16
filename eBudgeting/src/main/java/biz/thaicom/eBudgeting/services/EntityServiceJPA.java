@@ -4376,6 +4376,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		activity.setCode(node.get("code").asText());
 		activity.setName(node.get("name").asText());
+		activity.setIndicator(node.get("indicator").asText());
 		
 		Organization regulator = organizationRepository.findOne(getJsonNodeId(node.get("regulator")));
 		activity.setRegulator(regulator);
@@ -4454,6 +4455,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		activity.setCode(node.get("code").asText());
 		activity.setName(node.get("name").asText());
+		activity.setIndicator(node.get("indicator").asText());
 		activity.setActivityLevel(node.get("activityLevel").asInt());
 		
 		Organization regulator = organizationRepository.findOne(getJsonNodeId(node.get("regulator")));

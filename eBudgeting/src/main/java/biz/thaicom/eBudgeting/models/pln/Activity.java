@@ -8,12 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -60,6 +62,10 @@ public class Activity implements Serializable, Comparable<Activity> {
 	
 	@Basic
 	private String code;
+	
+	@Lob
+	@Column(name = "INDICATOR")
+	private String indicator;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="OBJ_PLN_OBJECTIVE_ID", nullable=false)
@@ -208,6 +214,14 @@ public class Activity implements Serializable, Comparable<Activity> {
 		this.activityLevel = activityLevel;
 	}
 	
+	public String getIndicator() {
+		return indicator;
+	}
+
+	public void setIndicator(String indicator) {
+		this.indicator = indicator;
+	}
+
 	public void sumChildrenTarget() {
 		Map <TargetUnit, ActivityTarget> grandChildTargets = new HashMap<TargetUnit, ActivityTarget>();
 		for(Activity child : this.getChildren()) {
