@@ -61,7 +61,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			Long objectiveId, Integer activityLevel);
 
 	@Query(""
-			+ "SELECT DISTINCT act "
+			+ "SELECT  act "
 			+ "FROM Activity act "
 			+ "		LEFT JOIN FETCH act.targets target "
 			+ " 	LEFT JOIN FETCH target.unit "
@@ -73,7 +73,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 
 
 	@Query(""
-			+ "SELECT DISTINCT act "
+			+ "SELECT  act "
 			+ "FROM Activity act "
 			+ "		LEFT JOIN FETCH act.targets target "
 			+ " 	LEFT JOIN FETCH target.unit "
@@ -88,7 +88,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 
 
 	@Query(""
-			+ "SELECT distinct activity "
+			+ "SELECT  activity "
 			+ "FROM Activity activity "
 			+ "	LEFT JOIN FETCH activity.parent "
 			+ "	LEFT JOIN FETCH activity.children "
@@ -100,7 +100,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 
 
 	@Query(""
-			+ "SELECT DISTINCT act "
+			+ "SELECT act "
 			+ "FROM Activity act "
 			+ "		LEFT JOIN FETCH act.targets target "
 			+ " 	LEFT JOIN FETCH target.unit "

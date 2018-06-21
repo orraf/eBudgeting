@@ -3093,6 +3093,8 @@ public class EntityServiceJPA implements EntityService {
 		
 		for(Objective obj: returnList) {
 			
+			
+			logger.debug("obj.getId() : " + obj.getId() +", workAt.getId(): " + workAt.getId() );
 			List<Activity> acts = activityRepository.findAllByForObjectiveParentAndOwnerOrRegulator(obj, workAt.getId());
 			logger.debug(">>>>> " +workAt.getId());
 			logger.debug(">>>>> " +acts.size());
