@@ -5168,6 +5168,12 @@ public class EntityServiceJPA implements EntityService {
 	public List<Objective> findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(
 			Organization workAt, Integer fiscalYear, Long objectiveId) {
 		
+		
+		logger.debug("workAt.getId(): " + workAt.getId());
+		logger.debug("fiscalYear: " +fiscalYear);
+		logger.debug("objectiveId: " + objectiveId);
+		
+		
 		//Long searchOrgId = OrganizationType.get_ส่วนในจังหวัดหรืออำเภอ_Id(workAt); 
 		
 		Organization searchOrg = organizationRepository.findOne(workAt.getId());
@@ -5178,7 +5184,7 @@ public class EntityServiceJPA implements EntityService {
 //			searchOrg = searchOrg.getParent();
 //		}
 		
-		if(searchOrg.getType() == OrganizationType.แผนกในอำเภอ) {
+		if(searchOrg.getType() == OrganizationType.แผนกในอำเภอ || searchOrg.getType() == OrganizationType.แผนก) {
 			searchOrg = searchOrg.getParent();
 		}
 		
