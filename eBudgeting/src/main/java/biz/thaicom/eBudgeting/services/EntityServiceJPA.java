@@ -3069,8 +3069,8 @@ public class EntityServiceJPA implements EntityService {
 		
 		logger.debug("is Type: " + OrganizationType.getType(searchOrg));
 		
-		if(OrganizationType.getType(searchOrg) == OrganizationType.แผนกในอำเภอ || 
-				OrganizationType.getType(searchOrg) == OrganizationType.แผนก) {
+		if(OrganizationType.getType(searchOrg) == OrganizationType.แผนกในอำเภอ) {
+			// ||OrganizationType.getType(searchOrg) == OrganizationType.แผนก) {
 			
 			// กรณีที่ User จะทำแผนให้กับ กองในจังหวัด
 			
@@ -4796,6 +4796,8 @@ public class EntityServiceJPA implements EntityService {
 		logger.debug("searchOrg: " +  searchOrg.getName());
 		
 		String objectiveIdLike = "%."+objectiveId + ".%";
+		
+		logger.debug("objectiveIdLike: " + objectiveIdLike);
 		
 		List<Objective> childrenObjective = new ArrayList<Objective>();
 		
