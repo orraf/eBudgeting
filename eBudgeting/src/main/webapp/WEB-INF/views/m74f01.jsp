@@ -9,7 +9,7 @@
     			<strong>Sign Off แล้ว</strong> สามารถเปิดดูข้อมูลได้อย่างเดียว ไม่สามารถแก้ไขเพิ่มเติมได้ 
     		</div>
 	</c:if>
-	<h4>การบันทึกแผนการดำเนินงานกิจกรรมย่อย</h4>
+	<h4>การบันทึกแผนการดำเนินงานกิจกรรมย่อย ${organizationLevelAndName}</h4>
 	<div class="alert alert-error">กรณีเห็นกิจกรรมไม่ครบ  เป้าหมายไม่ตรง  เงินงบประมาณไม่ตรง ให้ติดต่อกับ สกยจ.</div> 
 </div>
 
@@ -442,6 +442,7 @@
 	var fiscalYear = parseInt("${fiscalYear}");
 	
 	var currentOrganizationId = "${workAtId}";
+	var organizationId = "${organizationId}";
 	var mainCtrView = null;
 	var objectiveCollection = null;
 	var budgetTypeSelectionView = null;

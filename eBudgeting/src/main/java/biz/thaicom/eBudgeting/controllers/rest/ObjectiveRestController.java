@@ -46,6 +46,7 @@ import biz.thaicom.eBudgeting.models.pln.ObjectiveRelations;
 import biz.thaicom.eBudgeting.models.pln.ObjectiveTarget;
 import biz.thaicom.eBudgeting.models.webui.PageUI;
 import biz.thaicom.eBudgeting.repositories.ObjectiveRelationsRepository;
+import biz.thaicom.eBudgeting.repositories.OrganizationRepository;
 import biz.thaicom.eBudgeting.services.EntityService;
 import biz.thaicom.security.models.Activeuser;
 import biz.thaicom.security.models.ThaicomUserDetail;
@@ -331,6 +332,19 @@ public class ObjectiveRestController {
 		return entityService.findObjectiveHasBudgetAssetByFiscalYear(fiscalYear, currentUser.getWorkAt());
 		
 	}
+	
+	@RequestMapping(value="/Objective/currentActivityOwner/{fiscalYear}/ownerId/{ownerId}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> findObjectiveByCurrentActivityWithOwnerId(
+			@PathVariable Integer fiscalYear,
+			@PathVariable Long ownerId,
+			@Activeuser ThaicomUserDetail currentUser
+			){
+		
+		Organization org = entityService.findOrganizationById(ownerId);
+		
+		return entityService.findObjectiveByActivityOwnerAndFiscalYear(org, fiscalYear);
+	}
+	
 	
 	@RequestMapping(value="/Objective/currentActivityOwner/{fiscalYear}", method=RequestMethod.GET)
 	public @ResponseBody List<Objective> findObjectiveByCurrentActivityOwner(

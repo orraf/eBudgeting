@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div class="hero-unit white">
 
@@ -86,13 +87,16 @@ var PMS_BGT_ADMIN = true;
 </script>
 </sec:authorize>
 
-
+<sec:authentication property="principal.workAt.abbr" var="workAbbr"/>
+<sec:authentication property="principal.workAt.parent.abbr" var="parentAbbr"/>
 
 
 <script type="text/javascript">
 var menuCode='${menuCode}';
 var menuLevel='${menuLevel}';
 var fiscalYear = parseInt("${currentRootFY.fiscalYear}");
+var workAbbr = "${workAbbr}";
+var parentAbbr = "${parentAbbr}";
 
 var userGroups = '${userGroups}'.split(",");
 
@@ -146,8 +150,10 @@ var menuJson = [{
 		}]  
 	}, {
 		name: "การบันทึกแผนการดำเนินงานกิจกรรมย่อย (m74)",code: "m74", parent: 'm7',  menus: [{
-			name: "m74f01: บันทึกแผนการดำเนินงานกิจกรรม", code: "m74f01", parent: 'm74', link: "page/m74f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER3", "PMS_USER4"]
+			name: "m74f01: บันทึกแผนการดำเนินงานกิจกรรม หน่วยงานแม่ ("+parentAbbr+")", code: "m74f01", parent: 'm74', link: "page/m74f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER3", "PMS_USER4"]
 		}, {
+			name: "m74f03: บันทึกแผนการดำเนินงานกิจกรรม หน่วยงานตัวเอง ("+workAbbr+")", code: "m74f03", parent: 'm74', link: "page/m74f03/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER3", "PMS_USER4"]
+		},{
 			name: "m74f02: บันทึกแผนงบลงทุน", code: "m74f02", parent: 'm74', link : "page/m74f02/", group: ["PMS_USER", "PMS_INV", "PMS_USER1", "PMS_USER3", "PMS_USER4"]
 		}]
 	}]

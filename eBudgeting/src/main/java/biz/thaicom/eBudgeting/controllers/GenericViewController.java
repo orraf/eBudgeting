@@ -1249,7 +1249,7 @@ public class GenericViewController {
 		}
 	
 	
-	// --------------------------------------------------------------m74f01: การบันทึกแผนงาน
+	// --------------------------------------------------------------m74f01: การบันทึกแผนงาน หน่วยงานแม่
 	@RequestMapping("/page/m74f01/")
 	public String render_m74f01(
 			Model model,
@@ -1257,11 +1257,25 @@ public class GenericViewController {
 			@Activeuser ThaicomUserDetail currentUser) {
 		model.addAttribute("rootPage", true);
 		setFiscalYearFromSession(model, session);
-		model.addAttribute("organizationId", currentUser.getWorkAt().getId());
+		model.addAttribute("organizationId", currentUser.getWorkAt().getParent().getId());
+		model.addAttribute("organizationLevelAndName", "หน่วยงานแม่ ("+currentUser.getWorkAt().getParent().getAbbr()+")");
 		
 		return "m74f01";
 	}
 
+	// --------------------------------------------------------------m74f03: การบันทึกแผนงาน หน่วยงานตัวเอง
+		@RequestMapping("/page/m74f03/")
+		public String render_m74f03(
+				Model model,
+				HttpServletRequest request, HttpSession session,
+				@Activeuser ThaicomUserDetail currentUser) {
+			model.addAttribute("rootPage", true);
+			setFiscalYearFromSession(model, session);
+			model.addAttribute("organizationId", currentUser.getWorkAt().getId());
+			model.addAttribute("organizationLevelAndName", "หน่วยงานตัวเอง ("+currentUser.getWorkAt().getAbbr()+")");
+			return "m74f01";
+		}
+	
 	// --------------------------------------------------------------m74f01: การบันทึกแผนงบลงทุน
 	@RequestMapping("/page/m74f02/")
 	public String render_m74f02(

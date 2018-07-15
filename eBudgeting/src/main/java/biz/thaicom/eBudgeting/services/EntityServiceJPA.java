@@ -5206,8 +5206,28 @@ public class EntityServiceJPA implements EntityService {
 		List<ActivityTargetResult> latestResults = new ArrayList<ActivityTargetResult>();
 		Map<Long, ActivityTargetResult> reportLatestResultMap = new HashMap<Long, ActivityTargetResult>();
 		if(reports.size() > 0) {
-		
-			latestResults = activityTargetResultRepository.findLatestTimeStampByReport(reports);
+			logger.debug("xxxxxxxxxx reports.size() " + reports.size());
+			if(reports.size() >= 1000) {
+				// we have to break it down in size of 1000
+				Integer fromIndex = 0;
+				Integer toIndex = 999;
+				while(fromIndex < reports.size() ) {
+					List<ActivityTargetReport> searchReports = reports.subList(fromIndex, toIndex);
+					List<ActivityTargetResult> searchResults = activityTargetResultRepository.findLatestTimeStampByReport(searchReports);
+					
+					latestResults.addAll(searchResults);
+					
+					fromIndex = toIndex+1;
+					toIndex = toIndex+1000;
+					if(toIndex >= reports.size()) {
+						toIndex = reports.size()-1;
+					}
+				}
+				
+			} else {
+				latestResults = activityTargetResultRepository.findLatestTimeStampByReport(reports);
+			}
+			
 			for(ActivityTargetResult result : latestResults) {
 				reportLatestResultMap.put(result.getReport().getId(), result);
 			}

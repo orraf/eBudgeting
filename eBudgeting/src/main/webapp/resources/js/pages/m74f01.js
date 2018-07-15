@@ -36,7 +36,7 @@ var BudgetProposalSelectionView = Backbone.View.extend({
 	},
 	renderSelection: function() {
 		this.rootSelection = new ObjectiveCollection();
-		this.rootSelection.url = appUrl("/Objective/currentActivityOwner/" + fiscalYear);
+		this.rootSelection.url = appUrl("/Objective/currentActivityOwner/" + fiscalYear+"/ownerId/"+organizationId);
 		this.rootSelection.fetch({
 			success: _.bind(function() {
 				var json = this.rootSelection.toJSON();
