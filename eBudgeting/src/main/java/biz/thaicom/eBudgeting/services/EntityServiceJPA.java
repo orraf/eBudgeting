@@ -5186,9 +5186,9 @@ public class EntityServiceJPA implements EntityService {
 //			searchOrg = searchOrg.getParent();
 //		}
 		
-		if(searchOrg.getType() == OrganizationType.แผนกในอำเภอ || searchOrg.getType() == OrganizationType.แผนก) {
-			searchOrg = searchOrg.getParent();
-		}
+//		if(searchOrg.getType() == OrganizationType.แผนกในอำเภอ || searchOrg.getType() == OrganizationType.แผนก) {
+//			searchOrg = searchOrg.getParent();
+//		}
 		
 		
 		

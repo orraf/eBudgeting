@@ -1299,9 +1299,28 @@ public class GenericViewController {
 		model.addAttribute("rootPage", false);
 		model.addAttribute("fiscalYears", fiscalYears);
 		model.addAttribute("workAtId", currentUser.getWorkAt().getId());
+		model.addAttribute("organizationId", currentUser.getWorkAt().getParent().getId());
+		model.addAttribute("organizationLevelAndName", "หน่วยงานแม่ ("+currentUser.getWorkAt().getParent().getAbbr()+")");
 		
 		return "m81f01";
 	}
+	// --------------------------------------------------------------m81f01: การบันทึกผลการดำเนินงาน
+	@RequestMapping("/page/m81f03/")
+	public String render_m81f03(
+			Model model,
+			HttpServletRequest request, HttpSession session,
+			@Activeuser ThaicomUserDetail currentUser) {
+		List<Objective> fiscalYears = entityService.findRootFiscalYear();
+		setFiscalYearFromSession(model, session);
+		model.addAttribute("rootPage", false);
+		model.addAttribute("fiscalYears", fiscalYears);
+		model.addAttribute("workAtId", currentUser.getWorkAt().getId());
+		model.addAttribute("organizationId", currentUser.getWorkAt().getId());
+		model.addAttribute("organizationLevelAndName", "หน่วยงานตัวเอง ("+currentUser.getWorkAt().getAbbr()+")");
+
+		return "m81f01";
+	}
+	
 	// --------------------------------------------------------------m81f02: การบันทึกผลการดำเนินงานงบลงทุน
 	@RequestMapping("/page/m81f02/")
 	public String render_m81f02(

@@ -27,7 +27,7 @@ var BudgetProposalSelectionView = Backbone.View.extend({
 
 		mainTblView.showLoading();
 
-		objectiveCollection.url = appUrl('/Objective/fiscalYear/' + fiscalYear + '/' + objectiveId + '/findByActivityTargetReportOfCurrentUser');
+		objectiveCollection.url = appUrl('/Objective/fiscalYear/' + fiscalYear + '/' + objectiveId + '/findByActivityTargetReportOfOwnerId/' + organizationId);
 		objectiveCollection.fetch({
 			success : function() {
 				mainTblView.setCollection(objectiveCollection);
@@ -46,7 +46,7 @@ var BudgetProposalSelectionView = Backbone.View.extend({
 	},
 	renderSelection : function() {
 		this.rootSelection = new ObjectiveCollection();
-		this.rootSelection.url = appUrl("/Objective/currentActivityOwner/" + fiscalYear);
+		this.rootSelection.url = appUrl("/Objective/currentActivityOwner/" + fiscalYear + "/ownerId/" + organizationId);
 		this.rootSelection.fetch({
 			success : _.bind(function() {
 				var json = this.rootSelection.toJSON();

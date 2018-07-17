@@ -269,6 +269,18 @@ public class ObjectiveRestController {
 		return entityService.findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(currentUser.getWorkAt(), fiscalYear, objectiveId);
 	}
 	
+	@RequestMapping(value="/Objective/fiscalYear/{fiscalYear}/{objectiveId}/findByActivityTargetReportOfOwnerId/{ownerId}", method=RequestMethod.GET)
+	public @ResponseBody List<Objective> findByActivityTargetReportOfCurrentUserAndObjectiveIdAndOwnerId(
+			@Activeuser ThaicomUserDetail currentUser, @PathVariable Integer fiscalYear, @PathVariable Long objectiveId,
+			@PathVariable Long ownerId) {
+		
+		Organization org = entityService.findOrganizationById(ownerId);
+		
+		return entityService.findObjectiveByActivityTargetReportOfOrganizationAndFiscalYear(org, fiscalYear, objectiveId);
+	}
+	
+	
+	
 	@RequestMapping(value="/Objective/fiscalYear/{fiscalYear}/findByActivityTargetReportOfCurrentUser/NoReportCurrentMonth", method=RequestMethod.GET)
 	public @ResponseBody List<String> findByActivityTargetReportOfCurrentUserNoReportCurrentMonth(
 			@Activeuser ThaicomUserDetail currentUser, @PathVariable Integer fiscalYear) {

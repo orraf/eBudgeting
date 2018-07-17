@@ -4,7 +4,7 @@
 
 <div class="hero-unit white">
 <div id="headLine">
-	<h4>บันทึกผลการดำเนินงาน</h4> 
+	<h4>บันทึกผลการดำเนินงาน ${organizationLevelAndName}</h4> 
 </div>
 
 <div class="row">
@@ -505,6 +505,8 @@ Handlebars.registerHelper("formatNumberBgtLink", function(result) {
 	
 	var mainCtrView = null;
 	var currentOrganizationId = "${workAtId}";
+	var organizationId = "${organizationId}";
+	
 	
 	var objectiveCollection = new ObjectiveCollection();
 	var e1;

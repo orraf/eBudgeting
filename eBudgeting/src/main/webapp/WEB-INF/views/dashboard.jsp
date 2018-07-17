@@ -161,7 +161,9 @@ var menuJson = [{
 	name: "ระบบรายงานผลการดำเนินงาน (m8)", code: "m8", 
 	menus: [{
 		name: "การบันทึกผลการดำเนินงาน (m81)",code: "m81", parent: 'm8',  menus: [{
-		   	name: "m81f01: บันทึกผลการดำเนินงาน", code: "m81f01", parent: 'm81', link: "page/m81f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER3", "PMS_USER4"]
+		   	name: "m81f01: บันทึกผลการดำเนินงาน หน่วยงานแม่ ("+parentAbbr+")", code: "m81f01", parent: 'm81', link: "page/m81f01/", group: ["PMS_USER", "PMS_INV", "PMS_USER3", "PMS_USER4"]
+		},{
+		   	name: "m81f03: บันทึกผลการดำเนินงาน หน่วยงานตัวเอง ("+workAbbr+")", code: "m81f03", parent: 'm81', link: "page/m81f03/", group: ["PMS_USER", "PMS_INV", "PMS_USER3", "PMS_USER4"]
 		},{
 			name: "m81f02: บันทึกผลการดำเนินงานงบลงทุน", code: "m81f02", parent: 'm81', link: "page/m81f02/", group: ["PMS_USER", "PMS_USER3", "PMS_USER4"]
 		}]  
